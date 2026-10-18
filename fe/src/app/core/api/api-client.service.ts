@@ -11,4 +11,8 @@ export class ApiClientService {
   async get<T>(path: string): Promise<ApiResponse<T>> {
     return firstValueFrom(this.http.get<ApiResponse<T>>(`${this.baseUrl}${path}`));
   }
+
+  async post<T>(path: string, body: unknown): Promise<ApiResponse<T>> {
+    return firstValueFrom(this.http.post<ApiResponse<T>>(`${this.baseUrl}${path}`, body));
+  }
 }
