@@ -11,3 +11,19 @@ catalogRouter.get('/categories', async (request, response, next): Promise<void> 
 catalogRouter.get('/branches', async (request, response, next): Promise<void> => {
   try { response.json(success(await catalogService.getBranches(), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
 });
+
+catalogRouter.get('/products', async (request, response, next): Promise<void> => {
+  try {
+    const query = typeof request.query.q === 'string' ? request.query.q : undefined;
+    const category = typeof request.query.category === 'string' ? request.query.category : undefined;
+    response.json(success(await catalogService.findProducts({ query, category }), response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
+catalogRouter.get('/products/:categorySlug/:productSlug', async (request, response, next): Promise<void> => {
+  try {
+    const product = await catalogService.getProduct(request.params.categorySlug, request.params.productSlug);
+    if (!product) { response.status(404).json({ success: false, error: { code: 'PRODUCT_NOT_FOUND', messageKey: 'error.productNotFound', retryable: false, correlationId: response.locals.correlationId as string } }); return; }
+    response.json(success(product, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
