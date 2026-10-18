@@ -4,7 +4,7 @@
 
 ### Quyền
 
-- Chỉ User session đã liên kết đúng Customer.
+- Chỉ User session đã liên kết với Customer được tạo cho chính User đó. Customer guest lịch sử không được tự chuyển vào account này.
 - Guest session không được dùng route liệt kê này; guest chỉ xem order đã authorize.
 
 ### Cấu trúc desktop

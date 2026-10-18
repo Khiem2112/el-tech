@@ -5,9 +5,9 @@
 - `User`: tài khoản đăng nhập do Better-Auth quản lý.
 - `Customer`: hồ sơ nghiệp vụ sở hữu đơn hàng, coupon usage, review và notification.
 - Một Customer có thể tồn tại mà không có User; guest checkout không bị ép đăng ký (`CUS-007`).
-- Email và phone độc lập duy nhất giữa các Customer (`CUS-003`).
-- Việc liên kết User mới với Customer cũ phải dựa trên contact đã xác minh, không dựa trên dữ liệu client tự khai.
-- Nếu email và phone trỏ tới hai Customer khác nhau, chặn hành động và chuyển hỗ trợ Admin; không tự merge (`CUS-004`).
+- Email và phone có thể trùng giữa các Customer; chỉ email `User` dùng cho đăng nhập là duy nhất (`CUS-003`).
+- Mỗi User vừa xác minh tạo một Customer mới của riêng tài khoản. Không tự liên kết, merge hoặc chuyển quyền Customer guest cũ, kể cả khi contact trùng (`CUS-015`).
+- Guest checkout có contact trùng nhiều Customer phải đăng nhập hoặc liên hệ Admin; không tự chọn profile (`CUS-016`).
 
 ## 2. Đăng ký tài khoản
 
@@ -15,7 +15,7 @@
 
 - Route: `/dang-ky`.
 - Actor: guest muốn có account; không phải điều kiện để mua.
-- Outcome: User được tạo, email tài khoản được xác minh, sau đó thử liên kết Customer phù hợp theo flow được backend cho phép.
+- Outcome: User được tạo, email tài khoản được xác minh, rồi backend tạo Customer mới liên kết duy nhất với User đó.
 
 ### Cấu trúc trang
 
@@ -37,7 +37,7 @@
 1. Validate on blur; lỗi submit focus summary/field đầu tiên.
 2. Backend tạo User ở trạng thái chờ xác minh.
 3. Điều hướng `/xac-minh-email?purpose=signup`; không coi đăng ký hoàn tất khi email chưa verify.
-4. Khi verify thành công, backend kiểm tra Customer theo contact. Nếu match hợp lệ thì liên kết có audit; nếu xung đột thì giữ User độc lập và hiển thị hướng xử lý.
+4. Khi verify thành công, backend tạo Customer mới trong transaction và liên kết với User. Không lookup/link Customer guest cũ theo contact.
 5. Nếu có `returnUrl`, quay lại đúng deep link sau khi hoàn tất.
 
 ### Trạng thái lỗi
@@ -51,7 +51,7 @@
 
 - Không route nào bắt guest đăng ký trước khi dùng giỏ/checkout.
 - Submit lặp không tạo hai User.
-- Account không tự chiếm Customer chỉ vì client nhập cùng email.
+- Account không bao giờ tự chiếm Customer guest cũ chỉ vì contact trùng; lịch sử guest tiếp tục dùng OTP theo từng order.
 - Toàn bộ control có autocomplete phù hợp và keyboard access.
 
 ## 3. Đăng nhập
@@ -179,12 +179,12 @@ Không phải form edit trực tiếp. Mở routed sub-flow hoặc sheet nhiều
 
 1. Re-auth account nếu session không còn fresh.
 2. Xác minh contact cũ.
-3. Nhập contact mới và kiểm tra uniqueness.
+3. Nhập contact mới; contact có thể trùng hồ sơ Customer khác.
 4. Xác minh contact mới.
 5. Confirm consequence; backend update + audit actor/time/old/new/reason (`CUS-008`, `CUS-010`).
 6. Success screen; order snapshot cũ không đổi (`CUS-006`).
 
-Nếu contact mới thuộc Customer khác, chặn và yêu cầu Admin support; không merge.
+Contact mới trùng Customer khác không tạo merge hay chuyển quyền; backend chỉ cập nhật Customer thuộc User hiện tại sau khi cả hai contact cũ/mới được xác minh.
 
 ## 9. Bảo mật và session
 
@@ -200,7 +200,7 @@ Nếu contact mới thuộc Customer khác, chặn và yêu cầu Admin support;
 - Guest browse/cart/checkout không bị auth guard.
 - Deep link login quay lại đúng trang.
 - Guest cart merge không duplicate SKU/build và luôn reprice.
-- Hai request đăng ký/xác minh song song không tạo duplicate Customer.
-- Email/phone identity conflict bị chặn ở client và server outcome đúng.
+- Hai request đăng ký/xác minh song song không tạo duplicate Customer cho cùng một User.
+- Guest checkout với nhiều Customer cùng contact pair trả `CUSTOMER_IDENTITY_AMBIGUOUS`; account checkout chỉ dùng Customer liên kết với User.
 - Guest session không đọc chéo order/notification/review.
 - OTP resend, expiry, used token, rate limit và duplicate submit.

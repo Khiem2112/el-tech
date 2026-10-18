@@ -2,7 +2,7 @@
 
 ## 1. Trạng thái tài liệu
 
-- Trạng thái: `Draft — chờ phê duyệt trước khi triển khai`.
+- Trạng thái: `Approved — project owner, 2026-10-18`.
 - Phạm vi: toàn bộ trải nghiệm dành cho khách vãng lai và khách có tài khoản trên website bán PC/linh kiện.
 - Ngày lập: 2026-10-18.
 - Nguồn nghiệp vụ: `.agents/skills/business-logic/` và các quyết định đã chuẩn hóa trong các rule `CUS`, `CAT`, `PCB`, `PRC`, `PRO`, `CHK`, `PAY`, `ORD`, `INV`, `REV`, `NOT`.
@@ -65,7 +65,7 @@ Do đó không mở rộng trực tiếp component gốc. Cần tách shell, rou
 - Dự án không có `PRODUCT.md`, trong khi skill lập flow tham chiếu tài liệu này. Kế hoạch dùng `AGENTS.md`, `TECH_STACK.md`, Prisma schema và bộ business-rule đã duyệt làm nguồn thay thế.
 - Chưa có dữ liệu nghiên cứu người dùng, funnel, search log, tỷ lệ rớt checkout hoặc support tickets. Vì vậy thứ tự ưu tiên dựa trên dependency nghiệp vụ/rủi ro, chưa phải kết luận định lượng về hành vi khách.
 - Chưa có service/API implementation để xác minh latency, provider OTP/payment và khả năng gửi email/SMS. Loading threshold và retry policy trong kế hoạch là baseline cần kiểm chứng ở staging.
-- Hai quyết định còn cần chốt trước implementation là liên kết User–Customer sau guest purchase và notification preference có thuộc MVP hay không.
+- User đăng ký sau guest purchase luôn nhận Customer mới; không liên kết Customer guest cũ dù contact trùng. Contact trùng nhiều Customer trong guest checkout trả `CUSTOMER_IDENTITY_AMBIGUOUS`; notification preference chưa thuộc MVP nên không có UI preference.
 
 ## 6. Bộ tài liệu trong thư mục này
 
@@ -104,11 +104,11 @@ Trước khi bắt đầu Phase 1, chủ dự án cần xác nhận:
 - Sitemap và tên route.
 - Danh mục tính năng MVP/out-of-scope.
 - Cấu trúc checkout 4 bước và cơ chế OTP hai kênh.
-- Cách liên kết tài khoản Better-Auth với Customer đã từng mua guest.
+- Chính sách không liên kết tài khoản Better-Auth với Customer đã từng mua guest.
 - Bộ trạng thái/CTA khách hàng nhìn thấy trên trang theo dõi đơn.
 
 Sau khi được duyệt, cập nhật phần này thành:
 
 - Trạng thái: `Approved`.
-- Người duyệt: `<tên>`.
-- Ngày duyệt: `<yyyy-mm-dd>`.
+- Người duyệt: `Project owner (user)`.
+- Ngày duyệt: `2026-10-18`.

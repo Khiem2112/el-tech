@@ -304,8 +304,8 @@ model Customer {
   userId               String?  @unique @map("user_id") @db.Uuid
   mergedIntoCustomerId String?  @map("merged_into_customer_id") @db.Uuid
   name                 String
-  email                String   @unique
-  phone                String   @unique
+  email                String
+  phone                String
   emailVerifiedAt      DateTime @map("email_verified_at") @db.Timestamptz(3)
   phoneVerifiedAt      DateTime @map("phone_verified_at") @db.Timestamptz(3)
 
@@ -324,6 +324,8 @@ model Customer {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([mergedIntoCustomerId])
+  @@index([email])
+  @@index([phone])
   @@index([isActive])
   @@map("customer")
 }

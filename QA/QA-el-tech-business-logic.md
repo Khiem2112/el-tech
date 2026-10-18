@@ -1331,3 +1331,15 @@ Chỉ tick sau khi câu trả lời đã được người có thẩm quyền du
 - [x] Đã kiểm tra lại Order/Payment/Inventory state machine và mọi terminal outcome.
 - [x] Đã cập nhật đồng bộ các feature references của `business-logic`.
 - [x] `Approval.Status` đã được đổi lại thành `Approved`, kèm approver và ngày duyệt.
+
+### FQ37 — [P0] Đăng ký sau khi đã mua guest
+
+- **Context:** Quy tắc đã duyệt chỉ xác nhận Customer có thể tồn tại không cần User, nhưng chưa chốt liên kết khi người mua guest đăng ký sau đó.
+- **Question:** Khi contact đăng ký trùng Customer guest cũ, có liên kết profile lịch sử hay tạo Customer mới?
+- **Answer:** Tạo Customer mới hoàn toàn; không liên kết Customer trước đây. Cho phép email và số điện thoại trùng Customer guest cũ.
+- **Normalized resolution:** User email vẫn unique để đăng nhập. Customer email/phone không còn unique. User đã xác minh tạo một Customer riêng trong transaction; account không nhìn thấy lịch sử guest. Guest checkout có contact pair khớp nhiều Customer trả `CUSTOMER_IDENTITY_AMBIGUOUS` và yêu cầu đăng nhập hoặc Admin hỗ trợ.
+
+## Round 5 Approval Gate
+
+- [x] FQ37 được Project owner trả lời trong chat ngày 2026-10-18.
+- [x] Đã cập nhật customer identity rule, Prisma schema và kế hoạch customer-facing.
