@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.angular/
+coverage/
+.env
+.env.*
+!*.example
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+*.log

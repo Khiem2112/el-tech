@@ -1,0 +1,14 @@
+---
+description: Project core rules and skill loading policy
+globs: *
+alwaysApply: true
+---
+
+# Project Cursor Instructions
+
+Before writing or editing code in this repository, you must read and adhere to:
+- `AGENTS.md` (root) - Master guidance and Skill Loading Policy.
+- Database schema management follows Prisma conventions in `.agents/skills/db-conventions/SKILL.md`.
+- TypeScript standards follow `.agents/skills/typescript/SKILL.md`.
+
+Do NOT duplicate or copy skills into `.cursor/` or elsewhere. Consult skills on demand directly from `.agents/skills/` as specified in `AGENTS.md`.
