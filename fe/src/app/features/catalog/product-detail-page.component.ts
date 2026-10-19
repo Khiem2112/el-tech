@@ -1,14 +1,144 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { JsonPipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { VndPipe } from '../../lib/vnd.pipe';
-import { CatalogService, ProductDetail } from './catalog.service';
+import { CatalogService, ProductDetail, ProductReviewItem } from './catalog.service';
 import { CartService } from '../../services/cart.service';
 
-@Component({ selector: 'app-product-detail-page', imports: [JsonPipe, RouterLink, VndPipe], changeDetection: ChangeDetectionStrategy.OnPush, template: `<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">@if (loading()) { <div class="grid gap-8 lg:grid-cols-2"><div class="aspect-square animate-pulse rounded-3xl bg-surface-alt"></div><div class="h-80 animate-pulse rounded-3xl bg-surface-alt"></div></div> } @else if (product(); as item) { <nav class="text-sm text-muted"><a routerLink="/san-pham" class="hover:text-foreground">Sản phẩm</a> / {{ item.category.name }}</nav><div class="mt-5 grid gap-8 lg:grid-cols-2"><div class="grid aspect-square place-items-center rounded-3xl border border-line bg-surface text-2xl font-bold text-muted" aria-hidden="true">{{ item.brand.name }}</div><div><p class="text-sm font-bold text-primary">{{ item.brand.name }}</p><h1 class="mt-2 text-3xl font-extrabold">{{ item.name }}</h1><p class="mt-2 text-muted">{{ item.model }}</p>@if (selected(); as variant) { <p class="mt-6 text-3xl font-extrabold">{{ variant.sellingPrice | vnd }}</p> }<p class="mt-1 text-sm text-success">Có thể đặt · Giá và tồn sẽ được xác nhận ở checkout</p><h2 class="mt-8 font-bold">Chọn phiên bản</h2><div class="mt-3 flex flex-wrap gap-2">@for (variant of item.variants; track variant.id) { <button class="rounded-lg border px-3 py-2 text-sm font-bold focus-visible:ring-2 focus-visible:ring-primary" [class.border-primary]="selected()?.id === variant.id" [class.border-line]="selected()?.id !== variant.id" type="button" (click)="selected.set(variant)">{{ variant.variationLabel ?? variant.sku }}</button> }</div><button class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-extrabold text-primary-foreground disabled:opacity-60" type="button" [disabled]="adding()" (click)="addToCart()">{{ adding() ? 'Đang thêm…' : 'Thêm vào giỏ' }}</button>@if (addError()) { <p class="mt-3 text-sm text-danger" role="alert">Không thể thêm sản phẩm. Vui lòng thử lại.</p> }</div></div><section class="mt-12 max-w-3xl"><h2 class="text-xl font-extrabold">Thông số kỹ thuật</h2><pre class="mt-4 overflow-auto rounded-xl bg-surface-alt p-4 text-sm">{{ item.commonSpec | json }}</pre></section> } @else { <div class="rounded-2xl border border-danger/30 bg-danger/10 p-6" role="alert"><h1 class="font-bold">Không thể tải sản phẩm</h1><a class="mt-3 inline-block font-bold text-primary" routerLink="/san-pham">Quay lại catalog</a></div> }</section>` })
+@Component({
+  selector: 'app-product-detail-page',
+  imports: [DatePipe, JsonPipe, RouterLink, VndPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      @if (loading()) {
+        <div class="grid gap-8 lg:grid-cols-2">
+          <div class="aspect-square animate-pulse rounded-3xl bg-surface-alt"></div>
+          <div class="h-80 animate-pulse rounded-3xl bg-surface-alt"></div>
+        </div>
+      } @else if (product(); as item) {
+        <nav class="text-sm text-muted">
+          <a routerLink="/san-pham" class="hover:text-foreground">Sản phẩm</a> / {{ item.category.name }}
+        </nav>
+        <div class="mt-5 grid gap-8 lg:grid-cols-2">
+          <div class="grid aspect-square place-items-center rounded-3xl border border-line bg-surface text-2xl font-bold text-muted" aria-hidden="true">
+            {{ item.brand.name }}
+          </div>
+          <div>
+            <p class="text-sm font-bold text-primary">{{ item.brand.name }}</p>
+            <h1 class="mt-2 text-3xl font-extrabold">{{ item.name }}</h1>
+            <p class="mt-2 text-muted">{{ item.model }}</p>
+            @if (selected(); as variant) {
+              <p class="mt-6 text-3xl font-extrabold">{{ variant.sellingPrice | vnd }}</p>
+            }
+            <p class="mt-1 text-sm text-success">Có thể đặt · Giá và tồn sẽ được xác nhận ở checkout</p>
+            <h2 class="mt-8 font-bold">Chọn phiên bản</h2>
+            <div class="mt-3 flex flex-wrap gap-2">
+              @for (variant of item.variants; track variant.id) {
+                <button
+                  class="rounded-lg border px-3 py-2 text-sm font-bold focus-visible:ring-2 focus-visible:ring-primary"
+                  [class.border-primary]="selected()?.id === variant.id"
+                  [class.border-line]="selected()?.id !== variant.id"
+                  type="button"
+                  (click)="selected.set(variant)"
+                >
+                  {{ variant.variationLabel ?? variant.sku }}
+                </button>
+              }
+            </div>
+            <button
+              class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm font-extrabold text-primary-foreground disabled:opacity-60"
+              type="button"
+              [disabled]="adding()"
+              (click)="addToCart()"
+            >
+              {{ adding() ? 'Đang thêm…' : 'Thêm vào giỏ' }}
+            </button>
+            @if (addError()) {
+              <p class="mt-3 text-sm text-danger" role="alert">Không thể thêm sản phẩm. Vui lòng thử lại.</p>
+            }
+          </div>
+        </div>
+
+        <section class="mt-12 max-w-3xl">
+          <h2 class="text-xl font-extrabold">Thông số kỹ thuật</h2>
+          <pre class="mt-4 overflow-auto rounded-xl bg-surface-alt p-4 text-sm">{{ item.commonSpec | json }}</pre>
+        </section>
+
+        <section class="mt-12 max-w-3xl border-t border-line pt-8">
+          <h2 class="text-xl font-extrabold">Đánh giá từ khách hàng đã mua</h2>
+          @if (reviews().length === 0) {
+            <p class="mt-4 text-sm text-muted">Chưa có đánh giá nào cho sản phẩm này. Khách hàng đã hoàn tất đơn hàng có thể đánh giá từ trang tra cứu đơn hàng.</p>
+          } @else {
+            <div class="mt-4 divide-y divide-line rounded-2xl border border-line bg-surface p-4">
+              @for (review of reviews(); track review.id) {
+                <div class="py-3 first:pt-0 last:pb-0">
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="font-bold text-primary">Điểm đánh giá: {{ review.rating }}/5 sao</span>
+                    <span class="text-xs text-muted">{{ review.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  </div>
+                  <p class="mt-2 text-sm text-foreground">{{ review.text }}</p>
+                </div>
+              }
+            </div>
+          }
+        </section>
+      } @else {
+        <div class="rounded-2xl border border-danger/30 bg-danger/10 p-6" role="alert">
+          <h1 class="font-bold">Không thể tải sản phẩm</h1>
+          <a class="mt-3 inline-block font-bold text-primary" routerLink="/san-pham">Quay lại catalog</a>
+        </div>
+      }
+    </section>
+  `,
+})
 export class ProductDetailPageComponent {
-  private readonly route = inject(ActivatedRoute); private readonly catalog = inject(CatalogService); private readonly cart = inject(CartService); protected readonly product = signal<ProductDetail | null>(null); protected readonly selected = signal<ProductDetail['variants'][number] | null>(null); protected readonly loading = signal(true); protected readonly adding = signal(false); protected readonly addError = signal(false);
-  constructor() { void this.load(); }
-  protected async addToCart(): Promise<void> { const variant = this.selected(); if (!variant) return; this.adding.set(true); this.addError.set(false); try { await this.cart.add(variant.id); } catch { this.addError.set(true); } finally { this.adding.set(false); } }
-  private async load(): Promise<void> { try { const product = await this.catalog.detail(this.route.snapshot.paramMap.get('categorySlug') ?? '', this.route.snapshot.paramMap.get('productSlug') ?? ''); this.product.set(product); this.selected.set(product.variants[0] ?? null); } finally { this.loading.set(false); } }
+  private readonly route = inject(ActivatedRoute);
+  private readonly catalog = inject(CatalogService);
+  private readonly cart = inject(CartService);
+
+  protected readonly product = signal<ProductDetail | null>(null);
+  protected readonly selected = signal<ProductDetail['variants'][number] | null>(null);
+  protected readonly reviews = signal<readonly ProductReviewItem[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly adding = signal(false);
+  protected readonly addError = signal(false);
+
+  constructor() {
+    void this.load();
+  }
+
+  protected async addToCart(): Promise<void> {
+    const variant = this.selected();
+    if (!variant) return;
+    this.adding.set(true);
+    this.addError.set(false);
+    try {
+      await this.cart.add(variant.id);
+    } catch {
+      this.addError.set(true);
+    } finally {
+      this.adding.set(false);
+    }
+  }
+
+  private async load(): Promise<void> {
+    try {
+      const categorySlug = this.route.snapshot.paramMap.get('categorySlug') ?? '';
+      const productSlug = this.route.snapshot.paramMap.get('productSlug') ?? '';
+      const product = await this.catalog.detail(categorySlug, productSlug);
+      this.product.set(product);
+      this.selected.set(product.variants[0] ?? null);
+
+      try {
+        const reviews = await this.catalog.reviews(productSlug);
+        this.reviews.set(reviews);
+      } catch {
+        this.reviews.set([]);
+      }
+    } finally {
+      this.loading.set(false);
+    }
+  }
 }
+
