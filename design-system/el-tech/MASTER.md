@@ -55,8 +55,8 @@
 ### Typography Scale
 
 - Font Family:
-  - Primary UI: `Inter, ui-sans-serif, system-ui, -apple-system, sans-serif`
-  - Technical Data Only: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace` (strictly reserved for SKU, Socket, Clock speed, TDP, price numerals)
+  - Unified Primary UI: `Inter, ui-sans-serif, system-ui, -apple-system, sans-serif` (applied universally across all headers, navigation, labels, badges, buttons, cards, and body text).
+  - Tabular Numerals: `font-variant-numeric: tabular-nums` (`tabular`) applied on the unified sans-serif font for prices, SKU, specs, and quantities to ensure aligned columnar numbers without fragmenting into monospace font.
 - Scale:
   - `display`: `32px` / `2rem`, line-height `1.2`, font-weight `800`
   - `heading-xl`: `24px` / `1.5rem`, line-height `1.25`, font-weight `700`

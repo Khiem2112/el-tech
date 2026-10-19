@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ApiClientService } from '../../core/api/api-client.service';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -38,131 +39,6 @@ type KanbanOrder = {
   };
 };
 
-const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
-  {
-    id: '1',
-    code: 'ELT-91024',
-    type: 'pc',
-    typeName: 'PC Custom Build',
-    title: 'Custom Rig: Core Ultra 9 / RTX 5080 OC',
-    subtitle: 'Z890 Dark Hero · 64GB DDR5 Dominator',
-    thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 36500000,
-    stage: 'pending',
-    branch: 'hn',
-    branchName: 'Hub 45 Thái Hà, Hà Nội',
-    createdAtText: '14:22 · Hôm nay',
-    technician: { initials: 'VH', name: 'Vũ Hoàng (Kỹ thuật)' },
-    highlight: {
-      type: 'warning',
-      text: 'Cọc 10% VietQR: 3.650.000₫',
-      badge: '17:48',
-    },
-  },
-  {
-    id: '2',
-    code: 'ELT-91105',
-    type: 'parts',
-    typeName: 'Linh kiện lẻ',
-    title: 'Màn hình LG 27GP850-B Nano IPS',
-    subtitle: 'QHD 2K 180Hz 1ms G-Sync Compatible',
-    thumbnail: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 7490000,
-    stage: 'pending',
-    branch: 'delivery',
-    branchName: 'Giao hỏa tốc 2H (Nội thành)',
-    createdAtText: '11:05 · Hôm nay',
-    technician: { initials: 'HN', name: 'Kho Hà Nội' },
-    highlight: {
-      type: 'info',
-      text: 'COD · Kỹ thuật đang kiểm đếm tồn kho tại kho Thái Hà.',
-    },
-  },
-  {
-    id: '3',
-    code: 'ELT-89820',
-    type: 'parts',
-    typeName: 'Combo Nâng Cấp',
-    title: 'Main ASUS ROG Z790-E + RAM 64GB',
-    subtitle: 'Corsair Dominator Titanium 6000MHz White',
-    thumbnail: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 19250000,
-    stage: 'preparing',
-    branch: 'hcm',
-    branchName: 'Hub 280 Ba Tháng Hai, TP.HCM',
-    createdAtText: 'Hôm qua, 18:20',
-    technician: { initials: 'MN', name: 'Minh Nhật (Thủ kho)' },
-    highlight: {
-      type: 'telemetry',
-      text: 'Quét tem Serial & BH (2/2 kiện)',
-      progress: 100,
-      badge: 'SN-ASUS-99120',
-    },
-  },
-  {
-    id: '4',
-    code: 'ELT-89552',
-    type: 'workstation',
-    typeName: 'Workstation AI',
-    title: 'Trạm AI: i9-14900K / RTX 4090 24G',
-    subtitle: 'Tản Custom EKWB · Nguồn Corsair 1200W',
-    thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 98500000,
-    stage: 'assembling',
-    branch: 'hcm',
-    branchName: 'Hub 280 Ba Tháng Hai, TP.HCM',
-    createdAtText: '2 ngày trước',
-    technician: { initials: 'TN', name: 'Trần Nam (Lead Tech)' },
-    highlight: {
-      type: 'telemetry',
-      text: 'STRESS TEST 24H: 75% (18/24h)',
-      progress: 75,
-      metrics: [
-        { label: 'Cinebench R23', value: '39,810 pts (78°C)' },
-        { label: 'Furmark GPU', value: 'Pass 100% (64°C)' },
-      ],
-    },
-  },
-  {
-    id: '5',
-    code: 'ELT-88910',
-    type: 'pc',
-    typeName: 'PC Custom Build',
-    title: 'PC Gaming RTX 4070 Ti Super / Ryzen 7 7800X3D',
-    subtitle: 'NZXT H9 Flow White · Tản nước Kraken Elite 360',
-    thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 48900000,
-    stage: 'ready',
-    branch: 'hn',
-    branchName: 'Hub 45 Thái Hà, Hà Nội',
-    createdAtText: '3 ngày trước',
-    technician: { initials: 'LP', name: 'Lê Phúc' },
-    highlight: {
-      type: 'otp',
-      text: 'Mã OTP nhận tại quầy: OTP-981240',
-      badge: 'Sẵn sàng nhận',
-    },
-  },
-  {
-    id: '6',
-    code: 'ELT-87621',
-    type: 'pc',
-    typeName: 'PC Custom Build',
-    title: 'PC Gaming eSports: Core i5-14400F / RTX 4060',
-    subtitle: 'B760M Aorus Elite · 32GB Kingston Fury Beast',
-    thumbnail: 'https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=400&q=80',
-    totalAmount: 22800000,
-    stage: 'completed',
-    branch: 'delivery',
-    branchName: 'Đã giao hỏa tốc thành công',
-    createdAtText: '5 ngày trước',
-    technician: { initials: 'DQ', name: 'Đoàn Quân' },
-    highlight: {
-      type: 'success',
-      text: 'Đã kích hoạt bảo hành điện tử 36 tháng',
-    },
-  },
-];
 
 @Component({
   selector: 'app-order-kanban-page',
@@ -545,13 +421,30 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
     </ng-template>
   `,
 })
-export class OrderKanbanPageComponent {
+export class OrderKanbanPageComponent implements OnInit {
+  private readonly api = inject(ApiClientService);
+
   protected readonly viewMode = signal<'kanban' | 'list'>('kanban');
   protected searchQuery = '';
   protected selectedType = 'all';
   protected selectedBranch = 'all';
 
-  private readonly orders = signal<KanbanOrder[]>(INITIAL_KANBAN_ORDERS);
+  private readonly orders = signal<KanbanOrder[]>([]);
+
+  async ngOnInit(): Promise<void> {
+    await this.loadKanbanOrders();
+  }
+
+  private async loadKanbanOrders(): Promise<void> {
+    try {
+      const res = await this.api.get<KanbanOrder[]>('/orders/kanban');
+      if (res.success) {
+        this.orders.set(res.data);
+      }
+    } catch (error) {
+      console.error('Failed to load kanban orders from backend API', error);
+    }
+  }
 
   protected readonly filteredOrders = computed(() => {
     const q = this.searchQuery.trim().toLowerCase();

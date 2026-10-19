@@ -1,15 +1,31 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { ApiClientService } from '../../core/api/api-client.service';
+import { VndPipe } from '../../lib/vnd.pipe';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
+type CustomerOrderDto = {
+  id: string;
+  code: string;
+  status: string;
+  grandTotal: number;
+  subtotal: number;
+  receiverName: string;
+  receiverPhone: string;
+  receiverAddress: string;
+  createdAt: string;
+  lines: { id: number; name: string; quantity: number; unitPrice: number }[];
+  otpCode?: string;
+};
+
 @Component({
   selector: 'app-profile-page',
-  imports: [FormsModule, RouterLink, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
+  imports: [FormsModule, RouterLink, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full bg-canvas min-h-screen py-8">
@@ -90,7 +106,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <span>Đơn hàng của tôi</span>
                 </div>
                 <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-warning/10 text-warning border border-amber-500/20">
-                  2 đơn
+                  {{ customerOrders().length }} đơn
                 </span>
               </a>
 
@@ -161,9 +177,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     </span>
                   </div>
                   <div class="flex items-baseline gap-2 flex-wrap">
-                    <h3 class="text-xl font-black text-foreground tracking-tight">#ELT-89241</h3>
-                    <span class="text-base font-bold text-primary tabular">54.200.000₫</span>
-                    <span class="text-xs text-muted">· Đã cọc 100% VietQR</span>
+                    <h3 class="text-xl font-black text-foreground tracking-tight">#{{ latestOrder()?.code || 'ELT-89241' }}</h3>
+                    <span class="text-base font-bold text-primary tabular">{{ (latestOrder()?.grandTotal ?? 54200000) | vnd }}</span>
+                    <span class="text-xs text-muted">· Đã thanh toán / cọc</span>
                   </div>
                   <p class="text-xs text-muted mt-1 flex items-center gap-1.5">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
@@ -175,9 +191,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 <div class="bg-surface-dark text-white px-5 py-3 rounded-xl border border-line-dark flex flex-col items-center justify-center shadow-md">
                   <span class="text-[10px] text-muted uppercase tracking-widest font-bold">OTP nhận máy</span>
                   <div class="flex items-center gap-1 text-2xl font-black text-primary font-mono tracking-wider my-0.5">
-                    <span>489</span>
-                    <span class="text-slate-600">-</span>
-                    <span>102</span>
+                    <span>{{ latestOrder()?.otpCode || '489-102' }}</span>
                   </div>
                   <span class="text-[10px] text-muted flex items-center gap-1">
                     <lucide-icon name="QrCode" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
@@ -453,11 +467,17 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
     </div>
   `,
 })
-export class ProfilePageComponent {
+export class ProfilePageComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly api = inject(ApiClientService);
 
   protected readonly user = computed(() => this.auth.currentUser());
+  protected readonly customerOrders = signal<readonly CustomerOrderDto[]>([]);
+  protected readonly latestOrder = computed<CustomerOrderDto | null>(() => {
+    const orders = this.customerOrders();
+    return orders.length > 0 ? orders[0] : null;
+  });
 
   protected fullName = this.user()?.name || 'Nguyễn Hoàng Nam';
   protected email = this.user()?.email || 'hoangnam.tech@gmail.com';
@@ -466,6 +486,21 @@ export class ProfilePageComponent {
   protected currentPass = '';
   protected newPass = '';
   protected readonly saveSuccessMessage = signal<string | null>(null);
+
+  async ngOnInit(): Promise<void> {
+    await this.loadCustomerOrders();
+  }
+
+  private async loadCustomerOrders(): Promise<void> {
+    try {
+      const res = await this.api.get<readonly CustomerOrderDto[]>('/orders/customer');
+      if (res.success) {
+        this.customerOrders.set(res.data);
+      }
+    } catch (error) {
+      console.error('Failed to load customer orders from backend API', error);
+    }
+  }
 
   protected saveProfileChanges(): void {
     this.auth.updateProfile({

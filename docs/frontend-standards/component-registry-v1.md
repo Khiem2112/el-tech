@@ -8,11 +8,7 @@
 
 ## Repository baseline
 
-At this baseline, `fe/src/app/components/atoms/` does not exist. Current pages
-mostly compose native HTML controls with Tailwind classes. Dependencies include
-Angular/CDK 22.x and `@spartan-ng/brain` 1.8.x; the Spartan Helm components
-shown in current online documentation must not be assumed to be installed or
-API-compatible.
+`fe/src/app/components/atoms/` is established with verified standalone primitives adhering to the softened NVIDIA design tokens and Lucide iconography. Current dependencies include Angular/CDK 22.x, `@spartan-ng/brain` 1.8.x, and `lucide-angular` 0.475.x.
 
 ## Registry states
 
@@ -25,9 +21,12 @@ API-compatible.
 
 | Component/pattern | State | Current evidence or intended base | Rule |
 | --- | --- | --- | --- |
-| Native button/input/select/checkbox | Available | Existing feature templates | May be reused until an approved shared primitive replaces it; must still meet tokens and accessibility contracts. |
-| Shared Button/Input/Field | Planned | Spartan Brain/Helm or local wrapper after version verification | Do not import from a guessed atoms path. |
+| Button (`ButtonDirective`) | Available | `fe/src/app/components/atoms/button/button.directive.ts` | Uses `[appButton]`, supports variants and softened radius (`rounded-md`). |
+| Badge (`BadgeDirective`) | Available | `fe/src/app/components/atoms/badge/badge.directive.ts` | Uses `[appBadge]`, supports status and category tagging (`rounded-sm`). |
+| Input (`InputDirective`) | Available | `fe/src/app/components/atoms/input/input.directive.ts` | Uses `[appInput]`, styled to NVIDIA tokens with focus ring and clear placeholder. |
+| Icon Module (`AppIconModule`) | Available | `fe/src/app/components/atoms/icon/icon.module.ts` | Standardized `lucide-angular` icons for compact, accessible UI actions. |
 | Dialog/Alert Dialog | Planned | Spartan/CDK overlay | Must satisfy `SURFACE-002` and focus restoration. |
+
 | Sheet/Drawer | Planned | Spartan/CDK overlay | Must satisfy `SURFACE-003` and mobile history rules. |
 | Popover/Tooltip | Planned | Spartan/CDK overlay | Popup must escape clipping containers. |
 | Single combobox | Planned | Verified Spartan combobox primitive | Must satisfy `SELECT-003`. |

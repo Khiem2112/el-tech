@@ -108,6 +108,7 @@ When writing code or verifying logic:
 - `.agents/skills/implement-qa/SKILL.md` when specifications or business logic are ambiguous; write questions to `QA/QA-<slug>.md` and wait for user answers before guessing.
 - `.agents/skills/functional-review/SKILL.md` for verifying implementation against functional requirements and acceptance criteria.
 - `.agents/skills/graphify/SKILL.md` for codebase relationship mapping and knowledge graph queries.
+- `.agents/skills/task-runner/SKILL.md` for autonomous task execution loops, dual-pass review gates, defect remediation, automated commits, and progress tracking.
 
 ## Phase-Gated Review Policy
 

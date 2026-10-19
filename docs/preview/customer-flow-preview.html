@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL-TECH - Bản Xem Trước Giao Diện Mua Sắm Toàn Diện</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              900: '#064e3b',
+            },
+            tech: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+            },
+            accent: {
+              cyan: '#06b6d4',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'glow': '0 0 25px -5px rgba(16, 185, 129, 0.25)',
+            'glow-cyan': '0 0 25px -5px rgba(6, 182, 212, 0.25)',
+            'card': '0 10px 30px -10px rgba(15, 23, 42, 0.08)',
+            'card-hover': '0 20px 35px -10px rgba(15, 23, 42, 0.15)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #0b0f19;
+      color: #0f172a;
+    }
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .badge-clip {
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+    }
+    .device-viewport {
+      transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+  <!-- Top Controller Bar for Layout Inspection -->
+  <header class="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800 text-slate-200 py-2.5 px-4 sm:px-6 shadow-xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center px-2.5 py-1 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30 text-xs font-mono font-bold tracking-wider">PREVIEW MODE</span>
+        <h1 class="text-sm font-bold tracking-tight text-white hidden sm:block">EL-TECH PC Storefront - Thiết Kế Luồng Mua Sắm Mới</h1>
+      </div>
+
+      <!-- Navigation Screen Switcher Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 text-xs font-semibold overflow-x-auto custom-scrollbar">
+        <button type="button" onclick="switchScreen('home')" id="btn-home" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 bg-brand-500 text-slate-950 font-bold shadow">1. Trang chủ</button>
+        <button type="button" onclick="switchScreen('catalog')" id="btn-catalog" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800">2. Danh mục & Lọc</button>
+        <button type="button" onclick="switchScreen('product')" id="btn-product" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800">3. Chi tiết SP</button>
+        <button type="button" onclick="switchScreen('cart')" id="btn-cart" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800">4. Giỏ hàng <span class="ml-1 px-1.5 py-0.2 rounded bg-slate-800 text-brand-400 text-[10px]" id="nav-cart-count">2</span></button>
+        <button type="button" onclick="switchScreen('checkout')" id="btn-checkout" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800">5. Thanh toán</button>
+        <button type="button" onclick="switchScreen('order')" id="btn-order" class="screen-btn px-3 py-1.5 rounded-lg transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800">6. Tra cứu đơn</button>
+      </nav>
+
+      <!-- Viewport Device Switcher -->
+      <div class="hidden lg:flex items-center gap-1 text-xs border-l border-slate-800 pl-3">
+        <span class="text-slate-400 mr-1">Xem:</span>
+        <button type="button" onclick="setDevice('desktop')" id="dev-desktop" class="dev-btn px-2.5 py-1 rounded bg-slate-800 text-white font-mono font-bold">Desktop</button>
+        <button type="button" onclick="setDevice('tablet')" id="dev-tablet" class="dev-btn px-2.5 py-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 font-mono">Tablet</button>
+        <button type="button" onclick="setDevice('mobile')" id="dev-mobile" class="dev-btn px-2.5 py-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 font-mono">Mobile</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Interactive Sandbox Shell -->
+  <main class="flex-1 w-full flex justify-center py-4 sm:py-6 px-2 sm:px-4 bg-slate-950">
+    <div id="device-container" class="device-viewport w-full max-w-7xl bg-white text-slate-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-800/80 transition-all">
+
+      <!-- ================= STOREFRONT SHELL HEADER ================= -->
+      <div class="storefront-header sticky top-0 z-40 bg-slate-900 border-b border-slate-800 text-white select-none">
+        <!-- Top Announcement Bar -->
+        <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-4 py-1.5 text-xs border-b border-slate-800 text-slate-400 flex flex-wrap justify-between items-center gap-2">
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 text-brand-400 font-medium">
+              <span class="size-1.5 rounded-full bg-brand-400 animate-pulse"></span>
+              Cam kết 100% linh kiện chính hãng | Bảo hành 1 đổi 1 30 ngày
+            </span>
+          </div>
+          <div class="flex items-center gap-4 text-[11px]">
+            <span>Hotline kỹ thuật: <strong class="text-slate-200">1900 8899</strong></span>
+            <span class="text-slate-700">|</span>
+            <a href="javascript:void(0)" onclick="switchScreen('order')" class="hover:text-brand-400 transition-colors">Tra cứu đơn hàng</a>
+            <span class="text-slate-700">|</span>
+            <span class="text-slate-400">Giờ làm việc: 08:30 - 21:30</span>
+          </div>
+        </div>
+
+        <!-- Main Header Navigation -->
+        <div class="px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+          <!-- Brand Logo -->
+          <a href="javascript:void(0)" onclick="switchScreen('home')" class="flex items-center gap-2.5 group">
+            <span class="size-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 text-slate-950 font-black text-lg flex items-center justify-center shadow-glow group-hover:scale-105 transition-transform">E</span>
+            <div class="flex flex-col">
+              <span class="text-xl font-black tracking-tight leading-none text-white">EL<span class="text-brand-400">TECH</span></span>
+              <span class="text-[9px] font-mono tracking-widest text-slate-400 uppercase mt-0.5">PC Performance Lab</span>
+            </div>
+          </a>
+
+          <!-- High-Tech Search Bar -->
+          <div class="flex-1 max-w-xl mx-2 hidden md:block">
+            <div class="relative flex items-center">
+              <div class="absolute left-3.5 text-slate-400 text-xs font-mono font-bold">[TÌM KIẾM]</div>
+              <input type="text" placeholder="Tìm CPU, VGA, Bo mạch chủ, PC Gaming hoặc model..." class="w-full bg-slate-950/80 border border-slate-700 text-sm rounded-xl pl-24 pr-24 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
+              <button type="button" onclick="switchScreen('catalog')" class="absolute right-1.5 px-4 py-1.5 bg-brand-500 hover:bg-brand-400 text-slate-950 font-bold text-xs rounded-lg transition-colors">Tìm kiếm</button>
+            </div>
+            <!-- Trending Search Tags -->
+            <div class="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400">
+              <span class="text-slate-500">Xu hướng:</span>
+              <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">RTX 4070 Super</a>
+              <span class="text-slate-700">·</span>
+              <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">i5 14600K</a>
+              <span class="text-slate-700">·</span>
+              <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">Ryzen 7 7800X3D</a>
+              <span class="text-slate-700">·</span>
+              <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">DDR5 32GB</a>
+            </div>
+          </div>
+
+          <!-- Header Right Quick Actions -->
+          <div class="flex items-center gap-2 sm:gap-3">
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hidden xl:inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+              PC Dựng Sẵn
+            </a>
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hidden sm:inline-flex items-center px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 border border-slate-700 hover:border-brand-500/50 hover:text-brand-400 transition-all">
+              [+] Tự Lắp PC
+            </a>
+            <a href="javascript:void(0)" onclick="switchScreen('order')" class="px-3 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+              Tra Cứu Đơn
+            </a>
+
+            <!-- Cart Trigger Button with Live Counter -->
+            <button type="button" onclick="switchScreen('cart')" class="relative flex items-center gap-2 bg-brand-500/10 border border-brand-500/30 hover:border-brand-500 text-brand-400 hover:text-brand-300 px-3.5 py-2 rounded-xl font-bold text-xs transition-all">
+              <span>Giỏ hàng</span>
+              <span class="size-5 rounded-full bg-brand-500 text-slate-950 font-extrabold flex items-center justify-center text-[10px]" id="header-cart-badge">2</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mega Category Ribbon Bar -->
+        <div class="bg-slate-950 border-t border-slate-800 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto custom-scrollbar flex items-center gap-1 sm:gap-2 text-xs">
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-bold bg-slate-800 text-brand-400 whitespace-nowrap">Tất cả sản phẩm</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">CPU - Vi xử lý</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">VGA - Card màn hình</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">Mainboard - Bo mạch</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">RAM - Bộ nhớ trong</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">Ổ cứng SSD NVMe</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">Nguồn máy tính - PSU</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">Vỏ case & Tản nhiệt</a>
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="px-3 py-1 rounded-lg font-medium text-slate-300 hover:text-white hover:bg-slate-900 whitespace-nowrap">Màn hình Gaming</a>
+        </div>
+      </div>
+
+      <!-- ================= SCREEN 1: HOME PAGE ================= -->
+      <section id="screen-home" class="screen-view active">
+        <!-- Hero Enthusiast Showcase -->
+        <div class="relative bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))]"></div>
+          <div class="relative max-w-6xl mx-auto grid lg:grid-cols-12 gap-8 items-center">
+            
+            <div class="lg:col-span-7 space-y-6">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-mono font-bold tracking-wider">
+                <span class="size-2 rounded-full bg-brand-400"></span>
+                THẾ HỆ PHẦN CỨNG 2026 MỚI NHẤT
+              </div>
+              <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
+                Cấu Hình Đỉnh Cao.<br>
+                <span class="bg-gradient-to-r from-brand-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent">Hiệu Năng Vượt Bậc.</span>
+              </h1>
+              <p class="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed">
+                Hệ thống linh kiện PC chính hãng tuyển chọn: Intel Gen 14, AMD Ryzen 7000/9000 series, NVIDIA RTX 40 Super. Kiểm tra độ tương thích và tồn kho theo thời gian thực.
+              </p>
+              
+              <div class="flex flex-wrap items-center gap-3 pt-2">
+                <button type="button" onclick="switchScreen('catalog')" class="px-6 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-black text-sm tracking-wide shadow-glow transition-all">
+                  Khám phá danh mục linh kiện
+                </button>
+                <button type="button" onclick="switchScreen('product')" class="px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-white border border-slate-700 hover:border-slate-500 font-bold text-sm transition-all">
+                  Xem cấu hình tiêu biểu »
+                </button>
+              </div>
+
+              <!-- Key Metrics Bar -->
+              <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80">
+                <div>
+                  <div class="text-2xl font-black text-brand-400 font-mono">158+</div>
+                  <div class="text-xs text-slate-400">Linh kiện sẵn kho</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-black text-cyan-400 font-mono">100%</div>
+                  <div class="text-xs text-slate-400">Chính hãng fullbox</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-black text-amber-400 font-mono">36T</div>
+                  <div class="text-xs text-slate-400">Bảo hành chính hãng</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Feature PC Card -->
+            <div class="lg:col-span-5">
+              <div class="relative bg-gradient-to-b from-slate-900 to-slate-950 p-6 rounded-3xl border border-slate-800 shadow-2xl space-y-5">
+                <div class="flex items-center justify-between">
+                  <span class="px-2.5 py-1 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold font-mono">HOT BUILD OF THE MONTH</span>
+                  <span class="text-xs text-slate-400 font-mono">ELT-SPEC-01</span>
+                </div>
+                
+                <!-- PC Image Simulation -->
+                <div class="aspect-[4/3] rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/50 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
+                  <div class="absolute inset-0 bg-brand-500/5 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                  <div class="size-24 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center font-mono font-black text-3xl text-brand-400 shadow-inner">
+                    PC
+                  </div>
+                  <p class="mt-4 font-bold text-slate-200">EL-TECH TITAN GAMING ULTRA</p>
+                  <p class="text-xs text-slate-400 font-mono mt-1">i7 14700K · RTX 4080 Super · 32GB DDR5</p>
+                </div>
+
+                <div class="space-y-2 border-t border-slate-800 pt-4">
+                  <div class="flex items-baseline justify-between">
+                    <span class="text-xs text-slate-400">Giá trọn gói ưu đãi:</span>
+                    <div class="text-right">
+                      <span class="text-xs line-through text-slate-500 tabular mr-2">56.900.000 đ</span>
+                      <span class="text-2xl font-black text-brand-400 font-mono tabular">51.990.000 đ</span>
+                    </div>
+                  </div>
+                  <button type="button" onclick="switchScreen('product')" class="w-full py-3 bg-slate-800 hover:bg-slate-700 text-brand-400 hover:text-brand-300 font-bold text-xs rounded-xl border border-slate-700 transition-colors">
+                    Xem thông số chi tiết & Thêm vào giỏ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Value Propositions Grid -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200 flex items-start gap-3.5">
+              <div class="size-10 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 font-bold font-mono text-sm flex items-center justify-center shrink-0">100%</div>
+              <div>
+                <h2 class="font-bold text-sm text-slate-900">Chính Hãng Phân Phối</h2>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Đầy đủ hóa đơn VAT điện tử, tem bảo hành chính hãng từ nhà phân phối.</p>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200 flex items-start gap-3.5">
+              <div class="size-10 rounded-xl bg-cyan-50 border border-cyan-100 text-cyan-600 font-bold font-mono text-sm flex items-center justify-center shrink-0">2H</div>
+              <div>
+                <h2 class="font-bold text-sm text-slate-900">Giao Nhanh 2 Giờ</h2>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Hỗ trợ giao hỏa tốc nội thành Hà Nội & TP. Hồ Chí Minh trong 120 phút.</p>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200 flex items-start gap-3.5">
+              <div class="size-10 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 font-bold font-mono text-sm flex items-center justify-center shrink-0">30N</div>
+              <div>
+                <h2 class="font-bold text-sm text-slate-900">1 Đổi 1 Trong 30 Ngày</h2>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Lỗi phần cứng do nhà sản xuất được đổi ngay linh kiện mới nguyên hộp.</p>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl shadow-card border border-slate-200 flex items-start gap-3.5">
+              <div class="size-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 font-bold font-mono text-sm flex items-center justify-center shrink-0">FREE</div>
+              <div>
+                <h2 class="font-bold text-sm text-slate-900">Miễn Phí Ráp & Cài Đặt</h2>
+                <p class="text-xs text-slate-500 mt-1 leading-relaxed">Lắp ráp tiêu chuẩn phòng sạch, đi dây gọn gàng, test stress nhiệt độ 24h.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Hardware Categories Showcase -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div class="flex items-end justify-between mb-8">
+            <div>
+              <p class="text-xs font-mono font-bold tracking-widest text-brand-600 uppercase">DANH MỤC TRỌNG TÂM</p>
+              <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">Linh Kiện Phần Cứng Cao Cấp</h2>
+            </div>
+            <button type="button" onclick="switchScreen('catalog')" class="text-sm font-bold text-brand-600 hover:text-brand-700 underline">
+              Xem tất cả linh kiện »
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <!-- Category Card 1 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                CPU
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Bộ Vi Xử Lý</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 4.890.000 đ</span>
+            </a>
+
+            <!-- Category Card 2 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                VGA
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Card Đồ Họa</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 8.290.000 đ</span>
+            </a>
+
+            <!-- Category Card 3 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                MAIN
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Bo Mạch Chủ</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 3.190.000 đ</span>
+            </a>
+
+            <!-- Category Card 4 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                RAM
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Bộ Nhớ RAM</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 1.890.000 đ</span>
+            </a>
+
+            <!-- Category Card 5 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                SSD
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Ổ Cứng SSD</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 1.450.000 đ</span>
+            </a>
+
+            <!-- Category Card 6 -->
+            <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="group p-4 rounded-2xl border border-slate-200 hover:border-brand-500 bg-white hover:shadow-card-hover transition-all text-center">
+              <div class="size-14 mx-auto rounded-xl bg-slate-100 group-hover:bg-brand-50 text-slate-800 group-hover:text-brand-600 font-mono font-bold flex items-center justify-center text-sm transition-colors">
+                PSU
+              </div>
+              <h3 class="font-bold text-sm text-slate-900 mt-3 group-hover:text-brand-600 transition-colors">Nguồn Máy Tính</h3>
+              <p class="text-[11px] text-slate-500 mt-0.5">11 mẫu sản phẩm</p>
+              <span class="inline-block mt-2 text-[10px] font-mono font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Từ 1.990.000 đ</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Trending Featured Products Grid -->
+        <div class="bg-slate-50 py-14 border-y border-slate-200">
+          <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-end justify-between mb-8">
+              <div>
+                <p class="text-xs font-mono font-bold tracking-widest text-brand-600 uppercase">SẢN PHẨM NỔI BẬT</p>
+                <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-1">Linh Kiện Bán Chạy Nhất</h2>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">Bộ lọc nhanh:</span>
+                <button type="button" class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-900 text-white">Tất cả</button>
+                <button type="button" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-200">Intel</button>
+                <button type="button" class="px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-200">NVIDIA</button>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              
+              <!-- Product Card 1 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-brand-500 text-slate-950 font-black text-[10px] font-mono">[HOT DEAL]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-slate-600 bg-white/90 px-1.5 py-0.5 rounded">SẴN KHO</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">CPU</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">INTEL · CPU</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Bộ vi xử lý Intel Core i5 14600K (LGA1700, 14 nhân 20 luồng)</h3>
+                  <div class="text-xs text-slate-500 font-mono mt-1">Socket LGA1700 · Max 5.3 GHz</div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-1.5">5/5 Sao (18 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">8.590.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">7.890.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Chi tiết</button>
+                    <button type="button" onclick="addToCartMock('Intel Core i5 14600K', '7.890.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Product Card 2 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-cyan-500 text-slate-950 font-black text-[10px] font-mono">[CAO CẤP]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-slate-600 bg-white/90 px-1.5 py-0.5 rounded">SẴN KHO</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">VGA</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">ASUS · VGA</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Card màn hình ASUS ROG Strix GeForce RTX 4070 Ti Super 16GB</h3>
+                  <div class="text-xs text-slate-500 font-mono mt-1">16GB GDDR6X · 256-bit · 3 Fan</div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-1.5">5/5 Sao (32 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">27.500.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">25.490.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Chi tiết</button>
+                    <button type="button" onclick="addToCartMock('ASUS ROG Strix RTX 4070 Ti Super', '25.490.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Product Card 3 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-amber-500 text-slate-950 font-black text-[10px] font-mono">[BÁN CHẠY]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-slate-600 bg-white/90 px-1.5 py-0.5 rounded">SẴN KHO</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">RAM</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">CORSAIR · RAM</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">RAM Corsair Vengeance RGB 32GB (2x16GB) DDR5 6000MHz</h3>
+                  <div class="text-xs text-slate-500 font-mono mt-1">Bus 6000 · CL30 · Intel XMP / AMD EXPO</div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-1.5">4.9/5 Sao (44 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">3.490.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">3.090.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Chi tiết</button>
+                    <button type="button" onclick="addToCartMock('RAM Corsair Vengeance RGB 32GB', '3.090.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Product Card 4 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-emerald-500 text-slate-950 font-black text-[10px] font-mono">[GEN4 PRO]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-slate-600 bg-white/90 px-1.5 py-0.5 rounded">SẴN KHO</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">SSD</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">SAMSUNG · SSD</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Ổ cứng SSD Samsung 990 PRO 1TB M.2 NVMe PCIe Gen 4.0</h3>
+                  <div class="text-xs text-slate-500 font-mono mt-1">Đọc 7450MB/s · Ghi 6900MB/s · 600 TBW</div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-1.5">5/5 Sao (56 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">2.890.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">2.490.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Chi tiết</button>
+                    <button type="button" onclick="addToCartMock('SSD Samsung 990 PRO 1TB', '2.490.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Pre-built PC Custom Builder Banner -->
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 rounded-3xl p-8 sm:p-12 text-white border border-slate-700 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-3 max-w-xl">
+              <span class="px-3 py-1 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30 text-xs font-mono font-bold">CÔNG CỤ TỰ BUILD PC THÔNG MINH</span>
+              <h2 class="text-2xl sm:text-4xl font-black tracking-tight">Tự Lắp Ráp Bộ PC Của Riêng Bạn</h2>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                Hệ thống tự động kiểm tra tương thích chân socket CPU, chuẩn RAM, công suất bộ nguồn PSU và kích thước vỏ case. Tư vấn cấu hình tối ưu chi phí.
+              </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 shrink-0">
+              <button type="button" onclick="switchScreen('catalog')" class="px-6 py-3.5 bg-brand-500 hover:bg-brand-400 text-slate-950 font-black text-sm rounded-xl shadow-glow transition-all">
+                Bắt đầu tự lắp PC
+              </button>
+              <button type="button" onclick="switchScreen('catalog')" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-xl border border-slate-600 transition-colors">
+                Xem PC dựng sẵn
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SCREEN 2: CATALOG & FILTER ================= -->
+      <section id="screen-catalog" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Breadcrumbs & Heading -->
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-200">
+          <div>
+            <nav class="text-xs text-slate-500 font-mono mb-1">
+              <a href="javascript:void(0)" onclick="switchScreen('home')" class="hover:text-slate-900">Trang chủ</a> / <span class="text-slate-900 font-bold">Danh mục linh kiện</span>
+            </nav>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Tất Cả Linh Kiện Máy Tính</h1>
+          </div>
+          <div class="text-xs text-slate-500 font-mono bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+            Hiển thị: <strong class="text-slate-900">158</strong> linh kiện sẵn có
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 mt-6">
+          <!-- Filter Sidebar (Col 3) -->
+          <aside class="lg:col-span-3 space-y-6">
+            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">BỘ LỌC TÌM KIẾM</span>
+                <button type="button" onclick="resetFilters()" class="text-xs font-bold text-brand-600 hover:text-brand-700 underline">Xóa bộ lọc</button>
+              </div>
+
+              <!-- Search input in filter -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Từ khóa tìm kiếm</label>
+                <input type="text" id="catalog-query" placeholder="Tên sản phẩm, model..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-brand-500">
+              </div>
+
+              <!-- Category filter -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Danh mục linh kiện</label>
+                <div class="space-y-1.5 text-xs text-slate-600 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" checked class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">Bộ vi xử lý - CPU</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">Card màn hình - VGA</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">Bo mạch chủ - Main</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">RAM - Bộ nhớ trong</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">Ổ cứng SSD NVMe</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer hover:text-slate-900">
+                    <input type="checkbox" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+                    <span class="flex-1">Nguồn máy tính - PSU</span>
+                    <span class="text-[10px] text-slate-400 font-mono">11</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Brand Filter -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Thương hiệu</label>
+                <div class="grid grid-cols-2 gap-1.5 text-xs">
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-brand-500 bg-brand-50 text-brand-700 font-bold text-left">Intel (11)</button>
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-left">AMD (11)</button>
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-left">ASUS (15)</button>
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-left">MSI (12)</button>
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-left">Gigabyte (9)</button>
+                  <button type="button" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:border-slate-400 text-left">Corsair (14)</button>
+                </div>
+              </div>
+
+              <!-- Price Range Preset Filter -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Mức giá ngân sách</label>
+                <div class="space-y-1.5 text-xs">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="price" class="text-brand-600">
+                    <span>Tất cả mức giá</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="price" class="text-brand-600">
+                    <span>Dưới 5 triệu</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="price" checked class="text-brand-600">
+                    <span class="font-bold text-slate-900">5 - 15 triệu</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="price" class="text-brand-600">
+                    <span>15 - 30 triệu</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="price" class="text-brand-600">
+                    <span>Trên 30 triệu</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- In stock switch -->
+              <div class="pt-2 border-t border-slate-200">
+                <label class="flex items-center justify-between cursor-pointer">
+                  <span class="text-xs font-bold text-slate-800">Chỉ hiện sản phẩm sẵn kho</span>
+                  <input type="checkbox" checked class="toggle-checkbox rounded text-brand-600">
+                </label>
+              </div>
+
+            </div>
+          </aside>
+
+          <!-- Product Grid Main Content (Col 9) -->
+          <div class="lg:col-span-9 space-y-4">
+            
+            <!-- Toolbar & Active Filter Chips -->
+            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Đang lọc theo:</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-300 font-bold text-slate-800">
+                  CPU
+                  <button type="button" class="text-slate-400 hover:text-rose-500 font-mono font-bold">[x]</button>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-300 font-bold text-slate-800">
+                  Intel
+                  <button type="button" class="text-slate-400 hover:text-rose-500 font-mono font-bold">[x]</button>
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-slate-300 font-bold text-slate-800">
+                  5 - 15 triệu
+                  <button type="button" class="text-slate-400 hover:text-rose-500 font-mono font-bold">[x]</button>
+                </span>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="text-slate-500">Sắp xếp:</span>
+                <select class="p-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold focus:outline-none">
+                  <option>Bán chạy nhất</option>
+                  <option>Giá: Thấp đến Cao</option>
+                  <option>Giá: Cao đến Thấp</option>
+                  <option>Mới ra mắt</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Products List -->
+            <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              
+              <!-- Catalog Item 1 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-brand-500 text-slate-950 font-black text-[10px] font-mono">[HOT DEAL]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">CÒN HÀNG</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">CPU</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">INTEL · RAPTOR LAKE REFRESH</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Bộ vi xử lý Intel Core i5 14600K (LGA1700, 14 nhân 20 luồng)</h3>
+                  <div class="mt-2 flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Socket LGA1700</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">14 Nhân / 20 Luồng</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Turbo 5.3 GHz</span>
+                  </div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-2">5/5 Sao (18 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">8.590.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">7.890.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Xem chi tiết</button>
+                    <button type="button" onclick="addToCartMock('Intel Core i5 14600K', '7.890.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Catalog Item 2 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-rose-500 text-white font-black text-[10px] font-mono">[-12%]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">CÒN HÀNG</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">CPU</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">INTEL · FLAGSHIP</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Bộ vi xử lý Intel Core i7 14700K (LGA1700, 20 nhân 28 luồng)</h3>
+                  <div class="mt-2 flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Socket LGA1700</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">20 Nhân / 28 Luồng</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Turbo 5.6 GHz</span>
+                  </div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-2">5/5 Sao (29 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">11.990.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">10.990.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Xem chi tiết</button>
+                    <button type="button" onclick="addToCartMock('Intel Core i7 14700K', '10.990.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Catalog Item 3 -->
+              <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
+                <div class="p-4">
+                  <div class="relative aspect-square rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden mb-3">
+                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-800 text-brand-400 font-black text-[10px] font-mono">[QUỐC DÂN]</span>
+                    <span class="absolute top-2 right-2 text-[10px] font-mono font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">CÒN HÀNG</span>
+                    <div class="size-20 rounded-xl bg-slate-200 text-slate-500 font-mono font-bold flex items-center justify-center text-xs">CPU</div>
+                  </div>
+                  <div class="text-[11px] font-bold text-brand-600 font-mono">INTEL · RAPTOR LAKE</div>
+                  <h3 class="font-bold text-sm text-slate-900 line-clamp-2 mt-1 group-hover:text-brand-600 transition-colors">Bộ vi xử lý Intel Core i5 13400F (LGA1700, 10 nhân 16 luồng)</h3>
+                  <div class="mt-2 flex flex-wrap gap-1">
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Socket LGA1700</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">10 Nhân / 16 Luồng</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-mono text-slate-600 font-medium">Max 4.6 GHz</span>
+                  </div>
+                  <div class="text-[11px] text-amber-600 font-semibold mt-2">4.8/5 Sao (52 đánh giá)</div>
+                </div>
+                <div class="p-4 pt-0 border-t border-slate-100 mt-2">
+                  <div class="flex items-baseline justify-between mt-3">
+                    <span class="text-xs line-through text-slate-400 tabular">5.290.000 đ</span>
+                    <span class="text-lg font-black text-slate-900 tabular font-mono">4.890.000 đ</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-3">
+                    <button type="button" onclick="switchScreen('product')" class="py-2 text-xs font-bold rounded-lg border border-slate-300 hover:border-slate-800 text-slate-700 hover:text-slate-950 transition-colors">Xem chi tiết</button>
+                    <button type="button" onclick="addToCartMock('Intel Core i5 13400F', '4.890.000 đ')" class="py-2 text-xs font-bold rounded-lg bg-brand-500 hover:bg-brand-400 text-slate-950 transition-colors">+ Thêm giỏ</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="flex items-center justify-between pt-6 border-t border-slate-200">
+              <span class="text-xs text-slate-500 font-mono">Trang 1 trên 6</span>
+              <div class="flex items-center gap-1 text-xs">
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-400 cursor-not-allowed">« Trước</button>
+                <button type="button" class="px-3 py-1.5 rounded-lg bg-brand-500 text-slate-950 font-bold">1</button>
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100">2</button>
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100">3</button>
+                <button type="button" class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100">Sau »</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SCREEN 3: PRODUCT DETAIL ================= -->
+      <section id="screen-product" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Breadcrumbs -->
+        <nav class="text-xs text-slate-500 font-mono mb-4">
+          <a href="javascript:void(0)" onclick="switchScreen('home')" class="hover:text-slate-900">Trang chủ</a> / 
+          <a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-slate-900">Bộ vi xử lý - CPU</a> / 
+          <span class="text-slate-900 font-bold">Intel Core i5 14600K</span>
+        </nav>
+
+        <div class="grid lg:grid-cols-12 gap-10">
+          
+          <!-- Product Media Gallery (Col 5) -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="aspect-square rounded-3xl bg-slate-50 border border-slate-200 p-8 flex items-center justify-center relative overflow-hidden shadow-card">
+              <span class="absolute top-4 left-4 px-3 py-1 rounded-full bg-brand-500 text-slate-950 font-bold text-xs font-mono">CHÍNH HÃNG 100%</span>
+              <span class="absolute top-4 right-4 text-xs font-mono font-semibold text-slate-500 bg-white border border-slate-200 px-2.5 py-1 rounded-full">BẢO HÀNH 36T</span>
+              
+              <div class="size-48 rounded-2xl bg-gradient-to-tr from-slate-800 to-slate-900 text-brand-400 font-mono font-black text-4xl flex items-center justify-center shadow-2xl">
+                CPU
+              </div>
+            </div>
+
+            <!-- Thumbnail row -->
+            <div class="grid grid-cols-4 gap-3">
+              <div class="aspect-square rounded-xl border-2 border-brand-500 bg-slate-50 p-2 flex items-center justify-center text-xs font-mono font-bold text-slate-700 cursor-pointer">Ảnh 1</div>
+              <div class="aspect-square rounded-xl border border-slate-200 bg-slate-50 p-2 flex items-center justify-center text-xs font-mono text-slate-500 hover:border-slate-400 cursor-pointer">Ảnh 2</div>
+              <div class="aspect-square rounded-xl border border-slate-200 bg-slate-50 p-2 flex items-center justify-center text-xs font-mono text-slate-500 hover:border-slate-400 cursor-pointer">Ảnh 3</div>
+              <div class="aspect-square rounded-xl border border-slate-200 bg-slate-50 p-2 flex items-center justify-center text-xs font-mono text-slate-500 hover:border-slate-400 cursor-pointer">Thông số</div>
+            </div>
+
+            <!-- Trust badges panel -->
+            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2.5 text-xs text-slate-600">
+              <div class="flex items-center gap-2 font-bold text-slate-800">
+                <span class="size-2 rounded-full bg-brand-500"></span>
+                Chính Sách Bán Hàng Tại EL-TECH
+              </div>
+              <p>· Miễn phí giao hàng cho đơn linh kiện từ 2.000.000 đ</p>
+              <p>· Hỗ trợ kỹ thuật test stress kiểm tra tương thích trước khi gửi</p>
+              <p>· Bảo hành điện tử qua Serial Number, không lo thất lạc hóa đơn</p>
+            </div>
+          </div>
+
+          <!-- Product Buy Box & Specs (Col 7) -->
+          <div class="lg:col-span-7 space-y-6">
+            <div>
+              <div class="flex items-center gap-3">
+                <span class="px-2.5 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 text-xs font-mono font-bold">INTEL</span>
+                <span class="text-xs text-slate-500 font-mono">Model: BX8071514600K · SKU: CPU-INTEL-I5-14600K</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mt-2">
+                Bộ vi xử lý Intel Core i5 14600K (LGA1700, 14 nhân 20 luồng, Turbo 5.3 GHz, 24MB Cache, 125W)
+              </h1>
+              <div class="flex items-center gap-4 mt-2.5 text-xs">
+                <span class="font-bold text-amber-600">5/5 Sao (18 đánh giá của khách đã mua)</span>
+                <span class="text-slate-300">|</span>
+                <span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Sẵn sàng giao hàng</span>
+              </div>
+            </div>
+
+            <!-- Price Highlight Box -->
+            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
+              <div class="flex items-baseline gap-3">
+                <span class="text-3xl font-black text-slate-900 font-mono tabular" id="detail-price">7.890.000 đ</span>
+                <span class="text-sm line-through text-slate-400 tabular">8.590.000 đ</span>
+                <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-700 font-bold text-xs font-mono">Tiết kiệm 700.000 đ (-8%)</span>
+              </div>
+              <p class="text-xs text-slate-500">Giá đã bao gồm 10% VAT. Tồn kho và giá bán sẽ được khóa cố định khi bạn tạo báo giá tại bước Checkout.</p>
+            </div>
+
+            <!-- Variant selector -->
+            <div>
+              <label class="block text-xs font-mono font-bold text-slate-700 uppercase mb-2">Chọn phiên bản SKU</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                <button type="button" class="p-3 rounded-xl border-2 border-brand-500 bg-brand-50/50 text-left transition-all">
+                  <div class="font-bold text-xs text-slate-900">Bản Box Chính Hãng</div>
+                  <div class="text-[11px] font-mono text-brand-700 font-bold mt-0.5 tabular">7.890.000 đ</div>
+                  <span class="text-[10px] text-slate-500 font-medium">Bảo hành 36T</span>
+                </button>
+                <button type="button" class="p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-400 text-left transition-all">
+                  <div class="font-bold text-xs text-slate-900">Bản Tray (Không Hộp)</div>
+                  <div class="text-[11px] font-mono text-slate-700 font-bold mt-0.5 tabular">7.290.000 đ</div>
+                  <span class="text-[10px] text-slate-500 font-medium">Bảo hành 36T</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quantity & Action Buttons -->
+            <div class="space-y-3 pt-2">
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-slate-700">Số lượng:</span>
+                <div class="flex items-center border border-slate-300 rounded-xl bg-white overflow-hidden">
+                  <button type="button" onclick="changeQty(-1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold font-mono">−</button>
+                  <span id="detail-qty" class="px-4 py-2 text-xs font-mono font-bold text-slate-900">1</span>
+                  <button type="button" onclick="changeQty(1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold font-mono">+</button>
+                </div>
+                <span class="text-xs text-slate-500">Kho đang sẵn: <strong class="text-slate-800 font-mono">42</strong> sản phẩm</span>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-3 pt-2">
+                <button type="button" onclick="addToCartMock('Intel Core i5 14600K (Box)', '7.890.000 đ')" class="py-3.5 px-6 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-black text-sm tracking-wide shadow-glow transition-all">
+                  Thêm vào giỏ hàng
+                </button>
+                <button type="button" onclick="buyNowMock('Intel Core i5 14600K (Box)', '7.890.000 đ')" class="py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm tracking-wide transition-colors">
+                  Mua ngay (Tới thanh toán)
+                </button>
+              </div>
+            </div>
+
+            <!-- Branch stock availability lookup -->
+            <div class="border-t border-slate-200 pt-4">
+              <div class="text-xs font-bold text-slate-800 mb-2">Tình trạng còn hàng tại các chi nhánh:</div>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-900 flex justify-between items-center">
+                  <span>Chi nhánh 1: Cầu Giấy, Hà Nội</span>
+                  <span class="font-bold font-mono text-[11px]">Còn 28 hộp</span>
+                </div>
+                <div class="p-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-900 flex justify-between items-center">
+                  <span>Chi nhánh 2: Quận 1, TP. HCM</span>
+                  <span class="font-bold font-mono text-[11px]">Còn 14 hộp</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Technical Specification & Customer Reviews Tabs -->
+        <div class="mt-14 border-t border-slate-200 pt-8">
+          <div class="flex items-center gap-4 border-b border-slate-200 pb-3 text-sm font-bold">
+            <button type="button" onclick="switchDetailTab('specs')" id="tab-specs" class="pb-3 border-b-2 border-brand-500 text-brand-600">Thông Số Kỹ Thuật Chi Tiết</button>
+            <button type="button" onclick="switchDetailTab('reviews')" id="tab-reviews" class="pb-3 text-slate-500 hover:text-slate-800">Đánh Giá Từ Khách Hàng (18)</button>
+            <button type="button" onclick="switchDetailTab('policy')" id="tab-policy" class="pb-3 text-slate-500 hover:text-slate-800">Chính Sách Bảo Hành & Đổi Trả</button>
+          </div>
+
+          <!-- Specs Content Tab (Structured Clean Table instead of raw JSON) -->
+          <div id="content-specs" class="py-6">
+            <div class="max-w-4xl bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <div class="bg-slate-50 px-5 py-3 border-b border-slate-200 text-xs font-mono font-bold text-slate-700 uppercase">
+                BẢNG THÔNG SỐ PHẦN CỨNG CHUẨN XÁC
+              </div>
+              <table class="w-full text-xs text-left">
+                <tbody class="divide-y divide-slate-200">
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500 w-1/3">Dòng vi xử lý</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">Intel Core i5 thế hệ thứ 14 (Raptor Lake Refresh)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Chuẩn chân cắm (Socket)</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">LGA1700 (Tương thích bo mạch B760, Z790)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Số nhân / Số luồng</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">14 nhân (6 P-Core + 8 E-Core) / 20 luồng</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Xung nhịp cơ bản (Base Clock)</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">P-Core: 3.5 GHz / E-Core: 2.6 GHz</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Xung nhịp tối đa (Boost Clock)</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">Lên tới 5.3 GHz</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Bộ nhớ đệm (Intel Smart Cache)</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">24MB L3 Cache + 20MB L2 Cache</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Nhân đồ họa tích hợp</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">Intel UHD Graphics 770</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Công suất tiêu thụ (TDP)</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">125W (Base) / 181W (Turbo Power)</td>
+                  </tr>
+                  <tr class="hover:bg-slate-50">
+                    <td class="px-5 py-3 font-semibold text-slate-500">Hỗ trợ loại bộ nhớ RAM</td>
+                    <td class="px-5 py-3 font-bold text-slate-900">DDR5 lên tới 5600 MT/s, DDR4 lên tới 3200 MT/s</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Reviews Content Tab -->
+          <div id="content-reviews" class="py-6 hidden space-y-4 max-w-4xl">
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-900">Trần Minh Quân · Đã mua hàng tại EL-TECH</span>
+                <span class="text-[11px] text-slate-400 font-mono">14/10/2026</span>
+              </div>
+              <div class="text-xs text-amber-600 font-semibold">Đánh giá: 5/5 Sao</div>
+              <p class="text-xs text-slate-700 leading-relaxed mt-1">
+                Con chip chạy rất mát khi đi cùng tản nhiệt nước AIO 360, render video 4K nhanh gấp đôi con i5 thế hệ cũ của mình. Nhân viên EL-TECH hỗ trợ đóng gói kỹ càng.
+              </p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-900">Lê Hoàng Nam · Đã mua hàng tại EL-TECH</span>
+                <span class="text-[11px] text-slate-400 font-mono">08/10/2026</span>
+              </div>
+              <div class="text-xs text-amber-600 font-semibold">Đánh giá: 5/5 Sao</div>
+              <p class="text-xs text-slate-700 leading-relaxed mt-1">
+                Hàng fullbox nguyên seal, tra cứu mã serial trực tiếp trên website của Intel chuẩn chính hãng. Đơn giao hỏa tốc trong 90 phút rất ưng ý!
+              </p>
+            </div>
+          </div>
+
+          <!-- Policy Content Tab -->
+          <div id="content-policy" class="py-6 hidden max-w-4xl text-xs space-y-3 text-slate-700 leading-relaxed">
+            <p><strong>1. Quy định bảo hành chính hãng:</strong> Sản phẩm được bảo hành 36 tháng theo tiêu chuẩn nhà phân phối. Bảo hành điện tử kích hoạt qua số serial dán trên vỏ hộp và khắc trên bề mặt kim loại của CPU.</p>
+            <p><strong>2. Điều kiện đổi mới:</strong> Đổi sản phẩm mới 100% trong vòng 30 ngày đầu tiên nếu phát sinh lỗi kỹ thuật từ phía nhà sản xuất (không nhận đổi với các trường hợp cháy nổ, cong chân socket bo mạch do lắp đặt sai quy cách).</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= SCREEN 4: SHOPPING CART ================= -->
+      <section id="screen-cart" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Breadcrumbs & Heading -->
+        <div class="flex items-center justify-between pb-6 border-b border-slate-200">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Giỏ Hàng Mua Sắm</h1>
+            <p class="text-xs text-slate-500 mt-1">Các mặt hàng trong giỏ sẽ được giữ và đối soát tồn kho trước khi thanh toán.</p>
+          </div>
+          <!-- Stepper header -->
+          <div class="hidden sm:flex items-center gap-2 text-xs font-mono">
+            <span class="px-2.5 py-1 rounded bg-brand-500 text-slate-950 font-bold">1. Giỏ hàng</span>
+            <span class="text-slate-300">»</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-500 font-semibold">2. Thanh toán</span>
+            <span class="text-slate-300">»</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-500 font-semibold">3. Xác nhận</span>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 mt-8">
+          
+          <!-- Items List Column (Col 8) -->
+          <div class="lg:col-span-8 space-y-4">
+            
+            <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-200 overflow-hidden shadow-sm">
+              
+              <!-- Cart Item 1 -->
+              <div class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="size-20 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold flex items-center justify-center shrink-0 text-xs">
+                    CPU
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-mono font-bold text-brand-600 uppercase">INTEL · CHÍNH HÃNG</span>
+                    <h2 class="font-bold text-sm text-slate-900 mt-0.5">Bộ vi xử lý Intel Core i5 14600K (LGA1700, 14 nhân)</h2>
+                    <p class="text-xs text-slate-500 font-mono mt-0.5">Mã: CPU-INTEL-I5-14600K · Đơn giá: 7.890.000 đ</p>
+                    <span class="inline-block mt-1 text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Còn hàng</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
+                  <div class="flex items-center border border-slate-300 rounded-xl bg-white">
+                    <button type="button" class="px-2.5 py-1 text-slate-600 hover:bg-slate-100 font-mono font-bold">−</button>
+                    <span class="px-3 py-1 text-xs font-mono font-bold text-slate-900">1</span>
+                    <button type="button" class="px-2.5 py-1 text-slate-600 hover:bg-slate-100 font-mono font-bold">+</button>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-base font-black text-slate-900 font-mono tabular">7.890.000 đ</div>
+                    <button type="button" class="text-[11px] text-rose-600 hover:text-rose-700 font-bold underline mt-0.5">[Xóa món này]</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Cart Item 2 -->
+              <div class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="size-20 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold flex items-center justify-center shrink-0 text-xs">
+                    RAM
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-mono font-bold text-brand-600 uppercase">CORSAIR · BUS 6000</span>
+                    <h2 class="font-bold text-sm text-slate-900 mt-0.5">RAM Corsair Vengeance RGB 32GB (2x16GB) DDR5</h2>
+                    <p class="text-xs text-slate-500 font-mono mt-0.5">Mã: RAM-CORSAIR-DDR5-32G · Đơn giá: 3.090.000 đ</p>
+                    <span class="inline-block mt-1 text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded">Còn hàng</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0">
+                  <div class="flex items-center border border-slate-300 rounded-xl bg-white">
+                    <button type="button" class="px-2.5 py-1 text-slate-600 hover:bg-slate-100 font-mono font-bold">−</button>
+                    <span class="px-3 py-1 text-xs font-mono font-bold text-slate-900">1</span>
+                    <button type="button" class="px-2.5 py-1 text-slate-600 hover:bg-slate-100 font-mono font-bold">+</button>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-base font-black text-slate-900 font-mono tabular">3.090.000 đ</div>
+                    <button type="button" class="text-[11px] text-rose-600 hover:text-rose-700 font-bold underline mt-0.5">[Xóa món này]</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Cart bottom actions -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <button type="button" onclick="switchScreen('catalog')" class="text-xs font-bold text-brand-600 hover:text-brand-700 underline">
+                « Tiếp tục mua sắm linh kiện khác
+              </button>
+              <button type="button" class="text-xs font-semibold text-slate-500 hover:text-rose-600">
+                Xóa toàn bộ giỏ hàng
+              </button>
+            </div>
+
+            <!-- Free shipping banner -->
+            <div class="p-4 rounded-2xl bg-brand-50 border border-brand-200 text-xs text-brand-900 flex items-center justify-between">
+              <div>
+                <span class="font-bold">Đơn hàng đủ điều kiện MIỄN PHÍ VẬN CHUYỂN!</span>
+                <p class="text-[11px] text-brand-700 mt-0.5">Giá trị đơn hàng vượt mốc 2.000.000 đ (Tiết kiệm 45.000 đ phí giao hàng hỏa tốc).</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-brand-500 text-slate-950 font-bold text-[10px] font-mono">FREESHIP ĐÃ ÁP DỤNG</span>
+            </div>
+
+          </div>
+
+          <!-- Order Summary Sidebar Column (Col 4) -->
+          <div class="lg:col-span-4 space-y-4">
+            
+            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+              <h2 class="text-base font-bold text-slate-900 border-b border-slate-200 pb-3">Tóm Tắt Đơn Hàng</h2>
+
+              <!-- Promo Code Input -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Mã giảm giá / Voucher</label>
+                <div class="flex gap-2">
+                  <input type="text" placeholder="Nhập mã ưu đãi..." class="flex-1 text-xs p-2.5 rounded-xl border border-slate-300 bg-white uppercase font-mono">
+                  <button type="button" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors">Áp dụng</button>
+                </div>
+              </div>
+
+              <!-- Price calculations -->
+              <div class="space-y-2.5 text-xs border-t border-slate-200 pt-4">
+                <div class="flex justify-between text-slate-600">
+                  <span>Tạm tính linh kiện (2 món):</span>
+                  <span class="font-mono font-bold text-slate-900 tabular">10.980.000 đ</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Phí giao hàng:</span>
+                  <span class="font-mono font-semibold text-emerald-600">0 đ (Miễn phí)</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Giảm giá khuyến mãi:</span>
+                  <span class="font-mono text-slate-400">0 đ</span>
+                </div>
+                <div class="flex justify-between text-slate-900 text-base font-black border-t border-slate-200 pt-3">
+                  <span>Tổng tiền thanh toán:</span>
+                  <span class="font-mono text-brand-600 tabular">10.980.000 đ</span>
+                </div>
+                <p class="text-[11px] text-slate-400 text-right">Đã bao gồm thuế giá trị gia tăng (VAT 10%)</p>
+              </div>
+
+              <!-- Checkout primary CTA -->
+              <button type="button" onclick="switchScreen('checkout')" class="w-full py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-black text-sm tracking-wide shadow-glow transition-all">
+                Tiến hành đặt hàng ngay »
+              </button>
+
+              <!-- Safe checkout notes -->
+              <div class="pt-2 text-[11px] text-slate-500 space-y-1.5">
+                <p>· Thanh toán chuyển khoản QR tự động giữ linh kiện ngay lập tức.</p>
+                <p>· Khách vãng lai không cần đăng ký tài khoản vẫn có thể đặt mua.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= SCREEN 5: CHECKOUT PAGE ================= -->
+      <section id="screen-checkout" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Breadcrumbs & Heading -->
+        <div class="flex items-center justify-between pb-6 border-b border-slate-200">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Thanh Toán Đơn Hàng</h1>
+            <p class="text-xs text-slate-500 mt-1">Xác thực người nhận để đảm bảo an toàn đơn hàng và bảo hành linh kiện chính xác.</p>
+          </div>
+          <!-- Stepper header -->
+          <div class="hidden sm:flex items-center gap-2 text-xs font-mono">
+            <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-500 font-semibold">1. Giỏ hàng</span>
+            <span class="text-slate-300">»</span>
+            <span class="px-2.5 py-1 rounded bg-brand-500 text-slate-950 font-bold">2. Thanh toán</span>
+            <span class="text-slate-300">»</span>
+            <span class="px-2.5 py-1 rounded bg-slate-100 text-slate-500 font-semibold">3. Xác nhận</span>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-8 mt-8">
+          
+          <!-- Left Forms Column (Col 7) -->
+          <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Step 1: Customer Contact & OTP Verification -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2.5">
+                  <span class="size-6 rounded-full bg-slate-900 text-white font-mono font-bold text-xs flex items-center justify-center">1</span>
+                  <h2 class="font-bold text-sm text-slate-900">Thông Tin Khách Hàng & Xác Thực Liên Hệ</h2>
+                </div>
+                <span class="text-[11px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">BẮT BUỘC</span>
+              </div>
+
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Họ và tên người nhận</label>
+                  <input type="text" value="Nguyễn Văn An" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-brand-500 font-medium">
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email nhận thông báo & bảo hành</label>
+                    <div class="flex gap-2">
+                      <input type="email" value="nguyenvanan.tech@gmail.com" class="flex-1 text-xs p-3 rounded-xl border border-slate-300 bg-white">
+                      <button type="button" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl whitespace-nowrap">Gửi OTP</button>
+                    </div>
+                    <span class="inline-block mt-1 text-[10px] text-emerald-600 font-mono font-bold">[Đã xác minh qua mã 6 số]</span>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Số điện thoại liên hệ</label>
+                    <div class="flex gap-2">
+                      <input type="tel" value="0918 899 999" class="flex-1 text-xs p-3 rounded-xl border border-slate-300 bg-white font-mono">
+                      <button type="button" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl whitespace-nowrap">Gửi SMS</button>
+                    </div>
+                    <span class="inline-block mt-1 text-[10px] text-emerald-600 font-mono font-bold">[Đã xác minh qua SMS]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Fulfillment Method -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                <span class="size-6 rounded-full bg-slate-900 text-white font-mono font-bold text-xs flex items-center justify-center">2</span>
+                <h2 class="font-bold text-sm text-slate-900">Phương Thức Nhận Hàng</h2>
+              </div>
+
+              <!-- Radio Cards -->
+              <div class="grid sm:grid-cols-2 gap-3">
+                <label class="p-4 rounded-2xl border-2 border-brand-500 bg-brand-50/40 cursor-pointer flex items-start gap-3">
+                  <input type="radio" name="fulfillment" checked class="mt-0.5 text-brand-600">
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Giao hàng tận nơi</span>
+                    <span class="text-[11px] text-slate-500 mt-0.5 block leading-relaxed">Hỏa tốc nội thành hoặc chuyển phát bảo hiểm toàn quốc.</span>
+                  </div>
+                </label>
+
+                <label class="p-4 rounded-2xl border border-slate-200 hover:border-slate-400 bg-white cursor-pointer flex items-start gap-3">
+                  <input type="radio" name="fulfillment" class="mt-0.5 text-brand-600">
+                  <div>
+                    <span class="font-bold text-xs text-slate-900 block">Nhận tại chi nhánh</span>
+                    <span class="text-[11px] text-slate-500 mt-0.5 block leading-relaxed">Nhận hàng và kiểm tra linh kiện trực tiếp tại cửa hàng.</span>
+                  </div>
+                </label>
+              </div>
+
+              <!-- Address Fields -->
+              <div class="space-y-3 pt-2">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Địa chỉ giao hàng chi tiết</label>
+                  <textarea rows="2" placeholder="Số nhà, tên đường, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố..." class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-brand-500 leading-relaxed">Số 45 Đường Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy, Hà Nội</textarea>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 mb-1">Ghi chú cho nhân viên đóng gói / giao hàng (Không bắt buộc)</label>
+                  <input type="text" placeholder="Ví dụ: Gọi trước khi giao 30 phút, kiểm tra dán tem cẩn thận..." class="w-full text-xs p-2.5 rounded-xl border border-slate-300 bg-white">
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Payment Method -->
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div class="flex items-center gap-2.5 border-b border-slate-100 pb-3">
+                <span class="size-6 rounded-full bg-slate-900 text-white font-mono font-bold text-xs flex items-center justify-center">3</span>
+                <h2 class="font-bold text-sm text-slate-900">Phương Thức Thanh Toán</h2>
+              </div>
+
+              <div class="space-y-3">
+                <label class="p-4 rounded-2xl border-2 border-brand-500 bg-brand-50/40 cursor-pointer flex items-start gap-3">
+                  <input type="radio" name="payment" checked class="mt-0.5 text-brand-600">
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-xs text-slate-900">Chuyển khoản VietQR tự động (Khuyên dùng)</span>
+                      <span class="px-2 py-0.5 rounded bg-brand-500 text-slate-950 font-mono font-bold text-[10px]">GIỮ HÀNG NGAY</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">
+                      Mã QR động chứa sẵn số tài khoản, số tiền và mã đơn. Hệ thống tự động kích hoạt trạng thái Đã Thanh Toán trong 30 giây.
+                    </p>
+                  </div>
+                </label>
+
+                <label class="p-4 rounded-2xl border border-slate-200 hover:border-slate-400 bg-white cursor-pointer flex items-start gap-3">
+                  <input type="radio" name="payment" class="mt-0.5 text-brand-600">
+                  <div class="flex-1">
+                    <span class="font-bold text-xs text-slate-900 block">Thanh toán khi nhận hàng (COD)</span>
+                    <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                      Nhận hàng, đồng kiểm cùng shipper rồi thanh toán bằng tiền mặt. (Lưu ý: Đối với cấu hình PC tự lắp ráp theo yêu cầu, quý khách cần đặt cọc 10%).
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Order Review Sidebar (Col 5) -->
+          <div class="lg:col-span-5 space-y-4">
+            
+            <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5 sticky top-24">
+              <h2 class="text-base font-bold text-slate-900 border-b border-slate-200 pb-3">Đối Soát Báo Giá Cuối Cùng</h2>
+
+              <!-- Mini items recap -->
+              <div class="space-y-3 max-h-56 overflow-y-auto custom-scrollbar pr-1">
+                <div class="flex items-center gap-3">
+                  <div class="size-12 rounded-lg bg-white border border-slate-200 text-slate-600 font-mono font-bold flex items-center justify-center shrink-0 text-[10px]">
+                    CPU
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xs font-bold text-slate-900 truncate">Intel Core i5 14600K Box</h3>
+                    <p class="text-[11px] text-slate-500 font-mono">x1 · 7.890.000 đ</p>
+                  </div>
+                  <span class="text-xs font-bold font-mono tabular">7.890.000 đ</span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                  <div class="size-12 rounded-lg bg-white border border-slate-200 text-slate-600 font-mono font-bold flex items-center justify-center shrink-0 text-[10px]">
+                    RAM
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xs font-bold text-slate-900 truncate">RAM Corsair Vengeance 32GB DDR5</h3>
+                    <p class="text-[11px] text-slate-500 font-mono">x1 · 3.090.000 đ</p>
+                  </div>
+                  <span class="text-xs font-bold font-mono tabular">3.090.000 đ</span>
+                </div>
+              </div>
+
+              <!-- Price breakdown -->
+              <div class="border-t border-slate-200 pt-4 space-y-2 text-xs">
+                <div class="flex justify-between text-slate-600">
+                  <span>Tạm tính linh kiện:</span>
+                  <span class="font-mono font-bold text-slate-900 tabular">10.980.000 đ</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>Phí vận chuyển giao tận nơi:</span>
+                  <span class="font-mono font-semibold text-emerald-600">0 đ (Miễn phí)</span>
+                </div>
+                <div class="flex justify-between text-slate-900 text-base font-black border-t border-slate-200 pt-3">
+                  <span>Tổng tiền thanh toán:</span>
+                  <span class="font-mono text-brand-600 tabular">10.980.000 đ</span>
+                </div>
+              </div>
+
+              <!-- Agreement checkbox -->
+              <label class="flex items-start gap-2.5 cursor-pointer text-xs text-slate-600 pt-2">
+                <input type="checkbox" checked class="mt-0.5 rounded text-brand-600">
+                <span>Tôi xác nhận thông tin người nhận là chính xác và đồng ý với chính sách mua hàng của EL-TECH.</span>
+              </label>
+
+              <!-- Final Submit Button -->
+              <button type="button" onclick="submitOrderMock()" class="w-full py-4 rounded-xl bg-brand-500 hover:bg-brand-400 text-slate-950 font-black text-sm tracking-wide shadow-glow transition-all">
+                Xác nhận tạo đơn hàng »
+              </button>
+
+              <div class="text-[11px] text-slate-400 text-center font-mono">
+                Mã bảo mật Idempotency bảo vệ đơn hàng chống trùng lặp.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= SCREEN 6: ORDER LOOKUP & TRACKING ================= -->
+      <section id="screen-order" class="screen-view hidden p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+        <!-- Breadcrumbs & Heading -->
+        <div class="pb-6 border-b border-slate-200">
+          <nav class="text-xs text-slate-500 font-mono mb-1">
+            <a href="javascript:void(0)" onclick="switchScreen('home')" class="hover:text-slate-900">Trang chủ</a> / <span class="text-slate-900 font-bold">Tra cứu trạng thái</span>
+          </nav>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Tra Cứu & Theo Dõi Đơn Hàng</h1>
+          <p class="text-xs text-slate-500 mt-1">Nhập mã đơn hàng và số điện thoại hoặc email để xem tiến độ đóng gói, vận chuyển và thông tin thanh toán.</p>
+        </div>
+
+        <!-- Lookup Form Box -->
+        <div class="max-w-2xl mx-auto mt-6 bg-slate-50 p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Mã đơn hàng</label>
+              <input type="text" value="ELT-2026-8891" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white font-mono font-bold uppercase">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Email hoặc Số điện thoại</label>
+              <input type="text" value="0918899999" class="w-full text-xs p-3 rounded-xl border border-slate-300 bg-white font-mono">
+            </div>
+          </div>
+          <button type="button" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors">
+            Tra cứu thông tin đơn hàng »
+          </button>
+        </div>
+
+        <!-- Order Result Showcase (Active Order Simulation) -->
+        <div class="mt-8 bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-card">
+          
+          <!-- Order Header Bar -->
+          <div class="bg-slate-900 text-white p-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-mono font-bold text-brand-400 bg-brand-500/20 px-2.5 py-1 rounded border border-brand-500/30">MÃ ĐƠN: ELT-2026-8891</span>
+                <span class="text-xs text-slate-400 font-mono">Ngày tạo: 19/10/2026 12:30</span>
+              </div>
+              <h2 class="text-xl font-black tracking-tight mt-1 text-white">Đơn Hàng Linh Kiện PC Của Bạn</h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-mono font-bold">
+                TRẠNG THÁI: CHỜ THANH TOÁN QR
+              </span>
+            </div>
+          </div>
+
+          <!-- Order Visual Progress Stepper -->
+          <div class="p-6 bg-slate-50 border-b border-slate-200">
+            <div class="grid grid-cols-5 gap-2 text-center text-xs">
+              <div class="space-y-1">
+                <div class="size-8 mx-auto rounded-full bg-brand-500 text-slate-950 font-bold font-mono flex items-center justify-center">1</div>
+                <div class="font-bold text-slate-900">Đặt hàng thành công</div>
+                <div class="text-[10px] text-slate-400 font-mono">12:30 19/10</div>
+              </div>
+              <div class="space-y-1">
+                <div class="size-8 mx-auto rounded-full bg-brand-500 text-slate-950 font-bold font-mono flex items-center justify-center animate-pulse">2</div>
+                <div class="font-bold text-brand-600">Thanh toán QR</div>
+                <div class="text-[10px] text-brand-700 font-mono">Đang chờ tiền về</div>
+              </div>
+              <div class="space-y-1">
+                <div class="size-8 mx-auto rounded-full bg-slate-200 text-slate-400 font-bold font-mono flex items-center justify-center">3</div>
+                <div class="font-medium text-slate-400">Chuẩn bị linh kiện</div>
+                <div class="text-[10px] text-slate-400 font-mono">Chờ xác nhận</div>
+              </div>
+              <div class="space-y-1">
+                <div class="size-8 mx-auto rounded-full bg-slate-200 text-slate-400 font-bold font-mono flex items-center justify-center">4</div>
+                <div class="font-medium text-slate-400">Đang giao hàng</div>
+                <div class="text-[10px] text-slate-400 font-mono">Chờ xuất kho</div>
+              </div>
+              <div class="space-y-1">
+                <div class="size-8 mx-auto rounded-full bg-slate-200 text-slate-400 font-bold font-mono flex items-center justify-center">5</div>
+                <div class="font-medium text-slate-400">Hoàn tất</div>
+                <div class="text-[10px] text-slate-400 font-mono">Bảo hành 36T</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 sm:p-8 space-y-8">
+            
+            <!-- VietQR Dynamic Payment Card -->
+            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 p-6 rounded-3xl border border-slate-800 text-white shadow-xl grid md:grid-cols-12 gap-6 items-center">
+              <div class="md:col-span-4 flex flex-col items-center justify-center text-center p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                <div class="size-40 rounded-xl bg-white p-3 flex flex-col items-center justify-center shadow-inner">
+                  <div class="size-32 bg-slate-900 rounded flex flex-col items-center justify-center text-[10px] font-mono text-brand-400 font-bold p-2 text-center">
+                    [MÃ VIETQR CHUYỂN KHOẢN TỰ ĐỘNG]
+                  </div>
+                </div>
+                <span class="mt-2 text-[10px] font-mono text-slate-400">Quét bằng ứng dụng Ngân hàng bất kỳ</span>
+              </div>
+
+              <div class="md:col-span-8 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-mono font-bold text-brand-400 uppercase">THÔNG TIN CHUYỂN KHOẢN CHÍNH XÁC</span>
+                  <span class="text-xs text-amber-400 font-mono font-semibold">Thời gian giữ hàng còn lại: 28:45</span>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3 text-xs">
+                  <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span class="text-slate-400 block text-[10px]">Ngân hàng thụ hưởng:</span>
+                    <strong class="text-slate-100 text-sm">Vietcombank (Hội sở chính)</strong>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span class="text-slate-400 block text-[10px]">Tên chủ tài khoản:</span>
+                    <strong class="text-slate-100 text-sm">CONG TY TNHH CONG NGHE EL-TECH</strong>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span class="text-slate-400 block text-[10px]">Số tài khoản:</span>
+                    <strong class="text-brand-400 font-mono text-sm">9988 2211 001</strong>
+                  </div>
+                  <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700">
+                    <span class="text-slate-400 block text-[10px]">Số tiền cần thanh toán:</span>
+                    <strong class="text-brand-400 font-mono text-sm tabular">10.980.000 đ</strong>
+                  </div>
+                </div>
+                <div class="p-3 rounded-xl bg-brand-500/10 border border-brand-500/30 flex items-center justify-between">
+                  <div>
+                    <span class="text-[10px] text-brand-300 block">Nội dung chuyển khoản (bắt buộc giữ nguyên):</span>
+                    <strong class="text-white font-mono text-sm tracking-wider">ELT-2026-8891</strong>
+                  </div>
+                  <button type="button" class="px-3 py-1 bg-brand-500 text-slate-950 font-bold text-xs rounded-lg font-mono">Sao chép</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer & Shipping info cards -->
+            <div class="grid sm:grid-cols-2 gap-4 text-xs">
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <span class="font-bold text-slate-900 block text-sm">Thông Tin Người Nhận</span>
+                <p>Họ tên: <strong class="text-slate-900">Nguyễn Văn An</strong></p>
+                <p>Số điện thoại: <strong class="text-slate-900 font-mono">0918 899 999</strong></p>
+                <p>Email: <span class="text-slate-700 font-mono">nguyenvanan.tech@gmail.com</span></p>
+              </div>
+
+              <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                <span class="font-bold text-slate-900 block text-sm">Phương Thức & Địa Chỉ Giao Hàng</span>
+                <p>Hình thức: <strong class="text-slate-900">Giao hàng tận nơi hỏa tốc</strong></p>
+                <p>Địa chỉ: <span class="text-slate-700">Số 45 Đường Cầu Giấy, Quan Hoa, Cầu Giấy, Hà Nội</span></p>
+                <p>Chi nhánh xuất kho: <strong class="text-slate-900">EL-TECH Cầu Giấy (Hà Nội)</strong></p>
+              </div>
+            </div>
+
+            <!-- Ordered Lines Table -->
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 mb-3">Danh Sách Linh Kiện Trong Đơn Hàng</h3>
+              <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-200 overflow-hidden">
+                
+                <div class="p-4 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <div class="size-12 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold flex items-center justify-center shrink-0 text-xs">
+                      CPU
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-xs text-slate-900">Bộ vi xử lý Intel Core i5 14600K</h4>
+                      <p class="text-[11px] text-slate-500 font-mono">Mã: CPU-INTEL-I5-14600K · SL: 1 · Bảo hành 36 tháng</p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-mono font-bold text-slate-900 tabular">7.890.000 đ</span>
+                </div>
+
+                <div class="p-4 flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3">
+                    <div class="size-12 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold flex items-center justify-center shrink-0 text-xs">
+                      RAM
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-xs text-slate-900">RAM Corsair Vengeance RGB 32GB DDR5 6000MHz</h4>
+                      <p class="text-[11px] text-slate-500 font-mono">Mã: RAM-CORSAIR-DDR5-32G · SL: 1 · Bảo hành 36 tháng</p>
+                    </div>
+                  </div>
+                  <span class="text-xs font-mono font-bold text-slate-900 tabular">3.090.000 đ</span>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Order Timeline Log -->
+            <div class="border-t border-slate-200 pt-6">
+              <h3 class="font-bold text-sm text-slate-900 mb-3">Nhật Ký Xử Lý Đơn Hàng (Timeline)</h3>
+              <ol class="space-y-2 text-xs font-mono text-slate-600">
+                <li class="flex items-center gap-3">
+                  <span class="text-slate-400">12:30:15 19/10</span>
+                  <span class="size-1.5 rounded-full bg-slate-400"></span>
+                  <span>Đơn hàng được khởi tạo thành công từ giao diện website.</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="text-slate-400">12:30:18 19/10</span>
+                  <span class="size-1.5 rounded-full bg-brand-500"></span>
+                  <span class="text-brand-600 font-bold">Tạo mã thanh toán VietQR động ELT-2026-8891, giữ tồn kho trong 30 phút.</span>
+                </li>
+              </ol>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ================= STOREFRONT FOOTER ================= -->
+      <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 text-xs mt-12 select-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div class="space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="size-7 rounded-lg bg-brand-500 text-slate-950 font-black text-sm flex items-center justify-center">E</span>
+              <span class="font-black text-base text-white">EL<span class="text-brand-400">TECH</span></span>
+            </div>
+            <p class="text-slate-400 leading-relaxed text-[11px]">
+              Hệ thống bán lẻ linh kiện PC Gaming, Workstation và máy tính dựng sẵn hàng đầu. Đảm bảo chất lượng phần cứng tối đa.
+            </p>
+            <p class="text-[11px] text-slate-500 font-mono">Hotline: 1900 8899 (08:30 - 21:30)</p>
+          </div>
+
+          <div class="space-y-2.5">
+            <h4 class="font-bold text-white font-mono uppercase tracking-wider text-[11px]">Mua Hàng & Dịch Vụ</h4>
+            <ul class="space-y-1.5 text-slate-400">
+              <li><a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">Danh mục linh kiện</a></li>
+              <li><a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">PC dựng sẵn theo ngân sách</a></li>
+              <li><a href="javascript:void(0)" onclick="switchScreen('catalog')" class="hover:text-brand-400">Công cụ tự lắp ráp PC</a></li>
+              <li><a href="javascript:void(0)" onclick="switchScreen('order')" class="hover:text-brand-400">Tra cứu tiến độ đơn hàng</a></li>
+            </ul>
+          </div>
+
+          <div class="space-y-2.5">
+            <h4 class="font-bold text-white font-mono uppercase tracking-wider text-[11px]">Chính Sách & Hỗ Trợ</h4>
+            <ul class="space-y-1.5 text-slate-400">
+              <li><span class="hover:text-brand-400 cursor-pointer">Chính sách bảo hành 36 tháng</span></li>
+              <li><span class="hover:text-brand-400 cursor-pointer">Chính sách 1 đổi 1 trong 30 ngày</span></li>
+              <li><span class="hover:text-brand-400 cursor-pointer">Phương thức giao hàng hỏa tốc</span></li>
+              <li><span class="hover:text-brand-400 cursor-pointer">Quy định thanh toán & đặt cọc</span></li>
+            </ul>
+          </div>
+
+          <div class="space-y-2.5">
+            <h4 class="font-bold text-white font-mono uppercase tracking-wider text-[11px]">Hệ Thống Chi Nhánh</h4>
+            <div class="text-[11px] text-slate-400 space-y-2 leading-relaxed">
+              <p><strong class="text-slate-200">Hà Nội:</strong> Số 45 Cầu Giấy, Quan Hoa, Cầu Giấy</p>
+              <p><strong class="text-slate-200">TP. Hồ Chí Minh:</strong> Số 123 Nguyễn Thị Minh Khai, Quận 1</p>
+              <p><strong class="text-slate-200">Đà Nẵng:</strong> Số 88 Nguyễn Văn Linh, Hải Châu</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-slate-800 py-4 px-4 sm:px-6 lg:px-8 text-center text-slate-500 text-[11px]">
+          Bản quyền thuộc về EL-TECH Performance Lab. Giao diện xem trước layout luồng mua hàng khách hàng.
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <script>
+    // Navigation Screen Controller
+    function switchScreen(screenId) {
+      document.querySelectorAll('.screen-view').forEach(function(el) {
+        el.classList.add('hidden');
+        el.classList.remove('active');
+      });
+      document.querySelectorAll('.screen-btn').forEach(function(btn) {
+        btn.classList.remove('bg-brand-500', 'text-slate-950', 'font-bold', 'shadow');
+        btn.classList.add('text-slate-400');
+      });
+
+      var targetView = document.getElementById('screen-' + screenId);
+      var targetBtn = document.getElementById('btn-' + screenId);
+      if (targetView) {
+        targetView.classList.remove('hidden');
+        targetView.classList.add('active');
+      }
+      if (targetBtn) {
+        targetBtn.classList.add('bg-brand-500', 'text-slate-950', 'font-bold', 'shadow');
+        targetBtn.classList.remove('text-slate-400');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Viewport Simulator (Desktop, Tablet, Mobile)
+    function setDevice(device) {
+      var container = document.getElementById('device-container');
+      document.querySelectorAll('.dev-btn').forEach(function(btn) {
+        btn.classList.remove('bg-slate-800', 'text-white', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      var activeBtn = document.getElementById('dev-' + device);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-slate-800', 'text-white', 'font-bold');
+        activeBtn.classList.remove('text-slate-400');
+      }
+
+      if (device === 'mobile') {
+        container.style.maxWidth = '420px';
+      } else if (device === 'tablet') {
+        container.style.maxWidth = '820px';
+      } else {
+        container.style.maxWidth = '1280px';
+      }
+    }
+
+    // Product Detail Page Tabs
+    function switchDetailTab(tabId) {
+      document.getElementById('content-specs').classList.add('hidden');
+      document.getElementById('content-reviews').classList.add('hidden');
+      document.getElementById('content-policy').classList.add('hidden');
+
+      document.getElementById('tab-specs').classList.remove('border-b-2', 'border-brand-500', 'text-brand-600');
+      document.getElementById('tab-specs').classList.add('text-slate-500');
+      document.getElementById('tab-reviews').classList.remove('border-b-2', 'border-brand-500', 'text-brand-600');
+      document.getElementById('tab-reviews').classList.add('text-slate-500');
+      document.getElementById('tab-policy').classList.remove('border-b-2', 'border-brand-500', 'text-brand-600');
+      document.getElementById('tab-policy').classList.add('text-slate-500');
+
+      document.getElementById('content-' + tabId).classList.remove('hidden');
+      var activeTab = document.getElementById('tab-' + tabId);
+      activeTab.classList.add('border-b-2', 'border-brand-500', 'text-brand-600');
+      activeTab.classList.remove('text-slate-500');
+    }
+
+    // Quantity adjustments
+    var currentQty = 1;
+    function changeQty(delta) {
+      currentQty = Math.max(1, currentQty + delta);
+      document.getElementById('detail-qty').innerText = currentQty;
+    }
+
+    // Mock cart interactions
+    var cartItemsCount = 2;
+    function addToCartMock(productName, price) {
+      cartItemsCount += 1;
+      document.getElementById('header-cart-badge').innerText = cartItemsCount;
+      document.getElementById('nav-cart-count').innerText = cartItemsCount;
+      alert('Đã thêm sản phẩm: ' + productName + ' (' + price + ') vào giỏ hàng.');
+    }
+
+    function buyNowMock(productName, price) {
+      addToCartMock(productName, price);
+      switchScreen('checkout');
+    }
+
+    function submitOrderMock() {
+      switchScreen('order');
+    }
+
+    function resetFilters() {
+      document.getElementById('catalog-query').value = '';
+    }
+  </script>
+</body>
+</html>

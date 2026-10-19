@@ -40,6 +40,21 @@ orderRouter.post('/orders/:orderCode/cancel', async (request, response, next): P
   } catch (error: unknown) { next(error); }
 });
 
+orderRouter.get('/orders/kanban', async (_request, response, next): Promise<void> => {
+  try {
+    const orders = await orderService.getKanbanOrders();
+    response.json(success(orders, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
+orderRouter.get('/orders/customer', async (request, response, next): Promise<void> => {
+  try {
+    const customerId = typeof request.query.customerId === 'string' ? request.query.customerId : undefined;
+    const orders = await orderService.getCustomerOrders(customerId);
+    response.json(success(orders, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
 orderRouter.post('/orders/expire-overdue', async (_request, response, next): Promise<void> => {
   try {
     response.json(success({ expiredCount: await orderService.expireOverdueOrders() }, response.locals.correlationId as string));

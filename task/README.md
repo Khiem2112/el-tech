@@ -15,6 +15,9 @@ He thong luong khach hang duoc chia thanh 9 cum tinh nang tuong ung voi 9 task t
 7. Task 07: Order Tracking 5-Stage Pipeline, Kanban Board va Order Cancellation ([TASK-07-ORDER-TRACKING-KANBAN-AND-CANCEL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-07-ORDER-TRACKING-KANBAN-AND-CANCEL.md))
 8. Task 08: Warranty Policy Hub va Interactive RMA Ticket Submission ([TASK-08-WARRANTY-RMA-AND-RETURN-FLOW.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-08-WARRANTY-RMA-AND-RETURN-FLOW.md))
 9. Task 09: Customer Authentication Modal va Profile Account Center ([TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE.md))
+10. Task 10: Chuan Hoa Va Dong Bo Design System EL-TECH ([TASK-10-DESIGN-SYSTEM-TOKEN-AUDIT-AND-STANDARDIZATION.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-10-DESIGN-SYSTEM-TOKEN-AUDIT-AND-STANDARDIZATION.md))
+11. Task 11: Xay Dung Script Seed Du Lieu Mau He Thong ([TASK-11-DATABASE-SEED-SCRIPT-PC-BUNDLES-ORDERS-REVIEWS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-11-DATABASE-SEED-SCRIPT-PC-BUNDLES-ORDERS-REVIEWS.md))
+12. Task 12: Tich Hop API Backend Va Loai Bo Mock Data Tren Frontend ([TASK-12-BACKEND-API-INTEGRATION-AND-MOCK-REMOVAL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-12-BACKEND-API-INTEGRATION-AND-MOCK-REMOVAL.md))
 
 ## 2. Bang Anh Xa Template Sang Source Code FE
 
@@ -29,6 +32,9 @@ He thong luong khach hang duoc chia thanh 9 cum tinh nang tuong ung voi 9 task t
 | TASK-07 | `order-tracking.html`, `order-kanban-view.html`, `order-cancel.html` | `features/orders/order-lookup-page.component.ts`, `order-kanban-page.component.ts`, `order-cancel-modal.component.ts` | Complete |
 | TASK-08 | `refund.html` | `features/refund/refund-page.component.ts` | Complete |
 | TASK-09 | `auth.html`, `profile-page.html` | `features/auth/auth-modal.component.ts`, `features/profile/profile-page.component.ts` | Complete |
+| TASK-10 | `MASTER.md` | `styles.css`, `components/atoms/*`, toan bo component FE | Complete |
+| TASK-11 | `schema.prisma` | `be/scripts/seed_demo_flow_data.ts`, `be/prisma/seed.ts` | Complete |
+| TASK-12 | `catalog.routes.ts`, `order.routes.ts` | `be/src/routes/*`, `fe/src/app/services/*`, man hinh FE | Complete |
 
 ## 3. Quy Trinh Thuc Thi Va Kiem Thu Chat Che
 

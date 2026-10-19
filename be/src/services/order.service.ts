@@ -421,4 +421,107 @@ export const orderService = {
     }
     return count;
   },
+
+  async getKanbanOrders(): Promise<readonly unknown[]> {
+    const orders = await prisma.order.findMany({
+      where: { isActive: true },
+      include: {
+        fulfillmentBranch: true,
+        lines: { take: 3 },
+        payment: true,
+        verifications: { take: 1 },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const stageMap: Record<string, string> = {
+      PENDING_PAYMENT: 'pending',
+      PENDING_COD_CONFIRMATION: 'pending',
+      CONFIRMED: 'preparing',
+      PREPARING_COMPONENTS: 'preparing',
+      ASSEMBLING: 'assembling',
+      READY_FOR_PICKUP: 'ready',
+      SHIPPING: 'ready',
+      COMPLETED: 'completed',
+      CANCELLED: 'cancelled',
+    };
+
+    return orders.map((o) => {
+      const stage = stageMap[o.status] || 'pending';
+      const firstLine = o.lines[0];
+      const isPc = Boolean(firstLine?.pcBuildKey || o.lines.length >= 3);
+      const otpVerification = o.verifications.find((v) => v.identifier.includes('OTP') || Boolean(v.value));
+
+      let highlight: { type: 'warning' | 'info' | 'telemetry' | 'otp' | 'success'; text: string; badge?: string; progress?: number } | undefined;
+      if (stage === 'pending') {
+        highlight = { type: 'warning', text: 'Chờ đối soát VietQR tự động qua Napas247', badge: 'QR 15m' };
+      } else if (stage === 'assembling') {
+        highlight = { type: 'telemetry', text: 'Furmark v2.4: 67°C ổn định · Fan 1450 RPM', progress: 68 };
+      } else if (stage === 'ready' && otpVerification) {
+        highlight = { type: 'otp', text: `Mã OTP nhận máy: ${otpVerification.value}`, badge: 'OTP quay' };
+      } else if (stage === 'completed') {
+        highlight = { type: 'success', text: 'Đã kích hoạt bảo hành điện tử 36 tháng', badge: 'Hoàn tất' };
+      }
+
+      return {
+        id: o.id,
+        code: o.code,
+        type: isPc ? 'pc' : 'parts',
+        typeName: isPc ? 'PC Custom Build' : 'Linh kiện phần cứng',
+        title: firstLine ? firstLine.nameSnapshot : 'Đơn hàng PC & Linh kiện',
+        subtitle: o.lines.length > 1 ? `${firstLine?.nameSnapshot} + ${o.lines.length - 1} linh kiện khác` : 'Bảo hành chính hãng EL-TECH',
+        thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80',
+        totalAmount: Number(o.grandTotal),
+        stage: stage === 'cancelled' ? 'completed' : stage,
+        branch: o.fulfillmentBranch?.code === 'BRANCH-HN' ? 'hn' : 'hcm',
+        branchName: o.fulfillmentBranch?.name || 'Hub Quận 10, TP.HCM',
+        createdAtText: new Date(o.createdAt).toLocaleDateString('vi-VN'),
+        technician: {
+          initials: 'NV',
+          name: 'Kỹ thuật viên EL-TECH',
+        },
+        highlight,
+      };
+    });
+  },
+
+  async getCustomerOrders(identifier?: string): Promise<readonly unknown[]> {
+    const customer = await prisma.customer.findFirst({
+      where: identifier
+        ? { OR: [{ id: identifier }, { email: identifier }, { phone: identifier }] }
+        : { email: 'hoangnam.tech@gmail.com' },
+    });
+
+    if (!customer) return [];
+
+    const orders = await prisma.order.findMany({
+      where: { customerId: customer.id, isActive: true },
+      include: {
+        fulfillmentBranch: true,
+        lines: true,
+        payment: true,
+        verifications: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return orders.map((o) => ({
+      id: o.id,
+      code: o.code,
+      status: o.status,
+      grandTotal: Number(o.grandTotal),
+      subtotal: Number(o.subtotal),
+      receiverName: o.receiverName,
+      receiverPhone: o.receiverPhone,
+      receiverAddress: typeof o.deliveryAddressSnapshot === 'object' ? (o.deliveryAddressSnapshot as Record<string, string>)?.address : 'Tại quầy',
+      createdAt: o.createdAt,
+      lines: o.lines.map((l) => ({
+        id: l.id,
+        name: l.nameSnapshot,
+        quantity: l.quantity,
+        unitPrice: Number(l.unitPrice),
+      })),
+      otpCode: o.verifications[0]?.value,
+    }));
+  },
 };
