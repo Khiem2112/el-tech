@@ -21,7 +21,7 @@ He thong luong khach hang duoc chia thanh 9 cum tinh nang tuong ung voi 9 task t
 | Task ID | UI Template Nguon | Component & File Dich Trong FE | Trang Thai |
 | :--- | :--- | :--- | :--- |
 | TASK-01 | `header.html`, `footer.html`, `index.html` | `features/storefront/storefront-shell.component.*`, `styles.css` | Complete |
-| TASK-02 | `cart.html` | `features/cart/cart-drawer.component.*`, `services/cart.service.ts` | Pending |
+| TASK-02 | `cart.html` | `features/cart/cart-drawer.component.*`, `services/cart.service.ts` | Complete |
 | TASK-03 | `product-list.html`, `filterbar.html`, `catalog-filter.js` | `features/catalog/catalog-page.component.ts`, `catalog.service.ts` | Pending |
 | TASK-04 | `product-detail.html`, `user-review-form.html` | `features/catalog/product-detail-page.component.ts`, `review-modal.component.ts` | Pending |
 | TASK-05 | `pc-build.html`, `change-component.html` | `features/pc-build/custom-build-page.component.ts`, `component-swap-modal.component.ts` | Pending |

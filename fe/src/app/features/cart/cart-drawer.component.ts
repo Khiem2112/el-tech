@@ -1,0 +1,273 @@
+import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { CartService } from '../../services/cart.service';
+import { VndPipe } from '../../lib/vnd.pipe';
+import { ProductImagePipe } from '../../lib/product-image.pipe';
+import { handleProductImageError } from '../../core/constants/product.constants';
+import { ButtonDirective } from '../../components/atoms/button/button.directive';
+import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
+import { AppIconModule } from '../../components/atoms/icon/icon.module';
+
+@Component({
+  selector: 'app-cart-drawer',
+  imports: [RouterLink, VndPipe, ProductImagePipe, ButtonDirective, BadgeDirective, AppIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    @if (cart.isDrawerOpen()) {
+      <!-- Backdrop Overlay -->
+      <div
+        class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm transition-opacity"
+        (click)="cart.closeDrawer()"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Right Slide-Over Drawer Container -->
+      <aside
+        aria-label="Giỏ hàng linh kiện máy tính"
+        class="fixed top-0 right-0 z-50 h-screen w-full sm:w-[540px] md:w-[620px] max-w-[100vw] bg-surface-dark text-white flex flex-col shadow-2xl border-l border-slate-800 animate-in slide-in-from-right duration-200"
+      >
+        <!-- Drawer Header -->
+        <div class="flex-shrink-0 bg-surface-dark px-4 sm:px-6 pt-4 pb-3 border-b border-slate-800">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="size-7 rounded bg-slate-900 border border-slate-700 flex items-center justify-center text-primary">
+                <lucide-icon name="shopping-cart" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+              </div>
+              <h2 class="text-sm font-bold text-white tracking-tight">Giỏ hàng của bạn</h2>
+              <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground tabular">
+                {{ cart.itemCount() }} món
+              </span>
+            </div>
+            <button
+              type="button"
+              (click)="cart.closeDrawer()"
+              class="size-8 rounded-lg bg-surface-elevated hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-slate-700"
+              aria-label="Đóng giỏ hàng"
+            >
+              <lucide-icon name="x" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+            </button>
+          </div>
+
+          <!-- Free Shipping Progress -->
+          <div class="mt-3 p-2.5 rounded-lg bg-surface-elevated border border-slate-800 flex flex-col gap-1 text-xs">
+            <div class="flex items-center justify-between font-bold">
+              <span class="flex items-center gap-1.5 text-primary">
+                <lucide-icon name="truck" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                Miễn phí vận chuyển hỏa tốc toàn quốc
+              </span>
+              <span class="text-primary">100%</span>
+            </div>
+            <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden mt-0.5">
+              <div class="h-full rounded-full bg-primary w-full"></div>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-400">
+              <span>Đơn linh kiện trên 2.000.000 đ</span>
+              <span class="text-slate-300 font-medium">Bảo hiểm rơi vỡ 100%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scrollable Item List -->
+        <div class="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-3">
+          @if (!cart.items().length) {
+            <div class="py-12 text-center flex flex-col items-center">
+              <div class="size-16 rounded-xl bg-surface-elevated border border-slate-800 flex items-center justify-center text-slate-600 mb-3">
+                <lucide-icon name="shopping-cart" class="w-8 h-8" aria-hidden="true"></lucide-icon>
+              </div>
+              <p class="text-sm font-bold text-white">Giỏ hàng của bạn đang trống</p>
+              <p class="text-xs text-slate-400 mt-1 max-w-xs">Chưa có linh kiện hoặc cấu hình PC nào trong giỏ hàng. Hãy khám phá danh mục để chọn linh kiện phù hợp.</p>
+              <div class="mt-5 flex gap-2">
+                <a
+                  routerLink="/san-pham"
+                  (click)="cart.closeDrawer()"
+                  appButton
+                  variant="primary"
+                  size="sm"
+                >
+                  Xem linh kiện PC
+                </a>
+                <a
+                  routerLink="/tu-lap-pc"
+                  (click)="cart.closeDrawer()"
+                  appButton
+                  variant="outline"
+                  size="sm"
+                  class="border-slate-700 bg-surface-elevated text-slate-200"
+                >
+                  Tự lắp PC
+                </a>
+              </div>
+            </div>
+          } @else {
+            @for (item of cart.items(); track item.id) {
+              <div class="p-3.5 rounded-xl bg-surface-elevated border border-slate-800/80 hover:border-slate-700 transition-colors flex flex-col gap-2.5">
+                <!-- Header Badge -->
+                <div class="flex items-center justify-between pb-1.5 border-b border-slate-800 text-[11px]">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    @if (item.pcBuildName) {
+                      <span class="px-1.5 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase">
+                        Bộ PC Hoàn Chỉnh
+                      </span>
+                      <span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300 font-bold">
+                        {{ item.pcBuildType ?? 'CUSTOM BUILD' }}
+                      </span>
+                    } @else {
+                      <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-bold uppercase">
+                        Linh kiện đơn lẻ
+                      </span>
+                    }
+                    <span class="text-slate-400">SKU: {{ item.sku }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="cart.remove(item.id)"
+                    class="text-slate-500 hover:text-danger p-0.5 rounded transition-colors cursor-pointer"
+                    aria-label="Xóa khỏi giỏ hàng"
+                  >
+                    <lucide-icon name="trash-2" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex gap-3 items-start">
+                  <div class="size-16 rounded-lg bg-slate-900 border border-slate-800 shrink-0 overflow-hidden p-1 flex items-center justify-center">
+                    <img
+                      [src]="item.media | productImage"
+                      [alt]="item.name"
+                      class="h-full w-full object-cover"
+                      (error)="onImageError($event)"
+                    >
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xs font-bold text-white leading-snug line-clamp-2">
+                      {{ item.name }}
+                    </h3>
+                    @if (item.pcBuildName) {
+                      <p class="text-[11px] text-primary mt-0.5">Tên cấu hình: {{ item.pcBuildName }}</p>
+                    }
+                    <div class="flex items-center gap-1 mt-1 text-[11px] text-primary">
+                      <span class="size-1.5 rounded-full bg-primary inline-block"></span>
+                      <span>Sẵn hàng tại HN 45 Thái Hà &amp; HCM 280 3/2</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer Stepper and Price -->
+                <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center rounded-md bg-slate-900 border border-slate-700 p-0.5">
+                      <button
+                        type="button"
+                        (click)="cart.setQuantity(item.id, item.quantity - 1)"
+                        class="size-6 rounded flex items-center justify-center text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
+                        aria-label="Giảm số lượng"
+                      >
+                        <lucide-icon name="minus" class="w-3 h-3" aria-hidden="true"></lucide-icon>
+                      </button>
+                      <span class="w-6 text-center text-xs font-bold text-white tabular">{{ item.quantity }}</span>
+                      <button
+                        type="button"
+                        (click)="cart.setQuantity(item.id, item.quantity + 1)"
+                        class="size-6 rounded flex items-center justify-center text-slate-300 hover:bg-slate-800 transition-colors cursor-pointer"
+                        aria-label="Tăng số lượng"
+                      >
+                        <lucide-icon name="plus" class="w-3 h-3" aria-hidden="true"></lucide-icon>
+                      </button>
+                    </div>
+                    @if (item.pcBuildName) {
+                      <a
+                        routerLink="/tu-lap-pc"
+                        (click)="cart.closeDrawer()"
+                        class="text-[11px] font-bold text-primary hover:underline"
+                      >
+                        Sửa cấu hình
+                      </a>
+                    }
+                  </div>
+                  <div class="text-right">
+                    <div class="text-xs font-bold text-white tabular">{{ item.lineTotal | vnd }}</div>
+                    <div class="text-[10px] text-slate-400 tabular">{{ item.unitPrice | vnd }}/món</div>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <!-- System Compatibility Status -->
+            <div class="p-2.5 rounded-lg bg-surface-elevated border border-slate-800 flex items-center gap-2 text-xs text-slate-300">
+              <lucide-icon name="shield-check" class="w-4 h-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+              <span>Kiểm tra hệ thống: <strong>Linh kiện trong giỏ tương thích 100%</strong></span>
+            </div>
+          }
+        </div>
+
+        <!-- Drawer Footer -->
+        @if (cart.items().length) {
+          <div class="flex-shrink-0 bg-surface-dark px-4 sm:px-6 py-4 border-t border-slate-800 flex flex-col gap-2.5">
+            <!-- Price Breakdown -->
+            <div class="space-y-1.5 text-xs">
+              <div class="flex items-center justify-between text-slate-400">
+                <span>Tạm tính linh kiện ({{ cart.itemCount() }} món):</span>
+                <span class="text-white font-medium tabular">{{ cart.subtotal() | vnd }}</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-400">
+                <span>Phí vận chuyển:</span>
+                <span class="text-primary font-bold">Miễn phí (0 đ)</span>
+              </div>
+              <div class="pt-2 flex items-baseline justify-between border-t border-slate-800">
+                <div class="flex flex-col">
+                  <span class="text-sm font-bold text-white">Tổng thanh toán:</span>
+                  <span class="text-[10px] text-slate-500">(Đã bao gồm thuế VAT 10%)</span>
+                </div>
+                <span class="text-base font-black text-primary tabular">{{ cart.subtotal() | vnd }}</span>
+              </div>
+            </div>
+
+            <!-- COD Note -->
+            <div class="px-2.5 py-1.5 rounded bg-surface-elevated border border-slate-800 text-[11px] text-slate-400 leading-tight">
+              Cấu hình PC Custom Build chỉ cần đặt cọc trước 10% khi chọn hình thức thanh toán COD nhận hàng.
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-2 pt-1">
+              <a
+                routerLink="/checkout"
+                (click)="cart.closeDrawer()"
+                class="w-full h-10 rounded-lg bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-md"
+              >
+                <span>Tiến hành đặt hàng (Checkout)</span>
+                <lucide-icon name="arrow-right" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+              </a>
+              <div class="flex items-center justify-between text-xs pt-0.5">
+                <button
+                  type="button"
+                  (click)="cart.closeDrawer()"
+                  class="text-slate-400 hover:text-white transition-colors cursor-pointer"
+                >
+                  « Tiếp tục xem linh kiện
+                </button>
+                <a
+                  routerLink="/gio-hang"
+                  (click)="cart.closeDrawer()"
+                  class="text-primary hover:underline font-bold"
+                >
+                  Xem trang giỏ hàng chi tiết
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      </aside>
+    }
+  `,
+})
+export class CartDrawerComponent {
+  protected readonly cart = inject(CartService);
+  protected readonly onImageError = handleProductImageError;
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.cart.isDrawerOpen()) {
+      this.cart.closeDrawer();
+    }
+  }
+}

@@ -3,12 +3,23 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '../../components/atoms';
+import { CartDrawerComponent } from '../cart/cart-drawer.component';
 
 type NavItem = { label: string; path: string };
 
 @Component({
   selector: 'app-storefront-shell',
-  imports: [FormsModule, RouterLink, RouterLinkActive, RouterOutlet, AppIconModule, ButtonDirective, BadgeDirective, InputDirective],
+  imports: [
+    FormsModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    AppIconModule,
+    ButtonDirective,
+    BadgeDirective,
+    InputDirective,
+    CartDrawerComponent,
+  ],
   templateUrl: './storefront-shell.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
