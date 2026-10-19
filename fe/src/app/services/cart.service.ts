@@ -7,6 +7,7 @@ export type CartItem = {
   readonly skuId: number;
   readonly sku: string;
   readonly name: string;
+  readonly media?: unknown;
   readonly quantity: number;
   readonly unitPrice: string;
   readonly lineTotal: string;
@@ -30,9 +31,22 @@ export class CartService {
   private readonly storageKey = 'el-tech.cart-token';
   private readonly token = signal<string | null>(localStorage.getItem(this.storageKey));
   private readonly entries = signal<readonly CartItem[]>([]);
+  readonly isDrawerOpen = signal<boolean>(false);
   readonly items = this.entries.asReadonly();
   readonly itemCount = computed<number>(() => this.entries().reduce((total, item) => total + item.quantity, 0));
   readonly subtotal = computed<string>(() => this.entries().reduce((total, item) => total + BigInt(item.lineTotal), 0n).toString());
+
+  openDrawer(): void {
+    this.isDrawerOpen.set(true);
+  }
+
+  closeDrawer(): void {
+    this.isDrawerOpen.set(false);
+  }
+
+  toggleDrawer(): void {
+    this.isDrawerOpen.update((state) => !state);
+  }
 
   async load(): Promise<void> {
     const response = await this.api.get<CartPayload>('/cart', { headers: this.tokenHeaders() });
