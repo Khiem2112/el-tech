@@ -61,9 +61,27 @@ When building forms and user inputs:
 ### Architecture, Code Quality & Ambiguity
 
 When writing code or verifying logic:
+- `.agents/skills/checklist/SKILL.md` for mandatory pre-commit verification gates (running `tsc --noEmit`, lint, architectural layering, and zero-error delivery).
+- `.agents/skills/code-review/SKILL.md` for routing code reviews across functional and convention passes.
 - `.agents/skills/reuse-first/SKILL.md` for checking existing Spartan atoms, services, schemas, and utils before creating new files or abstractions.
-- `.agents/skills/typescript/SKILL.md` for strict TypeScript standards (`type` over `interface`, explicit return types, no `any`).
+- `.agents/skills/typescript/SKILL.md` for strict TypeScript standards (`type` over `interface`, explicit return types, no `any`, and pre-commit checks).
 - `.agents/skills/db-conventions/SKILL.md` for Prisma schema design, migrations, and model relationships.
 - `.agents/skills/implement-qa/SKILL.md` when specifications or business logic are ambiguous; write questions to `QA/QA-<slug>.md` and wait for user answers before guessing.
 - `.agents/skills/functional-review/SKILL.md` for verifying implementation against functional requirements and acceptance criteria.
 - `.agents/skills/graphify/SKILL.md` for codebase relationship mapping and knowledge graph queries.
+
+## Pre-Commit Automated Verification Gate
+
+Before staging, creating a commit, or marking a coding task complete, agents MUST run automated verification on all touched scopes:
+
+- Frontend changes:
+  - Run `npx tsc --noEmit` in `fe/` to verify TypeScript compile-time safety.
+  - Run `npm run lint` (or `npx eslint .`) in `fe/` to verify code quality and conventions.
+- Backend changes:
+  - Run `npx tsc --noEmit` in `be/` to verify TypeScript compile-time safety.
+  - Run `npm run lint` (or `npx eslint .`) in `be/` to verify code quality and conventions.
+- Mandatory gate:
+  - All verification commands must exit with code 0.
+  - If any type error or lint error occurs, commits are strictly blocked until the errors are fixed.
+  - Follow the command policy in `.agents/rules/command-whitelist.md`.
+

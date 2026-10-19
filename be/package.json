@@ -13,8 +13,11 @@
     "seed:mock:check": "python scripts/seed_mock_data.py --dry-run",
     "seed:mock": "python scripts/seed_mock_data.py",
     "seed:mock:reset": "python scripts/seed_mock_data.py --reset",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",

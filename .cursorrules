@@ -4,3 +4,5 @@ Read and follow `AGENTS.md` before making any code changes.
 Follow the Skill Loading Policy in `AGENTS.md` to load skills on demand directly from `.agents/skills/`. Do NOT copy or duplicate skills.
 Database schema management follows Prisma conventions in `.agents/skills/db-conventions/SKILL.md`.
 TypeScript standards follow `.agents/skills/typescript/SKILL.md`.
+Before committing or completing any task, run `npx tsc --noEmit` and `npm run lint` per `.agents/skills/checklist/SKILL.md`.
+
