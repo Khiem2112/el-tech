@@ -79,12 +79,15 @@ When designing or reviewing UI interactions:
 ### UI, Styling & Design System
 
 When building, styling, or auditing frontend interfaces:
+- Read `design-system/el-tech/MASTER.md` for the locked NVIDIA design system (softened geometry, high-contrast palette, typography scales).
+- Read `.agents/rules/atomic-design-spartan.md` to adhere strictly to Atomic Design (`atoms/`, `molecules/`, `organisms/`) and use restyled Spartan UI / Angular CDK primitives.
+- Read `.agents/skills/iconography/SKILL.md` to prioritize `lucide-angular` icons for compact, high-density actions over verbose text buttons and ASCII symbols.
 - Read `.agents/skills/ui-ux-pro-max/rules/style-discovery.md` and
   `.agents/skills/ui-ux-pro-max/rules/web-rules.md` before visually changing a
   user-facing surface.
 - `.agents/skills/styling/SKILL.md` for Angular Tailwind utility classes, `cn` / `hlm` dynamic class merging, and interactive component states.
-- `.agents/skills/ui-styling/SKILL.md` for version-verified Spartan UI/Angular CDK primitives and the tracked component registry; do not assume an atoms path exists.
-- `.agents/skills/design-system/SKILL.md` for the actual token architecture in `fe/src/styles.css`; do not assume unimplemented themes or tokens.
+- `.agents/skills/ui-styling/SKILL.md` for Spartan UI/Angular CDK primitives and the tracked component registry.
+- `.agents/skills/design-system/SKILL.md` for token architecture in `fe/src/styles.css`.
 - `.agents/skills/ui-ux-pro-max/SKILL.md` for design system guidance, color balance, typography, accessibility, and responsive behavior.
 - `.agents/skills/impeccable/SKILL.md` for visual polish, layout rhythm, contrast checks, and frontend defect detection.
 
