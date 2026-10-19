@@ -1,4 +1,4 @@
-import { ActorType, PaymentMethod, Prisma } from '@prisma/client';
+import { ActorType, Prisma } from '@prisma/client';
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
 

@@ -1,7 +1,17 @@
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
 
-const serialize = (order: { code: string; status: string; holdReason: string | null; payment: { state: string; method: string; totalReceived: { toFixed: (digits: number) => string }; codRemaining: { toFixed: (digits: number) => string } } | null; lines: readonly { nameSnapshot: string; quantity: number; netAmount: { toFixed: (digits: number) => string } }[]; statusHistories: readonly { nextStatus: string; reason: string | null; occurredAt: Date }[] }) => ({ code: order.code, status: order.status, holdReason: order.holdReason, payment: order.payment && { state: order.payment.state, method: order.payment.method, totalReceived: order.payment.totalReceived.toFixed(0), codRemaining: order.payment.codRemaining.toFixed(0) }, lines: order.lines.map((line) => ({ name: line.nameSnapshot, quantity: line.quantity, netAmount: line.netAmount.toFixed(0) })), timeline: order.statusHistories.map((entry) => ({ status: entry.nextStatus, reason: entry.reason, occurredAt: entry.occurredAt.toISOString() })) });
+type SerializedOrder = {
+  code: string;
+  status: string;
+  holdReason: string | null;
+  payment: { state: string; method: string; totalReceived: string; codRemaining: string } | null;
+  lines: { name: string; quantity: number; netAmount: string }[];
+  timeline: { status: string; reason: string | null; occurredAt: string }[];
+};
+
+const serialize = (order: { code: string; status: string; holdReason: string | null; payment: { state: string; method: string; totalReceived: { toFixed: (digits: number) => string }; codRemaining: { toFixed: (digits: number) => string } } | null; lines: readonly { nameSnapshot: string; quantity: number; netAmount: { toFixed: (digits: number) => string } }[]; statusHistories: readonly { nextStatus: string; reason: string | null; occurredAt: Date }[] }): SerializedOrder => ({ code: order.code, status: order.status, holdReason: order.holdReason, payment: order.payment && { state: order.payment.state, method: order.payment.method, totalReceived: order.payment.totalReceived.toFixed(0), codRemaining: order.payment.codRemaining.toFixed(0) }, lines: order.lines.map((line) => ({ name: line.nameSnapshot, quantity: line.quantity, netAmount: line.netAmount.toFixed(0) })), timeline: order.statusHistories.map((entry) => ({ status: entry.nextStatus, reason: entry.reason, occurredAt: entry.occurredAt.toISOString() })) });
+
 
 export const orderLookupService = {
   async request(code: string, identifier: string): Promise<{ verificationId: string; expiresAt: string }> {
