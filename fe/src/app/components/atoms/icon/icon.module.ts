@@ -11,6 +11,7 @@ import {
   Cpu,
   CreditCard,
   Eye,
+  FileText,
   Filter,
   LayoutGrid,
   List,
@@ -22,9 +23,12 @@ import {
   Package,
   Phone,
   Plus,
+  Printer,
   QrCode,
+  RefreshCw,
   RotateCcw,
   Search,
+  Share2,
   ShieldCheck,
   SlidersHorizontal,
   ShoppingCart,
@@ -35,6 +39,7 @@ import {
   User,
   Wrench,
   X,
+  Zap,
 } from 'lucide-angular';
 
 const ICONS = {
@@ -49,6 +54,7 @@ const ICONS = {
   Cpu,
   CreditCard,
   Eye,
+  FileText,
   Filter,
   LayoutGrid,
   List,
@@ -59,9 +65,12 @@ const ICONS = {
   Package,
   Phone,
   Plus,
+  Printer,
   QrCode,
+  RefreshCw,
   RotateCcw,
   Search,
+  Share2,
   ShieldCheck,
   SlidersHorizontal,
   ShoppingCart,
@@ -72,6 +81,7 @@ const ICONS = {
   User,
   Wrench,
   X,
+  Zap,
 };
 
 @NgModule({
