@@ -1,19 +1,45 @@
-import { computed, Injectable, signal } from '@angular/core';
-import type { Product } from '../data/product.data';
+import { HttpHeaders } from '@angular/common/http';
+import { computed, Injectable, inject, signal } from '@angular/core';
+import { ApiClientService } from '../core/api/api-client.service';
 
-export type CartItem = { product: Product; quantity: number };
+export type CartItem = { readonly id: string; readonly skuId: number; readonly sku: string; readonly name: string; readonly quantity: number; readonly unitPrice: string; readonly lineTotal: string };
+type CartPayload = { readonly token: string; readonly items: readonly CartItem[]; readonly subtotal: string };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CartService {
+  private readonly api = inject(ApiClientService);
+  private readonly storageKey = 'el-tech.cart-token';
+  private readonly token = signal<string | null>(localStorage.getItem(this.storageKey));
   private readonly entries = signal<readonly CartItem[]>([]);
   readonly items = this.entries.asReadonly();
   readonly itemCount = computed<number>(() => this.entries().reduce((total, item) => total + item.quantity, 0));
-  readonly subtotal = computed<number>(() => this.entries().reduce((total, item) => total + item.product.price * item.quantity, 0));
-  add(product: Product): void { const existing = this.entries().find((item) => item.product.id === product.id); if (existing) { this.setQuantity(product.id, existing.quantity + 1); return; } this.entries.update((items) => [...items, { product, quantity: 1 }]); }
-  increment(productId: string): void { const item = this.entries().find((entry) => entry.product.id === productId); if (item) this.setQuantity(productId, item.quantity + 1); }
-  decrement(productId: string): void { const item = this.entries().find((entry) => entry.product.id === productId); if (item) this.setQuantity(productId, item.quantity - 1); }
-  remove(productId: string): void { this.entries.update((items) => items.filter((item) => item.product.id !== productId)); }
-  clear(): void { this.entries.set([]); }
-  grandTotal(deliveryFee: number): number { return this.subtotal() + deliveryFee; }
-  private setQuantity(productId: string, quantity: number): void { if (quantity < 1) { this.remove(productId); return; } this.entries.update((items) => items.map((item) => item.product.id === productId ? { ...item, quantity } : item)); }
+  readonly subtotal = computed<string>(() => this.entries().reduce((total, item) => total + BigInt(item.lineTotal), 0n).toString());
+
+  async load(): Promise<void> {
+    const response = await this.api.get<CartPayload>('/cart', { headers: this.tokenHeaders() });
+    if (!response.success) throw new Error(response.error.messageKey);
+    this.apply(response.data);
+  }
+
+  async add(skuId: number, quantity = 1): Promise<void> {
+    const response = await this.api.post<CartPayload>('/cart/lines', { skuId, quantity }, { cartToken: this.token() ?? undefined });
+    if (!response.success) throw new Error(response.error.messageKey);
+    this.apply(response.data);
+  }
+
+  async setQuantity(itemId: string, quantity: number): Promise<void> {
+    const response = await this.api.patch<CartPayload>(`/cart/lines/${encodeURIComponent(itemId)}`, { quantity }, { cartToken: this.requiredToken() });
+    if (!response.success) throw new Error(response.error.messageKey);
+    this.apply(response.data);
+  }
+
+  async remove(itemId: string): Promise<void> {
+    const response = await this.api.delete<CartPayload>(`/cart/lines/${encodeURIComponent(itemId)}`, { cartToken: this.requiredToken() });
+    if (!response.success) throw new Error(response.error.messageKey);
+    this.apply(response.data);
+  }
+
+  private apply(payload: CartPayload): void { this.token.set(payload.token); localStorage.setItem(this.storageKey, payload.token); this.entries.set(payload.items); }
+  private requiredToken(): string { const token = this.token(); if (!token) throw new Error('Cart has not been initialized'); return token; }
+  private tokenHeaders(): HttpHeaders | undefined { const token = this.token(); return token ? new HttpHeaders({ 'X-Cart-Token': token }) : undefined; }
 }

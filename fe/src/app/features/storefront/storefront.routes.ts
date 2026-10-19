@@ -11,7 +11,7 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'pc-dung-san', loadComponent: () => import('../pc-build/pc-build-page.component').then((module) => module.PcBuildPageComponent) },
       { path: 'tu-lap-pc', loadComponent: () => import('../pc-build/custom-build-page.component').then((module) => module.CustomBuildPageComponent) },
       { path: 'tra-cuu-don', loadComponent: () => import('./storefront-placeholder.component').then((module) => module.StorefrontPlaceholderComponent), data: { title: 'Theo dõi đơn', description: 'Tra cứu đơn bằng mã đơn và OTP sẽ được mở ở Phase 7.' } },
-      { path: 'gio-hang', loadComponent: () => import('./storefront-placeholder.component').then((module) => module.StorefrontPlaceholderComponent), data: { title: 'Giỏ hàng', description: 'Giỏ hàng có token ẩn sẽ được mở ở Phase 4.' } },
+      { path: 'gio-hang', loadComponent: () => import('../cart/cart-page.component').then((module) => module.CartPageComponent) },
     ],
   },
 ];
