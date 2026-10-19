@@ -13,6 +13,8 @@
     "seed:mock:check": "python scripts/seed_mock_data.py --dry-run",
     "seed:mock": "python scripts/seed_mock_data.py",
     "seed:mock:reset": "python scripts/seed_mock_data.py --reset",
+    "seed:demo": "npx tsx scripts/seed_demo_flow_data.ts",
+    "seed:demo:check": "npx tsx scripts/count_system_records.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
