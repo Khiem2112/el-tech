@@ -2,8 +2,27 @@ import { HttpHeaders } from '@angular/common/http';
 import { computed, Injectable, inject, signal } from '@angular/core';
 import { ApiClientService } from '../core/api/api-client.service';
 
-export type CartItem = { readonly id: string; readonly skuId: number; readonly sku: string; readonly name: string; readonly quantity: number; readonly unitPrice: string; readonly lineTotal: string };
+export type CartItem = {
+  readonly id: string;
+  readonly skuId: number;
+  readonly sku: string;
+  readonly name: string;
+  readonly quantity: number;
+  readonly unitPrice: string;
+  readonly lineTotal: string;
+  readonly lineType: string;
+  readonly pcBuildName?: string | null;
+  readonly pcBuildType?: string | null;
+};
 type CartPayload = { readonly token: string; readonly items: readonly CartItem[]; readonly subtotal: string };
+
+export type AddBuildInput = {
+  readonly buildName: string;
+  readonly buildType: 'PREBUILT' | 'CUSTOM';
+  readonly sourcePcBundleId?: number;
+  readonly items: readonly { readonly skuId: number; readonly quantity: number }[];
+  readonly hasAssemblyService?: boolean;
+};
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -23,6 +42,12 @@ export class CartService {
 
   async add(skuId: number, quantity = 1): Promise<void> {
     const response = await this.api.post<CartPayload>('/cart/lines', { skuId, quantity }, { cartToken: this.token() ?? undefined });
+    if (!response.success) throw new Error(response.error.messageKey);
+    this.apply(response.data);
+  }
+
+  async addBuild(input: AddBuildInput): Promise<void> {
+    const response = await this.api.post<CartPayload>('/cart/builds', input, { cartToken: this.token() ?? undefined });
     if (!response.success) throw new Error(response.error.messageKey);
     this.apply(response.data);
   }
