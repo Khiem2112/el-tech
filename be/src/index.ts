@@ -9,6 +9,7 @@ import { checkoutRouter } from './routes/checkout.routes.js';
 import { orderRouter } from './routes/order.routes.js';
 import { paymentRouter } from './routes/payment.routes.js';
 import { orderLookupRouter } from './routes/order-lookup.routes.js';
+import { reviewRouter } from './routes/review.routes.js';
 
 const app = express();
 app.use(cors({ origin: environment.CORS_ORIGIN, credentials: true }));
@@ -21,6 +22,7 @@ app.use('/v1', checkoutRouter);
 app.use('/v1', orderRouter);
 app.use('/v1', paymentRouter);
 app.use('/v1', orderLookupRouter);
+app.use('/v1', reviewRouter);
 app.use(errorHandler);
 
 app.listen(environment.PORT, (): void => { console.info(`EL-TECH API listening on port ${environment.PORT}`); });
