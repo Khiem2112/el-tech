@@ -13,11 +13,21 @@ catalogRouter.get('/branches', async (request, response, next): Promise<void> =>
   try { response.json(success(await catalogService.getBranches(), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
 });
 
+catalogRouter.get('/brands', async (_request, response, next): Promise<void> => {
+  try { response.json(success(await catalogService.getBrands(), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
+});
+
 catalogRouter.get('/products', async (request, response, next): Promise<void> => {
   try {
     const query = typeof request.query.q === 'string' ? request.query.q : undefined;
     const category = typeof request.query.category === 'string' ? request.query.category : undefined;
-    response.json(success(await catalogService.findProducts({ query, category }), response.locals.correlationId as string));
+    const brand = typeof request.query.brand === 'string' ? request.query.brand : undefined;
+    const minPriceRaw = typeof request.query.minPrice === 'string' ? Number(request.query.minPrice) : undefined;
+    const minPrice = minPriceRaw !== undefined && !Number.isNaN(minPriceRaw) ? minPriceRaw : undefined;
+    const maxPriceRaw = typeof request.query.maxPrice === 'string' ? Number(request.query.maxPrice) : undefined;
+    const maxPrice = maxPriceRaw !== undefined && !Number.isNaN(maxPriceRaw) ? maxPriceRaw : undefined;
+    const sort = typeof request.query.sort === 'string' ? request.query.sort : undefined;
+    response.json(success(await catalogService.findProducts({ query, category, brand, minPrice, maxPrice, sort }), response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 

@@ -6,7 +6,7 @@ import { ApiResponse } from './api.types';
 @Injectable({ providedIn: 'root' })
 export class ApiClientService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/v1';
+  private readonly baseUrl = typeof window !== 'undefined' && window.location.port === '4200' ? 'http://localhost:3000/v1' : '/v1';
 
   async get<T>(path: string, options: { readonly headers?: HttpHeaders } = {}): Promise<ApiResponse<T>> {
     return firstValueFrom(this.http.get<ApiResponse<T>>(`${this.baseUrl}${path}`, options));

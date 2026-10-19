@@ -1,15 +1,34 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiClientService } from '../../core/api/api-client.service';
 
-export type CatalogProduct = { id: number; name: string; slug: string; model: string; description: string | null; category: { name: string; slug: string }; brand: { name: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] };
+export type CatalogProduct = { id: number; name: string; slug: string; model: string; description: string | null; category: { name: string; slug: string }; brand: { name: string; slug?: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] };
 export type ProductDetail = CatalogProduct & { commonSpec: unknown; media: unknown };
 export type CatalogCategory = { id: number; parentId: number | null; name: string; slug: string; description: string | null };
+export type CatalogBrand = { id: number; name: string; slug: string; description: string | null };
+export type ProductReviewItem = { id: string; rating: number; text: string; createdAt: string };
+
+export type ProductFilterParams = {
+  readonly query?: string;
+  readonly category?: string;
+  readonly brand?: string;
+  readonly minPrice?: number | null;
+  readonly maxPrice?: number | null;
+  readonly sort?: string;
+};
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
   private readonly api = inject(ApiClientService);
-  async list(query = '', category = ''): Promise<readonly CatalogProduct[]> {
-    const parameters = new URLSearchParams(); if (query) parameters.set('q', query); if (category) parameters.set('category', category);
+  async list(queryOrFilters: string | ProductFilterParams = '', category = ''): Promise<readonly CatalogProduct[]> {
+    const filters: ProductFilterParams = typeof queryOrFilters === 'string' ? { query: queryOrFilters, category } : queryOrFilters;
+    const parameters = new URLSearchParams();
+    if (filters.query) parameters.set('q', filters.query);
+    if (filters.category) parameters.set('category', filters.category);
+    if (filters.brand) parameters.set('brand', filters.brand);
+    if (filters.minPrice !== undefined && filters.minPrice !== null) parameters.set('minPrice', String(filters.minPrice));
+    if (filters.maxPrice !== undefined && filters.maxPrice !== null) parameters.set('maxPrice', String(filters.maxPrice));
+    if (filters.sort) parameters.set('sort', filters.sort);
+
     const response = await this.api.get<readonly CatalogProduct[]>(`/products${parameters.size ? `?${parameters}` : ''}`);
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
@@ -19,8 +38,18 @@ export class CatalogService {
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
+  async reviews(productSlug: string): Promise<readonly ProductReviewItem[]> {
+    const response = await this.api.get<readonly ProductReviewItem[]>(`/products/${encodeURIComponent(productSlug)}/reviews`);
+    if (!response.success) throw new Error(response.error.messageKey);
+    return response.data;
+  }
   async categories(): Promise<readonly CatalogCategory[]> {
     const response = await this.api.get<readonly CatalogCategory[]>('/categories');
+    if (!response.success) throw new Error(response.error.messageKey);
+    return response.data;
+  }
+  async brands(): Promise<readonly CatalogBrand[]> {
+    const response = await this.api.get<readonly CatalogBrand[]>('/brands');
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
