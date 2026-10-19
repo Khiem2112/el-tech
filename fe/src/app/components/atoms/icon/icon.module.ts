@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import {
   ArrowRight,
   ArrowUpDown,
+  Camera,
   Check,
   ChevronDown,
   ChevronRight,
@@ -11,6 +12,8 @@ import {
   CreditCard,
   Eye,
   Filter,
+  LayoutGrid,
+  List,
   LucideAngularModule,
   Mail,
   MapPin,
@@ -37,6 +40,7 @@ import {
 const ICONS = {
   ArrowRight,
   ArrowUpDown,
+  Camera,
   Check,
   ChevronDown,
   ChevronRight,
@@ -46,6 +50,8 @@ const ICONS = {
   CreditCard,
   Eye,
   Filter,
+  LayoutGrid,
+  List,
   Mail,
   MapPin,
   Menu,

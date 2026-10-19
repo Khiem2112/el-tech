@@ -23,7 +23,7 @@ He thong luong khach hang duoc chia thanh 9 cum tinh nang tuong ung voi 9 task t
 | TASK-01 | `header.html`, `footer.html`, `index.html` | `features/storefront/storefront-shell.component.*`, `styles.css` | Complete |
 | TASK-02 | `cart.html` | `features/cart/cart-drawer.component.*`, `services/cart.service.ts` | Complete |
 | TASK-03 | `product-list.html`, `filterbar.html`, `catalog-filter.js` | `features/catalog/catalog-page.component.ts`, `catalog.service.ts` | Complete |
-| TASK-04 | `product-detail.html`, `user-review-form.html` | `features/catalog/product-detail-page.component.ts`, `review-modal.component.ts` | Pending |
+| TASK-04 | `product-detail.html`, `user-review-form.html` | `features/catalog/product-detail-page.component.ts`, `review-modal.component.ts` | Complete |
 | TASK-05 | `pc-build.html`, `change-component.html` | `features/pc-build/custom-build-page.component.ts`, `component-swap-modal.component.ts` | Pending |
 | TASK-06 | `checkout.html`, `order-success.html` | `features/checkout/checkout-page.component.ts`, `order-success-page.component.ts` | Pending |
 | TASK-07 | `order-tracking.html`, `order-kanban-view.html`, `order-cancel.html` | `features/orders/order-lookup-page.component.ts`, `order-kanban-page.component.ts`, `order-cancel-modal.component.ts` | Pending |
