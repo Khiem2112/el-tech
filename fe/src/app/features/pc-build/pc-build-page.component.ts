@@ -3,14 +3,101 @@ import { Router, RouterLink } from '@angular/router';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { ApiClientService } from '../../core/api/api-client.service';
 import { CartService } from '../../services/cart.service';
+import { ButtonDirective } from '../../components/atoms/button/button.directive';
+import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
+import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
 type Bundle = { id: number; name: string; slug: string; description: string | null; build: { total: string; lines: readonly { skuId: number; sku: string; name: string; quantity: number; unitPrice: string }[] } };
 
 @Component({
   selector: 'app-pc-build-page',
-  imports: [RouterLink, VndPipe],
+  imports: [RouterLink, VndPipe, ButtonDirective, BadgeDirective, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8"><p class="text-xs font-extrabold tracking-[.16em] text-primary">VIRTUAL PC BUNDLES</p><h1 class="mt-2 text-3xl font-extrabold">PC dựng sẵn</h1><p class="mt-3 max-w-2xl text-muted">Mỗi cấu hình được tạo từ linh kiện thực tế; tồn kho được xác nhận lại theo từng component khi checkout.</p>@if (loading()) { <div class="mt-8 grid gap-4 md:grid-cols-2">@for (item of [1,2]; track item) { <div class="h-56 animate-pulse rounded-2xl bg-surface-alt"></div> }</div> } @else if (error()) { <div class="mt-8 rounded-xl bg-danger/10 p-5" role="alert">Không thể tải cấu hình. <button class="font-bold underline" type="button" (click)="load()">Thử lại</button></div> } @else { <div class="mt-8 grid gap-5 md:grid-cols-2">@for (bundle of bundles(); track bundle.id) { <article class="rounded-2xl border border-line bg-surface p-6 shadow-card"><h2 class="text-xl font-bold">{{ bundle.name }}</h2><p class="mt-2 text-sm text-muted">{{ bundle.description }}</p><ul class="mt-5 space-y-2 text-sm">@for (line of bundle.build.lines; track line.sku) { <li>{{ line.name }} ×{{ line.quantity }}</li> }</ul><p class="mt-6 text-2xl font-extrabold">{{ bundle.build.total | vnd }}</p><div class="mt-5 flex items-center gap-3"><button type="button" class="rounded-xl bg-primary px-4 py-2.5 text-sm font-extrabold text-primary-foreground disabled:opacity-50" (click)="addToCart(bundle)">Thêm vào giỏ</button><a class="inline-flex rounded-lg border border-line px-4 py-2 text-sm font-bold hover:border-primary" routerLink="/tu-lap-pc">Tùy chỉnh cấu hình</a></div></article> }</div> }</section>`,
+  template: `
+    <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div class="pb-6 border-b border-border">
+        <nav class="text-xs text-muted mb-1">
+          <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
+          <span class="text-foreground font-bold">PC dựng sẵn</span>
+        </nav>
+        <div class="flex items-center gap-2">
+          <span appBadge variant="outline" class="text-xs text-primary border-primary/30">VIRTUAL PC BUNDLES</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight mt-2">Dàn Máy PC Dựng Sẵn (Prebuilt)</h1>
+        <p class="text-xs text-muted mt-1 max-w-2xl">Mỗi cấu hình được chọn lọc từ linh kiện thực tế; tương thích tuyệt đối và kiểm tra stress test 24h trước khi xuất xưởng.</p>
+      </div>
+
+      @if (loading()) {
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          @for (item of [1, 2]; track item) {
+            <div class="h-64 animate-pulse rounded-xl bg-surface-alt border border-border"></div>
+          }
+        </div>
+      } @else if (error()) {
+        <div class="mt-8 rounded-lg bg-danger/10 border border-danger/30 p-5 text-center" role="alert">
+          <p class="text-sm font-bold text-foreground">Không thể tải cấu hình máy tính dựng sẵn.</p>
+          <button appButton variant="primary" size="sm" class="mt-3" type="button" (click)="load()">
+            Thử lại
+          </button>
+        </div>
+      } @else {
+        <div class="mt-8 grid gap-6 md:grid-cols-2">
+          @for (bundle of bundles(); track bundle.id) {
+            <article class="rounded-xl border border-border bg-surface p-6 shadow-sm flex flex-col justify-between hover:border-primary/50 transition-all">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span appBadge variant="primary" class="text-[10px]">ELT BUNDLE</span>
+                  <span class="text-xs text-muted">BOM CHÍNH HÃNG</span>
+                </div>
+                <h2 class="text-lg font-bold text-foreground mt-2">{{ bundle.name }}</h2>
+                <p class="mt-1 text-xs text-muted leading-relaxed">{{ bundle.description }}</p>
+                
+                <div class="mt-4 pt-4 border-t border-border">
+                  <span class="text-xs font-bold text-foreground uppercase block mb-2">Danh sách linh kiện trong bộ:</span>
+                  <ul class="space-y-1.5 text-xs text-muted">
+                    @for (line of bundle.build.lines; track line.sku) {
+                      <li class="flex items-center justify-between gap-2">
+                        <span class="truncate">{{ line.name }}</span>
+                        <span class="font-bold text-foreground shrink-0">×{{ line.quantity }}</span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-border">
+                <div class="flex items-baseline justify-between mb-4">
+                  <span class="text-xs text-muted">Giá trọn gói lắp ráp:</span>
+                  <span class="text-xl font-black text-primary tabular">{{ bundle.build.total | vnd }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    appButton
+                    variant="primary"
+                    size="md"
+                    (click)="addToCart(bundle)"
+                  >
+                    <lucide-icon name="ShoppingCart" class="size-4" aria-hidden="true"></lucide-icon>
+                    <span>Thêm vào giỏ</span>
+                  </button>
+                  <a
+                    routerLink="/tu-lap-pc"
+                    appButton
+                    variant="secondary"
+                    size="md"
+                  >
+                    <lucide-icon name="Wrench" class="size-4" aria-hidden="true"></lucide-icon>
+                    <span>Tùy chỉnh thêm</span>
+                  </a>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+  `,
 })
 export class PcBuildPageComponent {
   private readonly api = inject(ApiClientService);

@@ -19,7 +19,7 @@ export const catalogService = {
   async getBranches(): Promise<readonly { id: number; code: string; name: string; address: string; openingHour: unknown }[]> {
     return prisma.branch.findMany({ where: { isActive: true }, select: { id: true, code: true, name: true, address: true, openingHour: true }, orderBy: { deliveryPriority: 'asc' } });
   },
-  async findProducts(input: FindProductsInput): Promise<readonly { id: number; name: string; slug: string; model: string; description: string | null; category: { name: string; slug: string }; brand: { name: string; slug: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] }[]> {
+  async findProducts(input: FindProductsInput): Promise<readonly { id: number; name: string; slug: string; model: string; description: string | null; media: unknown; category: { name: string; slug: string }; brand: { name: string; slug: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] }[]> {
     const query = input.query?.trim();
     const minPrice = typeof input.minPrice === 'number' && !Number.isNaN(input.minPrice) ? input.minPrice : undefined;
     const maxPrice = typeof input.maxPrice === 'number' && !Number.isNaN(input.maxPrice) ? input.maxPrice : undefined;
@@ -50,6 +50,7 @@ export const catalogService = {
         slug: true,
         model: true,
         description: true,
+        media: true,
         category: { select: { name: true, slug: true } },
         brand: { select: { name: true, slug: true } },
         variants: {

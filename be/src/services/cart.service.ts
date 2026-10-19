@@ -3,14 +3,14 @@ import { DomainError } from '../contracts/domain-error.js';
 
 type CartLineInput = { readonly skuId: number; readonly quantity: number };
 type CartBuildInput = { readonly buildName: string; readonly buildType: 'PREBUILT' | 'CUSTOM'; readonly sourcePcBundleId?: number; readonly items: readonly { readonly skuId: number; readonly quantity: number }[]; readonly hasAssemblyService?: boolean };
-export type CartItemView = { readonly id: string; readonly skuId: number; readonly sku: string; readonly name: string; readonly quantity: number; readonly unitPrice: string; readonly lineTotal: string; readonly lineType: string; readonly pcBuildKey?: string | null; readonly pcBuildName?: string | null; readonly pcBuildType?: string | null };
+export type CartItemView = { readonly id: string; readonly skuId: number; readonly sku: string; readonly name: string; readonly media?: unknown; readonly quantity: number; readonly unitPrice: string; readonly lineTotal: string; readonly lineType: string; readonly pcBuildKey?: string | null; readonly pcBuildName?: string | null; readonly pcBuildType?: string | null };
 type CartView = { readonly token: string; readonly items: readonly CartItemView[]; readonly subtotal: string };
 
 const cartInclude = {
   items: { where: { isActive: true }, orderBy: { sortOrder: 'asc' as const }, include: { sku: { include: { productTemplate: true } } } },
 } as const;
 
-const serialize = (cart: { opaqueToken: string; items: readonly { id: string; skuId: number | null; lineType: string; serviceType: string | null; pcBuildKey: string | null; pcBuildName: string | null; pcBuildType: string | null; quantity: number; sku: { sku: string; sellingPrice: { toFixed: (digits: number) => string; mul: (value: number) => { toFixed: (digits: number) => string } }; productTemplate: { name: string } } | null }[] }): CartView => {
+const serialize = (cart: { opaqueToken: string; items: readonly { id: string; skuId: number | null; lineType: string; serviceType: string | null; pcBuildKey: string | null; pcBuildName: string | null; pcBuildType: string | null; quantity: number; sku: { sku: string; sellingPrice: { toFixed: (digits: number) => string; mul: (value: number) => { toFixed: (digits: number) => string } }; productTemplate: { name: string; media: unknown } } | null }[] }): CartView => {
   const items = cart.items.flatMap((item) => {
     if (item.lineType === 'SERVICE') {
       return [{
@@ -18,6 +18,7 @@ const serialize = (cart: { opaqueToken: string; items: readonly { id: string; sk
         skuId: 0,
         sku: 'SERVICE-ASSEMBLY',
         name: `Dich vu lap rap PC (${item.pcBuildName ?? 'PC'})`,
+        media: null,
         quantity: item.quantity,
         unitPrice: '0',
         lineTotal: '0',
@@ -33,6 +34,7 @@ const serialize = (cart: { opaqueToken: string; items: readonly { id: string; sk
         skuId: item.skuId,
         sku: item.sku.sku,
         name: item.sku.productTemplate.name,
+        media: item.sku.productTemplate.media,
         quantity: item.quantity,
         unitPrice: item.sku.sellingPrice.toFixed(0),
         lineTotal: item.sku.sellingPrice.mul(item.quantity).toFixed(0),

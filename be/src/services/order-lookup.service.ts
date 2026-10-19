@@ -31,6 +31,7 @@ type SerializedOrder = {
     skuId: number | null;
     sku: string | null;
     name: string;
+    media?: unknown;
     quantity: number;
     unitPrice: string;
     netAmount: string;
@@ -76,6 +77,7 @@ type OrderRecord = {
     pcBuildNameSnapshot: string | null;
     pcBuildTypeSnapshot: string | null;
     review: unknown | null;
+    sku?: { productTemplate?: { media: unknown } | null } | null;
   }[];
   statusHistories: readonly { nextStatus: string; reason: string | null; occurredAt: Date }[];
 };
@@ -115,6 +117,7 @@ const serialize = (order: OrderRecord): SerializedOrder => {
       skuId: line.skuId,
       sku: line.skuSnapshot,
       name: line.nameSnapshot,
+      media: line.sku?.productTemplate?.media ?? null,
       quantity: line.quantity,
       unitPrice: line.unitPrice.toFixed(0),
       netAmount: line.netAmount.toFixed(0),
@@ -147,7 +150,7 @@ export const orderLookupService = {
         order: {
           include: {
             payment: { include: { charges: true } },
-            lines: { include: { review: true } },
+            lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
             statusHistories: { orderBy: { occurredAt: 'asc' } },
           },
         },
@@ -160,7 +163,7 @@ export const orderLookupService = {
       where: { id: verification.order.id },
       include: {
         payment: { include: { charges: true } },
-        lines: { include: { review: true } },
+        lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
         statusHistories: { orderBy: { occurredAt: 'asc' } },
       },
     });
@@ -186,7 +189,7 @@ export const orderLookupService = {
       where: { id: verification.orderId },
       include: {
         payment: { include: { charges: true } },
-        lines: { include: { review: true } },
+        lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
         statusHistories: { orderBy: { occurredAt: 'asc' } },
       },
     });

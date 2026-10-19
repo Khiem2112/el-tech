@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '../../components/atoms';
+import { AppIconModule, BadgeDirective } from '../../components/atoms';
 import { CartDrawerComponent } from '../cart/cart-drawer.component';
 import { AuthModalComponent } from '../auth/auth-modal.component';
 
@@ -17,9 +17,7 @@ type NavItem = { label: string; path: string };
     RouterLinkActive,
     RouterOutlet,
     AppIconModule,
-    ButtonDirective,
     BadgeDirective,
-    InputDirective,
     CartDrawerComponent,
     AuthModalComponent,
   ],

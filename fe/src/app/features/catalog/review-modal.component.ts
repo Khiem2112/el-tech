@@ -143,13 +143,13 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 appButton
                 variant="primary"
                 size="sm"
-                [disabled]="isSubmitting() || submitted()"
+                [disabled]="isSubmitting() || isSubmittedState()"
                 (click)="submitReview()"
                 class="min-w-[140px]"
               >
                 @if (isSubmitting()) {
                   <span>Đang mã hóa...</span>
-                } @else if (submitted()) {
+                } @else if (isSubmittedState()) {
                   <span>Đã gửi thành công!</span>
                 } @else {
                   <span>Gửi đánh giá xác thực</span>
@@ -168,11 +168,13 @@ export class ReviewModalComponent {
   @Input() serialNumber = '';
   @Input() productName = '';
   @Output() closed = new EventEmitter<void>();
+  @Output() closeModal = new EventEmitter<void>();
+  @Output() submitted = new EventEmitter<{ rating: number; content: string }>();
 
   protected readonly rating = signal(5);
   protected readonly selectedPills = signal<string[]>(['Nhiệt độ mát < 60°C', 'Êm ái không ồn']);
   protected readonly isSubmitting = signal(false);
-  protected readonly submitted = signal(false);
+  protected readonly isSubmittedState = signal(false);
   protected reviewText = '';
 
   protected readonly criteriaList = [
@@ -209,6 +211,7 @@ export class ReviewModalComponent {
 
   protected close(): void {
     this.closed.emit();
+    this.closeModal.emit();
   }
 
   protected onBackdropClick(event: MouseEvent): void {
@@ -228,9 +231,13 @@ export class ReviewModalComponent {
     this.isSubmitting.set(true);
     setTimeout(() => {
       this.isSubmitting.set(false);
-      this.submitted.set(true);
+      this.isSubmittedState.set(true);
+      this.submitted.emit({
+        rating: this.rating(),
+        content: this.reviewText.trim(),
+      });
       setTimeout(() => {
-        this.submitted.set(false);
+        this.isSubmittedState.set(false);
         this.close();
       }, 1200);
     }, 800);

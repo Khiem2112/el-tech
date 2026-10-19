@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { AppIconModule, BadgeDirective, ButtonDirective } from '../../components/atoms';
+import { Router } from '@angular/router';
+import { AppIconModule, ButtonDirective } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { CartService } from '../../services/cart.service';
 import { ComponentSwapModalComponent, SwapItem, SwapSlotItem } from './component-swap-modal.component';
@@ -392,7 +392,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
 
 @Component({
   selector: 'app-custom-build-page',
-  imports: [RouterLink, VndPipe, AppIconModule, ButtonDirective, BadgeDirective, ComponentSwapModalComponent],
+  imports: [VndPipe, AppIconModule, ButtonDirective, ComponentSwapModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">

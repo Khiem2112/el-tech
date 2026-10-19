@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { AppIconModule, BadgeDirective, ButtonDirective } from '../../components/atoms';
+import { AppIconModule, ButtonDirective } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
 
 type StoredOrderData = {
@@ -26,7 +26,7 @@ type StoredOrderData = {
 
 @Component({
   selector: 'app-order-success-page',
-  imports: [RouterLink, VndPipe, AppIconModule, ButtonDirective, BadgeDirective],
+  imports: [RouterLink, VndPipe, AppIconModule, ButtonDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [`
     @media print {

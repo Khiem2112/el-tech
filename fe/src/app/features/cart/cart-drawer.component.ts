@@ -5,12 +5,11 @@ import { VndPipe } from '../../lib/vnd.pipe';
 import { ProductImagePipe } from '../../lib/product-image.pipe';
 import { handleProductImageError } from '../../core/constants/product.constants';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
-import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
 @Component({
   selector: 'app-cart-drawer',
-  imports: [RouterLink, VndPipe, ProductImagePipe, ButtonDirective, BadgeDirective, AppIconModule],
+  imports: [RouterLink, VndPipe, ProductImagePipe, ButtonDirective, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (cart.isDrawerOpen()) {

@@ -1,4 +1,17 @@
-export type Product = { id: string; name: string; brand: string; category: string; categoryLabel: string; price: number; stock: number; spec: string; badge: string; visual: string };
+export type Product = {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  categoryLabel: string;
+  price: number;
+  stock: number;
+  spec: string;
+  badge: string;
+  visual: string;
+  imageUrl?: string;
+  media?: unknown;
+};
 
 export const PRODUCTS: readonly Product[] = [
   { id: 'gpu-rtx-5070', name: 'GeForce RTX 5070 Windforce OC 12G', brand: 'GIGABYTE', category: 'gpu', categoryLabel: 'Card đồ hoạ', price: 18490000, stock: 8, spec: '12GB GDDR7 · DLSS 4 · 250W', badge: 'Mới về', visual: 'GPU' },

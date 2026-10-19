@@ -10,7 +10,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[class]': 'hostClasses()',
-    '[disabled]': 'disabled()',
+    '[attr.disabled]': 'disabled() ? "" : null',
     '[attr.aria-disabled]': 'disabled() ? "true" : null',
   },
   template: `<ng-content />`,
