@@ -26,10 +26,15 @@ export const checkoutService = {
 
   async quote(input: QuoteInput): Promise<{ cartToken: string; branches: readonly { id: number; name: string; available: boolean }[]; subtotal: string; shippingFee: string; grandTotal: string }> {
     const cart = await prisma.cart.findFirst({ where: { opaqueToken: input.cartToken, isActive: true }, include: { items: { where: { isActive: true }, include: { sku: true } } } });
-    if (!cart || !cart.items.length || cart.items.some((line) => !line.sku)) throw new DomainError('CART_EMPTY', { messageKey: 'error.cartEmpty', status: 409 });
+    const skuItems = cart?.items.filter((line) => line.lineType === 'SKU') ?? [];
+    if (!cart || !cart.items.length || !skuItems.length || skuItems.some((line) => !line.sku)) {
+      throw new DomainError('CART_EMPTY', { messageKey: 'error.cartEmpty', status: 409 });
+    }
     const quantities = new Map<number, number>();
-    for (const item of cart.items) quantities.set(item.skuId!, (quantities.get(item.skuId!) ?? 0) + item.quantity);
-    const subtotal = cart.items.reduce((sum, item) => sum.add(item.sku!.sellingPrice.mul(item.quantity)), new Prisma.Decimal(0));
+    for (const item of skuItems) {
+      if (item.skuId) quantities.set(item.skuId, (quantities.get(item.skuId) ?? 0) + item.quantity);
+    }
+    const subtotal = skuItems.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
     const branches = await prisma.branch.findMany({ where: { isActive: true, ...(input.fulfillmentMethod === 'DELIVERY' && input.deliveryAreaCode ? { deliveryAreaCodes: { has: input.deliveryAreaCode } } : {}) }, include: { stockQuants: { where: { isActive: true, skuId: { in: [...quantities.keys()] } } } }, orderBy: { deliveryPriority: 'asc' } });
     const candidates = branches.map((branch) => ({ id: branch.id, name: branch.name, available: [...quantities].every(([skuId, quantity]) => { const stock = branch.stockQuants.find((item) => item.skuId === skuId); return Boolean(stock && stock.onHand - stock.reserved - stock.quarantineDamaged >= quantity); }) }));
     const feeConfig = input.fulfillmentMethod === 'DELIVERY' ? await prisma.deliveryFeeConfig.findFirst({ where: { isActive: true, effectiveFrom: { lte: new Date() }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: new Date() } }] }, orderBy: { effectiveFrom: 'desc' } }) : null;
