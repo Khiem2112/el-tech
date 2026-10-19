@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiClientService } from '../../core/api/api-client.service';
 
-export type CatalogProduct = { id: number; name: string; slug: string; model: string; description: string | null; category: { name: string; slug: string }; brand: { name: string; slug?: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] };
+export type CatalogProduct = { id: number; name: string; slug: string; model: string; description: string | null; media?: unknown; category: { name: string; slug: string }; brand: { name: string; slug?: string }; variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[] };
 export type ProductDetail = CatalogProduct & { commonSpec: unknown; media: unknown };
 export type CatalogCategory = { id: number; parentId: number | null; name: string; slug: string; description: string | null };
 export type CatalogBrand = { id: number; name: string; slug: string; description: string | null };
