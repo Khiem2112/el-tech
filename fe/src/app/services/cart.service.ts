@@ -39,6 +39,8 @@ export class CartService {
     this.apply(response.data);
   }
 
+  cartToken(): string | null { return this.token(); }
+
   private apply(payload: CartPayload): void { this.token.set(payload.token); localStorage.setItem(this.storageKey, payload.token); this.entries.set(payload.items); }
   private requiredToken(): string { const token = this.token(); if (!token) throw new Error('Cart has not been initialized'); return token; }
   private tokenHeaders(): HttpHeaders | undefined { const token = this.token(); return token ? new HttpHeaders({ 'X-Cart-Token': token }) : undefined; }

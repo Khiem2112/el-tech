@@ -12,6 +12,7 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'tu-lap-pc', loadComponent: () => import('../pc-build/custom-build-page.component').then((module) => module.CustomBuildPageComponent) },
       { path: 'tra-cuu-don', loadComponent: () => import('./storefront-placeholder.component').then((module) => module.StorefrontPlaceholderComponent), data: { title: 'Theo dõi đơn', description: 'Tra cứu đơn bằng mã đơn và OTP sẽ được mở ở Phase 7.' } },
       { path: 'gio-hang', loadComponent: () => import('../cart/cart-page.component').then((module) => module.CartPageComponent) },
+      { path: 'checkout', loadComponent: () => import('../checkout/checkout-page.component').then((module) => module.CheckoutPageComponent) },
     ],
   },
 ];
