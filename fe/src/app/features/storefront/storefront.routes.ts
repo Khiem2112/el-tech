@@ -18,6 +18,8 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'dat-hang-thanh-cong/:code', loadComponent: () => import('../checkout/order-success-page.component').then((module) => module.OrderSuccessPageComponent) },
       { path: 'chinh-sach', loadComponent: () => import('../refund/refund-page.component').then((module) => module.RefundPageComponent) },
       { path: 'refund', redirectTo: 'chinh-sach', pathMatch: 'full' },
+      { path: 'tai-khoan', loadComponent: () => import('../profile/profile-page.component').then((module) => module.ProfilePageComponent) },
+      { path: 'profile', redirectTo: 'tai-khoan', pathMatch: 'full' },
     ],
   },
 ];

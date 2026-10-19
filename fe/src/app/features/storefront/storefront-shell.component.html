@@ -109,14 +109,26 @@
     <!-- User Actions -->
     <div class="flex items-center gap-2">
       <!-- Profile Button -->
-      <a
-        routerLink="/tai-khoan"
-        class="h-9 px-3 rounded-lg border border-slate-700 bg-surface-elevated hover:bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors"
-        aria-label="Tài khoản cá nhân"
-      >
-        <lucide-icon name="user" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
-        <span class="hidden lg:inline">Tài khoản</span>
-      </a>
+      @if (auth.isLoggedIn()) {
+        <a
+          routerLink="/tai-khoan"
+          class="h-9 px-3 rounded-lg border border-slate-700 bg-surface-elevated hover:bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors"
+          aria-label="Tài khoản cá nhân"
+        >
+          <lucide-icon name="user" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
+          <span class="hidden lg:inline">{{ auth.currentUser()?.name || 'Tài khoản' }}</span>
+        </a>
+      } @else {
+        <button
+          type="button"
+          (click)="auth.openAuthModal()"
+          class="h-9 px-3 rounded-lg border border-slate-700 bg-surface-elevated hover:bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
+          aria-label="Đăng nhập tài khoản"
+        >
+          <lucide-icon name="user" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
+          <span class="hidden lg:inline">Đăng nhập</span>
+        </button>
+      }
 
       <!-- Cart Button with Counter -->
       <button
@@ -320,3 +332,6 @@
     </div>
   </div>
 </footer>
+
+<app-auth-modal></app-auth-modal>
+
