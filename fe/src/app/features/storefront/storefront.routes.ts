@@ -13,6 +13,8 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'tra-cuu-don', loadComponent: () => import('../orders/order-lookup-page.component').then((module) => module.OrderLookupPageComponent) },
       { path: 'gio-hang', loadComponent: () => import('../cart/cart-page.component').then((module) => module.CartPageComponent) },
       { path: 'checkout', loadComponent: () => import('../checkout/checkout-page.component').then((module) => module.CheckoutPageComponent) },
+      { path: 'thanh-toan', redirectTo: 'checkout', pathMatch: 'full' },
+      { path: 'dat-hang-thanh-cong/:code', loadComponent: () => import('../checkout/order-success-page.component').then((module) => module.OrderSuccessPageComponent) },
     ],
   },
 ];
