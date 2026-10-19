@@ -27,7 +27,7 @@ He thong luong khach hang duoc chia thanh 9 cum tinh nang tuong ung voi 9 task t
 | TASK-05 | `pc-build.html`, `change-component.html` | `features/pc-build/custom-build-page.component.ts`, `component-swap-modal.component.ts` | Complete |
 | TASK-06 | `checkout.html`, `order-success.html` | `features/checkout/checkout-page.component.ts`, `order-success-page.component.ts` | Complete |
 | TASK-07 | `order-tracking.html`, `order-kanban-view.html`, `order-cancel.html` | `features/orders/order-lookup-page.component.ts`, `order-kanban-page.component.ts`, `order-cancel-modal.component.ts` | Complete |
-| TASK-08 | `refund.html` | `features/refund/refund-page.component.ts` | Pending |
+| TASK-08 | `refund.html` | `features/refund/refund-page.component.ts` | Complete |
 | TASK-09 | `auth.html`, `profile-page.html` | `features/auth/auth-modal.component.ts`, `features/profile/profile-page.component.ts` | Pending |
 
 ## 3. Quy Trinh Thuc Thi Va Kiem Thu Chat Che

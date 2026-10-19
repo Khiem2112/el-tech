@@ -16,6 +16,8 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'checkout', loadComponent: () => import('../checkout/checkout-page.component').then((module) => module.CheckoutPageComponent) },
       { path: 'thanh-toan', redirectTo: 'checkout', pathMatch: 'full' },
       { path: 'dat-hang-thanh-cong/:code', loadComponent: () => import('../checkout/order-success-page.component').then((module) => module.OrderSuccessPageComponent) },
+      { path: 'chinh-sach', loadComponent: () => import('../refund/refund-page.component').then((module) => module.RefundPageComponent) },
+      { path: 'refund', redirectTo: 'chinh-sach', pathMatch: 'full' },
     ],
   },
 ];
