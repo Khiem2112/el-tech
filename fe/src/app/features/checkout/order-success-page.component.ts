@@ -49,10 +49,10 @@ type StoredOrderData = {
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">
       <!-- Status Hero Ribbon -->
-      <header class="w-full bg-surface-elevated text-foreground-dark px-4 sm:px-6 lg:px-8 py-8 relative overflow-hidden border-b border-border">
+      <header class="w-full bg-surface-elevated text-foreground-dark px-4 sm:px-6 lg:px-8 py-8 relative overflow-hidden border-b border-line">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
           <div class="flex items-start gap-4">
-            <div class="size-14 rounded-2xl bg-surface-dark flex items-center justify-center shrink-0 border border-border shadow-lg">
+            <div class="size-14 rounded-2xl bg-surface-dark flex items-center justify-center shrink-0 border border-line shadow-lg">
               <lucide-icon name="shield-check" class="size-8 text-primary" aria-hidden="true"></lucide-icon>
             </div>
             <div>
@@ -79,7 +79,7 @@ type StoredOrderData = {
               variant="outline"
               size="md"
               (click)="printReceipt()"
-              class="border-border text-foreground-dark bg-surface-dark hover:bg-surface-elevated"
+              class="border-line text-foreground-dark bg-surface-dark hover:bg-surface-elevated"
             >
               <lucide-icon name="printer" class="size-4" aria-hidden="true"></lucide-icon>
               <span>In đơn hàng</span>
@@ -105,8 +105,8 @@ type StoredOrderData = {
           <div class="lg:col-span-8 space-y-6">
             
             <!-- Order Identity & OTP Card -->
-            <div class="bg-surface rounded-xl p-5 shadow-sm border border-border space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-border">
+            <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-line">
                 <div>
                   <span class="text-[10px] font-bold uppercase tracking-wider text-muted">Mã đơn hàng chính thức</span>
                   <div class="flex items-center gap-2 mt-0.5">
@@ -116,7 +116,7 @@ type StoredOrderData = {
                     <button
                       type="button"
                       (click)="copyCode()"
-                      class="size-7 rounded-md bg-surface-alt hover:bg-border text-muted hover:text-foreground flex items-center justify-center transition-colors cursor-pointer border border-border"
+                      class="size-7 rounded-md bg-surface-alt hover:bg-border text-muted hover:text-foreground flex items-center justify-center transition-colors cursor-pointer border border-line"
                       title="Sao chép mã đơn hàng"
                       aria-label="Sao chép mã đơn hàng"
                     >
@@ -129,7 +129,7 @@ type StoredOrderData = {
                 </div>
 
                 <div class="flex items-center gap-3">
-                  <div class="px-3.5 py-1.5 rounded-lg bg-surface-alt border border-border text-right">
+                  <div class="px-3.5 py-1.5 rounded-lg bg-surface-alt border border-line text-right">
                     <span class="text-[10px] font-bold uppercase tracking-wider text-muted block">Mã OTP nhận máy</span>
                     <span class="text-sm sm:text-base font-black text-primary tracking-widest">{{ otpCode() }}</span>
                   </div>
@@ -157,8 +157,8 @@ type StoredOrderData = {
             </div>
 
             <!-- Hardware Breakdown Table -->
-            <div class="bg-surface rounded-xl p-5 shadow-sm border border-border space-y-4">
-              <div class="flex items-center justify-between pb-3 border-b border-border">
+            <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-line">
                 <div class="flex items-center gap-2">
                   <lucide-icon name="cpu" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                   <h2 class="text-sm font-bold text-foreground">Chi Tiết Cấu Hình & Linh Kiện Đặt Mua</h2>
@@ -171,10 +171,10 @@ type StoredOrderData = {
                   <div class="py-3 flex items-center justify-between gap-4">
                     <div class="min-w-0 flex-1">
                       <div class="flex items-center gap-2">
-                        <span class="px-1.5 py-0.2 rounded bg-surface-alt text-muted text-[10px] font-bold uppercase border border-border">
+                        <span class="px-1.5 py-0.2 rounded bg-surface-alt text-muted text-[10px] font-bold uppercase border border-line">
                           {{ item.sku || 'HARDWARE' }}
                         </span>
-                        <span class="text-[10px] text-emerald-400 font-bold">Bảo hành 36T</span>
+                        <span class="text-[10px] text-primary font-bold">Bảo hành 36T</span>
                       </div>
                       <h3 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h3>
                     </div>
@@ -208,21 +208,21 @@ type StoredOrderData = {
             </div>
 
             <!-- Fulfillment Location & Receiver Info -->
-            <div class="bg-surface rounded-xl p-5 shadow-sm border border-border space-y-4">
-              <div class="flex items-center gap-2 pb-3 border-b border-border">
+            <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-4">
+              <div class="flex items-center gap-2 pb-3 border-b border-line">
                 <lucide-icon name="map-pin" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                 <h2 class="text-sm font-bold text-foreground">Địa Điểm Bàn Giao & Thông Tin Người Nhận</h2>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                <div class="p-3.5 rounded-lg bg-surface-alt border border-border space-y-1">
+                <div class="p-3.5 rounded-lg bg-surface-alt border border-line space-y-1">
                   <span class="text-[10px] font-bold uppercase text-primary">Địa điểm nhận bàn giao</span>
                   <h4 class="font-bold text-foreground text-xs">{{ branchLocationName() }}</h4>
                   <p class="text-muted text-[11px] leading-relaxed">{{ branchAddress() }}</p>
                   <p class="text-muted text-[11px] pt-1">Hotline showroom: 1900.6868 (08:30 - 21:30)</p>
                 </div>
 
-                <div class="p-3.5 rounded-lg bg-surface-alt border border-border space-y-1">
+                <div class="p-3.5 rounded-lg bg-surface-alt border border-line space-y-1">
                   <span class="text-[10px] font-bold uppercase text-muted">Thông tin người nhận</span>
                   <h4 class="font-bold text-foreground text-xs">{{ receiverName() }}</h4>
                   <p class="text-muted text-[11px]">Số điện thoại: {{ receiverPhone() }}</p>
@@ -232,7 +232,7 @@ type StoredOrderData = {
             </div>
 
             <!-- Policy & Cancellation Notice -->
-            <div class="p-4 rounded-xl bg-surface-alt border border-border space-y-1 text-xs text-muted">
+            <div class="p-4 rounded-xl bg-surface-alt border border-line space-y-1 text-xs text-muted">
               <span class="font-bold text-foreground block">Quy định hủy đơn & đổi trả linh kiện:</span>
               <p class="leading-relaxed">
                 Khách hàng có thể tự hủy đơn hàng trực tuyến hoặc thay đổi linh kiện trước khi kỹ thuật bắt đầu mở seal linh kiện để lắp ráp.
@@ -246,23 +246,23 @@ type StoredOrderData = {
             
             <!-- VietQR Payment Instruction Card -->
             @if (isQrPayment()) {
-              <div class="bg-surface rounded-xl p-5 shadow-sm border border-border space-y-4">
-                <div class="flex items-center justify-between border-b border-border pb-3">
+              <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-4">
+                <div class="flex items-center justify-between border-b border-line pb-3">
                   <div class="flex items-center gap-1.5">
                     <lucide-icon name="qr-code" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                     <h3 class="text-xs font-bold uppercase text-foreground">Thanh Toán Chuyển Khoản VietQR</h3>
                   </div>
-                  <span class="text-[11px] font-mono text-amber-400 font-bold">
+                  <span class="text-[11px] font-mono text-warning font-bold">
                     Còn {{ formattedTimer() }}
                   </span>
                 </div>
 
                 <!-- QR Code Dynamic Graphic -->
-                <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-alt border border-border">
+                <div class="flex flex-col items-center justify-center p-3 rounded-xl bg-surface-alt border border-line">
                   <img
                     [src]="qrCodeUrl()"
                     alt="VietQR Chuyển Khoản"
-                    class="size-44 object-contain rounded-lg border border-border bg-white p-2"
+                    class="size-44 object-contain rounded-lg border border-line bg-white p-2"
                   >
                   <p class="text-[10px] text-muted text-center mt-2">
                     Mở ứng dụng Mobile Banking bất kỳ để quét mã QR thanh toán nhanh
@@ -271,7 +271,7 @@ type StoredOrderData = {
 
                 <!-- Payment Reference & Amount Boxes -->
                 <div class="space-y-2 text-xs">
-                  <div class="p-2.5 rounded-lg bg-surface-alt border border-border">
+                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line">
                     <span class="text-[10px] text-muted block">Nội dung chuyển khoản (bắt buộc chính xác):</span>
                     <div class="flex items-center justify-between mt-0.5">
                       <strong class="text-primary font-mono text-xs">{{ paymentReference() }}</strong>
@@ -285,34 +285,34 @@ type StoredOrderData = {
                     </div>
                   </div>
 
-                  <div class="p-2.5 rounded-lg bg-surface-alt border border-border">
+                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line">
                     <span class="text-[10px] text-muted block">Số tiền thanh toán:</span>
                     <strong class="text-foreground text-sm font-black tabular mt-0.5 block">
                       {{ (expectedAmount() || grandTotal()) | vnd }}
                     </strong>
                   </div>
 
-                  <div class="p-2.5 rounded-lg bg-surface-alt border border-border text-[11px] text-muted space-y-0.5">
+                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line text-[11px] text-muted space-y-0.5">
                     <div class="text-foreground font-bold">Ngân hàng Quân Đội (MB Bank)</div>
                     <div>Số tài khoản: <strong>0988234567</strong></div>
                     <div>Chủ TK: <strong>CONG TY TNHH CONG NGHE EL-TECH</strong></div>
                   </div>
                 </div>
 
-                <div class="p-2 rounded bg-emerald-950/20 border border-emerald-800/30 text-emerald-400 text-[11px]">
+                <div class="p-2 rounded bg-emerald-950/20 border border-emerald-800/30 text-primary text-[11px]">
                   Hệ thống tự động kiểm tra sao kê ngân hàng và kích hoạt trạng thái ĐÃ THANH TOÁN sau 30-60 giây.
                 </div>
               </div>
             }
 
             <!-- Dedicated Technical Support Contact Card -->
-            <div class="bg-surface rounded-xl p-5 shadow-sm border border-border space-y-3 text-xs">
-              <div class="flex items-center gap-2 text-foreground font-bold border-b border-border pb-2.5">
+            <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-3 text-xs">
+              <div class="flex items-center gap-2 text-foreground font-bold border-b border-line pb-2.5">
                 <lucide-icon name="user" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                 <span>Kỹ Thuật Viên Phụ Trách Đơn Hàng</span>
               </div>
               <div class="flex items-center gap-3">
-                <div class="size-10 rounded-full bg-surface-alt border border-border flex items-center justify-center font-bold text-primary">
+                <div class="size-10 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-primary">
                   HL
                 </div>
                 <div>

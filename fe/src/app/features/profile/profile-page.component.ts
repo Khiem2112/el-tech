@@ -15,7 +15,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
     <div class="w-full bg-canvas min-h-screen py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <!-- Breadcrumb & Top Indicator -->
-        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border text-xs">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line text-xs">
           <nav class="flex items-center gap-1.5 text-muted">
             <a routerLink="/" class="hover:text-foreground">Trang chủ</a>
             <lucide-icon name="ChevronRight" class="size-3 text-muted" aria-hidden="true"></lucide-icon>
@@ -37,10 +37,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <aside class="lg:col-span-4 xl:col-span-3 flex flex-col gap-5 sticky top-24">
             
             <!-- User Summary Card -->
-            <div class="bg-surface rounded-xl p-5 border border-border shadow-xs space-y-4">
+            <div class="bg-surface rounded-xl p-5 border border-line shadow-xs space-y-4">
               <div class="flex items-center gap-3.5">
                 <div class="relative shrink-0">
-                  <div class="size-14 rounded-xl overflow-hidden bg-surface-alt border border-border">
+                  <div class="size-14 rounded-xl overflow-hidden bg-surface-alt border border-line">
                     <img
                       [src]="user()?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'"
                       alt="Ảnh đại diện"
@@ -59,7 +59,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </div>
 
               <!-- Membership Status Badge -->
-              <div class="bg-surface-alt rounded-lg p-3 border border-border flex items-center justify-between">
+              <div class="bg-surface-alt rounded-lg p-3 border border-line flex items-center justify-between">
                 <div>
                   <span class="text-[10px] text-muted uppercase font-bold tracking-wider block">Hạng thành viên</span>
                   <span class="text-xs font-bold text-foreground">Pro Builder VIP</span>
@@ -69,7 +69,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </div>
 
             <!-- Navigation Links -->
-            <nav class="bg-surface rounded-xl p-2 border border-border shadow-xs flex flex-col gap-1 text-xs font-medium" aria-label="Menu tài khoản">
+            <nav class="bg-surface rounded-xl p-2 border border-line shadow-xs flex flex-col gap-1 text-xs font-medium" aria-label="Menu tài khoản">
               <button
                 type="button"
                 class="flex items-center justify-between px-3.5 py-2.5 rounded-lg bg-primary text-slate-950 font-bold shadow-xs"
@@ -89,7 +89,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <lucide-icon name="Package" class="size-4" aria-hidden="true"></lucide-icon>
                   <span>Đơn hàng của tôi</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-warning/10 text-warning border border-amber-500/20">
                   2 đơn
                 </span>
               </a>
@@ -131,14 +131,14 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </nav>
 
             <!-- Showroom Hub Telemetry Widget -->
-            <div class="bg-slate-900 text-white rounded-xl p-4 border border-slate-800 shadow-xs space-y-1.5 text-xs">
+            <div class="bg-surface-dark text-white rounded-xl p-4 border border-line-dark shadow-xs space-y-1.5 text-xs">
               <div class="flex items-center justify-between">
                 <span class="text-[10px] text-primary uppercase tracking-wider font-bold">Showroom gần nhất</span>
                 <span class="size-2 rounded-full bg-primary animate-pulse"></span>
               </div>
               <p class="font-bold text-white">EL-TECH Q10 Hub</p>
-              <p class="text-[11px] text-slate-400">280 Ba Tháng Hai, P.12, Q.10, TP.HCM</p>
-              <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-400">
+              <p class="text-[11px] text-muted">280 Ba Tháng Hai, P.12, Q.10, TP.HCM</p>
+              <div class="pt-2 border-t border-line-dark flex items-center justify-between text-[10px] text-muted">
                 <span>Mở cửa: 08:30 - 21:30</span>
                 <span class="text-primary font-bold">Cách 3.2km</span>
               </div>
@@ -150,13 +150,13 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="lg:col-span-8 xl:col-span-9 flex flex-col gap-6 min-w-0">
             
             <!-- Active Order Tracker Card with Prominent OTP Pickup -->
-            <section class="bg-surface rounded-xl p-5 sm:p-6 border border-border shadow-xs relative overflow-hidden space-y-5">
+            <section class="bg-surface rounded-xl p-5 sm:p-6 border border-line shadow-xs relative overflow-hidden space-y-5">
               <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div class="flex items-center gap-2 mb-1">
                     <span appBadge variant="outline" class="text-[10px] font-bold">Đơn hàng mới nhất</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] bg-primary text-slate-950 font-bold flex items-center gap-1">
-                      <span class="size-1.5 rounded-full bg-slate-950 animate-ping"></span>
+                      <span class="size-1.5 rounded-full bg-surface-dark animate-ping"></span>
                       Sẵn sàng nhận máy
                     </span>
                   </div>
@@ -172,14 +172,14 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
 
                 <!-- Prominent OTP Pickup Box -->
-                <div class="bg-slate-900 text-white px-5 py-3 rounded-xl border border-slate-800 flex flex-col items-center justify-center shadow-md">
-                  <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">OTP nhận máy</span>
+                <div class="bg-surface-dark text-white px-5 py-3 rounded-xl border border-line-dark flex flex-col items-center justify-center shadow-md">
+                  <span class="text-[10px] text-muted uppercase tracking-widest font-bold">OTP nhận máy</span>
                   <div class="flex items-center gap-1 text-2xl font-black text-primary font-mono tracking-wider my-0.5">
                     <span>489</span>
                     <span class="text-slate-600">-</span>
                     <span>102</span>
                   </div>
-                  <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                  <span class="text-[10px] text-muted flex items-center gap-1">
                     <lucide-icon name="QrCode" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
                     <span>Xuất trình tại quầy Hub</span>
                   </span>
@@ -187,7 +187,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </div>
 
               <!-- Mini 4-Step Interactive Timeline -->
-              <div class="bg-surface-alt rounded-xl p-4 border border-border">
+              <div class="bg-surface-alt rounded-xl p-4 border border-line">
                 <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
                   <!-- Step 1 -->
                   <div class="space-y-1">
@@ -199,7 +199,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     </div>
                     <p class="font-bold text-foreground">Đã xác nhận</p>
                     <p class="text-[10px] text-muted">14:20 - 24/10</p>
-                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-surface text-muted border border-border">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-surface text-muted border border-line">
                       Tồn kho chính hãng
                     </span>
                   </div>
@@ -214,7 +214,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     </div>
                     <p class="font-bold text-foreground">Soạn linh kiện</p>
                     <p class="text-[10px] text-muted">16:05 - 24/10</p>
-                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-surface text-muted border border-border">
+                    <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-surface text-muted border border-line">
                       Quét 7 Serial Barcode
                     </span>
                   </div>
@@ -237,7 +237,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <!-- Step 4 -->
                   <div class="space-y-1">
                     <div class="flex items-center gap-2">
-                      <div class="size-6 rounded-full bg-slate-950 text-primary border border-primary flex items-center justify-center font-bold text-xs">
+                      <div class="size-6 rounded-full bg-surface-dark text-primary border border-primary flex items-center justify-center font-bold text-xs">
                         4
                       </div>
                     </div>
@@ -275,8 +275,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
             <!-- Hardware Metrics -->
             <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-              <div class="bg-surface rounded-xl p-4 border border-border shadow-xs flex items-center gap-3">
-                <div class="size-11 rounded-lg bg-surface-alt border border-border flex items-center justify-center text-primary shrink-0">
+              <div class="bg-surface rounded-xl p-4 border border-line shadow-xs flex items-center gap-3">
+                <div class="size-11 rounded-lg bg-surface-alt border border-line flex items-center justify-center text-primary shrink-0">
                   <lucide-icon name="Cpu" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div>
@@ -286,8 +286,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
               </div>
 
-              <div class="bg-surface rounded-xl p-4 border border-border shadow-xs flex items-center gap-3">
-                <div class="size-11 rounded-lg bg-surface-alt border border-border flex items-center justify-center text-primary shrink-0">
+              <div class="bg-surface rounded-xl p-4 border border-line shadow-xs flex items-center gap-3">
+                <div class="size-11 rounded-lg bg-surface-alt border border-line flex items-center justify-center text-primary shrink-0">
                   <lucide-icon name="ShieldCheck" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div>
@@ -297,8 +297,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
               </div>
 
-              <div class="bg-surface rounded-xl p-4 border border-border shadow-xs flex items-center gap-3">
-                <div class="size-11 rounded-lg bg-surface-alt border border-border flex items-center justify-center text-amber-500 shrink-0">
+              <div class="bg-surface rounded-xl p-4 border border-line shadow-xs flex items-center gap-3">
+                <div class="size-11 rounded-lg bg-surface-alt border border-line flex items-center justify-center text-warning shrink-0">
                   <lucide-icon name="Wrench" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div>
@@ -310,8 +310,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </section>
 
             <!-- Profile Form & Security Settings Section -->
-            <section class="bg-surface rounded-xl p-5 sm:p-6 border border-border shadow-xs space-y-6">
-              <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-border">
+            <section class="bg-surface rounded-xl p-5 sm:p-6 border border-line shadow-xs space-y-6">
+              <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line">
                 <div>
                   <h3 class="text-base font-bold text-foreground">Thông tin cá nhân & Bảo mật</h3>
                   <p class="text-xs text-muted">Quản lý định danh tài khoản, liên kết đăng nhập và địa chỉ giao hàng</p>
@@ -393,9 +393,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   </h4>
 
                   <!-- Google OAuth Link Status -->
-                  <div class="p-3.5 bg-surface-alt rounded-lg border border-border flex items-center justify-between">
+                  <div class="p-3.5 bg-surface-alt rounded-lg border border-line flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                      <div class="size-9 rounded-lg bg-surface border border-border flex items-center justify-center shadow-xs">
+                      <div class="size-9 rounded-lg bg-surface border border-line flex items-center justify-center shadow-xs">
                         <svg class="size-4 shrink-0" viewBox="0 0 24 24">
                           <path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" fill="#4285F4"/>
                           <path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z" fill="#34A853"/>
@@ -414,7 +414,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   </div>
 
                   <!-- Change Password Box -->
-                  <div class="p-3.5 bg-surface-alt rounded-lg border border-border space-y-3">
+                  <div class="p-3.5 bg-surface-alt rounded-lg border border-line space-y-3">
                     <span class="font-bold text-foreground block">Đổi mật khẩu tài khoản</span>
                     <div class="space-y-2">
                       <input

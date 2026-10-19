@@ -19,7 +19,7 @@ type FaqItem = {
   template: `
     <div class="w-full bg-canvas min-h-screen">
       <!-- Breadcrumb Bar -->
-      <section class="w-full bg-surface-alt px-4 py-3 sm:px-6 lg:px-8 border-b border-border shadow-xs">
+      <section class="w-full bg-surface-alt px-4 py-3 sm:px-6 lg:px-8 border-b border-line shadow-xs">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3 text-muted text-xs">
           <div class="flex items-center gap-1.5">
             <a routerLink="/" class="hover:text-foreground transition-colors">Trang chủ</a>
@@ -27,7 +27,7 @@ type FaqItem = {
             <span class="text-foreground font-bold">Chính sách bảo hành & Hoàn tiền</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-border">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
               <span class="size-2 rounded-full bg-primary animate-pulse"></span>
               TIÊU CHUẨN KỸ THUẬT V2.4 - HIỆU LỰC 2025
             </span>
@@ -37,31 +37,31 @@ type FaqItem = {
       </section>
 
       <!-- Engineering Header Banner -->
-      <section class="w-full bg-slate-950 text-white px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden border-b border-slate-800">
+      <section class="w-full bg-surface-dark text-white px-4 py-12 sm:px-6 lg:px-8 relative overflow-hidden border-b border-line-dark">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
           <div class="lg:col-span-8 space-y-3">
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-primary font-bold text-xs uppercase tracking-wider">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-dark border border-line-dark text-primary font-bold text-xs uppercase tracking-wider">
               <lucide-icon name="ShieldCheck" class="size-4" aria-hidden="true"></lucide-icon>
               <span>Minh bạch linh kiện & Quyền lợi Khách hàng</span>
             </div>
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
               Chính Sách Đổi Mới, Hoàn Tiền & Khiếu Nại Phần Cứng
             </h1>
-            <p class="text-xs sm:text-sm text-slate-400 max-w-3xl leading-relaxed">
+            <p class="text-xs sm:text-sm text-muted max-w-3xl leading-relaxed">
               Cam kết bảo vệ tối đa quyền lợi người dùng máy trạm và linh kiện hi-end. Mọi quy trình xử lý hoàn tiền, khiếu nại thông số kỹ thuật và đổi mới đều được số hóa, chuẩn hóa theo các mã quy chuẩn vận hành nghiêm ngặt.
             </p>
           </div>
 
-          <div class="lg:col-span-4 flex flex-col gap-2 p-5 rounded-xl bg-slate-900/90 border border-slate-800 shadow-xl">
-            <div class="flex items-center justify-between text-slate-400 text-xs">
+          <div class="lg:col-span-4 flex flex-col gap-2 p-5 rounded-xl bg-surface-dark/90 border border-line-dark shadow-xl">
+            <div class="flex items-center justify-between text-muted text-xs">
               <span class="font-bold uppercase tracking-wider text-[10px]">TỐC ĐỘ XỬ LÝ RMA</span>
               <span class="text-primary font-black">&lt; 2 Giờ làm việc</span>
             </div>
-            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex my-1">
+            <div class="w-full bg-line-dark h-2 rounded-full overflow-hidden flex my-1">
               <div class="bg-primary h-full w-[85%]"></div>
               <div class="bg-primary/40 h-full w-[15%]"></div>
             </div>
-            <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+            <div class="flex items-center justify-between text-[11px] text-muted pt-1">
               <span class="flex items-center gap-1.5 text-primary">
                 <lucide-icon name="Check" class="size-3.5" aria-hidden="true"></lucide-icon>
                 <span>Hoàn tất 85% trong ngày</span>
@@ -78,7 +78,7 @@ type FaqItem = {
           
           <!-- Left Column: Core Policy Bento Specifications (7 cols) -->
           <div class="lg:col-span-7 space-y-6">
-            <div class="flex items-center justify-between border-b border-border pb-3">
+            <div class="flex items-center justify-between border-b border-line pb-3">
               <div>
                 <h2 class="text-xl font-black text-foreground tracking-tight">Quy chuẩn Xử lý Phần cứng Chính thức</h2>
                 <p class="text-xs text-muted">Chi tiết các điều khoản bảo vệ người mua theo tiêu chuẩn nhà phân phối</p>
@@ -89,7 +89,7 @@ type FaqItem = {
             </div>
 
             <!-- Policy Card 1: 30-Day Replacement -->
-            <article class="p-5 rounded-xl bg-surface border border-border shadow-sm hover:shadow-md transition-shadow space-y-3">
+            <article class="p-5 rounded-xl bg-surface border border-line shadow-sm hover:shadow-md transition-shadow space-y-3">
               <div class="flex items-start gap-3.5">
                 <div class="size-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                   <lucide-icon name="RotateCcw" class="size-5" aria-hidden="true"></lucide-icon>
@@ -102,7 +102,7 @@ type FaqItem = {
                   <p class="text-xs text-muted leading-relaxed">
                     Áp dụng cho tất cả linh kiện rời (CPU, GPU RTX 50/40-Series, Bo mạch chủ, RAM DDR5, SSD NVMe, Nguồn PSU) phát sinh lỗi vật lý hoặc lỗi kỹ thuật xác định từ Nhà sản xuất trong vòng 30 ngày kể từ thời điểm nhận hàng.
                   </p>
-                  <div class="p-3 rounded-lg bg-surface-alt border border-border space-y-1.5 mt-2">
+                  <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1.5 mt-2">
                     <div class="flex items-center gap-1.5 text-xs font-bold text-foreground">
                       <lucide-icon name="Check" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
                       <span>Điều kiện bắt buộc nhận đổi mới:</span>
@@ -118,9 +118,9 @@ type FaqItem = {
             </article>
 
             <!-- Policy Card 2: Cancellation & Fast Refund -->
-            <article class="p-5 rounded-xl bg-surface border border-border shadow-sm hover:shadow-md transition-shadow space-y-3">
+            <article class="p-5 rounded-xl bg-surface border border-line shadow-sm hover:shadow-md transition-shadow space-y-3">
               <div class="flex items-start gap-3.5">
-                <div class="size-10 rounded-lg bg-surface-alt border border-border flex items-center justify-center text-foreground shrink-0">
+                <div class="size-10 rounded-lg bg-surface-alt border border-line flex items-center justify-center text-foreground shrink-0">
                   <lucide-icon name="CreditCard" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div class="space-y-1.5 flex-1 min-w-0">
@@ -130,12 +130,12 @@ type FaqItem = {
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Khách hàng có thể tự hủy đơn trực tuyến ngay trên hệ thống khi đơn hàng đang ở trạng thái
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-border">PENDING_PAYMENT</code>,
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-border">PENDING_COD_CONFIRMATION</code> hoặc
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-border">CONFIRMED</code>.
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">PENDING_PAYMENT</code>,
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">PENDING_COD_CONFIRMATION</code> hoặc
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">CONFIRMED</code>.
                   </p>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div class="p-3 rounded-lg bg-surface-alt border border-border space-y-1">
+                    <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
                       <div class="text-xs font-bold text-foreground flex items-center gap-1.5">
                         <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                         <span>Hoàn tiền tự động 100%</span>
@@ -144,7 +144,7 @@ type FaqItem = {
                         Hệ thống giải phóng hạn mức thẻ hoặc chuyển khoản ngân hàng hoàn tiền đúng 100% giá trị trong 24h làm việc.
                       </p>
                     </div>
-                    <div class="p-3 rounded-lg bg-surface-alt border border-border space-y-1">
+                    <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
                       <div class="text-xs font-bold text-foreground flex items-center gap-1.5">
                         <lucide-icon name="ShieldCheck" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                         <span>Không thu phí giao dịch</span>
@@ -159,26 +159,26 @@ type FaqItem = {
             </article>
 
             <!-- Policy Card 3: Custom Build Deposit Policy -->
-            <article class="p-5 rounded-xl bg-surface border border-border shadow-sm hover:shadow-md transition-shadow space-y-3">
+            <article class="p-5 rounded-xl bg-surface border border-line shadow-sm hover:shadow-md transition-shadow space-y-3">
               <div class="flex items-start gap-3.5">
-                <div class="size-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0">
+                <div class="size-10 rounded-lg bg-warning/10 border border-amber-500/20 flex items-center justify-center text-warning shrink-0">
                   <lucide-icon name="Wrench" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div class="space-y-1.5 flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <h3 class="text-sm font-bold text-foreground">Quy định Cọc Cấu hình PC Custom Build</h3>
-                    <span appBadge variant="outline" class="text-[10px] font-bold text-amber-500 border-amber-500/30">Quy định đặt cọc</span>
+                    <span appBadge variant="outline" class="text-[10px] font-bold text-warning border-amber-500/30">Quy định đặt cọc</span>
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Do đặc thù các cấu hình máy bàn lắp ráp theo yêu cầu sử dụng linh kiện đập hộp bóc seal riêng biệt (khui màng co seal vỏ hộp CPU, xé seal chống tĩnh điện VGA, cắt keo tản nhiệt), quý khách vui lòng nắm rõ tiến trình:
                   </p>
-                  <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 space-y-1.5">
-                    <div class="flex items-center gap-1.5 text-amber-500 text-xs font-bold">
+                  <div class="p-3 rounded-lg bg-warning/10 border border-amber-500/30 space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-warning text-xs font-bold">
                       <lucide-icon name="RotateCcw" class="size-4" aria-hidden="true"></lucide-icon>
                       <span>Lưu ý quan trọng về Tiền Cọc ráp máy:</span>
                     </div>
                     <p class="text-xs text-foreground leading-relaxed">
-                      Khi đơn hàng đã chuyển sang trạng thái kỹ thuật <strong class="text-amber-500 underline">PREPARING_COMPONENTS</strong> (Kỹ thuật viên bắt đầu xuất kho, unbox linh kiện và tiến hành đi dây, stress-test), hệ thống không thể hủy ngang hoàn cọc. Tiền đặt cọc sẽ được dùng để bù đắp giá trị hao mòn vỏ hộp đã tháo niêm phong của hãng.
+                      Khi đơn hàng đã chuyển sang trạng thái kỹ thuật <strong class="text-warning underline">PREPARING_COMPONENTS</strong> (Kỹ thuật viên bắt đầu xuất kho, unbox linh kiện và tiến hành đi dây, stress-test), hệ thống không thể hủy ngang hoàn cọc. Tiền đặt cọc sẽ được dùng để bù đắp giá trị hao mòn vỏ hộp đã tháo niêm phong của hãng.
                     </p>
                   </div>
                 </div>
@@ -186,9 +186,9 @@ type FaqItem = {
             </article>
 
             <!-- Policy Card 4: Failed Delivery Protocol -->
-            <article class="p-5 rounded-xl bg-surface border border-border shadow-sm hover:shadow-md transition-shadow space-y-3">
+            <article class="p-5 rounded-xl bg-surface border border-line shadow-sm hover:shadow-md transition-shadow space-y-3">
               <div class="flex items-start gap-3.5">
-                <div class="size-10 rounded-lg bg-surface-alt border border-border flex items-center justify-center text-foreground shrink-0">
+                <div class="size-10 rounded-lg bg-surface-alt border border-line flex items-center justify-center text-foreground shrink-0">
                   <lucide-icon name="Truck" class="size-5" aria-hidden="true"></lucide-icon>
                 </div>
                 <div class="space-y-1.5 flex-1 min-w-0">
@@ -200,11 +200,11 @@ type FaqItem = {
                     Trường hợp đơn vị vận chuyển công nghệ cao chuyên dụng của EL-TECH không thể liên lạc được với người nhận tại địa chỉ giao hàng:
                   </p>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                    <div class="p-3 rounded-lg bg-surface-alt border border-border">
+                    <div class="p-3 rounded-lg bg-surface-alt border border-line">
                       <div class="text-xs font-bold text-foreground">1. Thử giao lại tối đa 2 lần</div>
                       <p class="text-[11px] text-muted mt-0.5">Đơn vị vận chuyển liên hệ trước khi đến. Lần 2 diễn ra trong vòng 24h kế tiếp.</p>
                     </div>
-                    <div class="p-3 rounded-lg bg-surface-alt border border-border">
+                    <div class="p-3 rounded-lg bg-surface-alt border border-line">
                       <div class="text-xs font-bold text-foreground">2. Nhận tại Showroom gần nhất</div>
                       <p class="text-[11px] text-muted mt-0.5">Hàng được lưu kho an toàn tại Showroom khu vực trong 7 ngày để khách ghé nhận trực tiếp.</p>
                     </div>
@@ -218,7 +218,7 @@ type FaqItem = {
           <div class="lg:col-span-5 sticky top-24 space-y-4">
             
             <!-- Ticket Form Card -->
-            <div class="rounded-xl bg-surface p-5 sm:p-6 border border-border shadow-md space-y-4">
+            <div class="rounded-xl bg-surface p-5 sm:p-6 border border-line shadow-md space-y-4">
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
                   <span class="size-2 rounded-full bg-primary animate-pulse"></span>
@@ -318,7 +318,7 @@ type FaqItem = {
                     Ảnh / Video Tem Serial & Hiện Trạng
                   </label>
                   <div
-                    class="p-4 rounded-lg bg-surface-alt border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative"
+                    class="p-4 rounded-lg bg-surface-alt border-2 border-dashed border-line hover:border-primary/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative"
                   >
                     <input
                       type="file"
@@ -368,7 +368,7 @@ type FaqItem = {
               }
 
               <!-- SLA Commitment -->
-              <div class="pt-3 border-t border-border flex items-center justify-between text-muted text-[11px]">
+              <div class="pt-3 border-t border-line flex items-center justify-between text-muted text-[11px]">
                 <span class="flex items-center gap-1">
                   <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   Cam kết SLA 120 phút
@@ -381,19 +381,19 @@ type FaqItem = {
             </div>
 
             <!-- Emergency Support Card -->
-            <div class="rounded-xl bg-slate-900 text-white p-5 border border-slate-800 shadow-md space-y-2">
+            <div class="rounded-xl bg-surface-dark text-white p-5 border border-line-dark shadow-md space-y-2">
               <div class="flex items-center gap-2 text-primary font-bold text-xs">
                 <lucide-icon name="Phone" class="size-4" aria-hidden="true"></lucide-icon>
                 <span>Hỗ trợ gấp cho máy chủ hoặc phòng máy?</span>
               </div>
-              <p class="text-xs text-slate-400 leading-relaxed">
+              <p class="text-xs text-muted leading-relaxed">
                 Kênh phản hồi sự cố khẩn cấp dành cho khách hàng Workstation & Doanh nghiệp. Tổng đài trực 24/7 không gián đoạn.
               </p>
               <div class="flex items-center justify-between pt-1">
                 <a href="tel:19006868" class="text-base font-black text-primary hover:underline tracking-wide">
                   1900.6868 (Phím 2)
                 </a>
-                <span class="text-[10px] text-slate-400">Miễn phí cước gọi</span>
+                <span class="text-[10px] text-muted">Miễn phí cước gọi</span>
               </div>
             </div>
 
@@ -403,7 +403,7 @@ type FaqItem = {
       </main>
 
       <!-- Physical Showrooms Grid & Direct Technical Centers -->
-      <section class="w-full bg-surface-alt px-4 py-12 sm:px-6 lg:px-8 border-t border-border">
+      <section class="w-full bg-surface-alt px-4 py-12 sm:px-6 lg:px-8 border-t border-line">
         <div class="max-w-7xl mx-auto space-y-8">
           <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
@@ -421,14 +421,14 @@ type FaqItem = {
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Showroom 1: Hà Nội -->
-            <div class="bg-surface rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow flex flex-col">
-              <div class="relative h-44 w-full overflow-hidden bg-slate-900">
+            <div class="bg-surface rounded-xl overflow-hidden border border-line shadow-sm hover:shadow-md transition-shadow flex flex-col">
+              <div class="relative h-44 w-full overflow-hidden bg-surface-dark">
                 <img
                   src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=600&q=80"
                   alt="EL-TECH Hà Nội Flagship"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
                   Showroom Miền Bắc
                 </div>
               </div>
@@ -441,7 +441,7 @@ type FaqItem = {
                   <p class="text-xs text-foreground font-medium">45 Thái Hà, Phường Trung Liệt, Quận Đống Đa</p>
                   <p class="text-[11px] text-muted">Khu kỹ thuật: Tầng 2 - Phòng Testbench & Đi dây Custom</p>
                 </div>
-                <div class="space-y-1 pt-2 border-t border-border text-xs">
+                <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">
                     <span class="text-muted">Hotline Kỹ thuật:</span>
                     <a href="tel:02477779999" class="font-bold text-foreground hover:text-primary">024.7777.9999</a>
@@ -455,14 +455,14 @@ type FaqItem = {
             </div>
 
             <!-- Showroom 2: TP. Hồ Chí Minh -->
-            <div class="bg-surface rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow flex flex-col">
-              <div class="relative h-44 w-full overflow-hidden bg-slate-900">
+            <div class="bg-surface rounded-xl overflow-hidden border border-line shadow-sm hover:shadow-md transition-shadow flex flex-col">
+              <div class="relative h-44 w-full overflow-hidden bg-surface-dark">
                 <img
                   src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=600&q=80"
                   alt="EL-TECH TP. Hồ Chí Minh"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
                   Showroom Miền Nam
                 </div>
               </div>
@@ -475,7 +475,7 @@ type FaqItem = {
                   <p class="text-xs text-foreground font-medium">280 Ba Tháng Hai, Phường 12, Quận 10</p>
                   <p class="text-[11px] text-muted">Khu kỹ thuật: Tầng trệt - Trạm tiếp nhận kiểm định nhanh</p>
                 </div>
-                <div class="space-y-1 pt-2 border-t border-border text-xs">
+                <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">
                     <span class="text-muted">Hotline Kỹ thuật:</span>
                     <a href="tel:02877778888" class="font-bold text-foreground hover:text-primary">028.7777.8888</a>
@@ -489,14 +489,14 @@ type FaqItem = {
             </div>
 
             <!-- Showroom 3: Đà Nẵng -->
-            <div class="bg-surface rounded-xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-shadow flex flex-col">
-              <div class="relative h-44 w-full overflow-hidden bg-slate-900">
+            <div class="bg-surface rounded-xl overflow-hidden border border-line shadow-sm hover:shadow-md transition-shadow flex flex-col">
+              <div class="relative h-44 w-full overflow-hidden bg-surface-dark">
                 <img
                   src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80"
                   alt="EL-TECH Đà Nẵng"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
                   Showroom Miền Trung
                 </div>
               </div>
@@ -509,7 +509,7 @@ type FaqItem = {
                   <p class="text-xs text-foreground font-medium">112 Hàm Nghi, Phường Thạc Gián, Quận Thanh Khê</p>
                   <p class="text-[11px] text-muted">Khu kỹ thuật: Quầy hỗ trợ kỹ thuật và nhận bảo hành linh kiện</p>
                 </div>
-                <div class="space-y-1 pt-2 border-t border-border text-xs">
+                <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">
                     <span class="text-muted">Hotline Kỹ thuật:</span>
                     <a href="tel:02367776666" class="font-bold text-foreground hover:text-primary">0236.777.6666</a>
@@ -534,7 +534,7 @@ type FaqItem = {
 
         <div class="space-y-3">
           @for (faq of faqs(); track faq.question; let idx = $index) {
-            <div class="rounded-xl bg-surface border border-border overflow-hidden transition-all shadow-xs">
+            <div class="rounded-xl bg-surface border border-line overflow-hidden transition-all shadow-xs">
               <button
                 type="button"
                 class="w-full p-4 flex items-center justify-between text-left text-xs font-bold text-foreground hover:bg-surface-alt transition-colors"
@@ -549,7 +549,7 @@ type FaqItem = {
                 ></lucide-icon>
               </button>
               @if (faq.isOpen) {
-                <div class="px-4 pb-4 text-xs text-muted leading-relaxed border-t border-border/50 pt-3">
+                <div class="px-4 pb-4 text-xs text-muted leading-relaxed border-t border-line/50 pt-3">
                   {{ faq.answer }}
                 </div>
               }

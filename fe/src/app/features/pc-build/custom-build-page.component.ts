@@ -397,10 +397,10 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">
       <!-- Status & Utility Bar -->
-      <header class="w-full px-4 sm:px-6 lg:px-8 py-4 bg-surface border-b border-border shadow-sm">
+      <header class="w-full px-4 sm:px-6 lg:px-8 py-4 bg-surface border-b border-line shadow-sm">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div class="size-10 rounded-xl bg-surface-alt flex items-center justify-center text-foreground font-bold border border-border">
+            <div class="size-10 rounded-xl bg-surface-alt flex items-center justify-center text-foreground font-bold border border-line">
               <lucide-icon name="cpu" class="size-5 text-primary" aria-hidden="true"></lucide-icon>
             </div>
             <div>
@@ -419,7 +419,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             <button
               type="button"
               (click)="resetBuild()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-border cursor-pointer"
+              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer"
               title="Đặt lại toàn bộ danh sách linh kiện"
             >
               <lucide-icon name="rotate-ccw" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
@@ -429,7 +429,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             <button
               type="button"
               (click)="togglePreset()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-border cursor-pointer"
+              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer"
               title="Đổi giữa cấu hình Intel và AMD"
             >
               <lucide-icon name="refresh-cw" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
@@ -439,7 +439,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             <button
               type="button"
               (click)="printQuotation()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-border cursor-pointer"
+              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer"
               title="In báo giá cấu hình chi tiết"
             >
               <lucide-icon name="printer" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
@@ -449,7 +449,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             <button
               type="button"
               (click)="shareLink()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-border cursor-pointer relative"
+              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer relative"
               title="Sao chép liên kết cấu hình"
             >
               <lucide-icon name="share-2" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
@@ -465,8 +465,8 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
           <!-- Left Section: BOM Slots & Diagnostics (8 cols) -->
           <div class="lg:col-span-8 space-y-4">
             <!-- Compatibility & Wattage Metric Panel (PCB-006) -->
-            <div class="rounded-xl p-4 sm:p-5 bg-surface shadow-sm border border-border space-y-4">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-border">
+            <div class="rounded-xl p-4 sm:p-5 bg-surface shadow-sm border border-line space-y-4">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-line">
                 <div class="flex items-center gap-2.5">
                   <lucide-icon name="shield-check" class="size-6 text-primary shrink-0" aria-hidden="true"></lucide-icon>
                   <div>
@@ -476,7 +476,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                     </p>
                   </div>
                 </div>
-                <div class="px-2.5 py-1 rounded bg-surface-alt border border-border text-[11px] font-mono text-foreground whitespace-nowrap">
+                <div class="px-2.5 py-1 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground whitespace-nowrap">
                   <span>PCIe Bandwidth: </span>
                   <strong class="text-primary font-bold">Gen 5.0 READY</strong>
                 </div>
@@ -493,7 +493,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                 </div>
 
                 <!-- Progress Bar Graphic -->
-                <div class="w-full h-3 bg-surface-alt rounded-full overflow-hidden flex p-0.5 border border-border">
+                <div class="w-full h-3 bg-surface-alt rounded-full overflow-hidden flex p-0.5 border border-line">
                   <div
                     class="h-full rounded-full transition-all duration-500"
                     [class.bg-primary]="wattagePercent() <= 80"
@@ -513,18 +513,18 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             </div>
 
             <!-- BOM Hardware Rows List (8 Core Slots) -->
-            <div class="rounded-xl bg-surface shadow-sm border border-border divide-y divide-border overflow-hidden">
+            <div class="rounded-xl bg-surface shadow-sm border border-line divide-y divide-border overflow-hidden">
               @for (slot of bomSlots(); track slot.key) {
                 <div class="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:bg-surface-alt/40 transition-colors">
                   <!-- Slot Identity & Hardware Info -->
                   <div class="flex items-start md:items-center gap-3 flex-1 min-w-0">
-                    <div class="size-8 rounded-lg bg-surface-alt flex items-center justify-center shrink-0 border border-border font-bold text-xs text-muted">
+                    <div class="size-8 rounded-lg bg-surface-alt flex items-center justify-center shrink-0 border border-line font-bold text-xs text-muted">
                       {{ slot.number }}
                     </div>
 
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-muted border border-border">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-muted border border-line">
                           {{ slot.categoryName }}
                         </span>
                         @if (slot.item?.tag; as tag) {
@@ -544,7 +544,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                   </div>
 
                   <!-- Slot Price & Actions -->
-                  <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-border">
+                  <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
                     <div class="text-left md:text-right">
                       @if (slot.item; as item) {
                         <div class="text-xs sm:text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
@@ -558,7 +558,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                       <button
                         type="button"
                         (click)="openSwapModal(slot)"
-                        class="h-8 px-2.5 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold flex items-center gap-1 transition-colors border border-border cursor-pointer"
+                        class="h-8 px-2.5 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold flex items-center gap-1 transition-colors border border-line cursor-pointer"
                         title="Thay đổi linh kiện"
                       >
                         <lucide-icon name="arrow-up-down" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
@@ -569,7 +569,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                         <button
                           type="button"
                           (click)="clearSlot(slot.key)"
-                          class="size-8 rounded-lg bg-surface-alt hover:bg-danger/20 text-muted hover:text-danger flex items-center justify-center transition-colors border border-border cursor-pointer"
+                          class="size-8 rounded-lg bg-surface-alt hover:bg-danger/20 text-muted hover:text-danger flex items-center justify-center transition-colors border border-line cursor-pointer"
                           title="Xóa linh kiện này"
                           aria-label="Xóa linh kiện"
                         >
@@ -583,20 +583,20 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             </div>
 
             <!-- Free Technical Services Pack -->
-            <div class="rounded-xl p-4 bg-surface shadow-sm border border-border space-y-2.5 text-xs text-muted">
+            <div class="rounded-xl p-4 bg-surface shadow-sm border border-line space-y-2.5 text-xs text-muted">
               <div class="flex items-center gap-2 font-bold text-foreground">
                 <lucide-icon name="wrench" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                 <span>Gói Dịch Vụ Kỹ Thuật Đính Kèm Miễn Phí Tại EL-TECH</span>
               </div>
               <div class="grid sm:grid-cols-2 gap-2 pt-1 text-[11px]">
-                <div class="p-2.5 rounded-lg bg-surface-alt border border-border space-y-0.5">
+                <div class="p-2.5 rounded-lg bg-surface-alt border border-line space-y-0.5">
                   <div class="font-bold text-foreground flex items-center justify-between">
                     <span>Lắp ráp & đi dây Pro</span>
                     <span class="text-primary font-bold">0 đ</span>
                   </div>
                   <p>Kỹ thuật viên đi dây nẹp gọn gàng, luồn dây âm thân case thẩm mỹ.</p>
                 </div>
-                <div class="p-2.5 rounded-lg bg-surface-alt border border-border space-y-0.5">
+                <div class="p-2.5 rounded-lg bg-surface-alt border border-line space-y-0.5">
                   <div class="font-bold text-foreground flex items-center justify-between">
                     <span>Stress Test 24h & Cài đặt</span>
                     <span class="text-primary font-bold">0 đ</span>
@@ -609,8 +609,8 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
 
           <!-- Right Section: Sticky Summary & Checkout Drawer (4 cols) -->
           <div class="lg:col-span-4 sticky top-24 space-y-4">
-            <div class="rounded-xl p-5 bg-surface shadow-sm border border-border space-y-4">
-              <div class="border-b border-border pb-3">
+            <div class="rounded-xl p-5 bg-surface shadow-sm border border-line space-y-4">
+              <div class="border-b border-line pb-3">
                 <span class="text-[10px] font-bold uppercase tracking-wider text-muted">TỔNG KẾT BẢO TOÀN DÀN MÁY</span>
                 <h3 class="text-sm font-bold text-foreground mt-0.5">Báo Giá Chi Tiết PC Tự Ráp</h3>
               </div>
@@ -637,26 +637,26 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
                   </div>
                   <div class="text-right">
                     <div class="text-xl sm:text-2xl font-black text-primary tabular">{{ totalHardwarePrice() | vnd }}</div>
-                    <div class="text-[10px] text-emerald-400 font-bold">Tiết kiệm trọn gói 1.800.000 đ</div>
+                    <div class="text-[10px] text-primary font-bold">Tiết kiệm trọn gói 1.800.000 đ</div>
                   </div>
                 </div>
               </div>
 
               <!-- Custom COD Regulations Policy (PAY-011) -->
-              <div class="p-3 rounded-lg bg-surface-alt border border-border space-y-1.5 text-xs text-muted">
+              <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1.5 text-xs text-muted">
                 <div class="flex items-center gap-1.5 text-foreground font-bold text-[11px]">
-                  <lucide-icon name="shield-check" class="size-4 text-amber-400" aria-hidden="true"></lucide-icon>
+                  <lucide-icon name="shield-check" class="size-4 text-warning" aria-hidden="true"></lucide-icon>
                   <span>Quy định đặt cọc máy ráp (COD - PAY-011)</span>
                 </div>
                 <p class="text-[11px] leading-relaxed">
                   Máy tính ráp theo yêu cầu áp dụng quy tắc đặt cọc: Tối thiểu <strong class="text-foreground">10%</strong> để kỹ thuật bóc seal và lắp đặt an toàn.
                 </p>
                 <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
-                  <div class="bg-surface p-2 rounded border border-border">
+                  <div class="bg-surface p-2 rounded border border-line">
                     <div class="text-muted text-[10px]">Cọc trước (VietQR):</div>
                     <div class="font-bold text-primary tabular text-xs mt-0.5">{{ depositAmount() | vnd }}</div>
                   </div>
-                  <div class="bg-surface p-2 rounded border border-border">
+                  <div class="bg-surface p-2 rounded border border-line">
                     <div class="text-muted text-[10px]">Còn lại COD khi nhận:</div>
                     <div class="font-bold text-foreground tabular text-xs mt-0.5">{{ remainingCodAmount() | vnd }}</div>
                   </div>
@@ -693,7 +693,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
               </div>
 
               <!-- Assurance Micro Badges -->
-              <div class="pt-2 flex items-center justify-between text-[11px] text-muted border-t border-border">
+              <div class="pt-2 flex items-center justify-between text-[11px] text-muted border-t border-line">
                 <span class="flex items-center gap-1">
                   <lucide-icon name="rotate-ccw" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Đổi mới 30 ngày</span>
@@ -712,7 +712,7 @@ const HARDWARE_CATALOG: Record<BomCategory, readonly SwapItem[]> = {
             </div>
 
             <!-- Diagnostics Card -->
-            <div class="rounded-xl p-4 bg-surface shadow-sm border border-border space-y-1.5 text-xs text-muted">
+            <div class="rounded-xl p-4 bg-surface shadow-sm border border-line space-y-1.5 text-xs text-muted">
               <div class="flex items-center justify-between text-foreground font-bold text-[11px]">
                 <span class="flex items-center gap-1.5">
                   <lucide-icon name="cpu" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>

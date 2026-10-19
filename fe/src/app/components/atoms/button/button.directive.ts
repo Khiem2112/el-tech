@@ -28,10 +28,10 @@ export class ButtonDirective {
 
     const variants: Record<ButtonVariant, string> = {
       primary: 'bg-primary hover:bg-primary-strong text-primary-foreground font-bold shadow-sm active:scale-[0.99]',
-      secondary: 'bg-surface-alt hover:bg-slate-200 text-foreground border border-line',
+      secondary: 'bg-surface-alt hover:bg-line text-foreground border border-line',
       outline: 'border border-line bg-surface hover:bg-surface-alt hover:border-foreground text-foreground',
       ghost: 'text-muted hover:text-foreground hover:bg-surface-alt',
-      danger: 'bg-danger text-white hover:bg-red-700',
+      danger: 'bg-danger text-white hover:bg-danger/90',
       icon: 'text-muted hover:text-foreground hover:bg-surface-alt border border-transparent hover:border-line',
     };
 

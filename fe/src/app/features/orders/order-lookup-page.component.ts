@@ -75,7 +75,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
   template: `
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       <!-- Breadcrumbs & Heading -->
-      <div class="pb-6 border-b border-border">
+      <div class="pb-6 border-b border-line">
         <nav class="text-xs text-muted mb-1">
           <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
           <span class="text-foreground font-bold">Tra cứu trạng thái đơn</span>
@@ -99,7 +99,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
       </div>
 
       <!-- Order Lookup Input Box -->
-      <div class="max-w-2xl mx-auto bg-surface-alt p-5 sm:p-6 rounded-xl border border-border shadow-sm space-y-4">
+      <div class="max-w-2xl mx-auto bg-surface-alt p-5 sm:p-6 rounded-xl border border-line shadow-sm space-y-4">
         <div class="grid sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs font-bold text-foreground mb-1" for="lookupCode">Mã đơn hàng</label>
@@ -137,7 +137,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
 
         <!-- OTP Input Step -->
         @if (verificationId()) {
-          <div class="border-t border-border pt-4 space-y-2">
+          <div class="border-t border-line pt-4 space-y-2">
             <label class="block text-xs font-bold text-foreground" for="lookupOtp">Nhập mã OTP 6 chữ số vừa nhận được</label>
             <div class="flex gap-2">
               <input
@@ -165,16 +165,16 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
 
       <!-- Detailed Order View When Retrieved -->
       @if (order(); as item) {
-        <div class="bg-surface rounded-xl border border-border overflow-hidden shadow-sm">
+        <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm">
           
           <!-- Header Bar with Status Badges -->
-          <div class="bg-slate-900 text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-border">
+          <div class="bg-surface-dark text-white p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-line">
             <div>
               <div class="flex items-center gap-2.5 flex-wrap">
                 <span appBadge variant="primary" class="font-bold">
                   MÃ ĐƠN: {{ item.code }}
                 </span>
-                <span class="text-xs text-slate-400">Người nhận: {{ item.receiverName }} · {{ item.receiverPhone }}</span>
+                <span class="text-xs text-muted">Người nhận: {{ item.receiverName }} · {{ item.receiverPhone }}</span>
               </div>
               <h2 class="text-xl font-black tracking-tight mt-1 text-white">Chi Tiết Đơn Hàng Linh Kiện PC</h2>
             </div>
@@ -194,7 +194,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                 appButton
                 variant="outline"
                 size="sm"
-                class="border-slate-700 text-slate-200 hover:text-white"
+                class="border-line-dark text-slate-200 hover:text-white"
                 (click)="triggerPrint()"
               >
                 <lucide-icon name="Printer" class="size-3.5" aria-hidden="true"></lucide-icon>
@@ -204,7 +204,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
           </div>
 
           <!-- 5-Stage Visual Stepper -->
-          <div class="p-5 bg-surface-alt border-b border-border">
+          <div class="p-5 bg-surface-alt border-b border-line">
             <div class="grid grid-cols-5 gap-2 text-center text-xs">
               <!-- Stage 1: Đã xác nhận -->
               <div class="space-y-1">
@@ -214,7 +214,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                   [class.text-slate-950]="currentStageIndex() >= 1"
                   [class.bg-surface]="currentStageIndex() < 1"
                   [class.border]="currentStageIndex() < 1"
-                  [class.border-border]="currentStageIndex() < 1"
+                  [class.border-line]="currentStageIndex() < 1"
                   [class.text-muted]="currentStageIndex() < 1"
                 >
                   @if (currentStageIndex() > 1) {
@@ -237,7 +237,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                   [class.text-slate-950]="currentStageIndex() >= 2"
                   [class.bg-surface]="currentStageIndex() < 2"
                   [class.border]="currentStageIndex() < 2"
-                  [class.border-border]="currentStageIndex() < 2"
+                  [class.border-line]="currentStageIndex() < 2"
                   [class.text-muted]="currentStageIndex() < 2"
                 >
                   @if (currentStageIndex() > 2) {
@@ -260,7 +260,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                   [class.text-slate-950]="currentStageIndex() >= 3"
                   [class.bg-surface]="currentStageIndex() < 3"
                   [class.border]="currentStageIndex() < 3"
-                  [class.border-border]="currentStageIndex() < 3"
+                  [class.border-line]="currentStageIndex() < 3"
                   [class.text-muted]="currentStageIndex() < 3"
                 >
                   @if (currentStageIndex() > 3) {
@@ -283,7 +283,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                   [class.text-slate-950]="currentStageIndex() >= 4"
                   [class.bg-surface]="currentStageIndex() < 4"
                   [class.border]="currentStageIndex() < 4"
-                  [class.border-border]="currentStageIndex() < 4"
+                  [class.border-line]="currentStageIndex() < 4"
                   [class.text-muted]="currentStageIndex() < 4"
                 >
                   @if (currentStageIndex() > 4) {
@@ -306,7 +306,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                   [class.text-slate-950]="currentStageIndex() >= 5"
                   [class.bg-surface]="currentStageIndex() < 5"
                   [class.border]="currentStageIndex() < 5"
-                  [class.border-border]="currentStageIndex() < 5"
+                  [class.border-line]="currentStageIndex() < 5"
                   [class.text-muted]="currentStageIndex() < 5"
                 >
                   5
@@ -320,7 +320,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
           </div>
 
           <!-- Telemetry Strip -->
-          <div class="bg-surface px-5 py-3 border-b border-border flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="bg-surface px-5 py-3 border-b border-line flex flex-wrap items-center justify-between gap-3 text-xs">
             <div class="flex items-center gap-4 flex-wrap">
               <span class="flex items-center gap-1.5 text-muted">
                 <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
@@ -357,32 +357,32 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
             
             <!-- VietQR Dynamic Payment Transfer Card (When Unpaid) -->
             @if (item.payment?.paymentReference && item.payment?.state === 'UNPAID') {
-              <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 p-5 rounded-xl border border-border text-white shadow-xl grid md:grid-cols-12 gap-5 items-center">
-                <div class="md:col-span-4 flex flex-col items-center justify-center text-center p-3.5 bg-slate-900 rounded-lg border border-slate-800">
+              <div class="bg-gradient-to-r from-surface-dark via-surface-elevated to-surface-dark p-5 rounded-xl border border-line text-white shadow-xl grid md:grid-cols-12 gap-5 items-center">
+                <div class="md:col-span-4 flex flex-col items-center justify-center text-center p-3.5 bg-surface-dark rounded-lg border border-line-dark">
                   <div class="size-36 rounded-md bg-white p-2.5 flex flex-col items-center justify-center shadow-inner">
-                    <div class="size-28 bg-slate-900 rounded flex flex-col items-center justify-center text-[10px] text-primary font-bold p-2 text-center">
+                    <div class="size-28 bg-surface-dark rounded flex flex-col items-center justify-center text-[10px] text-primary font-bold p-2 text-center">
                       [MÃ VIETQR CHUYỂN KHOẢN TỰ ĐỘNG]
                     </div>
                   </div>
-                  <span class="mt-2 text-[10px] text-slate-400">Quét bằng ứng dụng Ngân hàng</span>
+                  <span class="mt-2 text-[10px] text-muted">Quét bằng ứng dụng Ngân hàng</span>
                 </div>
 
                 <div class="md:col-span-8 space-y-2.5">
                   <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-primary uppercase">THÔNG TIN CHUYỂN KHOẢN CHÍNH XÁC</span>
-                    <span class="text-xs text-amber-400">Giữ linh kiện: 30 phút</span>
+                    <span class="text-xs text-warning">Giữ linh kiện: 30 phút</span>
                   </div>
                   <div class="grid sm:grid-cols-2 gap-3 text-xs">
-                    <div class="p-3 rounded-md bg-slate-800/80 border border-slate-700">
-                      <span class="text-slate-400 block text-[10px]">Nội dung chuyển khoản (chính xác):</span>
+                    <div class="p-3 rounded-md bg-line-dark/80 border border-line-dark">
+                      <span class="text-muted block text-[10px]">Nội dung chuyển khoản (chính xác):</span>
                       <strong class="text-primary text-base tracking-wider">{{ item.payment?.paymentReference }}</strong>
                     </div>
-                    <div class="p-3 rounded-md bg-slate-800/80 border border-slate-700">
-                      <span class="text-slate-400 block text-[10px]">Số tiền cần thanh toán:</span>
+                    <div class="p-3 rounded-md bg-line-dark/80 border border-line-dark">
+                      <span class="text-muted block text-[10px]">Số tiền cần thanh toán:</span>
                       <strong class="text-primary text-base tabular">{{ (item.payment?.expectedAmount ?? '0') | vnd }}</strong>
                     </div>
                   </div>
-                  <p class="text-[11px] text-slate-400">
+                  <p class="text-[11px] text-muted">
                     Quý khách vui lòng chuyển đúng nội dung để hệ thống tự động xác nhận đơn trong 1-2 phút.
                   </p>
                 </div>
@@ -391,7 +391,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
 
             <!-- Customer & Fulfillment Information Cards -->
             <div class="grid sm:grid-cols-2 gap-4 text-xs">
-              <div class="p-4 rounded-lg bg-surface-alt border border-border space-y-1.5">
+              <div class="p-4 rounded-lg bg-surface-alt border border-line space-y-1.5">
                 <span class="font-bold text-foreground block text-sm">Thông Tin Nhận Hàng</span>
                 <p>Hình thức: <strong class="text-foreground">{{ item.fulfillmentMethod === 'DELIVERY' ? 'Giao hàng tận nơi' : 'Nhận tại chi nhánh' }}</strong></p>
                 @if (item.fulfillmentMethod === 'DELIVERY') {
@@ -401,13 +401,13 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                 }
               </div>
 
-              <div class="p-4 rounded-lg bg-surface-alt border border-border space-y-1.5">
+              <div class="p-4 rounded-lg bg-surface-alt border border-line space-y-1.5">
                 <span class="font-bold text-foreground block text-sm">Phương Thức Thanh Toán</span>
                 <p>Hình thức: <strong class="text-foreground">{{ item.payment?.method === 'QR' ? 'Chuyển khoản VietQR' : 'Thanh toán COD' }}</strong></p>
                 @if (item.payment?.depositDisposition) {
                   <p class="text-muted">Trạng thái đặt cọc: {{ item.payment?.depositDisposition }}</p>
                 }
-                <p class="text-sm font-black text-foreground pt-1 border-t border-border">
+                <p class="text-sm font-black text-foreground pt-1 border-t border-line">
                   Tổng thanh toán: <span class="text-primary tabular text-base">{{ item.grandTotal | vnd }}</span>
                 </p>
               </div>
@@ -416,12 +416,12 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
             <!-- Ordered Components List -->
             <div>
               <h3 class="font-bold text-sm text-foreground mb-3">Danh Sách Linh Kiện Trong Đơn Hàng</h3>
-              <div class="bg-surface rounded-lg border border-border divide-y divide-border overflow-hidden shadow-sm">
+              <div class="bg-surface rounded-lg border border-line divide-y divide-border overflow-hidden shadow-sm">
                 @for (line of item.lines; track line.id) {
                   <div class="p-4 sm:p-5">
                     <div class="flex items-center justify-between gap-4">
                       <div class="flex items-center gap-3 min-w-0 flex-1">
-                        <div class="size-14 rounded-md bg-surface-alt border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                        <div class="size-14 rounded-md bg-surface-alt border border-line flex items-center justify-center shrink-0 overflow-hidden">
                           <img
                             [src]="line.media | productImage"
                             [alt]="line.name"
@@ -452,7 +452,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
 
                     <!-- Review Form -->
                     @if (reviewingLineId() === line.id) {
-                      <div class="mt-3 rounded-lg bg-surface-alt p-3.5 text-xs border border-border space-y-2.5">
+                      <div class="mt-3 rounded-lg bg-surface-alt p-3.5 text-xs border border-line space-y-2.5">
                         <p class="font-bold text-foreground">Đánh giá linh kiện</p>
                         <div class="flex items-center gap-2">
                           <span>Số sao:</span>
@@ -505,7 +505,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
             </div>
 
             <!-- Processing Timeline Log -->
-            <div class="border-t border-border pt-5">
+            <div class="border-t border-line pt-5">
               <h3 class="font-bold text-sm text-foreground mb-3">Nhật Ký Xử Lý Đơn Hàng (Timeline)</h3>
               <ol class="space-y-2 text-xs text-muted">
                 @for (entry of item.timeline; track entry.occurredAt) {

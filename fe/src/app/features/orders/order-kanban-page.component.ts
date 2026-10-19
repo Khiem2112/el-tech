@@ -171,7 +171,7 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
   template: `
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       <!-- Breadcrumb & Top Bar -->
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-border">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
           <nav class="text-xs text-muted mb-1">
             <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
@@ -187,13 +187,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
 
         <!-- Quick Status Metrics & View Switcher -->
         <div class="flex items-center gap-3 flex-wrap">
-          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-alt border border-border">
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-alt border border-line">
             <span class="size-2 rounded-full bg-primary animate-pulse"></span>
             <span class="text-xs font-bold text-foreground">{{ activeOrdersCount() }} đơn hàng đang xử lý</span>
           </div>
 
           <!-- View Mode Toggle -->
-          <div class="flex items-center bg-surface-alt p-1 rounded-lg border border-border">
+          <div class="flex items-center bg-surface-alt p-1 rounded-lg border border-line">
             <button
               type="button"
               class="flex items-center gap-1.5 px-3 py-1 rounded text-xs font-bold transition-all"
@@ -223,7 +223,7 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
       </div>
 
       <!-- Quick Filter Strip -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 bg-surface-alt p-3.5 rounded-xl border border-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 bg-surface-alt p-3.5 rounded-xl border border-line">
         <!-- Search Input -->
         <div class="lg:col-span-5 relative flex items-center">
           <input
@@ -284,13 +284,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
         <div class="w-full overflow-x-auto pb-6">
           <div class="min-w-[1240px] grid grid-cols-5 gap-4 items-start">
             <!-- Stage 1: Chờ TT & Xác nhận -->
-            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-border min-h-[640px]">
-              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-border/60">
+            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
+              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
-                  <span class="size-2.5 rounded-full bg-amber-500"></span>
+                  <span class="size-2.5 rounded-full bg-warning"></span>
                   <span class="text-xs font-bold text-foreground">Chờ TT & Xác nhận</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-amber-500 font-bold text-[10px] border border-border">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-warning font-bold text-[10px] border border-line">
                   {{ pendingOrders().length }} đơn
                 </span>
               </div>
@@ -302,13 +302,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
             </div>
 
             <!-- Stage 2: Chuẩn bị linh kiện -->
-            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-border min-h-[640px]">
-              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-border/60">
+            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
+              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
                   <span class="size-2.5 rounded-full bg-slate-400"></span>
                   <span class="text-xs font-bold text-foreground">Chuẩn bị linh kiện</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-foreground font-bold text-[10px] border border-border">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-foreground font-bold text-[10px] border border-line">
                   {{ preparingOrders().length }} đơn
                 </span>
               </div>
@@ -320,13 +320,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
             </div>
 
             <!-- Stage 3: Lắp ráp & Stress Test -->
-            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-border min-h-[640px]">
-              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-border/60">
+            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
+              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
                   <span class="size-2.5 rounded-full bg-primary"></span>
                   <span class="text-xs font-bold text-foreground">Lắp ráp & Stress Test</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-border">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
                   {{ assemblingOrders().length }} đơn
                 </span>
               </div>
@@ -338,13 +338,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
             </div>
 
             <!-- Stage 4: Sẵn sàng giao / Hub -->
-            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-border min-h-[640px]">
-              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-border/60">
+            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
+              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
                   <span class="size-2.5 rounded-full bg-sky-500"></span>
                   <span class="text-xs font-bold text-foreground">Sẵn sàng / Hub</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-sky-500 font-bold text-[10px] border border-border">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-sky-500 font-bold text-[10px] border border-line">
                   {{ readyOrders().length }} đơn
                 </span>
               </div>
@@ -356,13 +356,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
             </div>
 
             <!-- Stage 5: Hoàn tất -->
-            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-border min-h-[640px]">
-              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-border/60">
+            <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
+              <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
-                  <span class="size-2.5 rounded-full bg-emerald-500"></span>
+                  <span class="size-2.5 rounded-full bg-primary"></span>
                   <span class="text-xs font-bold text-foreground">Hoàn tất</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-emerald-500 font-bold text-[10px] border border-border">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
                   {{ completedOrders().length }} đơn
                 </span>
               </div>
@@ -376,14 +376,14 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
         </div>
       } @else {
         <!-- LIST VIEW -->
-        <div class="bg-surface rounded-xl border border-border divide-y divide-border overflow-hidden shadow-sm">
+        <div class="bg-surface rounded-xl border border-line divide-y divide-border overflow-hidden shadow-sm">
           @for (item of filteredOrders(); track item.id) {
             <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div class="flex items-center gap-3 min-w-0">
                 <img
                   [src]="item.thumbnail"
                   [alt]="item.title"
-                  class="size-14 rounded-md object-cover border border-border shrink-0"
+                  class="size-14 rounded-md object-cover border border-line shrink-0"
                 >
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
@@ -419,10 +419,10 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
 
     <!-- Reusable Kanban Card Template -->
     <ng-template #cardTemplate let-item>
-      <div class="bg-surface rounded-xl p-3.5 border border-border shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group space-y-2.5">
+      <div class="bg-surface rounded-xl p-3.5 border border-line shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group space-y-2.5">
         <!-- Top Status Indicator -->
         <div class="flex items-center justify-between text-[11px]">
-          <span class="font-mono font-bold text-foreground bg-surface-alt px-2 py-0.5 rounded border border-border">
+          <span class="font-mono font-bold text-foreground bg-surface-alt px-2 py-0.5 rounded border border-line">
             #{{ item.code }}
           </span>
           <span class="text-muted text-[10px]">{{ item.createdAtText }}</span>
@@ -433,7 +433,7 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
           <img
             [src]="item.thumbnail"
             [alt]="item.title"
-            class="size-12 rounded-lg object-cover bg-surface-alt shrink-0 border border-border"
+            class="size-12 rounded-lg object-cover bg-surface-alt shrink-0 border border-line"
           >
           <div class="min-w-0 flex-1">
             <span class="inline-block px-1.5 py-0.5 rounded bg-surface-alt text-muted text-[9px] font-bold uppercase tracking-wider mb-0.5">
@@ -447,14 +447,14 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
         <!-- Context Highlight Block -->
         @if (item.highlight; as hl) {
           @if (hl.type === 'warning') {
-            <div class="bg-amber-500/10 border border-amber-500/20 p-2 rounded-lg flex items-center justify-between text-[10px] text-amber-500 font-bold">
+            <div class="bg-warning/10 border border-amber-500/20 p-2 rounded-lg flex items-center justify-between text-[10px] text-warning font-bold">
               <span>{{ hl.text }}</span>
               @if (hl.badge) {
                 <span class="font-mono bg-surface px-1.5 py-0.5 rounded shadow-xs text-foreground">{{ hl.badge }}</span>
               }
             </div>
           } @else if (hl.type === 'telemetry') {
-            <div class="bg-slate-900 text-white p-2.5 rounded-lg text-[10px] space-y-1.5 font-mono">
+            <div class="bg-surface-dark text-white p-2.5 rounded-lg text-[10px] space-y-1.5 font-mono">
               <div class="flex items-center justify-between text-primary">
                 <span>{{ hl.text }}</span>
                 @if (hl.progress) {
@@ -462,12 +462,12 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
                 }
               </div>
               @if (hl.progress) {
-                <div class="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                <div class="w-full h-1 bg-line-dark rounded-full overflow-hidden">
                   <div class="h-full bg-primary rounded-full" [style.width.%]="hl.progress"></div>
                 </div>
               }
               @if (hl.metrics) {
-                <div class="grid grid-cols-2 gap-1 pt-1 border-t border-slate-800 text-[9px] text-slate-400">
+                <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-[9px] text-muted">
                   @for (m of hl.metrics; track m.label) {
                     <div>
                       <span class="block text-slate-500">{{ m.label }}</span>
@@ -495,13 +495,13 @@ const INITIAL_KANBAN_ORDERS: KanbanOrder[] = [
         }
 
         <!-- Technician & Branch Details -->
-        <div class="flex items-center justify-between pt-1 border-t border-border text-[10px]">
+        <div class="flex items-center justify-between pt-1 border-t border-line text-[10px]">
           <div>
             <span class="text-muted block text-[9px]">Tổng thanh toán</span>
             <span class="font-bold text-xs text-foreground tabular">{{ item.totalAmount | vnd }}</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="size-6 rounded-full bg-surface-alt border border-border flex items-center justify-center font-bold text-[10px] text-foreground" [title]="item.technician.name">
+            <span class="size-6 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-[10px] text-foreground" [title]="item.technician.name">
               {{ item.technician.initials }}
             </span>
           </div>

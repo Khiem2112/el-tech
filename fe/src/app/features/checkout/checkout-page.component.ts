@@ -21,7 +21,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
   template: `
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Breadcrumbs & Stepper Header -->
-      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-border">
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
           <nav class="text-xs text-muted mb-1">
             <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
@@ -43,8 +43,8 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
 
       <!-- Order Result State When Submitted -->
       @if (orderResult(); as order) {
-        <div class="mt-8 bg-surface rounded-xl border border-border p-6 sm:p-8 shadow-sm max-w-3xl mx-auto space-y-6">
-          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+        <div class="mt-8 bg-surface rounded-xl border border-line p-6 sm:p-8 shadow-sm max-w-3xl mx-auto space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
             <div>
               <span appBadge variant="primary" class="font-bold">
                 MÃ ĐƠN: {{ order.code }}
@@ -64,23 +64,23 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
 
           <!-- VietQR payment transfer card -->
           @if (order.paymentReference) {
-            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 p-5 rounded-xl border border-border text-white shadow-xl space-y-4">
+            <div class="bg-gradient-to-r from-surface-dark via-surface-elevated to-surface-dark p-5 rounded-xl border border-line text-white shadow-xl space-y-4">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-primary uppercase">THÔNG TIN CHUYỂN KHOẢN VIETQR</span>
-                <span class="text-xs text-amber-400">Thời gian giữ hàng: 30 phút</span>
+                <span class="text-xs text-warning">Thời gian giữ hàng: 30 phút</span>
               </div>
 
               <div class="grid sm:grid-cols-2 gap-3 text-xs">
-                <div class="p-3 rounded-md bg-slate-800/80 border border-slate-700">
-                  <span class="text-slate-400 block text-[10px]">Nội dung chuyển khoản (chính xác):</span>
+                <div class="p-3 rounded-md bg-line-dark/80 border border-line-dark">
+                  <span class="text-muted block text-[10px]">Nội dung chuyển khoản (chính xác):</span>
                   <strong class="text-primary text-base tracking-wider">{{ order.paymentReference }}</strong>
                 </div>
-                <div class="p-3 rounded-md bg-slate-800/80 border border-slate-700">
-                  <span class="text-slate-400 block text-[10px]">Số tiền cần thanh toán:</span>
+                <div class="p-3 rounded-md bg-line-dark/80 border border-line-dark">
+                  <span class="text-muted block text-[10px]">Số tiền cần thanh toán:</span>
                   <strong class="text-primary text-base tabular">{{ (order.expectedAmount ?? '0') | vnd }}</strong>
                 </div>
               </div>
-              <p class="text-[11px] text-slate-400">
+              <p class="text-[11px] text-muted">
                 Hệ thống ngân hàng liên kết sẽ tự động kiểm tra nội dung và đổi trạng thái đơn sang ĐÃ THANH TOÁN trong vòng 1-2 phút sau khi giao dịch thành công.
               </p>
             </div>
@@ -103,8 +103,8 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
           <div class="lg:col-span-7 space-y-6">
             
             <!-- Customer Contact & OTP Verification -->
-            <div class="bg-surface p-5 rounded-xl border border-border shadow-sm space-y-4">
-              <div class="flex items-center justify-between border-b border-border pb-3">
+            <div class="bg-surface p-5 rounded-xl border border-line shadow-sm space-y-4">
+              <div class="flex items-center justify-between border-b border-line pb-3">
                 <div class="flex items-center gap-2.5">
                   <div class="size-6 rounded-md bg-primary/10 border border-primary/20 text-primary flex items-center justify-center">
                     <lucide-icon name="Mail" class="size-3.5" aria-hidden="true"></lucide-icon>
@@ -149,7 +149,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                       </button>
                     </div>
                     @if (emailVerificationId()) {
-                      <span class="inline-block mt-1 text-[10px] text-emerald-400 font-bold">[Email đã xác minh thành công]</span>
+                      <span class="inline-block mt-1 text-[10px] text-primary font-bold">[Email đã xác minh thành công]</span>
                     } @else {
                       <span class="inline-block mt-1 text-[10px] text-muted">Nhấn Gửi OTP để nhận mã 6 chữ số</span>
                     }
@@ -178,7 +178,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                       </button>
                     </div>
                     @if (phoneVerificationId()) {
-                      <span class="inline-block mt-1 text-[10px] text-emerald-400 font-bold">[Số điện thoại đã xác minh]</span>
+                      <span class="inline-block mt-1 text-[10px] text-primary font-bold">[Số điện thoại đã xác minh]</span>
                     } @else {
                       <span class="inline-block mt-1 text-[10px] text-muted">Nhấn Gửi SMS để nhận mã 6 chữ số</span>
                     }
@@ -187,7 +187,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
 
                 <!-- OTP Input Box When Requested -->
                 @if (pending(); as current) {
-                  <div class="rounded-lg bg-surface-alt p-3.5 border border-border space-y-2">
+                  <div class="rounded-lg bg-surface-alt p-3.5 border border-line space-y-2">
                     <p class="font-bold text-xs text-foreground">
                       Nhập mã xác thực gửi tới {{ current.type === 'EMAIL' ? 'Email' : 'Số điện thoại' }}
                     </p>
@@ -215,8 +215,8 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
             </div>
 
             <!-- Fulfillment Method -->
-            <div class="bg-surface p-5 rounded-xl border border-border shadow-sm space-y-4">
-              <div class="flex items-center gap-2.5 border-b border-border pb-3">
+            <div class="bg-surface p-5 rounded-xl border border-line shadow-sm space-y-4">
+              <div class="flex items-center gap-2.5 border-b border-line pb-3">
                 <div class="size-6 rounded-md bg-primary/10 border border-primary/20 text-primary flex items-center justify-center">
                   <lucide-icon name="Truck" class="size-3.5" aria-hidden="true"></lucide-icon>
                 </div>
@@ -228,7 +228,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                   class="p-3.5 rounded-lg border cursor-pointer flex items-start gap-3 transition-all"
                   [class.border-primary]="fulfillment === 'DELIVERY'"
                   [class.bg-primary/5]="fulfillment === 'DELIVERY'"
-                  [class.border-border]="fulfillment !== 'DELIVERY'"
+                  [class.border-line]="fulfillment !== 'DELIVERY'"
                 >
                   <input
                     type="radio"
@@ -247,7 +247,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                   class="p-3.5 rounded-lg border cursor-pointer flex items-start gap-3 transition-all"
                   [class.border-primary]="fulfillment === 'PICKUP'"
                   [class.bg-primary/5]="fulfillment === 'PICKUP'"
-                  [class.border-border]="fulfillment !== 'PICKUP'"
+                  [class.border-line]="fulfillment !== 'PICKUP'"
                 >
                   <input
                     type="radio"
@@ -279,8 +279,8 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
             </div>
 
             <!-- Payment Method -->
-            <div class="bg-surface p-5 rounded-xl border border-border shadow-sm space-y-4">
-              <div class="flex items-center gap-2.5 border-b border-border pb-3">
+            <div class="bg-surface p-5 rounded-xl border border-line shadow-sm space-y-4">
+              <div class="flex items-center gap-2.5 border-b border-line pb-3">
                 <div class="size-6 rounded-md bg-primary/10 border border-primary/20 text-primary flex items-center justify-center">
                   <lucide-icon name="CreditCard" class="size-3.5" aria-hidden="true"></lucide-icon>
                 </div>
@@ -292,7 +292,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                   class="p-3.5 rounded-lg border cursor-pointer flex items-start gap-3 transition-all"
                   [class.border-primary]="paymentMethod === 'QR'"
                   [class.bg-primary/5]="paymentMethod === 'QR'"
-                  [class.border-border]="paymentMethod !== 'QR'"
+                  [class.border-line]="paymentMethod !== 'QR'"
                 >
                   <input
                     type="radio"
@@ -316,7 +316,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
                   class="p-3.5 rounded-lg border cursor-pointer flex items-start gap-3 transition-all"
                   [class.border-primary]="paymentMethod === 'COD'"
                   [class.bg-primary/5]="paymentMethod === 'COD'"
-                  [class.border-border]="paymentMethod !== 'COD'"
+                  [class.border-line]="paymentMethod !== 'COD'"
                 >
                   <input
                     type="radio"
@@ -335,7 +335,7 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
               </div>
 
               @if (paymentMethod === 'COD') {
-                <div class="rounded-md bg-surface-alt p-3 text-xs text-muted border border-border">
+                <div class="rounded-md bg-surface-alt p-3 text-xs text-muted border border-line">
                   <p class="font-bold text-foreground">Lưu ý về đơn hàng COD</p>
                   <p class="mt-0.5 leading-relaxed">Đối với cấu hình PC tự chọn (Custom Build), quý khách cần thanh toán tiền cọc qua mã QR để cửa hàng bắt đầu chuẩn bị linh kiện.</p>
                 </div>
@@ -343,12 +343,12 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
             </div>
 
             <!-- VAT Red Invoice Option -->
-            <div class="bg-surface p-5 rounded-xl border border-border shadow-sm space-y-3">
+            <div class="bg-surface p-5 rounded-xl border border-line shadow-sm space-y-3">
               <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-foreground">
                 <input
                   type="checkbox"
                   [(ngModel)]="requestVat"
-                  class="rounded border-border text-primary focus:ring-primary"
+                  class="rounded border-line text-primary focus:ring-primary"
                 >
                 <span>Yêu cầu xuất hóa đơn đỏ giá trị gia tăng (VAT 10%)</span>
               </label>
@@ -380,21 +380,21 @@ type SubmitResult = { readonly code: string; readonly status: string; readonly p
           <!-- Right Column: Quote & Confirmation Review (Col 5) -->
           <div class="lg:col-span-5 space-y-4">
             
-            <div class="bg-surface-alt p-5 rounded-xl border border-border shadow-sm space-y-4 sticky top-24">
-              <h2 class="text-sm font-bold text-foreground border-b border-border pb-3">Đối Soát Báo Giá & Tạo Đơn</h2>
+            <div class="bg-surface-alt p-5 rounded-xl border border-line shadow-sm space-y-4 sticky top-24">
+              <h2 class="text-sm font-bold text-foreground border-b border-line pb-3">Đối Soát Báo Giá & Tạo Đơn</h2>
 
               <!-- Branch Selector if PICKUP and Quote exists -->
               @if (quoteResult(); as quote) {
-                <div class="space-y-2.5 border-b border-border pb-4">
+                <div class="space-y-2.5 border-b border-line pb-4">
                   <div class="flex justify-between text-xs text-muted">
                     <span>Tạm tính linh kiện:</span>
                     <span class="font-bold text-foreground tabular">{{ quote.subtotal | vnd }}</span>
                   </div>
                   <div class="flex justify-between text-xs text-muted">
                     <span>Phí vận chuyển:</span>
-                    <span class="font-semibold text-emerald-400">{{ quote.shippingFee | vnd }}</span>
+                    <span class="font-semibold text-primary">{{ quote.shippingFee | vnd }}</span>
                   </div>
-                  <div class="flex justify-between text-sm font-black text-foreground pt-2 border-t border-border">
+                  <div class="flex justify-between text-sm font-black text-foreground pt-2 border-t border-line">
                     <span>Tổng tiền thanh toán:</span>
                     <span class="text-primary tabular text-base">{{ quote.grandTotal | vnd }}</span>
                   </div>

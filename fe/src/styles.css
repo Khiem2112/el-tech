@@ -16,6 +16,9 @@
   --color-success: var(--success);
   --color-danger: var(--danger);
   --color-warning: var(--warning);
+  --color-line-dark: var(--line-dark);
+  --color-foreground-dark: var(--foreground-dark);
+  --color-border: var(--line);
 
   --radius-xs: 2px;
   --radius-sm: 4px;
@@ -44,6 +47,8 @@
   --success: #76b900;
   --danger: #e52020;
   --warning: #df6500;
+  --line-dark: #272f3d;
+  --foreground-dark: #ffffff;
   color-scheme: light;
 }
 * { box-sizing: border-box; }

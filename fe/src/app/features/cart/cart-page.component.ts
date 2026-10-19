@@ -15,7 +15,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
   template: `
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Breadcrumbs & Stepper Header -->
-      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-border">
+      <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
           <nav class="text-xs text-muted mb-1">
             <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
@@ -37,16 +37,16 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
       @if (loading()) {
         <div class="mt-8 grid gap-8 lg:grid-cols-12">
           <div class="lg:col-span-8 space-y-4">
-            <div class="h-40 animate-pulse rounded-lg bg-surface-alt border border-border"></div>
-            <div class="h-40 animate-pulse rounded-lg bg-surface-alt border border-border"></div>
+            <div class="h-40 animate-pulse rounded-lg bg-surface-alt border border-line"></div>
+            <div class="h-40 animate-pulse rounded-lg bg-surface-alt border border-line"></div>
           </div>
           <div class="lg:col-span-4">
-            <div class="h-72 animate-pulse rounded-xl bg-surface-alt border border-border"></div>
+            <div class="h-72 animate-pulse rounded-xl bg-surface-alt border border-line"></div>
           </div>
         </div>
       } @else if (!cart.items().length) {
-        <div class="mt-8 rounded-xl border border-dashed border-border p-10 text-center bg-surface max-w-2xl mx-auto shadow-sm">
-          <div class="size-14 mx-auto rounded-lg bg-surface-alt text-primary flex items-center justify-center mb-4 border border-border">
+        <div class="mt-8 rounded-xl border border-dashed border-line p-10 text-center bg-surface max-w-2xl mx-auto shadow-sm">
+          <div class="size-14 mx-auto rounded-lg bg-surface-alt text-primary flex items-center justify-center mb-4 border border-line">
             <lucide-icon name="shopping-cart" class="size-7" aria-hidden="true"></lucide-icon>
           </div>
           <h2 class="text-lg font-bold text-foreground">Giỏ hàng của bạn đang trống</h2>
@@ -73,18 +73,18 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 <lucide-icon name="truck" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
                 <div>
                   <span class="font-bold">Đơn hàng đạt điều kiện MIỄN PHÍ VẬN CHUYỂN!</span>
-                  <p class="text-[11px] text-emerald-400 mt-0.5">Giá trị đơn hàng linh kiện trên 2.000.000 đ được miễn phí giao hàng toàn quốc.</p>
+                  <p class="text-[11px] text-primary mt-0.5">Giá trị đơn hàng linh kiện trên 2.000.000 đ được miễn phí giao hàng toàn quốc.</p>
                 </div>
               </div>
               <span appBadge variant="primary" class="text-[10px]">FREESHIP ÁP DỤNG</span>
             </div>
 
             <!-- Items Container -->
-            <div class="bg-surface rounded-lg border border-border divide-y divide-border overflow-hidden shadow-sm">
+            <div class="bg-surface rounded-lg border border-line divide-y divide-border overflow-hidden shadow-sm">
               @for (item of cart.items(); track item.id) {
                 <article class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div class="flex items-center gap-4 min-w-0 flex-1">
-                    <div class="size-16 sm:size-20 rounded-md bg-surface-alt border border-border flex items-center justify-center shrink-0 overflow-hidden">
+                    <div class="size-16 sm:size-20 rounded-md bg-surface-alt border border-line flex items-center justify-center shrink-0 overflow-hidden">
                       <img
                         [src]="item.media | productImage"
                         [alt]="item.name"
@@ -107,8 +107,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   </div>
 
                   <!-- Quantity Controls & Line Total -->
-                  <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-border">
-                    <div class="flex items-center border border-border rounded-md bg-surface overflow-hidden">
+                  <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-line">
+                    <div class="flex items-center border border-line rounded-md bg-surface overflow-hidden">
                       <button
                         type="button"
                         appButton
@@ -163,8 +163,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <!-- Right Column: Order Summary (Col 4) -->
           <div class="lg:col-span-4 space-y-4">
             
-            <div class="bg-surface-alt p-5 rounded-xl border border-border shadow-sm space-y-4 sticky top-24">
-              <h2 class="text-sm font-bold text-foreground border-b border-border pb-3">Tóm Tắt Đơn Hàng</h2>
+            <div class="bg-surface-alt p-5 rounded-xl border border-line shadow-sm space-y-4 sticky top-24">
+              <h2 class="text-sm font-bold text-foreground border-b border-line pb-3">Tóm Tắt Đơn Hàng</h2>
 
               <!-- Price Calculations -->
               <div class="space-y-2 text-xs">
@@ -174,9 +174,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
                 <div class="flex justify-between text-muted">
                   <span>Phí vận chuyển giao tận nơi:</span>
-                  <span class="font-semibold text-emerald-400">0 đ (Miễn phí)</span>
+                  <span class="font-semibold text-primary">0 đ (Miễn phí)</span>
                 </div>
-                <div class="flex justify-between text-foreground text-sm font-black border-t border-border pt-2.5">
+                <div class="flex justify-between text-foreground text-sm font-black border-t border-line pt-2.5">
                   <span>Tổng tiền tạm tính:</span>
                   <span class="text-primary tabular text-base">{{ cart.subtotal() | vnd }}</span>
                 </div>
@@ -196,7 +196,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </a>
 
               <!-- Trust Assurances -->
-              <div class="pt-2 text-[11px] text-muted space-y-1.5 border-t border-border">
+              <div class="pt-2 text-[11px] text-muted space-y-1.5 border-t border-line">
                 <p>· Khách vãng lai không cần đăng nhập vẫn có thể đặt mua.</p>
                 <p>· Hỗ trợ thanh toán chuyển khoản VietQR tự động khóa linh kiện.</p>
                 <p>· Đổi mới trong 30 ngày nếu phát sinh lỗi kỹ thuật phần cứng.</p>

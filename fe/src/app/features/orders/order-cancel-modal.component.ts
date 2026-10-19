@@ -22,17 +22,17 @@ export type CancelOrderPayload = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
-      class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+      class="fixed inset-0 z-50 bg-surface-dark/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
       role="dialog"
       aria-modal="true"
       aria-labelledby="cancel-modal-title"
     >
-      <div class="w-full max-w-2xl bg-surface rounded-xl shadow-2xl border border-border flex flex-col overflow-hidden max-h-[90vh]">
+      <div class="w-full max-w-2xl bg-surface rounded-xl shadow-2xl border border-line flex flex-col overflow-hidden max-h-[90vh]">
         <!-- Modal Header -->
-        <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-border">
+        <div class="bg-surface-dark text-white px-6 py-4 flex items-center justify-between border-b border-line">
           <div class="flex flex-col gap-1">
             <div class="flex items-center gap-2">
-              <lucide-icon name="RotateCcw" class="size-5 text-amber-400" aria-hidden="true"></lucide-icon>
+              <lucide-icon name="RotateCcw" class="size-5 text-warning" aria-hidden="true"></lucide-icon>
               <h2 id="cancel-modal-title" class="text-lg font-black tracking-tight text-white">
                 Hủy Đơn Hàng #{{ orderCode() }}
               </h2>
@@ -41,13 +41,13 @@ export type CancelOrderPayload = {
               <span appBadge variant="outline" class="border-primary/40 text-primary font-bold">
                 {{ status() }}
               </span>
-              <span class="text-slate-400">| Đủ điều kiện hủy tự phục vụ trực tuyến</span>
+              <span class="text-muted">| Đủ điều kiện hủy tự phục vụ trực tuyến</span>
             </div>
           </div>
           <button
             type="button"
             aria-label="Đóng cửa sổ"
-            class="size-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
+            class="size-8 rounded-lg bg-line-dark hover:bg-slate-700 text-foreground-dark/70 hover:text-white flex items-center justify-center transition-colors"
             (click)="handleClose()"
           >
             <lucide-icon name="X" class="size-4" aria-hidden="true"></lucide-icon>
@@ -58,10 +58,10 @@ export type CancelOrderPayload = {
         <div class="p-6 overflow-y-auto space-y-5 text-xs text-foreground">
           <!-- Policy ORD-012 & ORD-014 Warning Cards -->
           <div class="space-y-3">
-            <div class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-lg flex items-start gap-3">
-              <lucide-icon name="ShieldCheck" class="size-5 text-amber-500 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
+            <div class="bg-warning/10 border border-amber-500/30 p-3.5 rounded-lg flex items-start gap-3">
+              <lucide-icon name="ShieldCheck" class="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
               <div class="space-y-1">
-                <span class="font-bold text-amber-500 uppercase tracking-wide text-[11px] block">
+                <span class="font-bold text-warning uppercase tracking-wide text-[11px] block">
                   Quy định hủy đơn trực tuyến (ORD-012)
                 </span>
                 <p class="text-muted leading-relaxed">
@@ -88,9 +88,9 @@ export type CancelOrderPayload = {
           </div>
 
           <!-- Order Summary Line -->
-          <div class="bg-surface-alt p-3.5 rounded-lg border border-border flex items-center justify-between">
+          <div class="bg-surface-alt p-3.5 rounded-lg border border-line flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="size-10 rounded bg-surface border border-border flex items-center justify-center text-primary">
+              <div class="size-10 rounded bg-surface border border-line flex items-center justify-center text-primary">
                 <lucide-icon name="Package" class="size-5" aria-hidden="true"></lucide-icon>
               </div>
               <div>
@@ -144,7 +144,7 @@ export type CancelOrderPayload = {
             </div>
 
             <!-- Refund Account Info -->
-            <div class="bg-surface-alt p-3.5 rounded-lg border border-border space-y-3">
+            <div class="bg-surface-alt p-3.5 rounded-lg border border-line space-y-3">
               <div class="flex items-center justify-between">
                 <span class="font-bold text-foreground flex items-center gap-1.5">
                   <lucide-icon name="CreditCard" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
@@ -184,7 +184,7 @@ export type CancelOrderPayload = {
             <label class="flex items-start gap-2.5 cursor-pointer pt-1">
               <input
                 type="checkbox"
-                class="mt-0.5 rounded border-border text-primary focus:ring-primary size-4"
+                class="mt-0.5 rounded border-line text-primary focus:ring-primary size-4"
                 [checked]="confirmedRules()"
                 (change)="confirmedRules.set(!confirmedRules())"
               >
@@ -196,7 +196,7 @@ export type CancelOrderPayload = {
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="bg-surface-alt px-6 py-4 border-t border-border flex flex-col sm:flex-row items-center justify-end gap-3">
+        <div class="bg-surface-alt px-6 py-4 border-t border-line flex flex-col sm:flex-row items-center justify-end gap-3">
           <button
             type="button"
             appButton

@@ -37,11 +37,11 @@ export type SwapSlotItem = {
         (click)="onBackdropClick($event)"
       >
         <div
-          class="bg-surface rounded-2xl shadow-2xl border border-border w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh] my-auto"
+          class="bg-surface rounded-2xl shadow-2xl border border-line w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh] my-auto"
           (click)="$event.stopPropagation()"
         >
           <!-- Modal Header -->
-          <div class="p-4 sm:p-5 bg-surface border-b border-border flex items-center justify-between shrink-0">
+          <div class="p-4 sm:p-5 bg-surface border-b border-line flex items-center justify-between shrink-0">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
                 <lucide-icon name="arrow-up-down" class="size-5" aria-hidden="true"></lucide-icon>
@@ -59,7 +59,7 @@ export type SwapSlotItem = {
             <button
               type="button"
               (click)="close()"
-              class="size-8 rounded-lg bg-surface-alt hover:bg-border text-muted hover:text-foreground flex items-center justify-center transition-colors cursor-pointer shrink-0 border border-border"
+              class="size-8 rounded-lg bg-surface-alt hover:bg-border text-muted hover:text-foreground flex items-center justify-center transition-colors cursor-pointer shrink-0 border border-line"
               aria-label="Đóng cửa sổ thay đổi linh kiện"
             >
               <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
@@ -67,7 +67,7 @@ export type SwapSlotItem = {
           </div>
 
           <!-- Realtime Compatibility Diagnostic Bar -->
-          <div class="bg-surface-alt px-4 sm:px-5 py-2.5 border-b border-border flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div class="bg-surface-alt px-4 sm:px-5 py-2.5 border-b border-line flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-3 flex-wrap">
               <div class="flex items-center gap-1.5 text-primary font-semibold">
                 <lucide-icon name="shield-check" class="size-4" aria-hidden="true"></lucide-icon>
@@ -86,7 +86,7 @@ export type SwapSlotItem = {
           </div>
 
           <!-- Search & Filter Bar -->
-          <div class="p-4 border-b border-border bg-surface space-y-3 shrink-0">
+          <div class="p-4 border-b border-line bg-surface space-y-3 shrink-0">
             <div class="flex items-center gap-2">
               <div class="flex-1 relative">
                 <lucide-icon name="search" class="size-4 absolute left-3 top-3 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
@@ -125,7 +125,7 @@ export type SwapSlotItem = {
                 [class.text-primary-foreground]="!selectedBrand()"
                 [class.border-primary]="!selectedBrand()"
                 [class.bg-surface-alt]="selectedBrand()"
-                [class.border-border]="selectedBrand()"
+                [class.border-line]="selectedBrand()"
                 [class.text-foreground]="selectedBrand()"
               >
                 Tất cả
@@ -139,7 +139,7 @@ export type SwapSlotItem = {
                   [class.text-primary-foreground]="selectedBrand() === brand"
                   [class.border-primary]="selectedBrand() === brand"
                   [class.bg-surface-alt]="selectedBrand() !== brand"
-                  [class.border-border]="selectedBrand() !== brand"
+                  [class.border-line]="selectedBrand() !== brand"
                   [class.text-foreground]="selectedBrand() !== brand"
                 >
                   {{ brand }}
@@ -152,13 +152,13 @@ export type SwapSlotItem = {
           <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
             <!-- Currently Selected Reference Card -->
             @if (currentSlot?.item; as current) {
-              <div class="p-3.5 rounded-xl bg-surface-alt border border-border space-y-2">
+              <div class="p-3.5 rounded-xl bg-surface-alt border border-line space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-[11px] font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
                     <span class="size-2 rounded-full bg-primary inline-block"></span>
                     Linh kiện đang có trong cấu hình:
                   </span>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface border border-border font-bold text-primary">
+                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface border border-line font-bold text-primary">
                     Đang áp dụng
                   </span>
                 </div>
@@ -186,17 +186,17 @@ export type SwapSlotItem = {
               </div>
 
               @if (filteredItems().length === 0) {
-                <div class="rounded-xl border border-dashed border-border p-8 text-center bg-surface">
+                <div class="rounded-xl border border-dashed border-line p-8 text-center bg-surface">
                   <p class="text-xs font-bold text-foreground">Không tìm thấy linh kiện phù hợp với bộ lọc</p>
                   <p class="text-[11px] text-muted mt-1">Vui lòng thử xóa từ khóa tìm kiếm hoặc chọn thương hiệu khác.</p>
                 </div>
               } @else {
                 <div class="space-y-2">
                   @for (item of filteredItems(); track item.id) {
-                    <div class="p-3.5 rounded-xl bg-surface border border-border hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                    <div class="p-3.5 rounded-xl bg-surface border border-line hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-foreground border border-border">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-foreground border border-line">
                             {{ item.brand }}
                           </span>
                           @if (item.tag) {
@@ -204,7 +204,7 @@ export type SwapSlotItem = {
                               {{ item.tag }}
                             </span>
                           }
-                          <span class="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
+                          <span class="text-[11px] text-primary font-medium flex items-center gap-1">
                             <lucide-icon name="store" class="size-3" aria-hidden="true"></lucide-icon>
                             <span>{{ item.stockStatus || 'Sẵn hàng HN & HCM' }}</span>
                           </span>
@@ -213,14 +213,14 @@ export type SwapSlotItem = {
                         <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
                       </div>
 
-                      <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-border">
+                      <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
                         <div class="text-left sm:text-right">
                           <div class="text-xs font-bold text-foreground tabular">{{ item.price | vnd }}</div>
                           @if (getPriceDifference(item.price); as diff) {
                             @if (diff > 0) {
-                              <div class="text-[11px] font-bold text-amber-400 font-mono">+{{ diff | vnd }}</div>
+                              <div class="text-[11px] font-bold text-warning font-mono">+{{ diff | vnd }}</div>
                             } @else if (diff < 0) {
-                              <div class="text-[11px] font-bold text-emerald-400 font-mono">-{{ (-diff) | vnd }}</div>
+                              <div class="text-[11px] font-bold text-primary font-mono">-{{ (-diff) | vnd }}</div>
                             } @else {
                               <div class="text-[10px] text-muted">Bằng giá (0 đ)</div>
                             }
@@ -246,7 +246,7 @@ export type SwapSlotItem = {
           </div>
 
           <!-- Modal Footer -->
-          <div class="p-3.5 bg-surface-alt border-t border-border flex items-center justify-between text-xs text-muted">
+          <div class="p-3.5 bg-surface-alt border-t border-line flex items-center justify-between text-xs text-muted">
             <div class="flex items-center gap-1.5">
               <lucide-icon name="shield-check" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
               <span>Cam kết bảo hành chính hãng 36 tháng cho mọi linh kiện thay thế</span>

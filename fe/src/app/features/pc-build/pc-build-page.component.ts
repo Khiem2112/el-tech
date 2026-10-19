@@ -15,7 +15,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div class="pb-6 border-b border-border">
+      <div class="pb-6 border-b border-line">
         <nav class="text-xs text-muted mb-1">
           <a routerLink="/" class="hover:text-foreground">Trang chủ</a> / 
           <span class="text-foreground font-bold">PC dựng sẵn</span>
@@ -30,7 +30,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
       @if (loading()) {
         <div class="mt-8 grid gap-6 md:grid-cols-2">
           @for (item of [1, 2]; track item) {
-            <div class="h-64 animate-pulse rounded-xl bg-surface-alt border border-border"></div>
+            <div class="h-64 animate-pulse rounded-xl bg-surface-alt border border-line"></div>
           }
         </div>
       } @else if (error()) {
@@ -43,7 +43,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
       } @else {
         <div class="mt-8 grid gap-6 md:grid-cols-2">
           @for (bundle of bundles(); track bundle.id) {
-            <article class="rounded-xl border border-border bg-surface p-6 shadow-sm flex flex-col justify-between hover:border-primary/50 transition-all">
+            <article class="rounded-xl border border-line bg-surface p-6 shadow-sm flex flex-col justify-between hover:border-primary/50 transition-all">
               <div>
                 <div class="flex items-center justify-between">
                   <span appBadge variant="primary" class="text-[10px]">ELT BUNDLE</span>
@@ -52,7 +52,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
                 <h2 class="text-lg font-bold text-foreground mt-2">{{ bundle.name }}</h2>
                 <p class="mt-1 text-xs text-muted leading-relaxed">{{ bundle.description }}</p>
                 
-                <div class="mt-4 pt-4 border-t border-border">
+                <div class="mt-4 pt-4 border-t border-line">
                   <span class="text-xs font-bold text-foreground uppercase block mb-2">Danh sách linh kiện trong bộ:</span>
                   <ul class="space-y-1.5 text-xs text-muted">
                     @for (line of bundle.build.lines; track line.sku) {
@@ -65,7 +65,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
                 </div>
               </div>
 
-              <div class="mt-6 pt-4 border-t border-border">
+              <div class="mt-6 pt-4 border-t border-line">
                 <div class="flex items-baseline justify-between mb-4">
                   <span class="text-xs text-muted">Giá trọn gói lắp ráp:</span>
                   <span class="text-xl font-black text-primary tabular">{{ bundle.build.total | vnd }}</span>

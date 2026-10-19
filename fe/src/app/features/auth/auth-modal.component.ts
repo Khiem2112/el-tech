@@ -13,12 +13,12 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
   template: `
     @if (auth.isAuthModalOpen()) {
       <div
-        class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150"
+        class="fixed inset-0 z-50 bg-surface-dark/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-150"
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
       >
-        <div class="relative w-full max-w-[440px] my-auto bg-surface rounded-2xl shadow-2xl border border-border overflow-hidden transition-all duration-200">
+        <div class="relative w-full max-w-[440px] my-auto bg-surface rounded-2xl shadow-2xl border border-line overflow-hidden transition-all duration-200">
           <!-- Top NVIDIA Green Gradient Line -->
           <div class="h-1.5 w-full bg-gradient-to-r from-primary via-primary-pale to-primary-fixed"></div>
 
@@ -36,7 +36,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="p-6 sm:p-7 flex flex-col gap-5">
             <!-- Header Identity -->
             <div class="flex flex-col items-center text-center">
-              <div class="size-11 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center shadow-xs mb-3">
+              <div class="size-11 rounded-xl bg-surface-dark border border-line-dark flex items-center justify-center shadow-xs mb-3">
                 <lucide-icon name="Cpu" class="size-6 text-primary" aria-hidden="true"></lucide-icon>
               </div>
               <span class="text-[10px] tracking-widest text-primary font-bold uppercase">EL-TECH HARDWARE</span>
@@ -49,7 +49,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </div>
 
             <!-- Segmented Tab Switcher -->
-            <div class="grid grid-cols-2 p-1 bg-surface-alt rounded-lg border border-border">
+            <div class="grid grid-cols-2 p-1 bg-surface-alt rounded-lg border border-line">
               <button
                 type="button"
                 class="py-2 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
@@ -79,7 +79,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             <!-- Google OAuth 1-Click Fast Button -->
             <button
               type="button"
-              class="w-full h-11 px-4 rounded-lg bg-surface hover:bg-surface-alt border border-border shadow-xs flex items-center justify-center gap-3 text-xs font-bold text-foreground transition-all duration-150 group"
+              class="w-full h-11 px-4 rounded-lg bg-surface hover:bg-surface-alt border border-line shadow-xs flex items-center justify-center gap-3 text-xs font-bold text-foreground transition-all duration-150 group"
               (click)="handleGoogleAuth()"
             >
               <svg class="size-4.5 shrink-0" viewBox="0 0 24 24">
@@ -173,7 +173,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <label class="flex items-center gap-1.5 cursor-pointer select-none text-muted hover:text-foreground">
                     <input
                       type="checkbox"
-                      class="rounded border-border text-primary focus:ring-primary size-3.5"
+                      class="rounded border-line text-primary focus:ring-primary size-3.5"
                       [(ngModel)]="rememberMe"
                       name="rememberMe"
                     >
@@ -216,7 +216,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             }
 
             <!-- Guest Lookup Footer -->
-            <div class="pt-3 bg-surface-alt -mx-6 -mb-6 sm:-mx-7 sm:-mb-7 px-6 py-3 border-t border-border flex items-center justify-between rounded-b-2xl text-xs">
+            <div class="pt-3 bg-surface-alt -mx-6 -mb-6 sm:-mx-7 sm:-mb-7 px-6 py-3 border-t border-line flex items-center justify-between rounded-b-2xl text-xs">
               <span class="text-muted flex items-center gap-1.5">
                 <lucide-icon name="Truck" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                 <span>Khách mua vãng lai?</span>

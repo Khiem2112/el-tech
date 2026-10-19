@@ -52,7 +52,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       @if (loading()) {
         <div class="grid gap-8 lg:grid-cols-12">
-          <div class="lg:col-span-5 aspect-square animate-pulse rounded-xl bg-surface-alt border border-border"></div>
+          <div class="lg:col-span-5 aspect-square animate-pulse rounded-xl bg-surface-alt border border-line"></div>
           <div class="lg:col-span-7 space-y-4">
             <div class="h-8 w-2/3 animate-pulse rounded-md bg-surface-alt"></div>
             <div class="h-24 animate-pulse rounded-lg bg-surface-alt"></div>
@@ -74,7 +74,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
         <div class="grid gap-8 lg:grid-cols-12">
           <!-- Left Column: Media Gallery (Col 5) -->
           <div class="lg:col-span-5 space-y-4">
-            <div class="relative aspect-square overflow-hidden rounded-xl border border-border bg-surface p-6 flex items-center justify-center shadow-sm">
+            <div class="relative aspect-square overflow-hidden rounded-xl border border-line bg-surface p-6 flex items-center justify-center shadow-sm">
               <span appBadge variant="primary" class="absolute top-4 left-4 text-xs font-bold">CHÍNH HÃNG 100%</span>
               <span appBadge variant="outline" class="absolute top-4 right-4 text-xs font-semibold bg-surface/90">BẢO HÀNH 36T</span>
               
@@ -87,7 +87,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
             </div>
 
             <!-- Trust Policy Box -->
-            <div class="bg-surface-alt rounded-lg p-4 border border-border space-y-2.5 text-xs text-muted">
+            <div class="bg-surface-alt rounded-lg p-4 border border-line space-y-2.5 text-xs text-muted">
               <div class="flex items-center gap-2 font-bold text-foreground">
                 <lucide-icon name="ShieldCheck" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                 <span>Chính Sách Cam Kết Tại EL-TECH</span>
@@ -117,7 +117,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <h1 class="mt-2 text-xl sm:text-2xl lg:text-3xl font-black text-foreground tracking-tight">{{ item.name }}</h1>
               
               <div class="mt-2.5 flex items-center gap-3 text-xs flex-wrap">
-                <span class="font-bold text-amber-400">5/5 Sao ({{ reviews().length }} đánh giá từ khách hàng)</span>
+                <span class="font-bold text-warning">5/5 Sao ({{ reviews().length }} đánh giá từ khách hàng)</span>
                 <span class="text-border">|</span>
                 <span appBadge variant="success">Có thể đặt hàng ngay</span>
               </div>
@@ -125,7 +125,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
 
             <!-- Price Highlight Box -->
             @if (selected(); as variant) {
-              <div class="bg-surface-alt p-4 rounded-lg border border-border space-y-1.5">
+              <div class="bg-surface-alt p-4 rounded-lg border border-line space-y-1.5">
                 <div class="flex items-baseline gap-3 flex-wrap">
                   <span class="text-2xl sm:text-3xl font-black text-foreground tabular">{{ variant.sellingPrice | vnd }}</span>
                   <span class="text-xs text-muted">Mã SKU: {{ variant.sku }}</span>
@@ -144,7 +144,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                     [class.border-primary]="selected()?.id === variant.id"
                     [class.bg-primary/10]="selected()?.id === variant.id"
                     [class.text-primary]="selected()?.id === variant.id"
-                    [class.border-border]="selected()?.id !== variant.id"
+                    [class.border-line]="selected()?.id !== variant.id"
                     [class.bg-surface]="selected()?.id !== variant.id"
                     [class.text-foreground]="selected()?.id !== variant.id"
                     type="button"
@@ -161,7 +161,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
             <div class="space-y-4 pt-1">
               <div class="flex items-center gap-3">
                 <span class="text-xs font-bold text-foreground">Số lượng mua:</span>
-                <div class="flex items-center border border-border rounded-md bg-surface overflow-hidden">
+                <div class="flex items-center border border-line rounded-md bg-surface overflow-hidden">
                   <button
                     type="button"
                     appButton
@@ -214,7 +214,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               </div>
 
               @if (addSuccess()) {
-                <p class="text-xs font-bold text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 p-2.5 rounded-md">
+                <p class="text-xs font-bold text-primary bg-emerald-950/30 border border-emerald-800/40 p-2.5 rounded-md">
                   Đã thêm sản phẩm vào giỏ hàng thành công.
                 </p>
               }
@@ -224,32 +224,32 @@ const SPEC_LABEL_MAP: Record<string, string> = {
             </div>
 
             <!-- Store Branch Stock Status -->
-            <div class="border-t border-border pt-4 space-y-2">
+            <div class="border-t border-line pt-4 space-y-2">
               <div class="text-xs font-bold text-foreground">Tình trạng còn hàng tại các chi nhánh:</div>
               <div class="grid sm:grid-cols-3 gap-2 text-xs">
-                <div class="p-2.5 rounded-md border border-border bg-surface-alt text-foreground space-y-1">
+                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
                   <div class="flex items-center gap-1.5 font-bold">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>HN: 45 Thái Hà</span>
                   </div>
                   <div class="text-[11px] text-muted truncate">Q. Đống Đa, Hà Nội</div>
-                  <div class="font-bold text-[11px] text-emerald-400">Sẵn hàng (Giao 2h)</div>
+                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
-                <div class="p-2.5 rounded-md border border-border bg-surface-alt text-foreground space-y-1">
+                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
                   <div class="flex items-center gap-1.5 font-bold">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>HCM: 280 Đường 3/2</span>
                   </div>
                   <div class="text-[11px] text-muted truncate">P. 12, Q. 10, TP. HCM</div>
-                  <div class="font-bold text-[11px] text-emerald-400">Sẵn hàng (Giao 2h)</div>
+                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
-                <div class="p-2.5 rounded-md border border-border bg-surface-alt text-foreground space-y-1">
+                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
                   <div class="flex items-center gap-1.5 font-bold">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>ĐN: 112 Hàm Nghi</span>
                   </div>
                   <div class="text-[11px] text-muted truncate">Q. Thanh Khê, Đà Nẵng</div>
-                  <div class="font-bold text-[11px] text-emerald-400">Sẵn hàng (Giao 2h)</div>
+                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
               </div>
             </div>
@@ -258,8 +258,8 @@ const SPEC_LABEL_MAP: Record<string, string> = {
         </div>
 
         <!-- Technical Specification & Customer Reviews Tabs -->
-        <div class="mt-12 border-t border-border pt-6">
-          <div class="flex items-center gap-6 border-b border-border pb-3 text-xs sm:text-sm font-bold overflow-x-auto">
+        <div class="mt-12 border-t border-line pt-6">
+          <div class="flex items-center gap-6 border-b border-line pb-3 text-xs sm:text-sm font-bold overflow-x-auto">
             <button
               type="button"
               (click)="activeTab.set('specs')"
@@ -309,8 +309,8 @@ const SPEC_LABEL_MAP: Record<string, string> = {
           <!-- Specs Content Tab (Structured Clean 2-Column Table) -->
           @if (activeTab() === 'specs') {
             <div class="py-5 max-w-4xl">
-              <div class="bg-surface border border-border rounded-lg overflow-hidden shadow-sm">
-                <div class="bg-surface-alt px-4 py-2.5 border-b border-border text-xs font-bold text-foreground uppercase">
+              <div class="bg-surface border border-line rounded-lg overflow-hidden shadow-sm">
+                <div class="bg-surface-alt px-4 py-2.5 border-b border-line text-xs font-bold text-foreground uppercase">
                   BẢNG THÔNG SỐ KỸ THUẬT PHẦN CỨNG CHUẨN XÁC
                 </div>
                 @if (formattedSpecs().length === 0) {
@@ -345,7 +345,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
           <!-- Reviews Content Tab -->
           @if (activeTab() === 'reviews') {
             <div class="py-5 max-w-4xl space-y-4">
-              <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-border bg-surface-alt">
+              <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-line bg-surface-alt">
                 <div>
                   <h3 class="text-sm font-bold text-foreground">Đánh giá thực tế từ khách hàng đã mua</h3>
                   <p class="text-xs text-muted">Đánh giá được kiểm định qua hóa đơn và Serial Number linh kiện (REV-004).</p>
@@ -363,12 +363,12 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               </div>
 
               @if (reviews().length === 0) {
-                <div class="rounded-lg border border-dashed border-border p-8 text-center bg-surface">
+                <div class="rounded-lg border border-dashed border-line p-8 text-center bg-surface">
                   <p class="text-sm font-bold text-foreground">Chưa có đánh giá nào cho sản phẩm này</p>
                   <p class="mt-1 text-xs text-muted">Khách hàng đã hoàn tất đơn hàng có thể gửi đánh giá từ trang tra cứu đơn hàng hoặc bấm Viết Đánh Giá ở trên.</p>
                 </div>
               } @else {
-                <div class="divide-y divide-border rounded-lg border border-border bg-surface p-4">
+                <div class="divide-y divide-border rounded-lg border border-line bg-surface p-4">
                   @for (review of reviews(); track review.id) {
                     <div class="py-3 first:pt-0 last:pb-0">
                       <div class="flex items-center justify-between text-xs">
@@ -386,15 +386,15 @@ const SPEC_LABEL_MAP: Record<string, string> = {
           <!-- Policy Content Tab -->
           @if (activeTab() === 'policy') {
             <div class="py-5 max-w-4xl text-xs space-y-3 text-muted leading-relaxed">
-              <div class="p-3.5 rounded-lg border border-border bg-surface-alt space-y-1">
+              <div class="p-3.5 rounded-lg border border-line bg-surface-alt space-y-1">
                 <span class="font-bold text-foreground block">Quy định bảo hành chính hãng</span>
                 <p>Sản phẩm được bảo hành 36 tháng theo tiêu chuẩn nhà phân phối. Bảo hành điện tử kích hoạt qua số serial dán trên thân sản phẩm.</p>
               </div>
-              <div class="p-3.5 rounded-lg border border-border bg-surface-alt space-y-1">
+              <div class="p-3.5 rounded-lg border border-line bg-surface-alt space-y-1">
                 <span class="font-bold text-foreground block">Điều kiện đổi mới 1 đổi 1</span>
                 <p>Đổi sản phẩm mới 100% trong vòng 30 ngày đầu tiên nếu phát sinh lỗi kỹ thuật từ phía nhà sản xuất.</p>
               </div>
-              <div class="p-3.5 rounded-lg border border-border bg-surface-alt space-y-1">
+              <div class="p-3.5 rounded-lg border border-line bg-surface-alt space-y-1">
                 <span class="font-bold text-foreground block">Hỗ trợ kỹ thuật</span>
                 <p>Khách hàng mua linh kiện tại EL-TECH được hỗ trợ vệ sinh, tra keo tản nhiệt và kiểm tra phần cứng trọn đời máy tại tất cả chi nhánh.</p>
               </div>
