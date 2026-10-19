@@ -112,3 +112,17 @@ Sau khi được duyệt, cập nhật phần này thành:
 - Trạng thái: `Approved`.
 - Người duyệt: `Project owner (user)`.
 - Ngày duyệt: `2026-10-18`.
+
+## 9. Handoff sang workflow có version
+
+Từ 2026-10-19, các file trong `plan/` tiếp tục là nguồn scope, business context
+và roadmap đã duyệt. UX behavior mới hoặc thay đổi vật liệu được quản lý theo
+`docs/README.md` và `.agents/skills/feature-delivery-workflow/SKILL.md`:
+
+1. Flow implementation-neutral trong `docs/<feature>/flows/`.
+2. Approval riêng cho flow.
+3. Technical spec trong `docs/<feature>/specs/` và approval riêng.
+4. Code theo phase, review functional/convention, fix và re-review.
+
+Approval của kế hoạch này không tự động chuyển các flow/design/spec phát sinh sau đó
+thành `Approved`. Các flow đang `In review` được liệt kê tại `docs/README.md`.

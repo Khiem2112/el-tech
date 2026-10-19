@@ -84,7 +84,7 @@ Tai lieu tong hop va quy chuan cong nghe da duoc phe duyet cho du an Web linh ki
 
 | Khu vuc | Du an cu (ecommerce_integrate) | Du an moi (PC Store & Builder) | Ghi chu chuyen doi |
 | :--- | :--- | :--- | :--- |
-| **Framework** | Next.js 15+ App Router | Angular 17+ Standalone + Node.js | Tach biet FE (SPA) va BE (REST API) |
+| **Framework** | Next.js 15+ App Router | Angular 22 Standalone + Node.js | Tach biet FE (SPA) va BE (REST API) |
 | **Data Fetching** | TanStack React Query (`useQuery`) | Angular HttpClient + Signals Service | Signals theo doi trang thai loading va du lieu |
 | **Client State** | Jotai Atoms | Angular Native Signals Service | Khong can cai them thu vien ngoai |
 | **UI Primitives** | Radix UI + shadcn UI | Spartan UI (`spartan/ui`) + Tailwind | Spartan UI la shadcn UI danh cho Angular |

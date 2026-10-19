@@ -3,7 +3,7 @@
 ## Project Overview
 
 - Domain: Web ban linh kien PC va ho tro tu van lap rap PC (PC Builder, hardware compatibility, component catalog).
-- Frontend: Angular (v17+) + Tailwind CSS + Spartan UI (`spartan/ui`) + Angular Native Signals Service + Angular Reactive Forms + Zod.
+- Frontend: Angular 22 standalone components + Tailwind CSS + Spartan UI (`spartan/ui`) + Angular Native Signals Service + Angular Reactive Forms + Zod.
 - Backend: Node.js (Express / Fastify) + Better-Auth + Prisma Client.
 - Database: PostgreSQL (Supabase) managed via Prisma schema (`prisma/schema.prisma`).
 - Full Tech Stack Document: Read `TECH_STACK.md` for architecture diagrams and layer responsibilities.
@@ -25,7 +25,36 @@ Agents must not read all skills before starting a task. Load the minimal relevan
 
 ### Product Context, Flow Planning & UX
 
-When defining user journeys, hardware selection workflows, or edge cases:
+For a new or materially changed customer-facing journey, use
+`.agents/skills/feature-delivery-workflow/SKILL.md` as the lifecycle router and
+complete `flow -> UI design -> spec -> implementation plan -> code -> review -> fix`
+in that order.
+
+Before coding a material behavior change:
+
+1. Read `plan/README.md`, the applicable legacy plan files, and the routed files
+   under `.agents/skills/business-logic/features/`.
+2. Create an implementation-neutral flow at
+   `docs/<feature-name>/flows/v1.md` from `docs/templates/flow-v1.md`. Later
+   material changes use delta-only `v<N>-diff.md` files.
+3. Record explicit flow approval with approver and date. Approval of a document
+   in `plan/` does not automatically approve a newly generated flow.
+4. After flow approval, create `docs/<feature-name>/designs/v1.md` from
+   `docs/templates/ui-design-v1.md` for material customer-facing UI work. Select
+   pattern IDs from `docs/frontend-standards/`, define desktop/mobile layout and
+   states, and obtain explicit design approval.
+5. After required design approval, create `docs/<feature-name>/specs/v1.md` from
+   `docs/templates/spec-v1.md`, inspect the actual repository before naming
+   files/modules, and obtain explicit spec approval.
+6. Create an implementation plan for non-trivial work, then implement the
+   approved spec in bounded phases. Each phase declares its review
+   mode, scope, validations, and exit criteria.
+7. Review functional behavior first and conventions second when both are
+   requested. Fix blockers, rerun targeted checks, and re-review before
+   advancing.
+
+Do not require this full cycle for behavior-preserving fixes or small visual-only
+refinements. When defining journeys, hardware selection workflows, or edge cases:
 - `.agents/skills/jtbd-framing/SKILL.md` for user struggling moments, job statements, and purchase criteria.
 - `.agents/skills/journey-mapping/SKILL.md` for end-to-end operator and buyer journeys, handoffs, and friction analysis.
 - `.agents/skills/information-architecture/SKILL.md` for component catalog taxonomy, specification filters, and navigation hierarchy.
@@ -34,6 +63,10 @@ When defining user journeys, hardware selection workflows, or edge cases:
 ### Operational State Patterns & UI Shell
 
 When designing or reviewing UI interactions:
+- `.agents/skills/ui-design-workflow/SKILL.md` for the feature-specific UI
+  design artifact and approval gate after flow approval.
+- `.agents/skills/frontend-interaction-patterns/SKILL.md` for page/dialog/sheet,
+  selection controls, filter bars, sorting/reordering, and pagination contracts.
 - `.agents/skills/flow-app-shell/SKILL.md` for overall layout, master-detail views, responsive sidebars, and sticky configuration bars.
 - `.agents/skills/flow-tables/SKILL.md` for component comparison tables, order histories, specification matrices, and inventory lists.
 - `.agents/skills/flow-forms/SKILL.md` for hardware filter forms, checkout forms, customer addresses, and inline validation.
@@ -46,9 +79,12 @@ When designing or reviewing UI interactions:
 ### UI, Styling & Design System
 
 When building, styling, or auditing frontend interfaces:
+- Read `.agents/skills/ui-ux-pro-max/rules/style-discovery.md` and
+  `.agents/skills/ui-ux-pro-max/rules/web-rules.md` before visually changing a
+  user-facing surface.
 - `.agents/skills/styling/SKILL.md` for Angular Tailwind utility classes, `cn` / `hlm` dynamic class merging, and interactive component states.
-- `.agents/skills/ui-styling/SKILL.md` for Spartan UI primitives installation in `src/app/components/atoms/`, Angular CDK foundations, and accessible button/tooltip patterns.
-- `.agents/skills/design-system/SKILL.md` for design token architecture in `fe/src/styles.css` (Primitive -> Semantic -> Component tokens) and dark mode rules.
+- `.agents/skills/ui-styling/SKILL.md` for version-verified Spartan UI/Angular CDK primitives and the tracked component registry; do not assume an atoms path exists.
+- `.agents/skills/design-system/SKILL.md` for the actual token architecture in `fe/src/styles.css`; do not assume unimplemented themes or tokens.
 - `.agents/skills/ui-ux-pro-max/SKILL.md` for design system guidance, color balance, typography, accessibility, and responsive behavior.
 - `.agents/skills/impeccable/SKILL.md` for visual polish, layout rhythm, contrast checks, and frontend defect detection.
 
@@ -70,18 +106,37 @@ When writing code or verifying logic:
 - `.agents/skills/functional-review/SKILL.md` for verifying implementation against functional requirements and acceptance criteria.
 - `.agents/skills/graphify/SKILL.md` for codebase relationship mapping and knowledge graph queries.
 
+## Phase-Gated Review Policy
+
+Complex specs and multi-file customer journeys must not be implemented as one
+unstructured pass.
+
+1. Each phase in the approved spec or implementation plan must identify the
+   review target, mode, scope, validations, and observable exit criteria.
+2. `mode=functional` verifies the approved flow/design/spec, branches, failures,
+   recovery, and regressions. `mode=convention` verifies only applicable project
+   rules. `mode=both` runs these as two separate passes, functional first.
+3. Valid scopes are `frontend`, `backend`, `database`, `security`, and `all`;
+   `auto` expands only to areas actually touched.
+4. Critical and High findings are blockers. Fix them and perform a proportionate
+   re-check plus re-review before advancing.
+5. Review-only requests are read-only. An implementation task authorizes fixes
+   needed to close its approved phase.
+
 ## Pre-Commit Automated Verification Gate
 
 Before staging, creating a commit, or marking a coding task complete, agents MUST run automated verification on all touched scopes:
 
 - Frontend changes:
-  - Run `npx tsc --noEmit` in `fe/` to verify TypeScript compile-time safety.
-  - Run `npm run lint` (or `npx eslint .`) in `fe/` to verify code quality and conventions.
+  - Run `npm run check:fe` from the repository root, or the equivalent
+    frontend typecheck and lint commands.
 - Backend changes:
-  - Run `npx tsc --noEmit` in `be/` to verify TypeScript compile-time safety.
-  - Run `npm run lint` (or `npx eslint .`) in `be/` to verify code quality and conventions.
+  - Run `npm run check:be` from the repository root, or the equivalent backend
+    typecheck and lint commands.
 - Mandatory gate:
   - All verification commands must exit with code 0.
   - If any type error or lint error occurs, commits are strictly blocked until the errors are fixed.
+  - Run only touched scopes; add targeted tests when they prove changed behavior
+    or a review finding.
   - Follow the command policy in `.agents/rules/command-whitelist.md`.
 

@@ -8,6 +8,9 @@ alwaysApply: true
 
 Before writing or editing code in this repository, you must read and adhere to:
 - `AGENTS.md` (root) - Master guidance and Skill Loading Policy.
+- `.agents/skills/feature-delivery-workflow/SKILL.md` for new or materially
+  changed customer-facing journeys. Code is gated by approved flow, required UI
+  design, spec, and an adequate implementation plan under `docs/`.
 - Database schema management follows Prisma conventions in `.agents/skills/db-conventions/SKILL.md`.
 - TypeScript standards follow `.agents/skills/typescript/SKILL.md`.
 
