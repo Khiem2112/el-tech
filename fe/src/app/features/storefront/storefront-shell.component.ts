@@ -40,7 +40,6 @@ export class StorefrontShellComponent {
     { label: 'Linh kiện PC', path: '/san-pham' },
     { label: 'Build PC', path: '/tu-lap-pc' },
     { label: 'Tra cứu đơn', path: '/tra-cuu-don' },
-    { label: 'Tiến độ đơn', path: '/tien-do-don' },
     { label: 'Chính sách', path: '/chinh-sach' },
   ];
 

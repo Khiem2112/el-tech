@@ -35,7 +35,7 @@ export class AuthService {
   readonly isAuthModalOpen = signal<boolean>(false);
 
   private loadStoredUser(): UserProfile | null {
-    if (typeof window === 'undefined') return DEFAULT_USER;
+    if (typeof window === 'undefined') return null;
     try {
       const data = localStorage.getItem(STORAGE_KEY);
       if (data) {
@@ -44,7 +44,7 @@ export class AuthService {
     } catch {
       // Ignore storage parse errors
     }
-    return DEFAULT_USER;
+    return null;
   }
 
   openAuthModal(): void {
