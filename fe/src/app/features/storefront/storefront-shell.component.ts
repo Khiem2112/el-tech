@@ -33,7 +33,6 @@ export class StorefrontShellComponent {
   protected readonly mobileMenuOpen = signal(false);
   protected readonly productsOpen = signal(false);
   protected searchQuery = '';
-  protected selectedCategory = 'all';
 
   protected readonly navigation: readonly NavItem[] = [
     { label: 'Trang chủ', path: '/' },
@@ -66,9 +65,6 @@ export class StorefrontShellComponent {
     const queryParams: Record<string, string> = {};
     if (trimmed) {
       queryParams['q'] = trimmed;
-    }
-    if (this.selectedCategory && this.selectedCategory !== 'all') {
-      queryParams['category'] = this.selectedCategory;
     }
     void this.router.navigate(['/san-pham'], { queryParams });
   }
