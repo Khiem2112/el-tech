@@ -201,6 +201,7 @@ export const orderService = {
           code: input.orderCode,
           isActive: true,
           OR: [
+            { customerId: input.identifier.trim() },
             { receiverEmail: input.identifier.trim().toLowerCase() },
             { receiverPhone: input.identifier.trim() },
           ],
@@ -486,16 +487,28 @@ export const orderService = {
   },
 
   async getCustomerOrders(identifier?: string): Promise<readonly unknown[]> {
+    if (!identifier || !identifier.trim()) {
+      return [];
+    }
+
+    const trimmed = identifier.trim();
     const customer = await prisma.customer.findFirst({
-      where: identifier
-        ? { OR: [{ id: identifier }, { email: identifier }, { phone: identifier }] }
-        : { email: 'hoangnam.tech@gmail.com' },
+      where: {
+        isActive: true,
+        OR: [{ id: trimmed }, { email: trimmed.toLowerCase() }, { phone: trimmed }],
+      },
     });
 
-    if (!customer) return [];
-
     const orders = await prisma.order.findMany({
-      where: { customerId: customer.id, isActive: true },
+      where: {
+        isActive: true,
+        OR: [
+          ...(customer ? [{ customerId: customer.id }] : []),
+          { customerId: trimmed },
+          { receiverEmail: trimmed.toLowerCase() },
+          { receiverPhone: trimmed },
+        ],
+      },
       include: {
         fulfillmentBranch: true,
         lines: true,

@@ -1,8 +1,10 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { success } from '../contracts/api.js';
+import { DomainError } from '../contracts/domain-error.js';
 import { requireIdempotencyKey, parseBody } from '../lib/request.js';
 import { orderService } from '../services/order.service.js';
+import { orderLookupService } from '../services/order-lookup.service.js';
 
 const submitSchema = z.object({
   cartToken: z.string().uuid(),
@@ -40,8 +42,12 @@ orderRouter.post('/orders/:orderCode/cancel', async (request, response, next): P
   } catch (error: unknown) { next(error); }
 });
 
-orderRouter.get('/orders/kanban', async (_request, response, next): Promise<void> => {
+orderRouter.get('/orders/kanban', async (request, response, next): Promise<void> => {
   try {
+    const adminKey = request.headers['x-admin-token'] ?? request.headers['x-staff-role'];
+    if (!adminKey || (adminKey !== 'admin' && adminKey !== process.env.ADMIN_TOKEN)) {
+      throw new DomainError('ACCESS_DENIED', { messageKey: 'error.accessDenied', status: 403 });
+    }
     const orders = await orderService.getKanbanOrders();
     response.json(success(orders, response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
@@ -49,9 +55,32 @@ orderRouter.get('/orders/kanban', async (_request, response, next): Promise<void
 
 orderRouter.get('/orders/customer', async (request, response, next): Promise<void> => {
   try {
-    const customerId = typeof request.query.customerId === 'string' ? request.query.customerId : undefined;
-    const orders = await orderService.getCustomerOrders(customerId);
+    const customerId = typeof request.query.customerId === 'string' ? request.query.customerId.trim() : undefined;
+    const email = typeof request.query.email === 'string' ? request.query.email.trim() : undefined;
+    const identifier = customerId || email;
+    if (!identifier) {
+      response.json(success([], response.locals.correlationId as string));
+      return;
+    }
+    const orders = await orderService.getCustomerOrders(identifier);
     response.json(success(orders, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
+orderRouter.get('/orders/:orderCode/detail', async (request, response, next): Promise<void> => {
+  try {
+    const identifier = (typeof request.query.identifier === 'string' && request.query.identifier.trim())
+      || (typeof request.query.customerId === 'string' && request.query.customerId.trim())
+      || (typeof request.query.email === 'string' && request.query.email.trim())
+      || (typeof request.headers['x-user-identifier'] === 'string' && request.headers['x-user-identifier'].trim())
+      || undefined;
+
+    if (!identifier) {
+      throw new DomainError('UNAUTHORIZED', { messageKey: 'error.unauthorized', status: 401 });
+    }
+
+    const order = await orderLookupService.getOrderDetailForCustomer(request.params.orderCode, identifier);
+    response.json(success(order, response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 

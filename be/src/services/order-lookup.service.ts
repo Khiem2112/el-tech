@@ -195,4 +195,48 @@ export const orderLookupService = {
     });
     return serialize(order);
   },
+
+  async getOrderDetailForCustomer(orderCode: string, identifier: string): Promise<SerializedOrder> {
+    const trimmed = identifier.trim();
+    const order = await prisma.order.findFirst({
+      where: { code: orderCode, isActive: true },
+    });
+    if (!order) {
+      throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    }
+
+    const customer = await prisma.customer.findFirst({
+      where: {
+        isActive: true,
+        OR: [{ id: trimmed }, { email: trimmed.toLowerCase() }, { phone: trimmed }],
+      },
+    });
+
+    const isOwner =
+      order.customerId === trimmed ||
+      order.receiverEmail.toLowerCase() === trimmed.toLowerCase() ||
+      order.receiverPhone === trimmed ||
+      Boolean(customer && order.customerId === customer.id) ||
+      Boolean(customer && order.receiverEmail.toLowerCase() === customer.email.toLowerCase());
+
+    if (!isOwner) {
+      throw new DomainError('ORDER_ACCESS_DENIED', { messageKey: 'error.orderAccessDenied', status: 403 });
+    }
+
+    await orderService.expireOrderIfOverdue(order.id);
+
+    const fullOrder = await prisma.order.findUniqueOrThrow({
+      where: { id: order.id },
+      include: {
+        payment: { include: { charges: true } },
+        lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
+        statusHistories: { orderBy: { occurredAt: 'asc' } },
+      },
+    });
+
+    return serialize(fullOrder);
+  },
 };
+
+export { serialize };
+export type { SerializedOrder };
