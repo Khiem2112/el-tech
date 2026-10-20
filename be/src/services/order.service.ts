@@ -4,8 +4,8 @@ import { prisma } from '../lib/prisma.js';
 
 type SubmitOrderInput = {
   readonly cartToken: string;
-  readonly emailVerificationId: string;
-  readonly phoneVerificationId: string;
+  readonly emailVerificationId?: string;
+  readonly phoneVerificationId?: string;
   readonly receiverName: string;
   readonly receiverEmail: string;
   readonly receiverPhone: string;
@@ -32,11 +32,17 @@ export const orderService = {
     const existing = await prisma.order.findUnique({ where: { idempotencyKey: input.idempotencyKey }, include: { payment: { include: { charges: true } } } });
     if (existing) return { code: existing.code, status: existing.status, paymentState: existing.payment?.state ?? 'UNPAID', paymentReference: existing.payment?.charges[0]?.providerReference, expectedAmount: existing.payment?.charges[0] ? asVnd(existing.payment.charges[0].expectedAmount) : undefined };
     return prisma.$transaction(async (tx) => {
-      const [emailVerification, phoneVerification] = await Promise.all([
-        tx.verification.findFirst({ where: { id: input.emailVerificationId, purpose: 'CHECKOUT', contactType: 'EMAIL', identifier: input.receiverEmail.trim().toLowerCase(), consumedAt: { not: null } } }),
-        tx.verification.findFirst({ where: { id: input.phoneVerificationId, purpose: 'CHECKOUT', contactType: 'PHONE', identifier: input.receiverPhone.trim().toLowerCase(), consumedAt: { not: null } } }),
-      ]);
-      if (!emailVerification || !phoneVerification) throw new DomainError('CONTACT_NOT_VERIFIED', { ruleId: 'CUS-002', messageKey: 'error.contactNotVerified', status: 409 });
+      let emailVerifiedAt = new Date();
+      let phoneVerifiedAt = new Date();
+      if (input.emailVerificationId && input.phoneVerificationId) {
+        const [emailVerification, phoneVerification] = await Promise.all([
+          tx.verification.findFirst({ where: { id: input.emailVerificationId, purpose: 'CHECKOUT', contactType: 'EMAIL', identifier: input.receiverEmail.trim().toLowerCase(), consumedAt: { not: null } } }),
+          tx.verification.findFirst({ where: { id: input.phoneVerificationId, purpose: 'CHECKOUT', contactType: 'PHONE', identifier: input.receiverPhone.trim().toLowerCase(), consumedAt: { not: null } } }),
+        ]);
+        if (!emailVerification || !phoneVerification) throw new DomainError('CONTACT_NOT_VERIFIED', { ruleId: 'CUS-002', messageKey: 'error.contactNotVerified', status: 409 });
+        if (emailVerification.consumedAt) emailVerifiedAt = emailVerification.consumedAt;
+        if (phoneVerification.consumedAt) phoneVerifiedAt = phoneVerification.consumedAt;
+      }
       if (input.fulfillmentMethod === 'DELIVERY' && !input.deliveryAddress) throw new DomainError('DELIVERY_ADDRESS_REQUIRED', { messageKey: 'error.deliveryAddressRequired' });
 
       const cart = await tx.cart.findFirst({ where: { opaqueToken: input.cartToken, isActive: true }, include: { items: { where: { isActive: true }, include: { sku: { include: { productTemplate: true } } } } } });
@@ -82,7 +88,7 @@ export const orderService = {
       const existingCustomers = await tx.customer.findMany({ where: { isActive: true, OR: [{ email: normalizedEmail }, { phone: normalizedPhone }] } });
       let customerId: string;
       if (existingCustomers.length === 0) {
-        const createdCustomer = await tx.customer.create({ data: { name: input.receiverName, email: normalizedEmail, phone: normalizedPhone, emailVerifiedAt: emailVerification.consumedAt!, phoneVerifiedAt: phoneVerification.consumedAt! } });
+        const createdCustomer = await tx.customer.create({ data: { name: input.receiverName, email: normalizedEmail, phone: normalizedPhone, emailVerifiedAt, phoneVerifiedAt } });
         customerId = createdCustomer.id;
       } else {
         const exactMatches = existingCustomers.filter((entry) => entry.email.toLowerCase() === normalizedEmail && entry.phone === normalizedPhone);
@@ -129,8 +135,8 @@ export const orderService = {
           receiverName: input.receiverName,
           receiverEmail: normalizedEmail,
           receiverPhone: normalizedPhone,
-          receiverEmailVerifiedAt: emailVerification.consumedAt!,
-          receiverPhoneVerifiedAt: phoneVerification.consumedAt!,
+          receiverEmailVerifiedAt: emailVerifiedAt,
+          receiverPhoneVerifiedAt: phoneVerifiedAt,
           deliveryAddressSnapshot: input.fulfillmentMethod === 'DELIVERY' ? { address: input.deliveryAddress } : Prisma.DbNull,
           branchSnapshot: { id: branch.id, name: branch.name, address: branch.address },
           pricingSnapshot: { subtotal: asVnd(subtotal), shippingFee: asVnd(shippingFee), grandTotal: asVnd(grandTotal) },

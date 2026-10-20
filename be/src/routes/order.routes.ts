@@ -8,8 +8,8 @@ import { orderLookupService } from '../services/order-lookup.service.js';
 
 const submitSchema = z.object({
   cartToken: z.string().uuid(),
-  emailVerificationId: z.string().uuid(),
-  phoneVerificationId: z.string().uuid(),
+  emailVerificationId: z.string().uuid().optional(),
+  phoneVerificationId: z.string().uuid().optional(),
   receiverName: z.string().trim().min(2).max(120),
   receiverEmail: z.string().trim().email(),
   receiverPhone: z.string().trim().min(8).max(24),
