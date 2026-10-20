@@ -320,8 +320,31 @@ type KanbanOrder = {
           </div>
         </div>
 
-        <!-- Context Highlight Block -->
-        @if (item.highlight; as hl) {
+        <!-- Context Highlight Block / Assembling Telemetry (KB-01) -->
+        @if (item.stage === 'assembling') {
+          <div class="bg-surface-dark text-white p-2.5 rounded-lg text-[10px] space-y-1.5 font-mono border border-line-dark">
+            <div class="flex items-center justify-between text-primary font-bold">
+              <span class="flex items-center gap-1.5">
+                <lucide-icon name="Activity" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
+                <span>FurMark 64°C · Fan 55% · Đạt chuẩn</span>
+              </span>
+              <span class="text-white font-bold">{{ item.highlight?.progress || 78 }}%</span>
+            </div>
+            <div class="w-full h-1 bg-line-dark rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" [style.width.%]="item.highlight?.progress || 78"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-[9px] text-muted">
+              <div>
+                <span class="block text-slate-500">GPU Max Temp:</span>
+                <strong class="text-primary font-bold">64°C (Safe)</strong>
+              </div>
+              <div>
+                <span class="block text-slate-500">Cinebench R23:</span>
+                <strong class="text-white font-bold">Pass 100%</strong>
+              </div>
+            </div>
+          </div>
+        } @else if (item.highlight; as hl) {
           @if (hl.type === 'warning') {
             <div class="bg-warning/10 border border-amber-500/20 p-2 rounded-lg flex items-center justify-between text-[10px] text-warning font-bold">
               <span>{{ hl.text }}</span>

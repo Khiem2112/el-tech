@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import {
+  Activity,
   AlertTriangle,
   ArrowRight,
   ArrowUpDown,
@@ -47,6 +48,7 @@ import {
 } from 'lucide-angular';
 
 const ICONS = {
+  Activity,
   AlertTriangle,
   ArrowRight,
   ArrowUpDown,

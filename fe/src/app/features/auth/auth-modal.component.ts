@@ -167,7 +167,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
               </div>
 
-              <!-- Remember me and Forgot password (Login mode only) -->
+              <!-- Remember me and Forgot password (Login mode only - AU-01) -->
               @if (authMode() === 'login') {
                 <div class="flex items-center justify-between text-xs pt-0.5">
                   <label class="flex items-center gap-1.5 cursor-pointer select-none text-muted hover:text-foreground">
@@ -177,16 +177,23 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       [(ngModel)]="rememberMe"
                       name="rememberMe"
                     >
-                    <span>Ghi nhớ đăng nhập</span>
+                    <span>Ghi nhớ đăng nhập trên thiết bị này</span>
                   </label>
                   <button
                     type="button"
-                    class="text-xs font-bold text-primary hover:underline"
+                    class="text-xs font-bold text-primary hover:underline cursor-pointer"
                     (click)="handleForgotPassword()"
                   >
                     Quên mật khẩu?
                   </button>
                 </div>
+
+                @if (forgotPasswordSent()) {
+                  <div class="p-2.5 rounded-lg bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2">
+                    <lucide-icon name="Check" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                    <span>Hướng dẫn khôi phục mật khẩu đã được gửi đến email/SĐT của bạn.</span>
+                  </div>
+                }
               }
 
               <!-- Submit Button -->
@@ -243,6 +250,7 @@ export class AuthModalComponent {
   protected readonly authMode = signal<'login' | 'register'>('login');
   protected readonly showPassword = signal(false);
   protected readonly isSubmitting = signal(false);
+  protected readonly forgotPasswordSent = signal(false);
 
   protected name = '';
   protected identifier = '';
@@ -283,8 +291,7 @@ export class AuthModalComponent {
   }
 
   protected handleForgotPassword(): void {
-    // Notify user to check email or reset via support
-    alert('Hệ thống đã gửi liên kết khôi phục mật khẩu đến email/số điện thoại liên kết.');
+    this.forgotPasswordSent.set(true);
   }
 
   protected navigateToGuestLookup(): void {

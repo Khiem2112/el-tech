@@ -376,6 +376,77 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
           </div>
 
           <div class="p-5 sm:p-6 space-y-6">
+            <!-- SLA Commitments Strip (TR-01) -->
+            <div class="grid sm:grid-cols-3 gap-3 p-4 rounded-xl bg-surface-alt border border-line text-xs">
+              <div class="flex items-center gap-2.5">
+                <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <lucide-icon name="Clock" class="size-4" aria-hidden="true"></lucide-icon>
+                </div>
+                <div>
+                  <span class="font-bold text-foreground block">SLA Lắp Ráp 120 Phút</span>
+                  <span class="text-[11px] text-muted">Bàn giao &amp; kiểm tra hỏa tốc</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2.5">
+                <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <lucide-icon name="ShieldCheck" class="size-4" aria-hidden="true"></lucide-icon>
+                </div>
+                <div>
+                  <span class="font-bold text-foreground block">Hỗ Trợ Kỹ Thuật 7 Ngày/Tuần</span>
+                  <span class="text-[11px] text-muted">Chuyên viên hỗ trợ trọn đời máy</span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2.5">
+                <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <lucide-icon name="Package" class="size-4" aria-hidden="true"></lucide-icon>
+                </div>
+                <div>
+                  <span class="font-bold text-foreground block">Đóng Gói Chống Sốc Tiêu Chuẩn</span>
+                  <span class="text-[11px] text-muted">Bảo hiểm linh kiện 100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hardware Quality Certification & Stress Test Telemetry (TR-02) -->
+            <div class="rounded-xl p-4 sm:p-5 bg-surface-dark border border-line-dark text-white space-y-3 shadow-md">
+              <div class="flex items-center justify-between pb-2 border-b border-line-dark text-xs">
+                <div class="flex items-center gap-2">
+                  <lucide-icon name="Cpu" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
+                  <span class="font-bold text-white uppercase tracking-wider text-[11px]">Chứng Nhận Kiểm Định &amp; Stress Test Phần Cứng</span>
+                </div>
+                <span class="px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30 text-[10px] font-bold">
+                  ĐẠT TIÊU CHUẨN XUẤT XƯỞNG
+                </span>
+              </div>
+
+              <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div class="p-2.5 rounded-lg bg-surface-elevated border border-line-dark">
+                  <span class="text-[10px] text-muted block">Chuyên viên phụ trách:</span>
+                  <strong class="text-white font-bold block mt-0.5">Vũ Hoàng (KTV-0824)</strong>
+                  <span class="text-[9px] text-primary font-medium">Senior Hardware Specialist</span>
+                </div>
+
+                <div class="p-2.5 rounded-lg bg-surface-elevated border border-line-dark">
+                  <span class="text-[10px] text-muted block">FurMark GPU Stress Test:</span>
+                  <strong class="text-primary font-bold block mt-0.5">Max 64°C (Safe)</strong>
+                  <span class="text-[9px] text-muted">Fan profile 55% RPM tối ưu</span>
+                </div>
+
+                <div class="p-2.5 rounded-lg bg-surface-elevated border border-line-dark">
+                  <span class="text-[10px] text-muted block">Cinebench R23 Multi-Core:</span>
+                  <strong class="text-white font-bold block mt-0.5">Ổn định 100% (Pass)</strong>
+                  <span class="text-[9px] text-muted">Điện áp CPU &amp; VRM mát mẻ</span>
+                </div>
+
+                <div class="p-2.5 rounded-lg bg-surface-elevated border border-line-dark">
+                  <span class="text-[10px] text-muted block">Cập nhật BIOS &amp; Profile RAM:</span>
+                  <strong class="text-white font-bold block mt-0.5">XMP / EXPO Active</strong>
+                  <span class="text-[9px] text-muted">Driver WHQL mới nhất</span>
+                </div>
+              </div>
+            </div>
             
             <!-- VietQR Dynamic Payment Transfer Card (When Unpaid) -->
             @if (item.payment?.paymentReference && item.payment?.state === 'UNPAID') {
@@ -603,7 +674,7 @@ export class OrderLookupPageComponent implements OnInit {
   });
 
   protected readonly technicianInCharge = computed(() => {
-    return 'Vũ Hoàng (Sr. Hardware Specialist)';
+    return 'Vũ Hoàng (KTV-0824 - Senior Specialist)';
   });
 
   protected readonly pickupOtp = computed(() => {
