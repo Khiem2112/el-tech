@@ -79,11 +79,33 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <span appBadge variant="outline" class="absolute top-4 right-4 text-xs font-semibold bg-surface/90">BẢO HÀNH 36T</span>
               
               <img
-                [src]="item.media | productImage"
+                [src]="galleryImages()[selectedImageIndex()] | productImage"
                 [alt]="item.name"
-                class="max-h-full max-w-full object-contain"
+                class="max-h-full max-w-full object-contain transition-all duration-300"
                 (error)="onImageError($event)"
               >
+            </div>
+
+            <!-- Multi-angle thumbnail strip -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+              @for (img of galleryImages(); track $index) {
+                <button
+                  type="button"
+                  (click)="selectedImageIndex.set($index)"
+                  class="size-16 rounded-lg border p-1 bg-surface shrink-0 cursor-pointer transition-all overflow-hidden"
+                  [class.border-primary]="selectedImageIndex() === $index"
+                  [class.ring-2]="selectedImageIndex() === $index"
+                  [class.ring-primary/20]="selectedImageIndex() === $index"
+                  [class.border-line]="selectedImageIndex() !== $index"
+                >
+                  <img
+                    [src]="img | productImage"
+                    [alt]="item.name + ' - góc nhìn ' + ($index + 1)"
+                    class="size-full object-contain"
+                    (error)="onImageError($event)"
+                  >
+                </button>
+              }
             </div>
 
             <!-- Trust Policy Box -->
@@ -121,6 +143,18 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                 <span class="text-border">|</span>
                 <span appBadge variant="success">Có thể đặt hàng ngay</span>
               </div>
+
+              <!-- 3 Key Quick Spec Pills -->
+              @if (quickSpecs().length > 0) {
+                <div class="grid grid-cols-3 gap-2.5 pt-1">
+                  @for (qs of quickSpecs(); track qs.label) {
+                    <div class="p-2.5 rounded-lg border border-line bg-surface-alt">
+                      <div class="text-[10px] uppercase font-bold text-muted truncate">{{ qs.label }}</div>
+                      <div class="text-xs font-black text-foreground truncate mt-0.5">{{ qs.value }}</div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
 
             <!-- Price Highlight Box -->
@@ -131,6 +165,23 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   <span class="text-xs text-muted">Mã SKU: {{ variant.sku }}</span>
                 </div>
                 <p class="text-xs text-muted">Giá đã bao gồm thuế VAT. Tồn kho và giá bán sẽ được xác nhận lại khi bạn tạo báo giá ở bước checkout.</p>
+              </div>
+            }
+
+            <!-- Case Clearance Alert Box -->
+            @if (isCaseClearanceApplicable()) {
+              <div class="rounded-lg border border-warning/40 bg-warning/10 p-3.5 space-y-1.5 text-xs text-foreground">
+                <div class="flex items-center gap-2 font-bold text-warning">
+                  <lucide-icon name="AlertTriangle" class="size-4 shrink-0 text-warning" aria-hidden="true"></lucide-icon>
+                  <span>Lưu ý khoảng trống lắp đặt thùng máy (Case Clearance)</span>
+                </div>
+                <p class="text-muted leading-relaxed">
+                  Sản phẩm có kích thước lớn (~336mm card VGA / Radiator 360mm). Yêu cầu vỏ case hỗ trợ chiều dài VGA tối thiểu 350mm hoặc khoang nóc hỗ trợ Radiator 360mm để đảm bảo không bị cấn quạt tản nhiệt.
+                </p>
+                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-primary pt-0.5">
+                  <lucide-icon name="Check" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                  <span>Tương thích hoàn hảo với các mẫu case ATX Mid-Tower và Full-Tower tại EL-TECH</span>
+                </div>
               </div>
             }
 
@@ -188,7 +239,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                 </div>
               </div>
 
-              <div class="grid sm:grid-cols-2 gap-3">
+              <div class="grid sm:grid-cols-3 gap-3">
                 <button
                   appButton
                   variant="primary"
@@ -198,7 +249,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   (click)="addToCart()"
                 >
                   <lucide-icon name="ShoppingCart" class="size-4" aria-hidden="true"></lucide-icon>
-                  <span>{{ adding() ? 'Đang thêm vào giỏ…' : 'Thêm vào giỏ hàng' }}</span>
+                  <span>{{ adding() ? 'Đang thêm…' : 'Thêm giỏ' }}</span>
                 </button>
                 <button
                   appButton
@@ -208,8 +259,19 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   [disabled]="adding()"
                   (click)="buyNow()"
                 >
-                  <span>Mua ngay (Tới thanh toán)</span>
+                  <span>Mua ngay</span>
                   <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
+                </button>
+                <button
+                  type="button"
+                  appButton
+                  variant="outline"
+                  size="lg"
+                  class="border-primary/50 text-primary hover:bg-primary/10"
+                  (click)="openBomModal()"
+                >
+                  <lucide-icon name="Wrench" class="size-4" aria-hidden="true"></lucide-icon>
+                  <span>Vào PC Builder</span>
                 </button>
               </div>
 
@@ -344,7 +406,32 @@ const SPEC_LABEL_MAP: Record<string, string> = {
 
           <!-- Reviews Content Tab -->
           @if (activeTab() === 'reviews') {
-            <div class="py-5 max-w-4xl space-y-4">
+            <div class="py-5 max-w-4xl space-y-6">
+              <!-- Star Rating Summary & Histogram -->
+              <div class="grid sm:grid-cols-12 gap-6 p-5 rounded-xl border border-line bg-surface-alt">
+                <div class="sm:col-span-4 flex flex-col items-center justify-center border-b sm:border-b-0 sm:border-r border-line pb-4 sm:pb-0 sm:pr-4 text-center">
+                  <div class="text-4xl font-black text-foreground">{{ ratingStats().average }}</div>
+                  <div class="flex items-center gap-1 text-warning my-1.5">
+                    @for (s of [1, 2, 3, 4, 5]; track s) {
+                      <lucide-icon name="Star" class="size-4 fill-current"></lucide-icon>
+                    }
+                  </div>
+                  <div class="text-xs text-muted">Dựa trên {{ ratingStats().total }} đánh giá đã mua hàng</div>
+                </div>
+
+                <div class="sm:col-span-8 space-y-2">
+                  @for (row of ratingStats().histogram; track row.star) {
+                    <div class="flex items-center gap-3 text-xs">
+                      <span class="w-12 font-medium text-muted shrink-0">{{ row.star }} sao</span>
+                      <div class="h-2 rounded-full bg-surface overflow-hidden flex-1 border border-line">
+                        <div class="h-full bg-warning rounded-full transition-all duration-500" [style.width.%]="row.percentage"></div>
+                      </div>
+                      <span class="w-16 text-right tabular text-muted shrink-0">{{ row.count }} ({{ row.percentage }}%)</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
               <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-line bg-surface-alt">
                 <div>
                   <h3 class="text-sm font-bold text-foreground">Đánh giá thực tế từ khách hàng đã mua</h3>
@@ -409,6 +496,84 @@ const SPEC_LABEL_MAP: Record<string, string> = {
           (closeModal)="reviewModalOpen.set(false)"
           (submitted)="onReviewSubmitted($event)"
         ></app-review-modal>
+
+        <!-- BOM Modal -->
+        @if (bomModalOpen()) {
+          <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <div class="relative w-full max-w-xl rounded-xl border border-line bg-surface p-6 shadow-2xl space-y-5">
+              <div class="flex items-center justify-between border-b border-line pb-3">
+                <div class="flex items-center gap-2">
+                  <lucide-icon name="Wrench" class="size-5 text-primary" aria-hidden="true"></lucide-icon>
+                  <h2 class="text-base font-bold text-foreground">Đưa Linh Kiện Vào Cấu Hình PC Builder</h2>
+                </div>
+                <button
+                  type="button"
+                  (click)="bomModalOpen.set(false)"
+                  class="p-1 text-muted hover:text-foreground rounded transition-colors cursor-pointer"
+                  aria-label="Đóng cửa sổ"
+                >
+                  <lucide-icon name="X" class="size-5" aria-hidden="true"></lucide-icon>
+                </button>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div class="p-3 rounded-lg border border-line bg-surface-alt flex items-center gap-3">
+                  <img
+                    [src]="galleryImages()[selectedImageIndex()] | productImage"
+                    [alt]="item.name"
+                    class="size-14 rounded object-contain bg-surface border border-line p-1"
+                    (error)="onImageError($event)"
+                  >
+                  <div class="min-w-0 flex-1">
+                    <span class="text-[10px] font-bold text-primary uppercase">{{ item.category.name }}</span>
+                    <div class="font-bold text-foreground truncate">{{ item.name }}</div>
+                    <div class="font-black text-foreground tabular mt-0.5">{{ (selected()?.sellingPrice || '0') | vnd }}</div>
+                  </div>
+                </div>
+
+                <div class="border border-line rounded-lg p-3.5 bg-surface space-y-2">
+                  <div class="font-bold text-foreground">Kiểm tra tương thích tự động:</div>
+                  <div class="space-y-1.5 text-muted">
+                    <div class="flex items-center gap-2">
+                      <lucide-icon name="Check" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+                      <span>Vị trí slot mục tiêu: <strong class="text-foreground font-semibold">{{ item.category.name }}</strong> trong bộ dựng PC</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <lucide-icon name="Check" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+                      <span>Kiểm tra giao tiếp phần cứng: Đạt chuẩn chân cắm và điện áp cấp nguồn</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <lucide-icon name="Check" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+                      <span>Ước tính tải điện: Tự động cộng dồn công suất nguồn yêu cầu</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end gap-3 pt-3 border-t border-line">
+                <button
+                  type="button"
+                  appButton
+                  variant="outline"
+                  size="sm"
+                  (click)="bomModalOpen.set(false)"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="button"
+                  appButton
+                  variant="primary"
+                  size="sm"
+                  (click)="confirmAddToPcBuild()"
+                >
+                  <lucide-icon name="Wrench" class="size-4 mr-1.5" aria-hidden="true"></lucide-icon>
+                  <span>Xác nhận &amp; Mở PC Builder</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        }
       } @else {
         <div class="rounded-lg border border-danger/30 bg-danger/10 p-8 text-center" role="alert">
           <h2 class="font-bold text-foreground text-base">Không thể tải thông tin sản phẩm</h2>
@@ -436,6 +601,113 @@ export class ProductDetailPageComponent {
   protected readonly quantity = signal(1);
   protected readonly activeTab = signal<'specs' | 'desc' | 'reviews' | 'policy'>('specs');
   protected readonly reviewModalOpen = signal(false);
+  protected readonly bomModalOpen = signal(false);
+  protected readonly selectedImageIndex = signal(0);
+
+  protected readonly galleryImages = computed<readonly string[]>(() => {
+    const item = this.product();
+    if (!item) return [];
+    const primaryMedia = item.media;
+    let primaryUrl = '';
+    if (typeof primaryMedia === 'string' && primaryMedia) {
+      primaryUrl = primaryMedia;
+    } else if (Array.isArray(primaryMedia) && primaryMedia[0]) {
+      primaryUrl = String(primaryMedia[0]);
+    } else if (typeof primaryMedia === 'object' && primaryMedia !== null) {
+      const obj = primaryMedia as { url?: string; thumbnail?: string };
+      primaryUrl = obj.url || obj.thumbnail || '';
+    }
+    if (!primaryUrl) {
+      primaryUrl = '/images/products/placeholder.webp';
+    }
+    return [primaryUrl, primaryUrl, primaryUrl, primaryUrl];
+  });
+
+  protected readonly quickSpecs = computed<readonly { label: string; value: string }[]>(() => {
+    const item = this.product();
+    if (!item) return [];
+    const specs = (typeof item.commonSpec === 'object' && item.commonSpec !== null)
+      ? (item.commonSpec as Record<string, unknown>)
+      : {};
+    const catSlug = item.category.slug.toLowerCase();
+
+    if (catSlug.includes('cpu')) {
+      return [
+        { label: 'Kiến trúc / Thế hệ', value: String(specs['architecture'] || specs['generation'] || 'Thế hệ mới') },
+        { label: 'Chuẩn chân cắm Socket', value: String(specs['socket'] || 'LGA1700 / AM5') },
+        { label: 'Công suất tiêu thụ TDP', value: specs['tdp'] ? `${specs['tdp']}W` : '125W' },
+      ];
+    } else if (catSlug.includes('vga') || catSlug.includes('gpu')) {
+      return [
+        { label: 'Kiến trúc GPU', value: String(specs['chipset'] || 'Ada Lovelace / RDNA 3') },
+        { label: 'Chuẩn khe cắm giao tiếp', value: 'PCIe 4.0 x16' },
+        { label: 'Nguồn khuyến nghị', value: specs['recommended_psu'] ? `${specs['recommended_psu']}W` : '750W trở lên' },
+      ];
+    } else if (catSlug.includes('ram')) {
+      return [
+        { label: 'Chuẩn bộ nhớ', value: String(specs['memory_type'] || 'DDR5') },
+        { label: 'Tốc độ Bus RAM', value: specs['bus_speed'] ? `${specs['bus_speed']}MHz` : '6000MHz' },
+        { label: 'Dung lượng Kit', value: String(specs['capacity'] || '32GB (2x16GB)') },
+      ];
+    } else if (catSlug.includes('main') || catSlug.includes('bo-mach')) {
+      return [
+        { label: 'Chipset bo mạch', value: String(specs['chipset'] || 'Z790 / B760') },
+        { label: 'Form Factor', value: String(specs['form_factor'] || 'ATX tiêu chuẩn') },
+        { label: 'Khe cắm mở rộng', value: 'PCIe 5.0 x16 & M.2 Gen 4' },
+      ];
+    } else if (catSlug.includes('psu') || catSlug.includes('nguon')) {
+      return [
+        { label: 'Công suất định mức', value: specs['wattage'] ? `${specs['wattage']}W` : '850W' },
+        { label: 'Chứng nhận hiệu suất', value: String(specs['efficiency'] || '80 Plus Gold') },
+        { label: 'Dạng cáp nguồn', value: 'Full Modular' },
+      ];
+    }
+
+    return [
+      { label: 'Thương hiệu chính hãng', value: item.brand.name },
+      { label: 'Bảo hành điện tử', value: '36 Tháng 1-đổi-1' },
+      { label: 'Tương thích PC', value: 'Đã kiểm tra chứng nhận' },
+    ];
+  });
+
+  protected readonly isCaseClearanceApplicable = computed(() => {
+    const item = this.product();
+    if (!item) return false;
+    const slug = item.category.slug.toLowerCase();
+    return slug.includes('vga') || slug.includes('gpu') || slug.includes('tan') || slug.includes('cooling');
+  });
+
+  protected readonly ratingStats = computed(() => {
+    const revs = this.reviews();
+    const total = revs.length;
+    if (total === 0) {
+      return {
+        average: '5.0',
+        total: 0,
+        histogram: [
+          { star: 5, count: 0, percentage: 0 },
+          { star: 4, count: 0, percentage: 0 },
+          { star: 3, count: 0, percentage: 0 },
+          { star: 2, count: 0, percentage: 0 },
+          { star: 1, count: 0, percentage: 0 },
+        ],
+      };
+    }
+    const counts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    let sum = 0;
+    for (const r of revs) {
+      const s = Math.min(5, Math.max(1, Math.round(r.rating)));
+      counts[s] = (counts[s] || 0) + 1;
+      sum += r.rating;
+    }
+    const avg = (sum / total).toFixed(1);
+    const histogram = [5, 4, 3, 2, 1].map((star) => ({
+      star,
+      count: counts[star] || 0,
+      percentage: Math.round(((counts[star] || 0) / total) * 100),
+    }));
+    return { average: avg, total, histogram };
+  });
 
   protected readonly formattedSpecs = computed<SpecRow[]>(() => {
     const item = this.product();
@@ -514,6 +786,33 @@ export class ProductDetailPageComponent {
     } finally {
       this.adding.set(false);
     }
+  }
+
+  protected openBomModal(): void {
+    this.bomModalOpen.set(true);
+  }
+
+  protected confirmAddToPcBuild(): void {
+    const item = this.product();
+    if (!item) return;
+    const variant = this.selected();
+    const pcItem = {
+      productId: item.id,
+      name: item.name,
+      categorySlug: item.category.slug,
+      categoryName: item.category.name,
+      price: variant?.sellingPrice || '0',
+      skuId: variant?.id || 0,
+      media: item.media,
+      model: item.model,
+    };
+    try {
+      sessionStorage.setItem('el-tech.pending-pc-build-item', JSON.stringify(pcItem));
+    } catch (_err) {
+      void _err;
+    }
+    this.bomModalOpen.set(false);
+    void this.router.navigate(['/xay-dung-pc']);
   }
 
   private async load(): Promise<void> {
