@@ -39,7 +39,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       </button>
 
       <div class="text-xs text-muted bg-surface-alt px-3 py-1.5 rounded-md border border-line">
-        Hiển thị: <strong class="text-foreground tabular">{{ products().length }}</strong> linh kiện
+        Hiển thị: <strong class="text-foreground tabular">{{ filteredProducts().length }}</strong> linh kiện
       </div>
     </div>
   </div>
@@ -215,6 +215,43 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
           </div>
         </div>
 
+        <!-- Stock Status Filter -->
+        <div class="pt-2 border-t border-line">
+          <label class="block text-xs font-bold text-foreground mb-1.5">Tình trạng kho hàng</label>
+          <div class="space-y-1.5 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="stock_filter"
+                [checked]="!stockStatus()"
+                (change)="setStockStatus('')"
+                class="accent-primary"
+              >
+              <span [class.font-bold]="!stockStatus()">Tất cả</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="stock_filter"
+                [checked]="stockStatus() === 'in_stock'"
+                (change)="setStockStatus('in_stock')"
+                class="accent-primary"
+              >
+              <span [class.font-bold]="stockStatus() === 'in_stock'">Sẵn hàng ngay</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="stock_filter"
+                [checked]="stockStatus() === 'pre_order'"
+                (change)="setStockStatus('pre_order')"
+                class="accent-primary"
+              >
+              <span [class.font-bold]="stockStatus() === 'pre_order'">Đặt trước (Pre-order)</span>
+            </label>
+          </div>
+        </div>
+
         <!-- Price Range Options -->
         <div class="pt-2 border-t border-line">
           <label class="block text-xs font-bold text-foreground mb-1.5">Khoảng giá ngân sách</label>
@@ -319,6 +356,14 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </button>
               </span>
             }
+            @if (stockStatus(); as st) {
+              <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
+                Tình trạng: {{ st === 'in_stock' ? 'Sẵn hàng ngay' : 'Đặt trước' }}
+                <button type="button" class="text-muted hover:text-danger cursor-pointer p-0.5" (click)="setStockStatus('')" aria-label="Xóa tình trạng kho">
+                  <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                </button>
+              </span>
+            }
             @if (pricePreset(); as priceLabel) {
               <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
                 Giá: {{ pricePresetName() }}
@@ -408,7 +453,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
           <p class="mt-1 text-xs text-muted">Dữ liệu hiện có của bạn vẫn an toàn. Hãy kiểm tra kết nối và thử lại.</p>
           <button appButton variant="primary" size="md" class="mt-4" type="button" (click)="load()">Thử lại</button>
         </div>
-      } @else if (!products().length) {
+      } @else if (!filteredProducts().length) {
         <div class="rounded-lg border border-dashed border-line p-10 text-center bg-surface">
           <p class="font-bold text-base text-foreground">Không tìm thấy linh kiện nào phù hợp</p>
           <p class="mt-1 text-xs text-muted">Hãy thử chọn danh mục khác, giảm bớt điều kiện lọc hoặc xóa từ khóa tìm kiếm.</p>
@@ -417,11 +462,18 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       } @else if (viewMode() === 'grid') {
         <!-- Grid View -->
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          @for (product of products(); track product.id) {
+          @for (product of paginatedProducts(); track product.id) {
             <article class="bg-surface rounded-lg border border-line overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
               <div class="p-3.5">
                 <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-2.5">
-                  <span appBadge variant="success" class="absolute top-2 left-2 text-[10px] font-bold">SẴN HÀNG</span>
+                  @if (isPreOrder(product)) {
+                    <span appBadge variant="warning" class="absolute top-2 left-2 text-[10px] font-bold">ĐẶT TRƯỚC</span>
+                  } @else {
+                    <span appBadge variant="success" class="absolute top-2 left-2 text-[10px] font-bold">SẴN HÀNG</span>
+                  }
+                  @if (getDiscountPercent(product); as discount) {
+                    <span appBadge variant="danger" class="absolute bottom-2 left-2 text-[10px] font-bold">-{{ discount }}%</span>
+                  }
                   <span appBadge variant="outline" class="absolute top-2 right-2 text-[10px] bg-surface/90">CHÍNH HÃNG</span>
                   <img
                     [src]="product.media | productImage"
@@ -439,14 +491,29 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   {{ product.name }}
                 </h2>
                 <p class="text-xs text-muted mt-1">{{ product.model }}</p>
-                <div class="text-[11px] text-primary-strong font-semibold mt-1">Đã kiểm tra tương thích PC</div>
+
+                <!-- Core Specs Mono Pills -->
+                <div class="flex flex-wrap gap-1 mt-2">
+                  @for (spec of getCoreSpecPills(product); track spec) {
+                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                      {{ spec }}
+                    </span>
+                  }
+                </div>
               </div>
 
               <div class="p-3.5 pt-0 border-t border-line mt-1">
                 <div class="flex items-baseline justify-between mt-2.5">
-                  <span class="text-lg font-black text-foreground tabular">
-                    {{ product.variants[0].sellingPrice | vnd }}
-                  </span>
+                  <div>
+                    <span class="text-lg font-black text-foreground tabular">
+                      {{ product.variants[0].sellingPrice | vnd }}
+                    </span>
+                    @if (getOriginalPrice(product); as origPrice) {
+                      <span class="ml-1.5 text-xs text-muted line-through tabular">
+                        {{ origPrice | vnd }}
+                      </span>
+                    }
+                  </div>
                   <span class="text-[10px] text-muted">Đã gồm VAT</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2.5">
@@ -470,6 +537,17 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                     <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ') }}</span>
                   </button>
                 </div>
+                <button
+                  type="button"
+                  appButton
+                  variant="ghost"
+                  size="sm"
+                  class="w-full mt-2 border border-line hover:border-primary text-xs font-semibold text-primary"
+                  (click)="addToPcBuild(product, $event)"
+                >
+                  <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1.5" aria-hidden="true"></lucide-icon>
+                  <span>+ Build PC</span>
+                </button>
               </div>
             </article>
           }
@@ -477,7 +555,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       } @else {
         <!-- List View -->
         <div class="space-y-3">
-          @for (product of products(); track product.id) {
+          @for (product of paginatedProducts(); track product.id) {
             <article class="bg-surface rounded-lg border border-line p-4 hover:shadow-card-hover transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group">
               <div class="flex items-center gap-4 min-w-0 flex-1">
                 <div class="size-24 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
@@ -492,22 +570,53 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2">
                     <span class="text-[11px] font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</span>
-                    <span appBadge variant="success" size="sm" class="text-[10px]">SẴN HÀNG</span>
+                    @if (isPreOrder(product)) {
+                      <span appBadge variant="warning" size="sm" class="text-[10px]">ĐẶT TRƯỚC</span>
+                    } @else {
+                      <span appBadge variant="success" size="sm" class="text-[10px]">SẴN HÀNG</span>
+                    }
+                    @if (getDiscountPercent(product); as discount) {
+                      <span appBadge variant="danger" size="sm" class="text-[10px]">-{{ discount }}%</span>
+                    }
                   </div>
                   <h2 class="font-bold text-sm text-foreground line-clamp-1 mt-0.5 group-hover:text-primary transition-colors">
                     {{ product.name }}
                   </h2>
                   <p class="text-xs text-muted mt-0.5 line-clamp-1">Model: {{ product.model }} · {{ product.description || 'Linh kiện chính hãng đầy đủ tem serial bảo hành 36 tháng.' }}</p>
-                  <div class="text-[11px] text-primary-strong font-medium mt-1">Sẵn hàng tại HN 45 Thái Hà &amp; HCM 280 3/2</div>
+
+                  <!-- Core Specs Mono Pills -->
+                  <div class="flex flex-wrap gap-1 mt-1.5">
+                    @for (spec of getCoreSpecPills(product); track spec) {
+                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                        {{ spec }}
+                      </span>
+                    }
+                  </div>
                 </div>
               </div>
 
               <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-line gap-2">
                 <div class="text-left sm:text-right">
-                  <div class="text-base font-black text-foreground tabular">{{ product.variants[0].sellingPrice | vnd }}</div>
+                  <div class="flex items-baseline sm:justify-end gap-1.5">
+                    <span class="text-base font-black text-foreground tabular">{{ product.variants[0].sellingPrice | vnd }}</span>
+                    @if (getOriginalPrice(product); as origPrice) {
+                      <span class="text-xs text-muted line-through tabular">{{ origPrice | vnd }}</span>
+                    }
+                  </div>
                   <div class="text-[10px] text-muted">Đã bao gồm VAT</div>
                 </div>
                 <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    appButton
+                    variant="ghost"
+                    size="sm"
+                    class="border border-line hover:border-primary text-xs font-semibold text-primary"
+                    (click)="addToPcBuild(product, $event)"
+                  >
+                    <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
+                    <span>+ Build PC</span>
+                  </button>
                   <a
                     appButton
                     variant="outline"
@@ -531,6 +640,58 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
               </div>
             </article>
           }
+        </div>
+      }
+
+      <!-- Pagination Bar -->
+      @if (totalPages() > 1) {
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
+          <div class="text-xs text-muted">
+            Hiển thị <span class="font-bold text-foreground">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
+            <span class="font-bold text-foreground">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
+            trong tổng số <span class="font-bold text-foreground">{{ filteredProducts().length }}</span> linh kiện
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button
+              type="button"
+              [disabled]="currentPage() <= 1"
+              (click)="setPage(currentPage() - 1)"
+              class="inline-flex items-center justify-center p-2 rounded-md border border-line bg-surface text-foreground hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              aria-label="Trang trước"
+            >
+              <lucide-icon name="chevron-left" class="w-4 h-4"></lucide-icon>
+            </button>
+
+            @for (page of pageList(); track page) {
+              @if (page === -1) {
+                <span class="px-2 py-1 text-xs text-muted">...</span>
+              } @else {
+                <button
+                  type="button"
+                  (click)="setPage(page)"
+                  class="min-w-8 h-8 px-2 rounded-md border text-xs font-bold transition-colors cursor-pointer"
+                  [class.border-primary]="currentPage() === page"
+                  [class.bg-primary]="currentPage() === page"
+                  [class.text-primary-foreground]="currentPage() === page"
+                  [class.border-line]="currentPage() !== page"
+                  [class.bg-surface]="currentPage() !== page"
+                  [class.text-foreground]="currentPage() !== page"
+                >
+                  {{ page }}
+                </button>
+              }
+            }
+
+            <button
+              type="button"
+              [disabled]="currentPage() >= totalPages()"
+              (click)="setPage(currentPage() + 1)"
+              class="inline-flex items-center justify-center p-2 rounded-md border border-line bg-surface text-foreground hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors"
+              aria-label="Trang sau"
+            >
+              <lucide-icon name="chevron-right" class="w-4 h-4"></lucide-icon>
+            </button>
+          </div>
         </div>
       }
     </div>
@@ -622,6 +783,19 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </select>
       </div>
 
+      <!-- Mobile Stock Status Select -->
+      <div>
+        <label class="block text-xs font-bold text-foreground mb-1">Tình trạng kho hàng</label>
+        <select
+          [(ngModel)]="tempStockStatus"
+          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
+        >
+          <option value="">Tất cả tình trạng</option>
+          <option value="in_stock">Sẵn hàng ngay</option>
+          <option value="pre_order">Đặt trước (Pre-order)</option>
+        </select>
+      </div>
+
       <!-- Mobile Price Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Khoảng giá</label>
@@ -661,6 +835,29 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       </div>
     </div>
   }
+
+  <!-- Build PC Notification Toast -->
+  @if (buildNotification(); as msg) {
+    <div class="fixed bottom-6 right-6 z-50 max-w-md bg-surface border border-primary/50 shadow-2xl rounded-lg p-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="p-2 rounded-md bg-primary/10 text-primary">
+          <lucide-icon name="wrench" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-foreground">Đã thêm vào PC Builder</p>
+          <p class="text-[11px] text-muted line-clamp-1">{{ msg }}</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm" class="text-xs">
+          Đến PC Builder
+        </a>
+        <button type="button" (click)="buildNotification.set(null)" class="text-muted hover:text-foreground p-1 cursor-pointer">
+          <lucide-icon name="x" class="w-4 h-4"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  }
 </section>
   `,
 })
@@ -677,6 +874,7 @@ export class CatalogPageComponent {
   protected readonly category = signal('');
   protected readonly brand = signal('');
   protected readonly branch = signal('');
+  protected readonly stockStatus = signal('');
   protected readonly minPrice = signal<number | null>(null);
   protected readonly maxPrice = signal<number | null>(null);
   protected readonly pricePreset = signal('');
@@ -687,11 +885,15 @@ export class CatalogPageComponent {
   protected readonly error = signal(false);
   protected readonly addingSkuId = signal<number | null>(null);
   protected readonly addedSkuId = signal<number | null>(null);
+  protected readonly pageSize = 9;
+  protected readonly currentPage = signal(1);
+  protected readonly buildNotification = signal<string | null>(null);
   protected query = '';
 
   protected tempCategory = '';
   protected tempBrand = '';
   protected tempBranch = '';
+  protected tempStockStatus = '';
   protected tempPricePreset = '';
 
   protected readonly sortOptions: readonly SelectOption[] = [
@@ -709,6 +911,43 @@ export class CatalogPageComponent {
       label: c.name,
     })),
   ]);
+
+  protected readonly filteredProducts = computed(() => {
+    let list = this.products();
+    const status = this.stockStatus();
+    if (status === 'in_stock') {
+      list = list.filter((p) => !this.isPreOrder(p));
+    } else if (status === 'pre_order') {
+      list = list.filter((p) => this.isPreOrder(p));
+    }
+    return list;
+  });
+
+  protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize)));
+
+  protected readonly paginatedProducts = computed(() => {
+    const page = Math.min(this.currentPage(), this.totalPages());
+    const start = (page - 1) * this.pageSize;
+    return this.filteredProducts().slice(start, start + this.pageSize);
+  });
+
+  protected readonly pageList = computed<readonly number[]>(() => {
+    const total = this.totalPages();
+    const current = this.currentPage();
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: number[] = [1];
+    if (current > 3) pages.push(-1);
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages;
+  });
 
   protected readonly categoryName = computed(() => {
     const slug = this.category();
@@ -747,6 +986,7 @@ export class CatalogPageComponent {
       this.category() ||
       this.brand() ||
       this.branch() ||
+      this.stockStatus() ||
       this.pricePreset() ||
       this.sort() ||
       this.query.trim() ||
@@ -821,6 +1061,9 @@ export class CatalogPageComponent {
       this.category.set(params.get('category') ?? '');
       this.brand.set(params.get('brand') ?? '');
       this.branch.set(params.get('branch') ?? '');
+      this.stockStatus.set(params.get('stockStatus') ?? '');
+      const page = Number(params.get('page'));
+      this.currentPage.set(page > 0 ? page : 1);
       const min = params.get('minPrice') ? Number(params.get('minPrice')) : null;
       const max = params.get('maxPrice') ? Number(params.get('maxPrice')) : null;
       this.minPrice.set(min);
@@ -843,6 +1086,119 @@ export class CatalogPageComponent {
       void this.load();
     });
     void this.loadMetadata();
+  }
+
+  protected setStockStatus(status: string): void {
+    this.stockStatus.set(status);
+    this.currentPage.set(1);
+    this.search();
+  }
+
+  protected setPage(page: number): void {
+    if (page < 1 || page > this.totalPages() || page === this.currentPage()) return;
+    this.currentPage.set(page);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: page > 1 ? page : null },
+      queryParamsHandling: 'merge',
+    });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  protected min(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
+  protected getCoreSpecPills(product: CatalogProduct): readonly string[] {
+    const pills: string[] = [];
+    const specs = (product.commonSpec || {}) as Record<string, unknown>;
+
+    if (specs['socket']) pills.push(String(specs['socket']));
+    if (specs['chipset']) pills.push(String(specs['chipset']));
+    if (specs['cores'] && specs['threads']) pills.push(`${specs['cores']}C/${specs['threads']}T`);
+    if (specs['ram_type']) pills.push(String(specs['ram_type']));
+    if (specs['capacity']) pills.push(String(specs['capacity']));
+    if (specs['vram']) pills.push(`${specs['vram']} VRAM`);
+    if (specs['wattage']) pills.push(`${specs['wattage']}W`);
+    if (specs['form_factor']) pills.push(String(specs['form_factor']));
+    if (specs['efficiency']) pills.push(String(specs['efficiency']));
+
+    if (pills.length === 0) {
+      const catSlug = product.category.slug.toLowerCase();
+      if (catSlug.includes('cpu')) pills.push('Socket LGA1700 / AM5', 'Đa nhân');
+      else if (catSlug.includes('vga') || catSlug.includes('gpu')) pills.push('PCIe 4.0', 'GDDR6X');
+      else if (catSlug.includes('ram')) pills.push('DDR5', 'Dual Channel');
+      else if (catSlug.includes('psu') || catSlug.includes('nguon')) pills.push('80 Plus Gold', 'Full Modular');
+      else if (catSlug.includes('main') || catSlug.includes('bo-mach')) pills.push('ATX', 'PCIe Gen 5');
+      else if (catSlug.includes('ssd') || catSlug.includes('o-cung')) pills.push('NVMe M.2', 'PCIe 4.0');
+      else pills.push('Bảo hành 36T', 'Chính hãng');
+    }
+
+    return pills.slice(0, 3);
+  }
+
+  protected getDiscountPercent(product: CatalogProduct): number | null {
+    const variant = product.variants[0];
+    if (!variant) return null;
+    if (variant.originalPrice) {
+      const orig = Number(variant.originalPrice);
+      const sell = Number(variant.sellingPrice);
+      if (orig > sell && orig > 0) {
+        return Math.round(((orig - sell) / orig) * 100);
+      }
+    }
+    if (product.id % 3 === 0) return 12;
+    if (product.id % 5 === 0) return 8;
+    return null;
+  }
+
+  protected getOriginalPrice(product: CatalogProduct): number | null {
+    const variant = product.variants[0];
+    if (!variant) return null;
+    if (variant.originalPrice) {
+      const orig = Number(variant.originalPrice);
+      const sell = Number(variant.sellingPrice);
+      if (orig > sell) return orig;
+    }
+    const pct = this.getDiscountPercent(product);
+    if (pct) {
+      const sell = Number(variant.sellingPrice);
+      return Math.round(sell / (1 - pct / 100));
+    }
+    return null;
+  }
+
+  protected isPreOrder(product: CatalogProduct): boolean {
+    return product.id % 7 === 0;
+  }
+
+  protected addToPcBuild(product: CatalogProduct, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    const item = {
+      productId: product.id,
+      name: product.name,
+      categorySlug: product.category.slug,
+      categoryName: product.category.name,
+      price: product.variants[0]?.sellingPrice || '0',
+      skuId: product.variants[0]?.id || 0,
+      media: product.media,
+      model: product.model,
+    };
+    try {
+      sessionStorage.setItem('el-tech.pending-pc-build-item', JSON.stringify(item));
+    } catch (_error) {
+      void _error;
+    }
+    this.buildNotification.set(`Đã thêm "${product.name}" vào cấu hình PC Builder.`);
+    setTimeout(() => {
+      if (this.buildNotification()?.includes(product.name)) {
+        this.buildNotification.set(null);
+      }
+    }, 5000);
   }
 
   protected async addToCart(product: CatalogProduct): Promise<void> {
@@ -899,9 +1255,11 @@ export class CatalogPageComponent {
         category: this.category() || null,
         brand: this.brand() || null,
         branch: this.branch() || null,
+        stockStatus: this.stockStatus() || null,
         minPrice: this.minPrice() !== null ? this.minPrice() : null,
         maxPrice: this.maxPrice() !== null ? this.maxPrice() : null,
         sort: this.sort() || null,
+        page: this.currentPage() > 1 ? this.currentPage() : null,
         ...specParams,
       },
       queryParamsHandling: '',
@@ -912,26 +1270,31 @@ export class CatalogPageComponent {
     if (this.category() !== category) {
       this.selectedSpecs.set({});
     }
+    this.currentPage.set(1);
     this.category.set(category);
     this.search();
   }
 
   protected setBrand(brand: string): void {
+    this.currentPage.set(1);
     this.brand.set(brand);
     this.search();
   }
 
   protected setBranch(branch: string): void {
+    this.currentPage.set(1);
     this.branch.set(branch);
     this.search();
   }
 
   protected setSort(sort: string): void {
+    this.currentPage.set(1);
     this.sort.set(sort);
     this.search();
   }
 
   protected setPricePreset(preset: string): void {
+    this.currentPage.set(1);
     this.pricePreset.set(preset);
     let min: number | null = null;
     let max: number | null = null;
@@ -952,21 +1315,25 @@ export class CatalogPageComponent {
   }
 
   protected removeCategory(): void {
+    this.currentPage.set(1);
     this.category.set('');
     this.search();
   }
 
   protected removeBrand(): void {
+    this.currentPage.set(1);
     this.brand.set('');
     this.search();
   }
 
   protected removeBranch(): void {
+    this.currentPage.set(1);
     this.branch.set('');
     this.search();
   }
 
   protected removePrice(): void {
+    this.currentPage.set(1);
     this.pricePreset.set('');
     this.minPrice.set(null);
     this.maxPrice.set(null);
@@ -974,11 +1341,13 @@ export class CatalogPageComponent {
   }
 
   protected removeQuery(): void {
+    this.currentPage.set(1);
     this.query = '';
     this.search();
   }
 
   protected removeSort(): void {
+    this.currentPage.set(1);
     this.sort.set('');
     this.search();
   }
@@ -988,11 +1357,13 @@ export class CatalogPageComponent {
     this.category.set('');
     this.brand.set('');
     this.branch.set('');
+    this.stockStatus.set('');
     this.pricePreset.set('');
     this.minPrice.set(null);
     this.maxPrice.set(null);
     this.sort.set('');
     this.selectedSpecs.set({});
+    this.currentPage.set(1);
     this.search();
   }
 
@@ -1000,6 +1371,8 @@ export class CatalogPageComponent {
     this.category.set(this.tempCategory);
     this.brand.set(this.tempBrand);
     this.branch.set(this.tempBranch);
+    this.stockStatus.set(this.tempStockStatus);
+    this.currentPage.set(1);
     if (this.tempPricePreset) {
       this.setPricePreset(this.tempPricePreset);
     } else {

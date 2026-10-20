@@ -22,7 +22,7 @@ export type CatalogProduct = {
   media?: unknown;
   category: { name: string; slug: string };
   brand: { name: string; slug?: string };
-  variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; variantSpec: unknown }[];
+  variants: readonly { id: number; sku: string; variationLabel: string | null; sellingPrice: string; originalPrice?: string | null; variantSpec: unknown }[];
 };
 export type ProductDetail = CatalogProduct & { commonSpec: unknown; media: unknown };
 export type CatalogCategory = {
