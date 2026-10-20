@@ -33,6 +33,7 @@ export type ComponentItemDto = {
   memoryType?: string;
   lengthMm?: number;
   stockStatus: string;
+  commonSpec?: Record<string, unknown>;
 };
 
 const extractSpecString = (commonSpec: unknown): string => {
@@ -91,6 +92,7 @@ export type GetComponentsInput = {
   readonly brand?: string;
   readonly minPrice?: number;
   readonly maxPrice?: number;
+  readonly specs?: Record<string, string>;
 };
 
 export const pcBuildService = {
@@ -175,7 +177,7 @@ export const pcBuildService = {
       take: resolvedSlug ? 100 : 500,
     });
 
-    return variants.map((variant): ComponentItemDto => {
+    let result = variants.map((variant): ComponentItemDto => {
       const template = variant.productTemplate;
       const spec = (template.commonSpec as Record<string, unknown>) || {};
       const catSlug = template.category.slug === 'tan-nhiet' ? 'cooling' : template.category.slug;
@@ -201,8 +203,31 @@ export const pcBuildService = {
         memoryType: typeof spec.ram_type === 'string' ? spec.ram_type : undefined,
         lengthMm: typeof spec.length_mm === 'number' ? spec.length_mm : undefined,
         stockStatus: 'Sẵn hàng tại HN & HCM',
+        commonSpec: spec,
       };
     });
+
+    if (params.specs && Object.keys(params.specs).length > 0) {
+      result = result.filter((item) => {
+        const spec = item.commonSpec || {};
+        for (const [key, expected] of Object.entries(params.specs as Record<string, string>)) {
+          if (!expected) continue;
+          let actual = spec[key];
+          if (actual === undefined || actual === null) {
+            if (key === 'socket') actual = item.socket;
+            else if (key === 'memory_type' || key === 'ram_type') actual = item.memoryType;
+            else if (key === 'wattage' && item.category === 'psu') actual = item.tdp;
+          }
+          if (actual === undefined || actual === null) return false;
+          const actualStr = String(actual).trim().toLowerCase();
+          const expectedStr = String(expected).trim().toLowerCase();
+          if (actualStr !== expectedStr && !actualStr.includes(expectedStr)) return false;
+        }
+        return true;
+      });
+    }
+
+    return result;
   },
 
   async preview(lines: readonly BuildLineInput[]): Promise<BuildPreview> {

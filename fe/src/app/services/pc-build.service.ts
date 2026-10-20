@@ -34,6 +34,7 @@ export type ComponentFilterParams = {
   readonly brand?: string;
   readonly minPrice?: number;
   readonly maxPrice?: number;
+  readonly specs?: Record<string, string>;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -56,6 +57,11 @@ export class PcBuildService {
     if (params.brand) searchParams.set('brand', params.brand);
     if (params.minPrice !== undefined) searchParams.set('minPrice', params.minPrice.toString());
     if (params.maxPrice !== undefined) searchParams.set('maxPrice', params.maxPrice.toString());
+    if (params.specs) {
+      for (const [key, val] of Object.entries(params.specs)) {
+        if (val) searchParams.set(`specs[${key}]`, val);
+      }
+    }
 
     const qs = searchParams.toString();
     const query = qs ? `?${qs}` : '';

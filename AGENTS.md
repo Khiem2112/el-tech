@@ -132,8 +132,7 @@ unstructured pass.
 Before staging, creating a commit, or marking a coding task complete, agents MUST run automated verification on all touched scopes:
 
 - Frontend changes:
-  - Run `npm run check:fe` from the repository root, or the equivalent
-    frontend typecheck and lint commands.
+  - Run `npm run check:fe` from the repository root (validates TypeScript types, Angular HTML/inline templates via build, and ESLint).
 - Backend changes:
   - Run `npm run check:be` from the repository root, or the equivalent backend
     typecheck and lint commands.

@@ -9,7 +9,7 @@
     "lint:be": "eslint be/",
     "lint:fix": "eslint . --fix",
     "check": "npm run check:be && npm run check:fe",
-    "check:fe": "cd fe && npx tsc -b --noEmit && npm run lint",
+    "check:fe": "cd fe && npm run check",
     "check:be": "cd be && npx tsc --noEmit && npm run lint"
   },
   "devDependencies": {

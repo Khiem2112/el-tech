@@ -18,6 +18,7 @@ export type SwapItem = {
   readonly memoryType?: string;
   readonly lengthMm?: number;
   readonly stockStatus?: string;
+  readonly commonSpec?: Record<string, unknown>;
 };
 
 export type SwapSlotItem = {
@@ -27,6 +28,92 @@ export type SwapSlotItem = {
 };
 
 type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
+
+type SpecFieldDefinition = {
+  readonly key: string;
+  readonly label: string;
+  readonly unit?: string;
+  readonly formatValue?: (val: unknown) => string;
+};
+
+const CATEGORY_SPEC_CONFIG: Record<string, readonly SpecFieldDefinition[]> = {
+  cpu: [
+    { key: 'socket', label: 'Chuẩn Socket' },
+    { key: 'core_count', label: 'Số nhân', unit: 'nhân' },
+    { key: 'thread_count', label: 'Số luồng', unit: 'luồng' },
+    {
+      key: 'integrated_gpu',
+      label: 'Đồ họa tích hợp',
+      formatValue: (v) => (String(v).toLowerCase() === 'true' || v === true ? 'Có iGPU' : 'Không có iGPU'),
+    },
+  ],
+  mainboard: [
+    { key: 'socket', label: 'Chuẩn Socket' },
+    { key: 'chipset', label: 'Chipset' },
+    { key: 'ram_type', label: 'Chuẩn RAM' },
+    { key: 'form_factor', label: 'Kích thước' },
+    {
+      key: 'wifi_included',
+      label: 'Wi-Fi tích hợp',
+      formatValue: (v) => (String(v).toLowerCase() === 'true' || v === true ? 'Có Wi-Fi' : 'Không có Wi-Fi'),
+    },
+  ],
+  ram: [
+    { key: 'memory_type', label: 'Chuẩn RAM' },
+    { key: 'capacity', label: 'Dung lượng', unit: 'GB' },
+    { key: 'bus_speed', label: 'Tốc độ Bus', unit: 'MHz' },
+    { key: 'kit_configuration', label: 'Quy cách' },
+    {
+      key: 'rgb',
+      label: 'Đèn LED RGB',
+      formatValue: (v) => (String(v).toLowerCase() === 'true' || v === true ? 'Có LED RGB' : 'Không LED'),
+    },
+  ],
+  vga: [
+    { key: 'gpu_chipset', label: 'Dòng GPU' },
+    { key: 'vram_capacity', label: 'Dung lượng VRAM', unit: 'GB' },
+    { key: 'cooling_fans', label: 'Số lượng quạt', unit: 'quạt' },
+  ],
+  ssd: [
+    { key: 'form_factor', label: 'Chuẩn kích thước' },
+    { key: 'pcie_generation', label: 'Giao tiếp kết nối' },
+    { key: 'capacity', label: 'Dung lượng', unit: 'GB' },
+  ],
+  psu: [
+    { key: 'wattage', label: 'Công suất', unit: 'W' },
+    { key: 'efficiency_rating', label: 'Chuẩn 80 Plus' },
+    { key: 'modular_cabling', label: 'Kiểu dây cáp' },
+  ],
+  cooling: [
+    { key: 'cooler_type', label: 'Loại tản nhiệt' },
+    { key: 'rgb', label: 'Đèn LED' },
+    { key: 'tdp_support', label: 'Hỗ trợ TDP', unit: 'W' },
+  ],
+  'tan-nhiet': [
+    { key: 'cooler_type', label: 'Loại tản nhiệt' },
+    { key: 'rgb', label: 'Đèn LED' },
+    { key: 'tdp_support', label: 'Hỗ trợ TDP', unit: 'W' },
+  ],
+  case: [
+    { key: 'form_factor_support', label: 'Hỗ trợ Mainboard' },
+    { key: 'fan_included_count', label: 'Số quạt sẵn', unit: 'quạt' },
+  ],
+};
+
+function extractItemSpec(item: SwapItem, key: string): string | undefined {
+  const common = item.commonSpec;
+  let raw: unknown = common?.[key];
+
+  if (raw === undefined || raw === null || raw === '') {
+    if (key === 'socket') raw = item.socket;
+    else if (key === 'memory_type' || key === 'ram_type') raw = item.memoryType || common?.['ram_type'] || common?.['memory_type'];
+    else if (key === 'wattage' && (item.category === 'psu' || item.category === 'nguon')) raw = item.tdp || common?.['wattage'];
+    else if (key === 'tdp' || key === 'tdp_support') raw = item.tdp || common?.['tdp'] || common?.['tdp_support'];
+  }
+
+  if (raw === undefined || raw === null || raw === '') return undefined;
+  return String(raw);
+}
 
 @Component({
   selector: 'app-component-swap-modal',
@@ -91,6 +178,7 @@ type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
 
           <!-- Filter & Search Controls -->
           <div class="p-4 border-b border-line bg-surface space-y-3 shrink-0">
+            <!-- Row 1: Search, Price, Branch -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
               <div class="sm:col-span-6 relative">
                 <lucide-icon name="search" class="size-4 absolute left-3 top-3 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
@@ -166,6 +254,89 @@ type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
                 }
               </div>
             }
+
+            <!-- Detailed Technical Specification Filters -->
+            @if (availableSpecFilters().length > 0) {
+              <div class="pt-2.5 border-t border-line space-y-2">
+                <div class="flex items-center justify-between text-xs flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                      <lucide-icon name="sliders-horizontal" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                      <span>Thông số kỹ thuật chi tiết:</span>
+                    </span>
+                    @if (quickCompatibilityChip(); as chip) {
+                      <button
+                        type="button"
+                        (click)="applyCompatibilityFilter(chip.key, chip.value)"
+                        class="px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1"
+                        [class.bg-primary]="isCompatibilityFilterActive(chip.key, chip.value)"
+                        [class.text-primary-foreground]="isCompatibilityFilterActive(chip.key, chip.value)"
+                        [class.border-primary]="isCompatibilityFilterActive(chip.key, chip.value)"
+                        [class.bg-surface-alt]="!isCompatibilityFilterActive(chip.key, chip.value)"
+                        [class.text-primary]="!isCompatibilityFilterActive(chip.key, chip.value)"
+                        [class.border-primary/30]="!isCompatibilityFilterActive(chip.key, chip.value)"
+                      >
+                        <lucide-icon name="shield-check" class="size-3" aria-hidden="true"></lucide-icon>
+                        <span>{{ chip.label }}</span>
+                      </button>
+                    }
+                  </div>
+                  @if (hasActiveSpecFilters()) {
+                    <button
+                      type="button"
+                      (click)="clearAllSpecFilters()"
+                      class="text-[11px] text-muted hover:text-danger font-semibold cursor-pointer flex items-center gap-1 transition-colors"
+                    >
+                      <lucide-icon name="rotate-ccw" class="size-3" aria-hidden="true"></lucide-icon>
+                      <span>Đặt lại thông số</span>
+                    </button>
+                  }
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  @for (spec of availableSpecFilters(); track spec.key) {
+                    <div>
+                      <label class="block text-[11px] font-medium text-muted mb-1 truncate" [title]="spec.label">
+                        {{ spec.label }}
+                        @if (spec.unit) {
+                          <span class="text-[10px]">({{ spec.unit }})</span>
+                        }
+                      </label>
+                      <select
+                        appInput
+                        class="w-full text-xs h-8 px-2 bg-surface-alt"
+                        [ngModel]="selectedSpecs()[spec.key] || ''"
+                        (ngModelChange)="onSpecFilterChange(spec.key, $event)"
+                      >
+                        <option value="">Tất cả</option>
+                        @for (opt of spec.options; track opt.value) {
+                          <option [value]="opt.value">{{ opt.label }}</option>
+                        }
+                      </select>
+                    </div>
+                  }
+                </div>
+
+                @if (selectedSpecChips().length > 0) {
+                  <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
+                    <span class="text-[10px] text-muted font-medium">Đang lọc:</span>
+                    @for (chip of selectedSpecChips(); track chip.key) {
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                        <span>{{ chip.label }}: {{ chip.displayValue }}</span>
+                        <button
+                          type="button"
+                          (click)="onSpecFilterChange(chip.key, '')"
+                          class="hover:text-danger cursor-pointer ml-0.5"
+                          title="Gỡ tiêu chí này"
+                        >
+                          <lucide-icon name="x" class="size-3" aria-hidden="true"></lucide-icon>
+                        </button>
+                      </span>
+                    }
+                  </div>
+                }
+              </div>
+            }
           </div>
 
           <!-- Modal Body Content -->
@@ -211,9 +382,19 @@ type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
                   <p class="text-xs font-bold text-foreground">Đang tải danh mục linh kiện tương thích...</p>
                 </div>
               } @else if (filteredItems().length === 0) {
-                <div class="rounded-xl border border-dashed border-line p-8 text-center bg-surface">
+                <div class="rounded-xl border border-dashed border-line p-8 text-center bg-surface space-y-3">
                   <p class="text-xs font-bold text-foreground">Không tìm thấy linh kiện phù hợp với bộ lọc hiện tại</p>
-                  <p class="text-[11px] text-muted mt-1">Vui lòng xóa từ khóa tìm kiếm hoặc mở rộng khoảng giá và thương hiệu.</p>
+                  <p class="text-[11px] text-muted">Vui lòng xóa từ khóa tìm kiếm hoặc điều chỉnh lại các tiêu chí lọc thông số kỹ thuật.</p>
+                  <button
+                    type="button"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="cursor-pointer"
+                    (click)="resetAllFilters()"
+                  >
+                    Xóa toàn bộ bộ lọc
+                  </button>
                 </div>
               } @else {
                 <div class="space-y-2">
@@ -271,7 +452,7 @@ type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
                           variant="primary"
                           size="sm"
                           (click)="chooseItem(item)"
-                          class="shrink-0"
+                          class="shrink-0 cursor-pointer"
                         >
                           <lucide-icon name="check" class="size-3.5" aria-hidden="true"></lucide-icon>
                           <span>Chọn linh kiện này</span>
@@ -306,8 +487,33 @@ type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
   `,
 })
 export class ComponentSwapModalComponent {
-  @Input() isOpen = false;
-  @Input() categoryKey = '';
+  private _isOpen = false;
+  private _categoryKey = '';
+
+  @Input()
+  set isOpen(value: boolean) {
+    this._isOpen = value;
+    if (!value) {
+      this.resetAllFilters();
+    }
+  }
+  get isOpen(): boolean {
+    return this._isOpen;
+  }
+
+  @Input()
+  set categoryKey(value: string) {
+    if (this._categoryKey !== value) {
+      this._categoryKey = value;
+      this.selectedSpecs.set({});
+      this.selectedBrand.set('');
+      this.searchQuery.set('');
+    }
+  }
+  get categoryKey(): string {
+    return this._categoryKey;
+  }
+
   @Input() categoryName = '';
   @Input() currentSlot: SwapSlotItem | null = null;
   @Input() availableItems: readonly SwapItem[] = [];
@@ -324,6 +530,7 @@ export class ComponentSwapModalComponent {
   protected readonly selectedBrand = signal('');
   protected readonly selectedPriceRange = signal<PriceFilterOption>('all');
   protected readonly selectedBranch = signal<'all' | 'hn' | 'hcm'>('all');
+  protected readonly selectedSpecs = signal<Record<string, string>>({});
 
   protected readonly brands = computed<readonly string[]>(() => {
     const set = new Set<string>();
@@ -333,11 +540,110 @@ export class ComponentSwapModalComponent {
     return Array.from(set).sort();
   });
 
+  protected readonly availableSpecFilters = computed<readonly {
+    key: string;
+    label: string;
+    unit?: string;
+    options: readonly { value: string; label: string }[];
+  }[]>(() => {
+    const cat = this.categoryKey.toLowerCase();
+    const defs = CATEGORY_SPEC_CONFIG[cat] || [];
+    const items = this.availableItems;
+
+    const result: {
+      key: string;
+      label: string;
+      unit?: string;
+      options: { value: string; label: string }[];
+    }[] = [];
+
+    for (const def of defs) {
+      const valSet = new Set<string>();
+      for (const item of items) {
+        const val = extractItemSpec(item, def.key);
+        if (val !== undefined && val.trim() !== '') {
+          valSet.add(val.trim());
+        }
+      }
+
+      if (valSet.size > 0) {
+        const sortedVals = Array.from(valSet).sort((a, b) => {
+          const numA = Number(a);
+          const numB = Number(b);
+          if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+            return numA - numB;
+          }
+          return a.localeCompare(b);
+        });
+
+        const options = sortedVals.map((val) => {
+          let label = val;
+          if (def.formatValue) {
+            label = def.formatValue(val);
+          } else if (def.unit) {
+            label = `${val} ${def.unit}`;
+          }
+          return { value: val, label };
+        });
+
+        result.push({
+          key: def.key,
+          label: def.label,
+          unit: def.unit,
+          options,
+        });
+      }
+    }
+
+    return result;
+  });
+
+  protected readonly quickCompatibilityChip = computed<{ key: string; value: string; label: string } | null>(() => {
+    const cat = this.categoryKey.toLowerCase();
+    if ((cat === 'cpu' || cat === 'mainboard') && this.currentSocket) {
+      return {
+        key: 'socket',
+        value: this.currentSocket,
+        label: `Socket ${this.currentSocket} (Khớp hệ thống)`,
+      };
+    }
+    if ((cat === 'ram' || cat === 'mainboard') && this.currentRamType) {
+      const key = cat === 'ram' ? 'memory_type' : 'ram_type';
+      return {
+        key,
+        value: this.currentRamType,
+        label: `RAM ${this.currentRamType} (Khớp hệ thống)`,
+      };
+    }
+    return null;
+  });
+
+  protected readonly selectedSpecChips = computed(() => {
+    const specs = this.selectedSpecs();
+    const filterDefs = this.availableSpecFilters();
+    return Object.entries(specs)
+      .filter(([_, val]) => Boolean(val))
+      .map(([key, val]) => {
+        const def = filterDefs.find((d) => d.key === key);
+        const opt = def?.options.find((o) => o.value === val);
+        return {
+          key,
+          label: def?.label || key,
+          displayValue: opt?.label || val,
+        };
+      });
+  });
+
+  protected readonly hasActiveSpecFilters = computed(() => {
+    return Object.keys(this.selectedSpecs()).length > 0;
+  });
+
   protected readonly filteredItems = computed<readonly SwapItem[]>(() => {
     const query = this.searchQuery().trim().toLowerCase();
     const brand = this.selectedBrand();
     const priceRange = this.selectedPriceRange();
     const branch = this.selectedBranch();
+    const activeSpecs = this.selectedSpecs();
 
     return this.availableItems.filter((item) => {
       if (brand && item.brand !== brand) return false;
@@ -352,6 +658,16 @@ export class ComponentSwapModalComponent {
       if (query && !item.name.toLowerCase().includes(query) && !item.specs.toLowerCase().includes(query)) {
         return false;
       }
+
+      for (const [key, filterValue] of Object.entries(activeSpecs)) {
+        if (!filterValue) continue;
+        const itemVal = extractItemSpec(item, key);
+        if (itemVal === undefined) return false;
+        if (itemVal.toLowerCase() !== filterValue.toLowerCase()) {
+          return false;
+        }
+      }
+
       return true;
     });
   });
@@ -376,6 +692,46 @@ export class ComponentSwapModalComponent {
   protected chooseItem(item: SwapItem): void {
     this.selectItem.emit(item);
     this.close();
+  }
+
+  protected onSpecFilterChange(key: string, value: string): void {
+    this.selectedSpecs.update((current) => {
+      const updated = { ...current };
+      if (value && value.trim() !== '') {
+        updated[key] = value.trim();
+      } else {
+        delete updated[key];
+      }
+      return updated;
+    });
+  }
+
+  protected clearAllSpecFilters(): void {
+    this.selectedSpecs.set({});
+  }
+
+  protected resetAllFilters(): void {
+    this.searchQuery.set('');
+    this.selectedBrand.set('');
+    this.selectedPriceRange.set('all');
+    this.selectedBranch.set('all');
+    this.selectedSpecs.set({});
+  }
+
+  protected applyCompatibilityFilter(key: string, value: string): void {
+    this.selectedSpecs.update((current) => {
+      const next = { ...current };
+      if (next[key]?.toLowerCase() === value.toLowerCase()) {
+        delete next[key];
+      } else {
+        next[key] = value;
+      }
+      return next;
+    });
+  }
+
+  protected isCompatibilityFilterActive(key: string, value: string): boolean {
+    return this.selectedSpecs()[key]?.toLowerCase() === value.toLowerCase();
   }
 
   protected getPriceDifference(targetPrice: number): number {
@@ -411,3 +767,4 @@ export class ComponentSwapModalComponent {
     return { isCompatible: true, label: 'Tương thích' };
   }
 }
+

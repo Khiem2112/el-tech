@@ -38,12 +38,34 @@ pcBuildRouter.get('/pc-build/components', async (request, response, next): Promi
         ? Number(request.query.maxPrice)
         : undefined;
 
+    const specs: Record<string, string> = {};
+    for (const [key, val] of Object.entries(request.query)) {
+      if (typeof val === 'string' && val.trim()) {
+        const match = key.match(/^specs\[(.+)\]$/);
+        if (match) {
+          specs[match[1]] = val.trim();
+        } else if (key.startsWith('spec_')) {
+          specs[key.substring(5)] = val.trim();
+        }
+      }
+    }
+    if (typeof request.query.specs === 'object' && request.query.specs !== null) {
+      for (const [key, val] of Object.entries(request.query.specs as Record<string, unknown>)) {
+        if (typeof val === 'string' && val.trim()) {
+          specs[key] = val.trim();
+        }
+      }
+    }
+
+    const inputSpecs = Object.keys(specs).length > 0 ? specs : undefined;
+
     const components = await pcBuildService.getComponents({
       category,
       query,
       brand,
       minPrice,
       maxPrice,
+      specs: inputSpecs,
     });
     response.json(success(components, response.locals.correlationId as string));
   } catch (error: unknown) {
