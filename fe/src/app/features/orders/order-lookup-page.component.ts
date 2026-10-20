@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
 import { ApiClientService } from '../../core/api/api-client.service';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { ProductImagePipe } from '../../lib/product-image.pipe';
@@ -85,18 +86,39 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
             <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight">Tra Cứu & Theo Dõi Đơn Hàng</h1>
             <p class="text-xs text-muted mt-1">Nhập mã đơn hàng và số điện thoại hoặc email đã dùng khi đặt hàng để xem tiến độ đóng gói và thông tin thanh toán.</p>
           </div>
-          <a
-            routerLink="/tien-do-don"
-            appButton
-            variant="outline"
-            size="sm"
-            class="self-start sm:self-auto"
-          >
-            <lucide-icon name="LayoutGrid" class="size-3.5" aria-hidden="true"></lucide-icon>
-            <span>Xem bảng Kanban toàn bộ đơn</span>
-          </a>
         </div>
       </div>
+
+      <!-- Smart Authenticated User Handoff Banner -->
+      @if (auth.isLoggedIn()) {
+        <div class="max-w-2xl mx-auto bg-primary/10 border border-primary/30 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="size-9 rounded-lg bg-primary/20 text-primary flex items-center justify-center shrink-0 mt-0.5">
+              <lucide-icon name="User" class="size-5" aria-hidden="true"></lucide-icon>
+            </div>
+            <div class="space-y-0.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-foreground">Bạn đang đăng nhập:</span>
+                <span class="text-xs font-bold text-primary">{{ auth.currentUser()?.name || auth.currentUser()?.email }}</span>
+              </div>
+              <p class="text-xs text-muted">
+                Bạn có thể xem toàn bộ lịch sử đơn hàng và chi tiết trực tiếp tại mục Đơn hàng của tôi mà không cần nhập OTP.
+              </p>
+            </div>
+          </div>
+          <a
+            routerLink="/tai-khoan"
+            [queryParams]="{ tab: 'orders' }"
+            appButton
+            variant="primary"
+            size="sm"
+            class="shrink-0"
+          >
+            <lucide-icon name="Package" class="size-3.5" aria-hidden="true"></lucide-icon>
+            <span>Đơn hàng của tôi</span>
+          </a>
+        </div>
+      }
 
       <!-- Order Lookup Input Box -->
       <div class="max-w-2xl mx-auto bg-surface-alt p-5 sm:p-6 rounded-xl border border-line shadow-sm space-y-4">
@@ -537,8 +559,9 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
     </section>
   `,
 })
-export class OrderLookupPageComponent {
+export class OrderLookupPageComponent implements OnInit {
   private readonly api = inject(ApiClientService);
+  protected readonly auth = inject(AuthService);
   protected readonly onImageError = handleProductImageError;
 
   protected code = '';
@@ -551,6 +574,13 @@ export class OrderLookupPageComponent {
   protected readonly order = signal<Order | null>(null);
   protected readonly showCancelModal = signal(false);
   protected readonly reviewingLineId = signal<string | null>(null);
+
+  ngOnInit(): void {
+    const user = this.auth.currentUser();
+    if (user) {
+      this.identifier = user.email || user.phone || '';
+    }
+  }
 
   protected readonly currentStageIndex = computed(() => {
     const o = this.order();
