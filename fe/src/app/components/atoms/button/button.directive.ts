@@ -32,6 +32,7 @@ export class ButtonDirective {
       outline: 'border border-line bg-surface hover:bg-surface-alt hover:border-foreground text-foreground',
       ghost: 'text-muted hover:text-foreground hover:bg-surface-alt',
       danger: 'bg-danger text-white hover:bg-danger/90',
+      destructive: 'bg-danger text-white hover:bg-danger/90',
       icon: 'text-muted hover:text-foreground hover:bg-surface-alt border border-transparent hover:border-line',
     };
 
