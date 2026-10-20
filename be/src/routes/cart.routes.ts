@@ -33,3 +33,9 @@ cartRouter.patch('/cart/lines/:itemId', async (request, response, next): Promise
 cartRouter.delete('/cart/lines/:itemId', async (request, response, next): Promise<void> => {
   try { response.json(success(await cartService.remove(tokenFrom(request.header('X-Cart-Token')) ?? '', request.params.itemId), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
 });
+cartRouter.delete('/cart/builds/:buildKey', async (request, response, next): Promise<void> => {
+  try { response.json(success(await cartService.removeBuild(tokenFrom(request.header('X-Cart-Token')) ?? '', request.params.buildKey), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
+});
+cartRouter.patch('/cart/builds/:buildKey', async (request, response, next): Promise<void> => {
+  try { response.json(success(await cartService.changeBuildQuantity(tokenFrom(request.header('X-Cart-Token')) ?? '', request.params.buildKey, parseBody(quantitySchema, request.body).quantity), response.locals.correlationId as string)); } catch (error: unknown) { next(error); }
+});

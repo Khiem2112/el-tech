@@ -79,34 +79,58 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <span appBadge variant="primary" class="text-[10px]">FREESHIP ÁP DỤNG</span>
             </div>
 
-            <!-- Items Container -->
-            <div class="bg-surface rounded-lg border border-line divide-y divide-border overflow-hidden shadow-sm">
-              @for (item of cart.items(); track item.id) {
-                <article class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <!-- Grouped PC Build Cards -->
+            @for (build of cart.pcBuildGroups(); track build.key) {
+              <div class="bg-surface rounded-xl border-2 border-primary/40 shadow-sm p-4 sm:p-5 flex flex-col gap-3">
+                <div class="flex items-center justify-between pb-2 border-b border-line text-xs">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px]">
+                      Bộ PC Hoàn Chỉnh
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-foreground font-mono text-[10px] font-bold">
+                      {{ build.buildType }}
+                    </span>
+                    <span class="text-xs text-primary font-bold flex items-center gap-1">
+                      <lucide-icon name="shield-check" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                      <span>Tương thích 100%</span>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    class="text-xs text-danger hover:underline font-bold inline-flex items-center gap-1 cursor-pointer"
+                    (click)="cart.removePcBuild(build.key)"
+                  >
+                    <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
+                    <span>Xóa toàn bộ PC</span>
+                  </button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <div class="flex items-center gap-4 min-w-0 flex-1">
-                    <div class="size-16 sm:size-20 rounded-md bg-surface-alt border border-line flex items-center justify-center shrink-0 overflow-hidden">
-                      <img
-                        [src]="item.media | productImage"
-                        [alt]="item.name"
-                        class="h-full w-full object-cover"
-                        (error)="onImageError($event)"
-                      >
+                    <div class="size-16 sm:size-20 rounded-md bg-surface-alt border border-line flex items-center justify-center shrink-0 overflow-hidden relative">
+                      @if (build.hardwareItems[0]?.media; as media) {
+                        <img
+                          [src]="media | productImage"
+                          [alt]="build.buildName"
+                          class="h-full w-full object-contain"
+                          (error)="onImageError($event)"
+                        >
+                      } @else {
+                        <lucide-icon name="cpu" class="size-8 text-primary" aria-hidden="true"></lucide-icon>
+                      }
                     </div>
                     <div class="min-w-0 flex-1">
-                      @if (item.pcBuildName) {
-                        <span class="text-[10px] font-bold text-primary uppercase">
-                          BOM CẤU HÌNH: {{ item.pcBuildName }} ({{ item.pcBuildType }})
-                        </span>
-                      } @else {
-                        <span class="text-[10px] font-bold text-primary uppercase">LINH KIỆN ĐƠN LẺ</span>
-                      }
-                      <h3 class="font-bold text-xs sm:text-sm text-foreground mt-0.5 truncate">{{ item.name }}</h3>
-                      <p class="text-xs text-muted mt-0.5">Mã SKU: {{ item.sku }} · Đơn giá: {{ item.unitPrice | vnd }}</p>
-                      <span appBadge variant="success" size="sm" class="mt-1">Sẵn sàng giao</span>
+                      <h3 class="font-bold text-sm sm:text-base text-foreground truncate">{{ build.buildName }}</h3>
+                      <div class="flex flex-wrap items-center gap-2 text-xs text-muted mt-1">
+                        <span>Mã: <strong class="font-mono text-foreground">{{ getBuildCode(build.key) }}</strong></span>
+                        <span>•</span>
+                        <span>{{ build.componentCount }} linh kiện chính</span>
+                        <span>•</span>
+                        <span class="text-primary font-semibold">Sẵn sàng lắp ráp</span>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- Quantity Controls & Line Total -->
                   <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-line">
                     <div class="flex items-center border border-line rounded-md bg-surface overflow-hidden">
                       <button
@@ -115,40 +139,156 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         variant="ghost"
                         size="sm"
                         class="h-8 w-8 p-0 rounded-none border-0"
-                        (click)="change(item.id, item.quantity - 1)"
-                        aria-label="Giảm số lượng"
+                        (click)="cart.setPcBuildQuantity(build.key, build.quantity - 1)"
+                        aria-label="Giảm số lượng bộ PC"
                       >
                         <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
                       </button>
-                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ item.quantity }}</span>
+                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ build.quantity }}</span>
                       <button
                         type="button"
                         appButton
                         variant="ghost"
                         size="sm"
                         class="h-8 w-8 p-0 rounded-none border-0"
-                        (click)="change(item.id, item.quantity + 1)"
-                        aria-label="Tăng số lượng"
+                        (click)="cart.setPcBuildQuantity(build.key, build.quantity + 1)"
+                        aria-label="Tăng số lượng bộ PC"
                       >
                         <lucide-icon name="plus" class="size-3" aria-hidden="true"></lucide-icon>
                       </button>
                     </div>
 
                     <div class="text-right">
-                      <div class="text-base font-black text-foreground tabular">{{ item.lineTotal | vnd }}</div>
-                      <button
-                        type="button"
-                        class="text-xs text-danger hover:underline font-bold mt-1 inline-flex items-center gap-1 cursor-pointer"
-                        (click)="remove(item.id)"
+                      <div class="text-base sm:text-lg font-black text-foreground tabular">{{ build.totalPrice | vnd }}</div>
+                      <a
+                        routerLink="/tu-lap-pc"
+                        class="text-xs text-primary hover:underline font-bold mt-0.5 inline-block"
                       >
-                        <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
-                        <span>Xóa</span>
-                      </button>
+                        Sửa cấu hình
+                      </a>
                     </div>
                   </div>
-                </article>
-              }
-            </div>
+                </div>
+
+                <!-- Accordion Toggle Button -->
+                <div class="pt-1">
+                  <button
+                    type="button"
+                    (click)="toggleBuildAccordion(build.key)"
+                    class="w-full flex items-center justify-between px-3 py-2 bg-surface-alt hover:bg-surface-alt/80 rounded-lg border border-line transition-all text-foreground text-xs font-bold text-left cursor-pointer"
+                    [attr.aria-expanded]="isBuildExpanded(build.key)"
+                  >
+                    <span class="flex items-center gap-2">
+                      <lucide-icon name="list" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
+                      <span>{{ isBuildExpanded(build.key) ? 'Thu gọn chi tiết linh kiện' : 'Xem chi tiết ' + build.componentCount + ' linh kiện trong bộ PC' }}</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-primary/10 text-primary border border-primary/20 font-mono text-[10px] font-bold">
+                        {{ build.componentCount }} món
+                      </span>
+                    </span>
+                    <lucide-icon
+                      name="chevron-down"
+                      class="size-4 text-muted transition-transform duration-200"
+                      [class.rotate-180]="isBuildExpanded(build.key)"
+                      aria-hidden="true"
+                    ></lucide-icon>
+                  </button>
+                </div>
+
+                <!-- Accordion Content -->
+                @if (isBuildExpanded(build.key)) {
+                  <div class="rounded-lg bg-surface-alt/50 border border-line p-3 space-y-2">
+                    @for (hw of build.hardwareItems; track hw.id) {
+                      <div class="flex items-center justify-between gap-3 py-1.5 border-b border-line last:border-b-0 text-xs">
+                        <div class="flex items-center gap-2 min-w-0">
+                          <span class="px-1.5 py-0.5 rounded bg-surface border border-line text-primary font-mono text-[9px] font-bold shrink-0">
+                            {{ getComponentBadge(hw.name, hw.sku) }}
+                          </span>
+                          <span class="font-bold text-foreground truncate">{{ hw.name }}</span>
+                        </div>
+                        <div class="flex items-center gap-3 shrink-0">
+                          <span class="font-mono text-muted tabular">{{ hw.unitPrice | vnd }}</span>
+                          <span class="text-muted">x{{ hw.quantity }}</span>
+                          <span class="font-mono font-bold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
+                        </div>
+                      </div>
+                    }
+                    <div class="mt-2 p-2 rounded bg-primary/10 border border-primary/20 flex items-center justify-between text-xs text-primary">
+                      <div class="flex items-center gap-1.5 font-bold">
+                        <lucide-icon name="wrench" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        <span>Miễn phí gói lắp ráp, giấu dây thẩm mỹ và stress test 24h</span>
+                      </div>
+                      <span class="font-bold uppercase text-[10px]">0 đ</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Individual Standalone Items -->
+            @if (cart.individualItems().length > 0) {
+              <div class="bg-surface rounded-lg border border-line divide-y divide-border overflow-hidden shadow-sm">
+                @for (item of cart.individualItems(); track item.id) {
+                  <article class="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4 min-w-0 flex-1">
+                      <div class="size-16 sm:size-20 rounded-md bg-surface-alt border border-line flex items-center justify-center shrink-0 overflow-hidden">
+                        <img
+                          [src]="item.media | productImage"
+                          [alt]="item.name"
+                          class="h-full w-full object-cover"
+                          (error)="onImageError($event)"
+                        >
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <span class="text-[10px] font-bold text-primary uppercase">LINH KIỆN ĐƠN LẺ</span>
+                        <h3 class="font-bold text-xs sm:text-sm text-foreground mt-0.5 truncate">{{ item.name }}</h3>
+                        <p class="text-xs text-muted mt-0.5">Mã SKU: {{ item.sku }} · Đơn giá: {{ item.unitPrice | vnd }}</p>
+                        <span appBadge variant="success" size="sm" class="mt-1">Sẵn sàng giao</span>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-line">
+                      <div class="flex items-center border border-line rounded-md bg-surface overflow-hidden">
+                        <button
+                          type="button"
+                          appButton
+                          variant="ghost"
+                          size="sm"
+                          class="h-8 w-8 p-0 rounded-none border-0"
+                          (click)="change(item.id, item.quantity - 1)"
+                          aria-label="Giảm số lượng"
+                        >
+                          <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
+                        </button>
+                        <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ item.quantity }}</span>
+                        <button
+                          type="button"
+                          appButton
+                          variant="ghost"
+                          size="sm"
+                          class="h-8 w-8 p-0 rounded-none border-0"
+                          (click)="change(item.id, item.quantity + 1)"
+                          aria-label="Tăng số lượng"
+                        >
+                          <lucide-icon name="plus" class="size-3" aria-hidden="true"></lucide-icon>
+                        </button>
+                      </div>
+
+                      <div class="text-right">
+                        <div class="text-base font-black text-foreground tabular">{{ item.lineTotal | vnd }}</div>
+                        <button
+                          type="button"
+                          class="text-xs text-danger hover:underline font-bold mt-1 inline-flex items-center gap-1 cursor-pointer"
+                          (click)="remove(item.id)"
+                        >
+                          <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
+                          <span>Xóa</span>
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                }
+              </div>
+            }
 
             <!-- Bottom Actions -->
             <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
@@ -214,6 +354,7 @@ export class CartPageComponent {
   protected readonly cart = inject(CartService);
   protected readonly loading = signal(true);
   protected readonly onImageError = handleProductImageError;
+  protected readonly expandedBuildKeys = signal<Record<string, boolean>>({});
 
   constructor() {
     void this.load();
@@ -225,6 +366,35 @@ export class CartPageComponent {
 
   protected remove(itemId: string): void {
     void this.cart.remove(itemId);
+  }
+
+  protected toggleBuildAccordion(key: string): void {
+    this.expandedBuildKeys.update((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }
+
+  protected isBuildExpanded(key: string): boolean {
+    return !!this.expandedBuildKeys()[key];
+  }
+
+  protected getComponentBadge(name: string, sku: string): string {
+    const n = (name + ' ' + sku).toLowerCase();
+    if (n.includes('core') || n.includes('ryzen') || n.includes('cpu')) return 'CPU';
+    if (n.includes('main') || n.includes('z790') || n.includes('b760') || n.includes('b650') || n.includes('x670') || n.includes('bo mạch')) return 'MAIN';
+    if (n.includes('ram') || n.includes('ddr4') || n.includes('ddr5')) return 'RAM';
+    if (n.includes('rtx') || n.includes('gtx') || n.includes('radeon') || n.includes('vga') || n.includes('card')) return 'VGA';
+    if (n.includes('ssd') || n.includes('nvme') || n.includes('m.2')) return 'SSD';
+    if (n.includes('nguồn') || n.includes('psu') || n.includes('plus gold') || n.includes('power')) return 'PSU';
+    if (n.includes('tản') || n.includes('aio') || n.includes('cooler') || n.includes('cooling') || n.includes('radiator')) return 'COOL';
+    if (n.includes('case') || n.includes('vỏ') || n.includes('tower')) return 'CASE';
+    return 'PART';
+  }
+
+  protected getBuildCode(key: string): string {
+    const clean = key.replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
+    return `BUILD-ELT-${clean || '9428'}`;
   }
 
   private async load(): Promise<void> {

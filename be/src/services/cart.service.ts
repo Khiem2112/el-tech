@@ -125,6 +125,25 @@ export const cartService = {
     return this.changeQuantity(token, itemId, 0);
   },
 
+  async removeBuild(token: string, buildKey: string): Promise<CartView> {
+    const cart = await this.readCart(token);
+    await prisma.cartItem.updateMany({
+      where: { cartId: cart.id, pcBuildKey: buildKey, isActive: true },
+      data: { isActive: false },
+    });
+    return this.read(cart.opaqueToken);
+  },
+
+  async changeBuildQuantity(token: string, buildKey: string, quantity: number): Promise<CartView> {
+    const cart = await this.readCart(token);
+    if (quantity <= 0) return this.removeBuild(token, buildKey);
+    await prisma.cartItem.updateMany({
+      where: { cartId: cart.id, pcBuildKey: buildKey, isActive: true },
+      data: { quantity },
+    });
+    return this.read(cart.opaqueToken);
+  },
+
   async readCart(token?: string): Promise<{ id: string; opaqueToken: string }> {
     if (!token) return prisma.cart.create({ data: { opaqueToken: crypto.randomUUID() }, select: { id: true, opaqueToken: true } });
     const cart = await prisma.cart.findFirst({ where: { opaqueToken: token, isActive: true }, select: { id: true, opaqueToken: true } });

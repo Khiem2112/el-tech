@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { VndPipe } from '../../lib/vnd.pipe';
@@ -98,23 +98,185 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </div>
             </div>
           } @else {
-            @for (item of cart.items(); track item.id) {
+            <!-- Grouped PC Build Composite Cards -->
+            @for (build of cart.pcBuildGroups(); track build.key) {
+              <div class="group relative p-3.5 rounded-xl bg-surface-elevated border-2 border-primary/40 shadow-sm flex flex-col gap-2.5">
+                <!-- Header Strip -->
+                <div class="flex items-center justify-between pb-1.5 border-b border-line-dark text-[11px]">
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px]">
+                      Bộ PC Hoàn Chỉnh
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded bg-surface-dark border border-line-dark text-foreground-dark/70 font-mono text-[10px] font-bold">
+                      {{ build.buildType }}
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded bg-surface-dark text-primary font-medium flex items-center gap-1 text-[10px]">
+                      <lucide-icon name="shield-check" class="w-3 h-3 text-primary" aria-hidden="true"></lucide-icon>
+                      <span>Tương thích 100%</span>
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="cart.removePcBuild(build.key)"
+                    class="text-slate-500 hover:text-danger p-0.5 rounded transition-colors cursor-pointer"
+                    title="Xóa toàn bộ cấu hình PC này"
+                    aria-label="Xóa bộ PC"
+                  >
+                    <lucide-icon name="trash-2" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+
+                <!-- Main PC Build Overview -->
+                <div class="flex gap-3 items-start pt-1">
+                  <div class="size-20 rounded-lg bg-surface-dark border border-line-dark shrink-0 overflow-hidden relative p-1 flex items-center justify-center">
+                    @if (build.hardwareItems[0]?.media; as media) {
+                      <img
+                        [src]="media | productImage"
+                        [alt]="build.buildName"
+                        class="h-full w-full object-contain"
+                        (error)="onImageError($event)"
+                      >
+                    } @else {
+                      <lucide-icon name="cpu" class="w-8 h-8 text-primary" aria-hidden="true"></lucide-icon>
+                    }
+                    <span class="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-surface-dark text-primary font-mono text-[9px] font-bold border border-line-dark">
+                      PC BUILD
+                    </span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-xs sm:text-sm font-bold text-white leading-snug line-clamp-2">
+                      {{ build.buildName }}
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11px] text-muted">
+                      <span>Mã cấu hình: <strong class="font-mono text-white font-semibold">{{ getBuildCode(build.key) }}</strong></span>
+                      <span>•</span>
+                      <span>Gồm <strong class="text-white">{{ build.componentCount }} linh kiện chính</strong></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 mt-1 text-[11px] text-primary">
+                      <span class="size-1.5 rounded-full bg-primary inline-block"></span>
+                      <span>Sẵn hàng đầy đủ tại Showroom Hà Nội &amp; TP. HCM</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Stepper, Pricing & Edit Actions -->
+                <div class="flex items-center justify-between pt-2 border-t border-line-dark">
+                  <div class="flex items-center gap-2">
+                    <div class="flex items-center rounded-lg bg-surface-dark border border-line-dark p-0.5">
+                      <button
+                        type="button"
+                        (click)="cart.setPcBuildQuantity(build.key, build.quantity - 1)"
+                        class="size-7 rounded flex items-center justify-center text-foreground-dark/70 hover:bg-line-dark transition-colors cursor-pointer"
+                        aria-label="Giảm số lượng bộ PC"
+                      >
+                        <lucide-icon name="minus" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                      </button>
+                      <span class="w-8 text-center text-xs font-bold text-white tabular">{{ build.quantity }}</span>
+                      <button
+                        type="button"
+                        (click)="cart.setPcBuildQuantity(build.key, build.quantity + 1)"
+                        class="size-7 rounded flex items-center justify-center text-foreground-dark/70 hover:bg-line-dark transition-colors cursor-pointer"
+                        aria-label="Tăng số lượng bộ PC"
+                      >
+                        <lucide-icon name="plus" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                      </button>
+                    </div>
+                    <a
+                      routerLink="/tu-lap-pc"
+                      (click)="cart.closeDrawer()"
+                      class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary-strong px-2 py-1 rounded bg-surface-dark hover:bg-line-dark transition-colors border border-line-dark"
+                      title="Mở trình cấu hình PC để thay đổi"
+                    >
+                      <lucide-icon name="settings-2" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                      <span>Sửa cấu hình</span>
+                    </a>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-sm font-bold text-white tabular">{{ build.totalPrice | vnd }}</div>
+                    <div class="text-[10px] text-muted">Trọn bộ dàn máy</div>
+                  </div>
+                </div>
+
+                <!-- Accordion Toggle Button -->
+                <div class="pt-1">
+                  <button
+                    type="button"
+                    (click)="toggleBuildAccordion(build.key)"
+                    class="w-full flex items-center justify-between px-3 py-2 bg-surface-dark hover:bg-line-dark/60 rounded-lg border border-line-dark transition-all text-white text-xs font-bold text-left cursor-pointer"
+                    [attr.aria-expanded]="isBuildExpanded(build.key)"
+                  >
+                    <span class="flex items-center gap-2">
+                      <lucide-icon name="list" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
+                      <span>{{ isBuildExpanded(build.key) ? 'Thu gọn chi tiết linh kiện' : 'Xem chi tiết ' + build.componentCount + ' linh kiện đã chọn' }}</span>
+                      <span class="px-1.5 py-0.2 rounded-full bg-primary text-primary-foreground font-mono text-[10px] font-bold">
+                        {{ build.componentCount }} món
+                      </span>
+                    </span>
+                    <lucide-icon
+                      name="chevron-down"
+                      class="w-4 h-4 text-muted transition-transform duration-200"
+                      [class.rotate-180]="isBuildExpanded(build.key)"
+                      aria-hidden="true"
+                    ></lucide-icon>
+                  </button>
+                </div>
+
+                <!-- Accordion Dropdown Content -->
+                @if (isBuildExpanded(build.key)) {
+                  <div class="flex flex-col gap-2 pt-1 animate-in fade-in duration-150">
+                    <div class="bg-surface-dark rounded-lg p-2.5 border border-line-dark space-y-2">
+                      <div class="flex items-center justify-between pb-1.5 border-b border-line-dark text-[11px] text-muted">
+                        <span class="font-bold uppercase tracking-wider text-[10px] text-white">Danh mục linh kiện trong cấu hình</span>
+                        <span>Giá đơn lẻ</span>
+                      </div>
+
+                      @for (hw of build.hardwareItems; track hw.id) {
+                        <div class="flex items-center justify-between gap-2 py-1 border-b border-line-dark/50 last:border-b-0">
+                          <div class="flex items-start gap-2 min-w-0">
+                            <span class="px-1.5 py-0.5 rounded bg-surface-elevated text-primary font-mono text-[9px] font-bold shrink-0 border border-line-dark">
+                              {{ getComponentBadge(hw.name, hw.sku) }}
+                            </span>
+                            <div class="min-w-0">
+                              <p class="text-xs font-bold text-white truncate">{{ hw.name }}</p>
+                              <p class="text-[10px] text-muted truncate">SKU: {{ hw.sku }} • Số lượng: {{ hw.quantity }}</p>
+                            </div>
+                          </div>
+                          <div class="text-right shrink-0">
+                            <span class="font-mono text-xs font-semibold text-white tabular">{{ hw.lineTotal | vnd }}</span>
+                            <a
+                              routerLink="/tu-lap-pc"
+                              (click)="cart.closeDrawer()"
+                              class="block text-[10px] text-primary hover:underline"
+                            >
+                              Đổi món
+                            </a>
+                          </div>
+                        </div>
+                      }
+
+                      <!-- Free Assembly & Testing Pack Included -->
+                      <div class="mt-2 p-2 rounded bg-surface-elevated flex items-center justify-between border border-line-dark text-[11px]">
+                        <div class="flex items-center gap-1.5 text-primary">
+                          <lucide-icon name="wrench" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                          <span>Lắp ráp máy, giấu dây thẩm mỹ &amp; ép tải test 24h</span>
+                        </div>
+                        <span class="font-bold uppercase text-primary">Miễn phí (0 đ)</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <!-- Standalone Individual Cart Items -->
+            @for (item of cart.individualItems(); track item.id) {
               <div class="p-3.5 rounded-xl bg-surface-elevated border border-line-dark/80 hover:border-line-dark transition-colors flex flex-col gap-2.5">
                 <!-- Header Badge -->
                 <div class="flex items-center justify-between pb-1.5 border-b border-line-dark text-[11px]">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    @if (item.pcBuildName) {
-                      <span class="px-1.5 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase">
-                        Bộ PC Hoàn Chỉnh
-                      </span>
-                      <span class="px-1.5 py-0.5 rounded bg-surface-dark border border-line-dark text-foreground-dark/70 font-bold">
-                        {{ item.pcBuildType ?? 'CUSTOM BUILD' }}
-                      </span>
-                    } @else {
-                      <span class="px-1.5 py-0.5 rounded bg-line-dark text-foreground-dark/70 font-bold uppercase">
-                        Linh kiện đơn lẻ
-                      </span>
-                    }
+                    <span class="px-1.5 py-0.5 rounded bg-line-dark text-foreground-dark/70 font-bold uppercase">
+                      Linh kiện đơn lẻ
+                    </span>
                     <span class="text-muted">SKU: {{ item.sku }}</span>
                   </div>
                   <button
@@ -141,9 +303,6 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <h3 class="text-xs font-bold text-white leading-snug line-clamp-2">
                       {{ item.name }}
                     </h3>
-                    @if (item.pcBuildName) {
-                      <p class="text-[11px] text-primary mt-0.5">Tên cấu hình: {{ item.pcBuildName }}</p>
-                    }
                     <div class="flex items-center gap-1 mt-1 text-[11px] text-primary">
                       <span class="size-1.5 rounded-full bg-primary inline-block"></span>
                       <span>Sẵn hàng tại HN 45 Thái Hà &amp; HCM 280 3/2</span>
@@ -173,15 +332,6 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         <lucide-icon name="plus" class="w-3 h-3" aria-hidden="true"></lucide-icon>
                       </button>
                     </div>
-                    @if (item.pcBuildName) {
-                      <a
-                        routerLink="/tu-lap-pc"
-                        (click)="cart.closeDrawer()"
-                        class="text-[11px] font-bold text-primary hover:underline"
-                      >
-                        Sửa cấu hình
-                      </a>
-                    }
                   </div>
                   <div class="text-right">
                     <div class="text-xs font-bold text-white tabular">{{ item.lineTotal | vnd }}</div>
@@ -262,6 +412,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 export class CartDrawerComponent {
   protected readonly cart = inject(CartService);
   protected readonly onImageError = handleProductImageError;
+  protected readonly expandedBuildKeys = signal<Record<string, boolean>>({});
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {
@@ -269,4 +420,34 @@ export class CartDrawerComponent {
       this.cart.closeDrawer();
     }
   }
+
+  protected toggleBuildAccordion(key: string): void {
+    this.expandedBuildKeys.update((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  }
+
+  protected isBuildExpanded(key: string): boolean {
+    return !!this.expandedBuildKeys()[key];
+  }
+
+  protected getComponentBadge(name: string, sku: string): string {
+    const n = (name + ' ' + sku).toLowerCase();
+    if (n.includes('core') || n.includes('ryzen') || n.includes('cpu')) return 'CPU';
+    if (n.includes('main') || n.includes('z790') || n.includes('b760') || n.includes('b650') || n.includes('x670') || n.includes('bo mạch')) return 'MAIN';
+    if (n.includes('ram') || n.includes('ddr4') || n.includes('ddr5')) return 'RAM';
+    if (n.includes('rtx') || n.includes('gtx') || n.includes('radeon') || n.includes('vga') || n.includes('card')) return 'VGA';
+    if (n.includes('ssd') || n.includes('nvme') || n.includes('m.2')) return 'SSD';
+    if (n.includes('nguồn') || n.includes('psu') || n.includes('plus gold') || n.includes('power')) return 'PSU';
+    if (n.includes('tản') || n.includes('aio') || n.includes('cooler') || n.includes('cooling') || n.includes('radiator')) return 'COOL';
+    if (n.includes('case') || n.includes('vỏ') || n.includes('tower')) return 'CASE';
+    return 'PART';
+  }
+
+  protected getBuildCode(key: string): string {
+    const clean = key.replace(/[^a-zA-Z0-9]/g, '').slice(-4).toUpperCase();
+    return `BUILD-ELT-${clean || '9428'}`;
+  }
 }
+
