@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { VndPipe } from '../../lib/vnd.pipe';
@@ -47,20 +47,27 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </button>
           </div>
 
-          <!-- Free Shipping Progress -->
+          <!-- Free Shipping Progress (CA-02) -->
           <div class="mt-3 p-2.5 rounded-lg bg-surface-elevated border border-line-dark flex flex-col gap-1 text-xs">
             <div class="flex items-center justify-between font-bold">
               <span class="flex items-center gap-1.5 text-primary">
                 <lucide-icon name="truck" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></lucide-icon>
-                Miễn phí vận chuyển hỏa tốc toàn quốc
+                @if (amountLeftForFreeShipping() === 0) {
+                  <span>Bạn đã đạt điều kiện MIỄN PHÍ VẬN CHUYỂN!</span>
+                } @else {
+                  <span>Mua thêm {{ amountLeftForFreeShipping() | vnd }} để được MIỄN PHÍ VẬN CHUYỂN</span>
+                }
               </span>
-              <span class="text-primary">100%</span>
+              <span class="text-primary font-mono font-bold">{{ freeShippingPercent() }}%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-line-dark overflow-hidden mt-0.5">
-              <div class="h-full rounded-full bg-primary w-full"></div>
+              <div
+                class="h-full rounded-full bg-primary transition-all duration-300"
+                [style.width.%]="freeShippingPercent()"
+              ></div>
             </div>
             <div class="flex items-center justify-between text-[11px] text-muted">
-              <span>Đơn linh kiện trên 2.000.000 đ</span>
+              <span>Đơn linh kiện từ 5.000.000 đ</span>
               <span class="text-foreground-dark/70 font-medium">Bảo hiểm rơi vỡ 100%</span>
             </div>
           </div>
@@ -244,9 +251,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                           <div class="text-right shrink-0">
                             <span class="font-mono text-xs font-semibold text-white tabular">{{ hw.lineTotal | vnd }}</span>
                             <a
-                              routerLink="/tu-lap-pc"
+                              [routerLink]="['/tu-lap-pc']"
+                              [queryParams]="{ swapSlot: getSlotKey(hw.name, hw.sku) }"
                               (click)="cart.closeDrawer()"
-                              class="block text-[10px] text-primary hover:underline"
+                              class="block text-[10px] text-primary hover:underline font-bold"
                             >
                               Đổi món
                             </a>
@@ -413,6 +421,33 @@ export class CartDrawerComponent {
   protected readonly cart = inject(CartService);
   protected readonly onImageError = handleProductImageError;
   protected readonly expandedBuildKeys = signal<Record<string, boolean>>({});
+
+  protected readonly freeShippingThreshold = 5_000_000;
+
+  protected readonly freeShippingPercent = computed<number>(() => {
+    const total = Number(this.cart.subtotal()) || 0;
+    return Math.min(100, Math.round((total / this.freeShippingThreshold) * 100));
+  });
+
+  protected readonly amountLeftForFreeShipping = computed<number>(() => {
+    const total = Number(this.cart.subtotal()) || 0;
+    return Math.max(0, this.freeShippingThreshold - total);
+  });
+
+  protected getSlotKey(name: string, sku: string): string {
+    const badge = this.getComponentBadge(name, sku);
+    const map: Record<string, string> = {
+      CPU: 'cpu',
+      MAIN: 'mainboard',
+      RAM: 'ram',
+      VGA: 'vga',
+      SSD: 'ssd',
+      PSU: 'psu',
+      COOL: 'cooling',
+      CASE: 'case',
+    };
+    return map[badge] || 'cpu';
+  }
 
   @HostListener('document:keydown.escape')
   protected onEscape(): void {

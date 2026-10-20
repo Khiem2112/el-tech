@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, 
 import { FormsModule } from '@angular/forms';
 import { AppIconModule, ButtonDirective, InputDirective } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
+import { handleProductImageError } from '../../core/constants/product.constants';
 
 export type SwapItem = {
   readonly id: string;
@@ -354,9 +355,19 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                   </span>
                 </div>
                 <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
-                  <div class="min-w-0 flex-1">
-                    <div class="text-xs font-bold text-foreground truncate">{{ current.name }}</div>
-                    <p class="text-[11px] text-muted truncate mt-0.5">{{ current.specs }}</p>
+                  <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="size-12 rounded-lg bg-surface border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                      <img
+                        [src]="current.imageUrl || '/images/products/placeholder.webp'"
+                        [alt]="current.name"
+                        class="size-full object-contain"
+                        (error)="onImageError($event)"
+                      >
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-bold text-foreground truncate">{{ current.name }}</div>
+                      <p class="text-[11px] text-muted truncate mt-0.5">{{ current.specs }}</p>
+                    </div>
                   </div>
                   <div class="text-right shrink-0">
                     <div class="text-xs font-bold text-foreground tabular">{{ current.price | vnd }}</div>
@@ -400,37 +411,47 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 <div class="space-y-2">
                   @for (item of filteredItems(); track item.id) {
                     <div class="p-3.5 rounded-xl bg-surface border border-line hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-foreground border border-line">
-                            {{ item.brand }}
-                          </span>
-                          @if (item.tag) {
-                            <span class="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary font-bold">
-                              {{ item.tag }}
-                            </span>
-                          }
-                          @if (checkCompatibility(item); as comp) {
-                            <span
-                              class="px-1.5 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1"
-                              [class.bg-primary-subtle]="comp.isCompatible"
-                              [class.text-primary]="comp.isCompatible"
-                              [class.border-primary-subtle]="comp.isCompatible"
-                              [class.bg-warning-subtle]="!comp.isCompatible"
-                              [class.text-warning]="!comp.isCompatible"
-                              [class.border-warning-subtle]="!comp.isCompatible"
-                            >
-                              <lucide-icon [name]="comp.isCompatible ? 'shield-check' : 'alert-triangle'" class="size-3" aria-hidden="true"></lucide-icon>
-                              <span>{{ comp.label }}</span>
-                            </span>
-                          }
-                          <span class="text-[11px] text-muted font-medium flex items-center gap-1">
-                            <lucide-icon name="store" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
-                            <span>{{ item.stockStatus || 'Sẵn hàng tại HN & HCM' }}</span>
-                          </span>
+                      <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="size-14 rounded-lg bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                          <img
+                            [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                            [alt]="item.name"
+                            class="size-full object-contain"
+                            (error)="onImageError($event)"
+                          >
                         </div>
-                        <h5 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h5>
-                        <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-foreground border border-line">
+                              {{ item.brand }}
+                            </span>
+                            @if (item.tag) {
+                              <span class="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary font-bold">
+                                {{ item.tag }}
+                              </span>
+                            }
+                            @if (checkCompatibility(item); as comp) {
+                              <span
+                                class="px-1.5 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1"
+                                [class.bg-primary-subtle]="comp.isCompatible"
+                                [class.text-primary]="comp.isCompatible"
+                                [class.border-primary-subtle]="comp.isCompatible"
+                                [class.bg-warning-subtle]="!comp.isCompatible"
+                                [class.text-warning]="!comp.isCompatible"
+                                [class.border-warning-subtle]="!comp.isCompatible"
+                              >
+                                <lucide-icon [name]="comp.isCompatible ? 'shield-check' : 'alert-triangle'" class="size-3" aria-hidden="true"></lucide-icon>
+                                <span>{{ comp.label }}</span>
+                              </span>
+                            }
+                            <span class="text-[11px] text-muted font-medium flex items-center gap-1">
+                              <lucide-icon name="store" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
+                              <span>{{ item.stockStatus || 'Sẵn hàng tại HN & HCM' }}</span>
+                            </span>
+                          </div>
+                          <h5 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h5>
+                          <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
+                        </div>
                       </div>
 
                       <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
@@ -526,6 +547,7 @@ export class ComponentSwapModalComponent {
   @Output() closeModal = new EventEmitter<void>();
   @Output() selectItem = new EventEmitter<SwapItem>();
 
+  protected readonly onImageError = handleProductImageError;
   protected readonly searchQuery = signal('');
   protected readonly selectedBrand = signal('');
   protected readonly selectedPriceRange = signal<PriceFilterOption>('all');

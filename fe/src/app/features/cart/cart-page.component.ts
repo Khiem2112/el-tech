@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { VndPipe } from '../../lib/vnd.pipe';
@@ -67,16 +67,29 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <!-- Left Column: Items List (Col 8) -->
           <div class="lg:col-span-8 space-y-4">
             
-            <!-- Free Shipping Announcement -->
-            <div class="p-3.5 rounded-lg bg-emerald-950/20 border border-emerald-800/40 text-xs text-emerald-200 flex flex-wrap items-center justify-between gap-3">
-              <div class="flex items-center gap-2">
-                <lucide-icon name="truck" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
-                <div>
-                  <span class="font-bold">Đơn hàng đạt điều kiện MIỄN PHÍ VẬN CHUYỂN!</span>
-                  <p class="text-[11px] text-primary mt-0.5">Giá trị đơn hàng linh kiện trên 2.000.000 đ được miễn phí giao hàng toàn quốc.</p>
-                </div>
+            <!-- Free Shipping Progress (CA-02) -->
+            <div class="p-3.5 rounded-lg bg-surface border border-line flex flex-col gap-1.5 text-xs shadow-sm">
+              <div class="flex items-center justify-between font-bold">
+                <span class="flex items-center gap-2 text-primary">
+                  <lucide-icon name="truck" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                  @if (amountLeftForFreeShipping() === 0) {
+                    <span>Đơn hàng đạt điều kiện MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC!</span>
+                  } @else {
+                    <span>Mua thêm {{ amountLeftForFreeShipping() | vnd }} để được MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
+                  }
+                </span>
+                <span class="text-primary font-mono font-bold">{{ freeShippingPercent() }}%</span>
               </div>
-              <span appBadge variant="primary" class="text-[10px]">FREESHIP ÁP DỤNG</span>
+              <div class="w-full h-2 rounded-full bg-surface-alt border border-line overflow-hidden">
+                <div
+                  class="h-full rounded-full bg-primary transition-all duration-300"
+                  [style.width.%]="freeShippingPercent()"
+                ></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-muted">
+                <span>Miễn phí vận chuyển cho đơn hàng linh kiện từ 5.000.000 đ</span>
+                <span class="text-primary font-medium">Bảo hiểm linh kiện 100%</span>
+              </div>
             </div>
 
             <!-- Grouped PC Build Cards -->
@@ -209,6 +222,13 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                           <span class="font-mono text-muted tabular">{{ hw.unitPrice | vnd }}</span>
                           <span class="text-muted">x{{ hw.quantity }}</span>
                           <span class="font-mono font-bold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
+                          <a
+                            [routerLink]="['/tu-lap-pc']"
+                            [queryParams]="{ swapSlot: getSlotKey(hw.name, hw.sku) }"
+                            class="text-[11px] text-primary hover:underline font-bold"
+                          >
+                            Đổi món
+                          </a>
                         </div>
                       </div>
                     }
@@ -355,6 +375,33 @@ export class CartPageComponent {
   protected readonly loading = signal(true);
   protected readonly onImageError = handleProductImageError;
   protected readonly expandedBuildKeys = signal<Record<string, boolean>>({});
+
+  protected readonly freeShippingThreshold = 5_000_000;
+
+  protected readonly freeShippingPercent = computed<number>(() => {
+    const total = Number(this.cart.subtotal()) || 0;
+    return Math.min(100, Math.round((total / this.freeShippingThreshold) * 100));
+  });
+
+  protected readonly amountLeftForFreeShipping = computed<number>(() => {
+    const total = Number(this.cart.subtotal()) || 0;
+    return Math.max(0, this.freeShippingThreshold - total);
+  });
+
+  protected getSlotKey(name: string, sku: string): string {
+    const badge = this.getComponentBadge(name, sku);
+    const map: Record<string, string> = {
+      CPU: 'cpu',
+      MAIN: 'mainboard',
+      RAM: 'ram',
+      VGA: 'vga',
+      SSD: 'ssd',
+      PSU: 'psu',
+      COOL: 'cooling',
+      CASE: 'case',
+    };
+    return map[badge] || 'cpu';
+  }
 
   constructor() {
     void this.load();

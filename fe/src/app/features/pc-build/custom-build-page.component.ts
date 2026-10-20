@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppIconModule, ButtonDirective } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
+import { handleProductImageError } from '../../core/constants/product.constants';
 import { CartService } from '../../services/cart.service';
 import { PcBuildService, BundleResponse } from '../../services/pc-build.service';
 import { ComponentSwapModalComponent, SwapItem, SwapSlotItem } from './component-swap-modal.component';
@@ -150,59 +151,61 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
             </div>
 
             <!-- BOM Hardware Rows List (8 Core Slots) -->
-            <div class="rounded-xl bg-surface shadow-sm border border-line divide-y divide-border overflow-hidden">
+            <div class="space-y-3">
               @for (slot of bomSlots(); track slot.key) {
-                <div class="p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:bg-surface-alt/40 transition-colors">
-                  <!-- Slot Identity & Hardware Info -->
-                  <div class="flex items-start md:items-center gap-3 flex-1 min-w-0">
-                    <div class="size-8 rounded-lg bg-surface-alt flex items-center justify-center shrink-0 border border-line font-bold text-xs text-muted">
-                      {{ slot.number }}
-                    </div>
-
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-muted border border-line">
-                          {{ slot.categoryName }}
-                        </span>
-                        @if (slot.item?.tag; as tag) {
-                          <span class="px-1.5 py-0.5 rounded text-[10px] font-mono text-primary font-bold bg-primary/10">
-                            {{ tag }}
-                          </span>
-                        }
+                @if (slot.item; as item) {
+                  <!-- Configured Slot -->
+                  <div class="rounded-xl bg-surface shadow-sm border border-line p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-primary/50 transition-colors">
+                    <!-- Slot Identity & Hardware Info -->
+                    <div class="flex items-start md:items-center gap-3 flex-1 min-w-0">
+                      <div class="size-8 rounded-lg bg-surface-alt flex items-center justify-center shrink-0 border border-line font-bold text-xs text-muted">
+                        {{ slot.number }}
                       </div>
 
-                      @if (slot.item; as item) {
+                      <div class="size-12 rounded-lg bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                        <img
+                          [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                          [alt]="item.name"
+                          class="size-full object-contain"
+                          (error)="onImageError($event)"
+                        >
+                      </div>
+
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-muted border border-line">
+                            {{ slot.categoryName }}
+                          </span>
+                          @if (item.tag) {
+                            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono text-primary font-bold bg-primary/10">
+                              {{ item.tag }}
+                            </span>
+                          }
+                        </div>
+
                         <h2 class="text-xs sm:text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h2>
                         <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
-                      } @else {
-                        <p class="text-xs text-muted italic mt-1">Chưa chọn linh kiện cho vị trí này.</p>
-                      }
+                      </div>
                     </div>
-                  </div>
 
-                  <!-- Slot Price & Actions -->
-                  <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
-                    <div class="text-left md:text-right">
-                      @if (slot.item; as item) {
+                    <!-- Slot Price & Actions -->
+                    <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
+                      <div class="text-left md:text-right">
                         <div class="text-xs sm:text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
                         <div class="text-[10px] text-muted">Bảo hành 36T</div>
-                      } @else {
-                        <div class="text-xs text-muted">0 đ</div>
-                      }
-                    </div>
+                      </div>
 
-                    <div class="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        (click)="openSwapModal(slot)"
-                        class="h-8 px-2.5 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold flex items-center gap-1 transition-colors border border-line cursor-pointer"
-                        title="Thay đổi linh kiện"
-                      >
-                        <lucide-icon name="arrow-up-down" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                        <span>{{ slot.item ? 'Đổi' : 'Chọn' }}</span>
-                      </button>
+                      <div class="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          (click)="openSwapModal(slot)"
+                          class="h-8 px-2.5 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold flex items-center gap-1 transition-colors border border-line cursor-pointer"
+                          title="Thay đổi linh kiện"
+                        >
+                          <lucide-icon name="arrow-up-down" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                          <span>Đổi</span>
+                        </button>
 
-                      @if (slot.item) {
                         <button
                           type="button"
                           (click)="clearSlot(slot.key)"
@@ -212,34 +215,84 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                         >
                           <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
                         </button>
-                      }
+                      </div>
                     </div>
                   </div>
-                </div>
+                } @else {
+                  <!-- Empty Dashed Slot (PB-02) -->
+                  <div class="rounded-xl border-2 border-dashed border-line hover:border-primary/60 bg-surface-alt/10 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                      <div class="size-8 rounded-lg bg-surface border border-dashed border-line flex items-center justify-center shrink-0 font-bold text-xs text-muted">
+                        {{ slot.number }}
+                      </div>
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface text-muted border border-line">
+                            {{ slot.categoryName }}
+                          </span>
+                          <span class="text-[10px] text-muted font-mono">{{ slot.defaultSpecTag }}</span>
+                        </div>
+                        <p class="text-xs text-muted italic mt-1">Chưa chọn linh kiện cho vị trí này (Tùy chọn tương thích chuẩn)</p>
+                      </div>
+                    </div>
+
+                    <div class="shrink-0 w-full md:w-auto text-right">
+                      <button
+                        type="button"
+                        (click)="openSwapModal(slot)"
+                        class="w-full md:w-auto h-8 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                        title="Chọn linh kiện cho ô này"
+                      >
+                        <lucide-icon name="plus" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        <span>+ Chọn {{ slot.categoryName }}</span>
+                      </button>
+                    </div>
+                  </div>
+                }
               }
             </div>
 
-            <!-- Free Technical Services Pack -->
-            <div class="rounded-xl p-4 bg-surface shadow-sm border border-line space-y-2.5 text-xs text-muted">
-              <div class="flex items-center gap-2 font-bold text-foreground">
-                <lucide-icon name="wrench" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
-                <span>Gói Dịch Vụ Kỹ Thuật Đính Kèm Miễn Phí Tại EL-TECH</span>
+            <!-- Free Technical Services Pack (PB-03) -->
+            <div class="rounded-xl p-4 bg-surface shadow-sm border border-line space-y-3 text-xs text-muted">
+              <div class="flex items-center justify-between font-bold text-foreground">
+                <div class="flex items-center gap-2">
+                  <lucide-icon name="wrench" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
+                  <span>Gói Dịch Vụ Kỹ Thuật Đính Kèm Tự Chọn (Miễn Phí 0 đ)</span>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">MIỄN PHÍ</span>
               </div>
-              <div class="grid sm:grid-cols-2 gap-2 pt-1 text-[11px]">
-                <div class="p-2.5 rounded-lg bg-surface-alt border border-line space-y-0.5">
-                  <div class="font-bold text-foreground flex items-center justify-between">
-                    <span>Lắp ráp & đi dây Pro</span>
-                    <span class="text-primary font-bold">0 đ</span>
+              <div class="grid sm:grid-cols-2 gap-2.5 pt-1 text-[11px]">
+                <label class="p-3 rounded-lg bg-surface-alt border border-line flex items-start gap-3 cursor-pointer hover:border-primary/50 transition-colors">
+                  <input
+                    type="checkbox"
+                    [checked]="serviceAssembly()"
+                    (change)="serviceAssembly.set(!serviceAssembly())"
+                    class="mt-0.5 size-4 rounded border-line text-primary focus:ring-primary accent-primary cursor-pointer"
+                  >
+                  <div class="space-y-0.5 min-w-0">
+                    <div class="font-bold text-foreground flex items-center justify-between">
+                      <span>Lắp ráp &amp; đi dây chuyên nghiệp</span>
+                      <span class="text-primary font-bold">0 đ</span>
+                    </div>
+                    <p class="text-muted text-[11px] leading-relaxed">Kỹ thuật viên bóc seal, đi dây nẹp thẩm mỹ, luồn dây âm thân case.</p>
                   </div>
-                  <p>Kỹ thuật viên đi dây nẹp gọn gàng, luồn dây âm thân case thẩm mỹ.</p>
-                </div>
-                <div class="p-2.5 rounded-lg bg-surface-alt border border-line space-y-0.5">
-                  <div class="font-bold text-foreground flex items-center justify-between">
-                    <span>Stress Test 24h & Cài đặt</span>
-                    <span class="text-primary font-bold">0 đ</span>
+                </label>
+
+                <label class="p-3 rounded-lg bg-surface-alt border border-line flex items-start gap-3 cursor-pointer hover:border-primary/50 transition-colors">
+                  <input
+                    type="checkbox"
+                    [checked]="serviceStressTest()"
+                    (change)="serviceStressTest.set(!serviceStressTest())"
+                    class="mt-0.5 size-4 rounded border-line text-primary focus:ring-primary accent-primary cursor-pointer"
+                  >
+                  <div class="space-y-0.5 min-w-0">
+                    <div class="font-bold text-foreground flex items-center justify-between">
+                      <span>Cài đặt HĐH &amp; Stress Test 24h</span>
+                      <span class="text-primary font-bold">0 đ</span>
+                    </div>
+                    <p class="text-muted text-[11px] leading-relaxed">Kiểm tra tải FurMark, Cinebench R23 và cập nhật BIOS bo mạch mới nhất.</p>
                   </div>
-                  <p>Chạy kiểm tra FurMark, Cinebench R23 và cập nhật BIOS bo mạch mới nhất.</p>
-                </div>
+                </label>
               </div>
             </div>
           </div>
@@ -252,6 +305,40 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <h3 class="text-sm font-bold text-foreground mt-0.5">Báo Giá Chi Tiết PC Tự Ráp</h3>
               </div>
 
+              <!-- Showroom Branch Selector & Inventory Telemetry (PB-01) -->
+              <div class="space-y-2 pb-2 border-b border-line">
+                <label for="branch-selector" class="block text-[11px] font-bold text-foreground uppercase tracking-wider">
+                  Chi nhánh lắp ráp / nhận máy
+                </label>
+                <select
+                  id="branch-selector"
+                  [value]="selectedBranch()"
+                  (change)="onBranchChange($event)"
+                  class="w-full h-9 px-3 rounded-lg bg-surface-alt border border-line text-foreground text-xs font-semibold focus:border-primary focus:outline-none"
+                >
+                  <option value="hcm">TP.HCM - 280 Ba Tháng Hai, Quận 10</option>
+                  <option value="hanoi">Hà Nội - 45 Thái Hà, Đống Đa</option>
+                  <option value="danang">Đà Nẵng - 112 Hàm Nghi, Thanh Khê</option>
+                </select>
+
+                <!-- Stock readiness badge -->
+                <div class="p-2.5 rounded-lg bg-surface-alt border border-line flex items-center gap-2 text-xs">
+                  @if (isAllInStockAtBranch()) {
+                    <span class="size-2 rounded-full bg-primary shrink-0 inline-block"></span>
+                    <div class="min-w-0">
+                      <span class="text-primary font-bold block text-[11px]">Đủ linh kiện tại chi nhánh</span>
+                      <p class="text-[10px] text-muted">Sẵn sàng lắp ráp ngay trong 120 phút.</p>
+                    </div>
+                  } @else {
+                    <span class="size-2 rounded-full bg-amber-400 shrink-0 inline-block"></span>
+                    <div class="min-w-0">
+                      <span class="text-amber-400 font-bold block text-[11px]">Cần điều chuyển 1-2 món từ kho tổng</span>
+                      <p class="text-[10px] text-muted">Thời gian lắp ráp và kiểm tra dự kiến 24h.</p>
+                    </div>
+                  }
+                </div>
+              </div>
+
               <!-- Price Breakdown -->
               <div class="space-y-2 text-xs">
                 <div class="flex items-center justify-between text-muted">
@@ -259,7 +346,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   <span class="text-foreground font-bold tabular">{{ totalHardwarePrice() | vnd }}</span>
                 </div>
                 <div class="flex items-center justify-between text-muted">
-                  <span>Công lắp ráp & stress test:</span>
+                  <span>Công lắp ráp &amp; stress test:</span>
                   <span class="text-primary font-bold">0 đ (Miễn phí)</span>
                 </div>
                 <div class="flex items-center justify-between text-muted">
@@ -270,7 +357,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <div class="flex items-baseline justify-between pt-1">
                   <div>
                     <div class="text-xs font-black uppercase text-foreground">TỔNG THANH TOÁN</div>
-                    <div class="text-[10px] text-muted">Bao gồm VAT 10% & Hóa đơn GTGT</div>
+                    <div class="text-[10px] text-muted">Bao gồm VAT 10% &amp; Hóa đơn GTGT</div>
                   </div>
                   <div class="text-right">
                     <div class="text-xl sm:text-2xl font-black text-primary tabular">{{ totalHardwarePrice() | vnd }}</div>
@@ -385,14 +472,33 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 })
 export class CustomBuildPageComponent implements OnInit {
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly cart = inject(CartService);
   private readonly pcBuildService = inject(PcBuildService);
+
+  protected readonly onImageError = handleProductImageError;
+  protected readonly selectedBranch = signal<'hcm' | 'hanoi' | 'danang'>('hcm');
+  protected readonly serviceAssembly = signal(true);
+  protected readonly serviceStressTest = signal(true);
 
   protected readonly bundles = signal<readonly BundleResponse[]>([]);
   protected readonly liveCatalog = signal<Record<string, readonly SwapItem[]>>({});
   protected readonly currentBundleIndex = signal<number>(0);
   protected readonly linkCopied = signal(false);
   protected readonly adding = signal(false);
+
+  protected readonly isAllInStockAtBranch = computed<boolean>(() => {
+    const branch = this.selectedBranch();
+    if (branch === 'danang') {
+      return this.activeItemCount() <= 4;
+    }
+    return true;
+  });
+
+  protected onBranchChange(event: Event): void {
+    const val = (event.target as HTMLSelectElement).value as 'hcm' | 'hanoi' | 'danang';
+    this.selectedBranch.set(val);
+  }
 
   protected readonly activePresetLabel = computed<string>(() => {
     const list = this.bundles();
@@ -414,6 +520,36 @@ export class CustomBuildPageComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.loadCatalogAndBundles();
+    this.checkPendingBuildItem();
+    this.checkSwapSlotQueryParam();
+  }
+
+  private checkPendingBuildItem(): void {
+    try {
+      const raw = sessionStorage.getItem('el-tech.pending-pc-build-item');
+      if (raw) {
+        const item = JSON.parse(raw) as SwapItem;
+        if (item && item.category) {
+          const categoryKey = item.category as BomCategory;
+          this.bomSlots.update((slots) =>
+            slots.map((s) => (s.key === categoryKey ? { ...s, item } : s))
+          );
+          sessionStorage.removeItem('el-tech.pending-pc-build-item');
+        }
+      }
+    } catch (_error) {
+      void _error;
+    }
+  }
+
+  private checkSwapSlotQueryParam(): void {
+    const swapSlot = this.route.snapshot.queryParamMap.get('swapSlot');
+    if (swapSlot) {
+      const matched = this.bomSlots().find((s) => s.key === swapSlot);
+      if (matched) {
+        void this.openSwapModal(matched);
+      }
+    }
   }
 
   private async loadCatalogAndBundles(): Promise<void> {
@@ -633,7 +769,7 @@ export class CustomBuildPageComponent implements OnInit {
         buildName,
         buildType: 'CUSTOM',
         items,
-        hasAssemblyService: true,
+        hasAssemblyService: this.serviceAssembly(),
       });
     } finally {
       this.adding.set(false);
