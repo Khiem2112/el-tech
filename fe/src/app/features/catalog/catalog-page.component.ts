@@ -6,11 +6,11 @@ import { handleProductImageError } from '../../core/constants/product.constants'
 import { VndPipe } from '../../lib/vnd.pipe';
 import { CatalogBrand, CatalogCategory, CatalogProduct, CatalogService } from './catalog.service';
 import { CartService } from '../../services/cart.service';
-import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '../../components/atoms';
+import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectComponent, SelectOption } from '../../components/atoms';
 
 @Component({
   selector: 'app-catalog-page',
-  imports: [FormsModule, RouterLink, VndPipe, ProductImagePipe, AppIconModule, ButtonDirective, BadgeDirective, InputDirective],
+  imports: [FormsModule, RouterLink, VndPipe, ProductImagePipe, AppIconModule, ButtonDirective, BadgeDirective, InputDirective, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
 <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -91,37 +91,19 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '
           </div>
         </div>
 
-        <!-- Categories List -->
+        <!-- Categories Combobox -->
         <div>
           <label class="block text-xs font-bold text-foreground mb-1.5">Danh mục linh kiện</label>
-          <div class="space-y-1 text-xs max-h-52 overflow-y-auto custom-scrollbar pr-1">
-            <button
-              type="button"
-              (click)="setCategory('')"
-              class="w-full text-left px-2.5 py-1.5 rounded-md transition-colors flex items-center justify-between cursor-pointer"
-              [class.bg-primary]="!category()"
-              [class.text-primary-foreground]="!category()"
-              [class.font-bold]="!category()"
-              [class.text-muted]="category()"
-              [class.hover:bg-surface-alt]="category()"
-            >
-              <span>Tất cả danh mục</span>
-            </button>
-            @for (item of categories(); track item.id) {
-              <button
-                type="button"
-                (click)="setCategory(item.slug)"
-                class="w-full text-left px-2.5 py-1.5 rounded-md transition-colors flex items-center justify-between cursor-pointer"
-                [class.bg-primary]="category() === item.slug"
-                [class.text-primary-foreground]="category() === item.slug"
-                [class.font-bold]="category() === item.slug"
-                [class.text-muted]="category() !== item.slug"
-                [class.hover:bg-surface-alt]="category() !== item.slug"
-              >
-                <span class="truncate">{{ item.name }}</span>
-              </button>
-            }
-          </div>
+          <app-select
+            [options]="categoryOptions()"
+            [value]="category()"
+            (valueChange)="setCategory($event)"
+            [searchable]="true"
+            placeholder="Tất cả danh mục"
+            searchPlaceholder="Tìm danh mục linh kiện..."
+            size="sm"
+            ariaLabel="Chọn danh mục linh kiện"
+          />
         </div>
 
         <!-- Brand Chips -->
@@ -338,20 +320,15 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '
           <!-- Sort Dropdown -->
           <div class="flex items-center gap-1.5">
             <span class="text-muted">Sắp xếp:</span>
-            <div class="relative flex items-center">
-              <select
-                appInput
-                class="pr-7 py-1 text-xs font-semibold appearance-none bg-surface"
-                [ngModel]="sort()"
-                (ngModelChange)="setSort($event)"
-              >
-                <option value="">Mặc định</option>
-                <option value="price_asc">Giá: Thấp đến cao</option>
-                <option value="price_desc">Giá: Cao đến thấp</option>
-                <option value="name_asc">Tên: A đến Z</option>
-                <option value="name_desc">Tên: Z đến A</option>
-              </select>
-              <lucide-icon name="chevron-down" class="w-3.5 h-3.5 absolute right-2 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
+            <div class="w-44">
+              <app-select
+                [options]="sortOptions"
+                [value]="sort()"
+                (valueChange)="setSort($event)"
+                placeholder="Mặc định"
+                size="sm"
+                ariaLabel="Sắp xếp sản phẩm"
+              />
             </div>
           </div>
 
@@ -549,15 +526,14 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective } from '
       <!-- Mobile Category Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Danh mục linh kiện</label>
-        <select
-          [(ngModel)]="tempCategory"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả danh mục</option>
-          @for (item of categories(); track item.id) {
-            <option [value]="item.slug">{{ item.name }}</option>
-          }
-        </select>
+        <app-select
+          [options]="categoryOptions()"
+          [(value)]="tempCategory"
+          [searchable]="true"
+          placeholder="Tất cả danh mục"
+          size="sm"
+          ariaLabel="Chọn danh mục linh kiện"
+        />
       </div>
 
       <!-- Mobile Brand Select -->
@@ -659,6 +635,22 @@ export class CatalogPageComponent {
   protected tempBrand = '';
   protected tempBranch = '';
   protected tempPricePreset = '';
+
+  protected readonly sortOptions: readonly SelectOption[] = [
+    { value: '', label: 'Mặc định' },
+    { value: 'price_asc', label: 'Giá: Thấp đến cao' },
+    { value: 'price_desc', label: 'Giá: Cao đến thấp' },
+    { value: 'name_asc', label: 'Tên: A đến Z' },
+    { value: 'name_desc', label: 'Tên: Z đến A' },
+  ];
+
+  protected readonly categoryOptions = computed<readonly SelectOption[]>(() => [
+    { value: '', label: 'Tất cả danh mục' },
+    ...this.categories().map((c) => ({
+      value: c.slug,
+      label: c.name,
+    })),
+  ]);
 
   protected readonly categoryName = computed(() => {
     const slug = this.category();

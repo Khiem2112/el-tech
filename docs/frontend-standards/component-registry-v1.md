@@ -28,8 +28,7 @@
 | Dialog/Alert Dialog | Planned | Spartan/CDK overlay | Must satisfy `SURFACE-002` and focus restoration. |
 
 | Sheet/Drawer | Planned | Spartan/CDK overlay | Must satisfy `SURFACE-003` and mobile history rules. |
-| Popover/Tooltip | Planned | Spartan/CDK overlay | Popup must escape clipping containers. |
-| Single combobox | Planned | Verified Spartan combobox primitive | Must satisfy `SELECT-003`. |
+| Single combobox (`SelectComponent`) | Available | `fe/src/app/components/atoms/select/select.component.ts` | Uses `<app-select>`, CDK Connected Overlay, searchable dropdown, keyboard navigation, satisfies `SELECT-003`. |
 | Multi-select combobox/listbox | Planned | Verified Spartan multiple-select primitive | Must satisfy `SELECT-004`; never hand-roll ARIA without a documented gap. |
 | Filter bar | Feature-local until reused | Catalog implementation composed from available controls | Must satisfy `FILTER-001`; promote only after two proven consumers. |
 | Pagination | Planned | Spartan router-aware pagination or accessible local wrapper | Must satisfy `PAGE-001` or `PAGE-002`. |
