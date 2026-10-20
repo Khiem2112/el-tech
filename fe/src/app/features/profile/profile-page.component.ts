@@ -312,7 +312,7 @@ type StatusBadgeConfig = {
                           <button
                             type="button"
                             appButton
-                            variant="danger"
+                            variant="destructive"
                             size="sm"
                             (click)="openCancelModal({
                               code: selectedOrderDetail()!.code,

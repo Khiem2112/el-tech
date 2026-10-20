@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { cn } from '../../../lib/cn';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'icon';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'destructive' | 'icon';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 @Component({
@@ -32,6 +32,7 @@ export class ButtonDirective {
       outline: 'border border-line bg-surface hover:bg-surface-alt hover:border-foreground text-foreground',
       ghost: 'text-muted hover:text-foreground hover:bg-surface-alt',
       danger: 'bg-danger text-white hover:bg-danger/90',
+      destructive: 'bg-danger text-white hover:bg-danger/90',
       icon: 'text-muted hover:text-foreground hover:bg-surface-alt border border-transparent hover:border-line',
     };
 
