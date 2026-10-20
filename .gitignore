@@ -12,3 +12,4 @@ __pycache__/
 .agents/
 ui-templates/
 graphify-out/
+task/
