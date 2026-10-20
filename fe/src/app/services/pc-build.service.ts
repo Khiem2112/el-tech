@@ -28,6 +28,14 @@ export type BundleResponse = {
   };
 };
 
+export type ComponentFilterParams = {
+  readonly category?: string;
+  readonly q?: string;
+  readonly brand?: string;
+  readonly minPrice?: number;
+  readonly maxPrice?: number;
+};
+
 @Injectable({ providedIn: 'root' })
 export class PcBuildService {
   private readonly api = inject(ApiClientService);
@@ -38,8 +46,19 @@ export class PcBuildService {
     return res.data;
   }
 
-  async getComponents(category?: string): Promise<readonly SwapItem[]> {
-    const query = category ? `?category=${encodeURIComponent(category)}` : '';
+  async getComponents(categoryOrFilters?: string | ComponentFilterParams): Promise<readonly SwapItem[]> {
+    const params: ComponentFilterParams =
+      typeof categoryOrFilters === 'string' ? { category: categoryOrFilters } : categoryOrFilters || {};
+
+    const searchParams = new URLSearchParams();
+    if (params.category) searchParams.set('category', params.category);
+    if (params.q) searchParams.set('q', params.q);
+    if (params.brand) searchParams.set('brand', params.brand);
+    if (params.minPrice !== undefined) searchParams.set('minPrice', params.minPrice.toString());
+    if (params.maxPrice !== undefined) searchParams.set('maxPrice', params.maxPrice.toString());
+
+    const qs = searchParams.toString();
+    const query = qs ? `?${qs}` : '';
     const res = await this.api.get<readonly SwapItem[]>(`/pc-build/components${query}`);
     if (!res.success) throw new Error(res.error.messageKey);
     return res.data;

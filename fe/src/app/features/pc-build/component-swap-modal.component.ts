@@ -26,6 +26,8 @@ export type SwapSlotItem = {
   readonly item: SwapItem | null;
 };
 
+type PriceFilterOption = 'all' | 'under5m' | '5m-15m' | 'above15m';
+
 @Component({
   selector: 'app-component-swap-modal',
   imports: [FormsModule, AppIconModule, ButtonDirective, InputDirective, VndPipe],
@@ -50,10 +52,12 @@ export type SwapSlotItem = {
                 <div class="flex items-center gap-2 flex-wrap">
                   <h3 class="text-base sm:text-lg font-bold text-foreground">Đổi linh kiện: {{ categoryName }}</h3>
                   <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/15 text-primary border border-primary/20">
-                    TƯƠNG THÍCH 100%
+                    BẢO HÀNH CHÍNH HÃNG 36T
                   </span>
                 </div>
-                <p class="text-xs text-muted mt-0.5">Hệ thống tự động lọc linh kiện tương thích với Nguồn và Bo mạch chủ hiện tại.</p>
+                <p class="text-xs text-muted mt-0.5">
+                  Bộ kiểm tra tự động đối chiếu Socket {{ currentSocket }}, chuẩn RAM {{ currentRamType }} và công suất nguồn tối thiểu {{ minPsuWattage }}W.
+                </p>
               </div>
             </div>
             <button
@@ -66,86 +70,102 @@ export type SwapSlotItem = {
             </button>
           </div>
 
-          <!-- Realtime Compatibility Diagnostic Bar -->
+          <!-- Realtime Diagnostic Context Bar -->
           <div class="bg-surface-alt px-4 sm:px-5 py-2.5 border-b border-line flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-3 flex-wrap">
               <div class="flex items-center gap-1.5 text-primary font-semibold">
                 <lucide-icon name="shield-check" class="size-4" aria-hidden="true"></lucide-icon>
-                <span>PSU {{ currentPsuWattage }}W Gold: Đạt chuẩn công suất cấp điện</span>
+                <span>Nguồn hiện tại: {{ currentPsuWattage }}W (Yêu cầu tối thiểu {{ minPsuWattage }}W)</span>
               </div>
               <div class="w-px h-3.5 bg-border hidden sm:block"></div>
               <div class="flex items-center gap-1.5 text-foreground font-medium">
                 <lucide-icon name="cpu" class="size-4 text-muted" aria-hidden="true"></lucide-icon>
-                <span>Khoang Case: Chiều dài card tối đa &lt; 340mm</span>
+                <span>Hệ thống: Socket {{ currentSocket }} / RAM {{ currentRamType }}</span>
               </div>
             </div>
             <div class="flex items-center gap-1.5 text-muted text-[11px]">
               <span class="size-2 rounded-full bg-primary inline-block"></span>
-              <span>Cập nhật kho thời gian thực</span>
+              <span>Cập nhật kho hàng trực tiếp</span>
             </div>
           </div>
 
-          <!-- Search & Filter Bar -->
+          <!-- Filter & Search Controls -->
           <div class="p-4 border-b border-line bg-surface space-y-3 shrink-0">
-            <div class="flex items-center gap-2">
-              <div class="flex-1 relative">
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <div class="sm:col-span-6 relative">
                 <lucide-icon name="search" class="size-4 absolute left-3 top-3 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
                 <input
                   appInput
                   type="text"
                   class="w-full pl-9 text-xs"
-                  placeholder="Tìm theo tên linh kiện, mã model, hãng sản xuất..."
+                  placeholder="Tìm theo tên linh kiện, mã model, thương hiệu..."
                   [ngModel]="searchQuery()"
                   (ngModelChange)="searchQuery.set($event)"
                 >
               </div>
-              @if (brands().length > 0) {
+
+              <div class="sm:col-span-3">
                 <select
                   appInput
-                  class="text-xs h-9"
-                  [ngModel]="selectedBrand()"
-                  (ngModelChange)="selectedBrand.set($event)"
+                  class="w-full text-xs h-9"
+                  [ngModel]="selectedPriceRange()"
+                  (ngModelChange)="selectedPriceRange.set($event)"
                 >
-                  <option value="">Tất cả thương hiệu</option>
-                  @for (brand of brands(); track brand) {
-                    <option [value]="brand">{{ brand }}</option>
-                  }
+                  <option value="all">Mức giá: Tất cả</option>
+                  <option value="under5m">Dưới 5.000.000 đ</option>
+                  <option value="5m-15m">5.000.000 đ - 15.000.000 đ</option>
+                  <option value="above15m">Trên 15.000.000 đ</option>
                 </select>
-              }
+              </div>
+
+              <div class="sm:col-span-3">
+                <select
+                  appInput
+                  class="w-full text-xs h-9"
+                  [ngModel]="selectedBranch()"
+                  (ngModelChange)="selectedBranch.set($event)"
+                >
+                  <option value="all">Kho: Toàn quốc (HN & HCM)</option>
+                  <option value="hn">Kho Hà Nội</option>
+                  <option value="hcm">Kho TP. Hồ Chí Minh</option>
+                </select>
+              </div>
             </div>
 
-            <!-- Quick Brand / Chip Filter Chips -->
-            <div class="flex items-center gap-1.5 flex-wrap text-xs">
-              <span class="text-muted font-medium text-[11px] mr-1">Lọc nhanh:</span>
-              <button
-                type="button"
-                (click)="selectedBrand.set('')"
-                class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold transition-colors cursor-pointer"
-                [class.bg-primary]="!selectedBrand()"
-                [class.text-primary-foreground]="!selectedBrand()"
-                [class.border-primary]="!selectedBrand()"
-                [class.bg-surface-alt]="selectedBrand()"
-                [class.border-line]="selectedBrand()"
-                [class.text-foreground]="selectedBrand()"
-              >
-                Tất cả
-              </button>
-              @for (brand of brands(); track brand) {
+            <!-- Quick Brand Filter Chips -->
+            @if (brands().length > 0) {
+              <div class="flex items-center gap-1.5 flex-wrap text-xs">
+                <span class="text-muted font-medium text-[11px] mr-1">Thương hiệu:</span>
                 <button
                   type="button"
-                  (click)="selectedBrand.set(brand)"
+                  (click)="selectedBrand.set('')"
                   class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold transition-colors cursor-pointer"
-                  [class.bg-primary]="selectedBrand() === brand"
-                  [class.text-primary-foreground]="selectedBrand() === brand"
-                  [class.border-primary]="selectedBrand() === brand"
-                  [class.bg-surface-alt]="selectedBrand() !== brand"
-                  [class.border-line]="selectedBrand() !== brand"
-                  [class.text-foreground]="selectedBrand() !== brand"
+                  [class.bg-primary]="!selectedBrand()"
+                  [class.text-primary-foreground]="!selectedBrand()"
+                  [class.border-primary]="!selectedBrand()"
+                  [class.bg-surface-alt]="selectedBrand()"
+                  [class.border-line]="selectedBrand()"
+                  [class.text-foreground]="selectedBrand()"
                 >
-                  {{ brand }}
+                  Tất cả
                 </button>
-              }
-            </div>
+                @for (brand of brands(); track brand) {
+                  <button
+                    type="button"
+                    (click)="selectedBrand.set(brand)"
+                    class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold transition-colors cursor-pointer"
+                    [class.bg-primary]="selectedBrand() === brand"
+                    [class.text-primary-foreground]="selectedBrand() === brand"
+                    [class.border-primary]="selectedBrand() === brand"
+                    [class.bg-surface-alt]="selectedBrand() !== brand"
+                    [class.border-line]="selectedBrand() !== brand"
+                    [class.text-foreground]="selectedBrand() !== brand"
+                  >
+                    {{ brand }}
+                  </button>
+                }
+              </div>
+            }
           </div>
 
           <!-- Modal Body Content -->
@@ -159,7 +179,7 @@ export type SwapSlotItem = {
                     Linh kiện đang có trong cấu hình:
                   </span>
                   <span class="text-[10px] px-2 py-0.5 rounded bg-surface border border-line font-bold text-primary">
-                    Đang áp dụng
+                    Đang chọn
                   </span>
                 </div>
                 <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
@@ -169,7 +189,7 @@ export type SwapSlotItem = {
                   </div>
                   <div class="text-right shrink-0">
                     <div class="text-xs font-bold text-foreground tabular">{{ current.price | vnd }}</div>
-                    <span class="text-[10px] text-muted">Giá hiện tại</span>
+                    <span class="text-[10px] text-muted">Giá đang tính</span>
                   </div>
                 </div>
               </div>
@@ -180,15 +200,20 @@ export type SwapSlotItem = {
               <div class="flex items-center justify-between">
                 <h4 class="text-xs font-bold text-foreground flex items-center gap-1.5">
                   <lucide-icon name="sliders-horizontal" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                  <span>Danh sách linh kiện thay thế khả dụng ({{ filteredItems().length }} sản phẩm)</span>
+                  <span>Danh sách linh kiện khả dụng ({{ filteredItems().length }} sản phẩm)</span>
                 </h4>
-                <span class="text-[11px] text-muted">Tự động tính chênh lệch</span>
+                <span class="text-[11px] text-muted">Hiển thị chênh lệch giá tự động</span>
               </div>
 
-              @if (filteredItems().length === 0) {
+              @if (isLoading) {
+                <div class="rounded-xl border border-line p-8 text-center bg-surface space-y-2">
+                  <div class="size-6 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <p class="text-xs font-bold text-foreground">Đang tải danh mục linh kiện tương thích...</p>
+                </div>
+              } @else if (filteredItems().length === 0) {
                 <div class="rounded-xl border border-dashed border-line p-8 text-center bg-surface">
-                  <p class="text-xs font-bold text-foreground">Không tìm thấy linh kiện phù hợp với bộ lọc</p>
-                  <p class="text-[11px] text-muted mt-1">Vui lòng thử xóa từ khóa tìm kiếm hoặc chọn thương hiệu khác.</p>
+                  <p class="text-xs font-bold text-foreground">Không tìm thấy linh kiện phù hợp với bộ lọc hiện tại</p>
+                  <p class="text-[11px] text-muted mt-1">Vui lòng xóa từ khóa tìm kiếm hoặc mở rộng khoảng giá và thương hiệu.</p>
                 </div>
               } @else {
                 <div class="space-y-2">
@@ -204,9 +229,23 @@ export type SwapSlotItem = {
                               {{ item.tag }}
                             </span>
                           }
-                          <span class="text-[11px] text-primary font-medium flex items-center gap-1">
-                            <lucide-icon name="store" class="size-3" aria-hidden="true"></lucide-icon>
-                            <span>{{ item.stockStatus || 'Sẵn hàng HN & HCM' }}</span>
+                          @if (checkCompatibility(item); as comp) {
+                            <span
+                              class="px-1.5 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1"
+                              [class.bg-primary-subtle]="comp.isCompatible"
+                              [class.text-primary]="comp.isCompatible"
+                              [class.border-primary-subtle]="comp.isCompatible"
+                              [class.bg-warning-subtle]="!comp.isCompatible"
+                              [class.text-warning]="!comp.isCompatible"
+                              [class.border-warning-subtle]="!comp.isCompatible"
+                            >
+                              <lucide-icon [name]="comp.isCompatible ? 'shield-check' : 'alert-triangle'" class="size-3" aria-hidden="true"></lucide-icon>
+                              <span>{{ comp.label }}</span>
+                            </span>
+                          }
+                          <span class="text-[11px] text-muted font-medium flex items-center gap-1">
+                            <lucide-icon name="store" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
+                            <span>{{ item.stockStatus || 'Sẵn hàng tại HN & HCM' }}</span>
                           </span>
                         </div>
                         <h5 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h5>
@@ -249,7 +288,7 @@ export type SwapSlotItem = {
           <div class="p-3.5 bg-surface-alt border-t border-line flex items-center justify-between text-xs text-muted">
             <div class="flex items-center gap-1.5">
               <lucide-icon name="shield-check" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
-              <span>Cam kết bảo hành chính hãng 36 tháng cho mọi linh kiện thay thế</span>
+              <span>Cam kết đổi trả trong 30 ngày và bảo hành chính hãng toàn diện</span>
             </div>
             <button
               type="button"
@@ -272,13 +311,19 @@ export class ComponentSwapModalComponent {
   @Input() categoryName = '';
   @Input() currentSlot: SwapSlotItem | null = null;
   @Input() availableItems: readonly SwapItem[] = [];
+  @Input() currentSocket = 'LGA1700';
+  @Input() currentRamType = 'DDR5';
+  @Input() minPsuWattage = 650;
   @Input() currentPsuWattage = 850;
+  @Input() isLoading = false;
 
   @Output() closeModal = new EventEmitter<void>();
   @Output() selectItem = new EventEmitter<SwapItem>();
 
   protected readonly searchQuery = signal('');
   protected readonly selectedBrand = signal('');
+  protected readonly selectedPriceRange = signal<PriceFilterOption>('all');
+  protected readonly selectedBranch = signal<'all' | 'hn' | 'hcm'>('all');
 
   protected readonly brands = computed<readonly string[]>(() => {
     const set = new Set<string>();
@@ -291,8 +336,19 @@ export class ComponentSwapModalComponent {
   protected readonly filteredItems = computed<readonly SwapItem[]>(() => {
     const query = this.searchQuery().trim().toLowerCase();
     const brand = this.selectedBrand();
+    const priceRange = this.selectedPriceRange();
+    const branch = this.selectedBranch();
+
     return this.availableItems.filter((item) => {
       if (brand && item.brand !== brand) return false;
+
+      if (priceRange === 'under5m' && item.price >= 5000000) return false;
+      if (priceRange === '5m-15m' && (item.price < 5000000 || item.price > 15000000)) return false;
+      if (priceRange === 'above15m' && item.price <= 15000000) return false;
+
+      if (branch === 'hn' && item.stockStatus && !item.stockStatus.toLowerCase().includes('hn')) return false;
+      if (branch === 'hcm' && item.stockStatus && !item.stockStatus.toLowerCase().includes('hcm')) return false;
+
       if (query && !item.name.toLowerCase().includes(query) && !item.specs.toLowerCase().includes(query)) {
         return false;
       }
@@ -325,5 +381,33 @@ export class ComponentSwapModalComponent {
   protected getPriceDifference(targetPrice: number): number {
     const base = this.currentSlot?.item?.price ?? 0;
     return targetPrice - base;
+  }
+
+  protected checkCompatibility(item: SwapItem): { isCompatible: boolean; label: string } {
+    if (this.categoryKey === 'cpu' && item.socket && this.currentSocket) {
+      if (item.socket.toLowerCase() !== this.currentSocket.toLowerCase()) {
+        return { isCompatible: false, label: `Khác Socket (${item.socket})` };
+      }
+    }
+
+    if (this.categoryKey === 'mainboard' && item.socket && this.currentSocket) {
+      if (item.socket.toLowerCase() !== this.currentSocket.toLowerCase()) {
+        return { isCompatible: false, label: `Khác Socket (${item.socket})` };
+      }
+    }
+
+    if (this.categoryKey === 'ram' && item.memoryType && this.currentRamType) {
+      if (item.memoryType.toLowerCase() !== this.currentRamType.toLowerCase()) {
+        return { isCompatible: false, label: `Khác chuẩn RAM (${item.memoryType})` };
+      }
+    }
+
+    if (this.categoryKey === 'psu' && typeof item.tdp === 'number' && this.minPsuWattage > 0) {
+      if (item.tdp < this.minPsuWattage) {
+        return { isCompatible: false, label: `Khuyến nghị tối thiểu ${this.minPsuWattage}W` };
+      }
+    }
+
+    return { isCompatible: true, label: 'Tương thích' };
   }
 }

@@ -372,7 +372,11 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
         [categoryName]="currentModalCategoryName()"
         [currentSlot]="currentModalSlot()"
         [availableItems]="currentModalAvailableItems()"
+        [currentSocket]="currentSocket()"
+        [currentRamType]="currentRamType()"
+        [minPsuWattage]="minPsuRecommended()"
         [currentPsuWattage]="currentPsuWattage()"
+        [isLoading]="isModalLoading()"
         (closeModal)="swapModalOpen.set(false)"
         (selectItem)="onComponentSelected($event)"
       ></app-component-swap-modal>
@@ -402,6 +406,7 @@ export class CustomBuildPageComponent implements OnInit {
   protected readonly currentModalCategoryName = signal<string>('Card đồ họa / VGA');
   protected readonly currentModalSlot = signal<SwapSlotItem | null>(null);
   protected readonly currentModalAvailableItems = signal<readonly SwapItem[]>([]);
+  protected readonly isModalLoading = signal(false);
 
   protected readonly bomSlots = signal<readonly BomSlot[]>(
     DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null }))
@@ -550,7 +555,7 @@ export class CustomBuildPageComponent implements OnInit {
     );
   }
 
-  protected openSwapModal(slot: BomSlot): void {
+  protected async openSwapModal(slot: BomSlot): Promise<void> {
     this.currentModalCategoryKey.set(slot.key);
     this.currentModalCategoryName.set(slot.categoryName);
     this.currentModalSlot.set({
@@ -558,11 +563,25 @@ export class CustomBuildPageComponent implements OnInit {
       slotName: slot.categoryName,
       item: slot.item,
     });
-
-    const catalog = this.liveCatalog();
-    const items = catalog[slot.key] || [];
-    this.currentModalAvailableItems.set(items);
     this.swapModalOpen.set(true);
+
+    const cached = this.liveCatalog()[slot.key];
+    if (cached && cached.length > 0) {
+      this.currentModalAvailableItems.set(cached);
+    } else {
+      this.currentModalAvailableItems.set([]);
+    }
+
+    this.isModalLoading.set(true);
+    try {
+      const items = await this.pcBuildService.getComponents(slot.key);
+      this.currentModalAvailableItems.set(items);
+      this.liveCatalog.update((map) => ({ ...map, [slot.key]: items }));
+    } catch (error) {
+      console.error('Failed to load components for slot', slot.key, error);
+    } finally {
+      this.isModalLoading.set(false);
+    }
   }
 
   protected onComponentSelected(item: SwapItem): void {

@@ -85,6 +85,14 @@ const serializeLines = (
   return { lines: mapped, total };
 };
 
+export type GetComponentsInput = {
+  readonly category?: string;
+  readonly query?: string;
+  readonly brand?: string;
+  readonly minPrice?: number;
+  readonly maxPrice?: number;
+};
+
 export const pcBuildService = {
   async listBundles(): Promise<readonly { id: number; name: string; slug: string; description: string | null; build: BuildPreview }[]> {
     const bundles = await prisma.pcBundle.findMany({
@@ -116,20 +124,43 @@ export const pcBuildService = {
     }));
   },
 
-  async getComponents(categorySlug?: string): Promise<readonly ComponentItemDto[]> {
+  async getComponents(input?: string | GetComponentsInput): Promise<readonly ComponentItemDto[]> {
+    const params: GetComponentsInput = typeof input === 'string' ? { category: input } : (input || {});
+    const categorySlug = params.category;
+    const query = params.query?.trim();
+    const brand = params.brand?.trim();
+    const minPrice = typeof params.minPrice === 'number' && !Number.isNaN(params.minPrice) ? params.minPrice : undefined;
+    const maxPrice = typeof params.maxPrice === 'number' && !Number.isNaN(params.maxPrice) ? params.maxPrice : undefined;
+
     const slugMap: Record<string, string> = {
       cooling: 'tan-nhiet',
     };
     const resolvedSlug = categorySlug ? slugMap[categorySlug] || categorySlug : undefined;
 
+    const pcBuilderCategorySlugs = ['cpu', 'mainboard', 'ram', 'ssd', 'vga', 'psu', 'tan-nhiet', 'case'];
+
     const variants = await prisma.productVariant.findMany({
       where: {
         isActive: true,
         lifecycleState: 'ACTIVE',
+        ...(minPrice !== undefined ? { sellingPrice: { gte: minPrice } } : {}),
+        ...(maxPrice !== undefined ? { sellingPrice: { lte: maxPrice } } : {}),
         productTemplate: {
           isActive: true,
           lifecycleState: 'ACTIVE',
-          ...(resolvedSlug ? { category: { slug: resolvedSlug } } : {}),
+          ...(resolvedSlug
+            ? { category: { slug: resolvedSlug } }
+            : { category: { slug: { in: pcBuilderCategorySlugs } } }),
+          ...(brand ? { brand: { slug: brand } } : {}),
+          ...(query
+            ? {
+                OR: [
+                  { name: { contains: query, mode: 'insensitive' } },
+                  { model: { contains: query, mode: 'insensitive' } },
+                  { brand: { name: { contains: query, mode: 'insensitive' } } },
+                ],
+              }
+            : {}),
         },
       },
       include: {
@@ -141,7 +172,7 @@ export const pcBuildService = {
         },
       },
       orderBy: { id: 'asc' },
-      take: 60,
+      take: resolvedSlug ? 100 : 500,
     });
 
     return variants.map((variant): ComponentItemDto => {
