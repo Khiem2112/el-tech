@@ -27,7 +27,28 @@ catalogRouter.get('/products', async (request, response, next): Promise<void> =>
     const maxPriceRaw = typeof request.query.maxPrice === 'string' ? Number(request.query.maxPrice) : undefined;
     const maxPrice = maxPriceRaw !== undefined && !Number.isNaN(maxPriceRaw) ? maxPriceRaw : undefined;
     const sort = typeof request.query.sort === 'string' ? request.query.sort : undefined;
-    response.json(success(await catalogService.findProducts({ query, category, brand, minPrice, maxPrice, sort }), response.locals.correlationId as string));
+
+    const specs: Record<string, string> = {};
+    for (const [key, val] of Object.entries(request.query)) {
+      if (typeof val === 'string' && val.trim()) {
+        const match = key.match(/^specs\[(.+)\]$/);
+        if (match) {
+          specs[match[1]] = val.trim();
+        } else if (key.startsWith('spec_')) {
+          specs[key.substring(5)] = val.trim();
+        }
+      }
+    }
+    if (typeof request.query.specs === 'object' && request.query.specs !== null) {
+      for (const [key, val] of Object.entries(request.query.specs as Record<string, unknown>)) {
+        if (typeof val === 'string' && val.trim()) {
+          specs[key] = val.trim();
+        }
+      }
+    }
+
+    const inputSpecs = Object.keys(specs).length > 0 ? specs : undefined;
+    response.json(success(await catalogService.findProducts({ query, category, brand, minPrice, maxPrice, sort, specs: inputSpecs }), response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 

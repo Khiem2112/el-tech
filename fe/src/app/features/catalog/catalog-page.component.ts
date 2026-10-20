@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductImagePipe } from '../../lib/product-image.pipe';
 import { handleProductImageError } from '../../core/constants/product.constants';
 import { VndPipe } from '../../lib/vnd.pipe';
-import { CatalogBrand, CatalogCategory, CatalogProduct, CatalogService } from './catalog.service';
+import { CatalogBrand, CatalogCategory, CatalogProduct, CatalogService, SpecificationDefinition } from './catalog.service';
 import { CartService } from '../../services/cart.service';
 import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectComponent, SelectOption } from '../../components/atoms';
 
@@ -142,6 +142,31 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
             }
           </div>
         </div>
+
+        <!-- Dynamic Category Specification Filters -->
+        @if (filterableSpecs().length > 0) {
+          <div class="space-y-3 pt-2 border-t border-line">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+            @for (spec of filterableSpecs(); track spec.stable_key) {
+              <div>
+                <label class="block text-xs font-semibold text-foreground mb-1">
+                  {{ spec.label }}
+                  @if (spec.unit) {
+                    <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                  }
+                </label>
+                <app-select
+                  [options]="getSpecOptions(spec)"
+                  [value]="selectedSpecs()[spec.stable_key] || ''"
+                  (valueChange)="setSpecFilter(spec.stable_key, $event)"
+                  placeholder="Tất cả"
+                  size="sm"
+                  [ariaLabel]="spec.label"
+                />
+              </div>
+            }
+          </div>
+        }
 
         <!-- Branch Availability -->
         <div class="pt-2 border-t border-line">
@@ -306,6 +331,14 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
               <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
                 Từ khóa: "{{ query.trim() }}"
                 <button type="button" class="text-muted hover:text-danger cursor-pointer p-0.5" (click)="removeQuery()" aria-label="Xóa từ khóa">
+                  <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+                </button>
+              </span>
+            }
+            @for (item of activeSpecChips(); track item.key) {
+              <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
+                {{ item.label }}: {{ item.value }}
+                <button type="button" class="text-muted hover:text-danger cursor-pointer p-0.5" (click)="removeSpecFilter(item.key)" [attr.aria-label]="'Xóa ' + item.label">
                   <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
                 </button>
               </span>
@@ -550,6 +583,31 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </select>
       </div>
 
+      <!-- Mobile Category Specification Filters -->
+      @if (filterableSpecs().length > 0) {
+        <div class="space-y-3 pt-2 border-t border-line">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+          @for (spec of filterableSpecs(); track spec.stable_key) {
+            <div>
+              <label class="block text-xs font-bold text-foreground mb-1">
+                {{ spec.label }}
+                @if (spec.unit) {
+                  <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                }
+              </label>
+              <app-select
+                [options]="getSpecOptions(spec)"
+                [value]="selectedSpecs()[spec.stable_key] || ''"
+                (valueChange)="setSpecFilter(spec.stable_key, $event)"
+                placeholder="Tất cả"
+                size="sm"
+                [ariaLabel]="spec.label"
+              />
+            </div>
+          }
+        </div>
+      }
+
       <!-- Mobile Branch Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Chi nhánh sẵn hàng</label>
@@ -685,8 +743,77 @@ export class CatalogPageComponent {
   });
 
   protected readonly hasActiveFilters = computed(() => {
-    return Boolean(this.category() || this.brand() || this.branch() || this.pricePreset() || this.sort() || this.query.trim());
+    return Boolean(
+      this.category() ||
+      this.brand() ||
+      this.branch() ||
+      this.pricePreset() ||
+      this.sort() ||
+      this.query.trim() ||
+      Object.keys(this.selectedSpecs()).length > 0
+    );
   });
+
+  protected readonly selectedSpecs = signal<Record<string, string>>({});
+
+  protected readonly activeCategory = computed(() => {
+    const slug = this.category();
+    return this.categories().find((candidate) => candidate.slug === slug) ?? null;
+  });
+
+  protected readonly filterableSpecs = computed<readonly SpecificationDefinition[]>(() => {
+    const cat = this.activeCategory();
+    if (!cat || !cat.specificationSchema || !Array.isArray(cat.specificationSchema)) {
+      return [];
+    }
+    return (cat.specificationSchema as SpecificationDefinition[]).filter((spec) => spec.is_filterable);
+  });
+
+  protected readonly activeSpecChips = computed(() => {
+    const specs = this.selectedSpecs();
+    const cat = this.activeCategory();
+    const schema = (cat?.specificationSchema as SpecificationDefinition[]) || [];
+    return Object.entries(specs)
+      .filter(([_, val]) => Boolean(val))
+      .map(([key, val]) => {
+        const def = schema.find((s) => s.stable_key === key);
+        return {
+          key,
+          label: def?.label || key,
+          value: def?.unit ? `${val} ${def.unit}` : val,
+        };
+      });
+  });
+
+  protected getSpecOptions(spec: SpecificationDefinition): readonly SelectOption[] {
+    const options: SelectOption[] = [{ value: '', label: 'Tất cả' }];
+    if (spec.data_type === 'BOOLEAN') {
+      options.push({ value: 'true', label: 'Có' });
+      options.push({ value: 'false', label: 'Không' });
+    } else if (spec.allowed_values && spec.allowed_values.length > 0) {
+      for (const val of spec.allowed_values) {
+        options.push({ value: val, label: spec.unit ? `${val} ${spec.unit}` : val });
+      }
+    }
+    return options;
+  }
+
+  protected setSpecFilter(key: string, value: string): void {
+    this.selectedSpecs.update((current) => {
+      const next = { ...current };
+      if (value) {
+        next[key] = value;
+      } else {
+        delete next[key];
+      }
+      return next;
+    });
+    this.search();
+  }
+
+  protected removeSpecFilter(key: string): void {
+    this.setSpecFilter(key, '');
+  }
 
   constructor() {
     this.route.queryParamMap.subscribe((params) => {
@@ -700,6 +827,19 @@ export class CatalogPageComponent {
       this.maxPrice.set(max);
       this.pricePreset.set(this.calculatePresetFromRange(min, max));
       this.sort.set(params.get('sort') ?? '');
+
+      const specs: Record<string, string> = {};
+      for (const key of params.keys) {
+        const match = key.match(/^specs\[(.+)\]$/);
+        if (match) {
+          const val = params.get(key);
+          if (val) specs[match[1]] = val;
+        } else if (key.startsWith('spec_')) {
+          const val = params.get(key);
+          if (val) specs[key.substring(5)] = val;
+        }
+      }
+      this.selectedSpecs.set(specs);
       void this.load();
     });
     void this.loadMetadata();
@@ -735,6 +875,7 @@ export class CatalogPageComponent {
           minPrice: this.minPrice(),
           maxPrice: this.maxPrice(),
           sort: this.sort(),
+          specs: this.selectedSpecs(),
         }),
       );
     } catch {
@@ -745,6 +886,12 @@ export class CatalogPageComponent {
   }
 
   protected search(): void {
+    const specParams: Record<string, string | null> = {};
+    for (const [key, val] of Object.entries(this.selectedSpecs())) {
+      if (val) {
+        specParams[`specs[${key}]`] = val;
+      }
+    }
     void this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {
@@ -755,12 +902,16 @@ export class CatalogPageComponent {
         minPrice: this.minPrice() !== null ? this.minPrice() : null,
         maxPrice: this.maxPrice() !== null ? this.maxPrice() : null,
         sort: this.sort() || null,
+        ...specParams,
       },
       queryParamsHandling: '',
     });
   }
 
   protected setCategory(category: string): void {
+    if (this.category() !== category) {
+      this.selectedSpecs.set({});
+    }
     this.category.set(category);
     this.search();
   }
@@ -841,6 +992,7 @@ export class CatalogPageComponent {
     this.minPrice.set(null);
     this.maxPrice.set(null);
     this.sort.set('');
+    this.selectedSpecs.set({});
     this.search();
   }
 
