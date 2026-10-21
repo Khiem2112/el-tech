@@ -1120,9 +1120,14 @@ export class ProfilePageComponent implements OnInit {
     this.isLoadingOrders.set(true);
     this.ordersError.set(null);
     try {
-      const identifier = currentUser.email || currentUser.id;
+      const identifier = currentUser.email?.trim() || currentUser.id?.trim();
+      if (!identifier) {
+        this.customerOrders.set([]);
+        return;
+      }
+      const paramName = identifier.includes('@') ? 'email' : 'customerId';
       const res = await this.api.get<readonly CustomerOrderDto[]>(
-        `/orders/customer?email=${encodeURIComponent(identifier)}`
+        `/orders/customer?${paramName}=${encodeURIComponent(identifier)}`
       );
       if (res.success && res.data.length > 0) {
         this.customerOrders.set(res.data);
@@ -1162,9 +1167,14 @@ export class ProfilePageComponent implements OnInit {
     this.isLoadingDetail.set(true);
     this.detailError.set(null);
     try {
-      const identifier = currentUser.email || currentUser.id;
+      const identifier = currentUser.email?.trim() || currentUser.id?.trim();
+      if (!identifier) {
+        this.detailError.set('Không tìm thấy thông tin tài khoản.');
+        return;
+      }
+      const paramName = identifier.includes('@') ? 'email' : 'customerId';
       const res = await this.api.get<OrderDetailDto>(
-        `/orders/${encodeURIComponent(orderCode)}/detail?email=${encodeURIComponent(identifier)}`
+        `/orders/${encodeURIComponent(orderCode)}/detail?${paramName}=${encodeURIComponent(identifier)}`
       );
       if (res.success) {
         this.selectedOrderDetail.set(res.data);
@@ -1245,7 +1255,8 @@ export class ProfilePageComponent implements OnInit {
     const currentUser = this.user();
     if (!target || !currentUser) return;
     try {
-      const identifier = currentUser.email || currentUser.id;
+      const identifier = currentUser.email?.trim() || currentUser.id?.trim();
+      if (!identifier) return;
       const res = await this.api.post<{ code: string; status: string }>(
         `/orders/${encodeURIComponent(target.code)}/cancel`,
         {

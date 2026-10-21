@@ -1,5 +1,6 @@
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
+import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
 import { orderService } from './order.service.js';
 
 type SerializedOrder = {
@@ -197,7 +198,11 @@ export const orderLookupService = {
   },
 
   async getOrderDetailForCustomer(orderCode: string, identifier: string): Promise<SerializedOrder> {
-    const trimmed = identifier.trim();
+    const trimmed = sanitizeIdentifier(identifier);
+    if (!trimmed) {
+      throw new DomainError('UNAUTHORIZED', { messageKey: 'error.unauthorized', status: 401 });
+    }
+
     const order = await prisma.order.findFirst({
       where: { code: orderCode, isActive: true },
     });
@@ -205,15 +210,20 @@ export const orderLookupService = {
       throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
     }
 
+    const isUuidIdentifier = isUuid(trimmed);
     const customer = await prisma.customer.findFirst({
       where: {
         isActive: true,
-        OR: [{ id: trimmed }, { email: trimmed.toLowerCase() }, { phone: trimmed }],
+        OR: [
+          ...(isUuidIdentifier ? [{ id: trimmed }] : []),
+          { email: trimmed.toLowerCase() },
+          { phone: trimmed },
+        ],
       },
     });
 
     const isOwner =
-      order.customerId === trimmed ||
+      (isUuidIdentifier && order.customerId === trimmed) ||
       order.receiverEmail.toLowerCase() === trimmed.toLowerCase() ||
       order.receiverPhone === trimmed ||
       Boolean(customer && order.customerId === customer.id) ||

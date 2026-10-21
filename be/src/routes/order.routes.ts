@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { success } from '../contracts/api.js';
 import { DomainError } from '../contracts/domain-error.js';
 import { requireIdempotencyKey, parseBody } from '../lib/request.js';
+import { sanitizeIdentifier } from '../lib/uuid.js';
 import { orderService } from '../services/order.service.js';
 import { orderLookupService } from '../services/order-lookup.service.js';
 
@@ -55,8 +56,8 @@ orderRouter.get('/orders/kanban', async (request, response, next): Promise<void>
 
 orderRouter.get('/orders/customer', async (request, response, next): Promise<void> => {
   try {
-    const customerId = typeof request.query.customerId === 'string' ? request.query.customerId.trim() : undefined;
-    const email = typeof request.query.email === 'string' ? request.query.email.trim() : undefined;
+    const customerId = typeof request.query.customerId === 'string' ? sanitizeIdentifier(request.query.customerId) : undefined;
+    const email = typeof request.query.email === 'string' ? sanitizeIdentifier(request.query.email) : undefined;
     const identifier = customerId || email;
     if (!identifier) {
       response.json(success([], response.locals.correlationId as string));
@@ -69,11 +70,12 @@ orderRouter.get('/orders/customer', async (request, response, next): Promise<voi
 
 orderRouter.get('/orders/:orderCode/detail', async (request, response, next): Promise<void> => {
   try {
-    const identifier = (typeof request.query.identifier === 'string' && request.query.identifier.trim())
-      || (typeof request.query.customerId === 'string' && request.query.customerId.trim())
-      || (typeof request.query.email === 'string' && request.query.email.trim())
-      || (typeof request.headers['x-user-identifier'] === 'string' && request.headers['x-user-identifier'].trim())
+    const rawIdentifier = (typeof request.query.identifier === 'string' && request.query.identifier)
+      || (typeof request.query.customerId === 'string' && request.query.customerId)
+      || (typeof request.query.email === 'string' && request.query.email)
+      || (typeof request.headers['x-user-identifier'] === 'string' && request.headers['x-user-identifier'])
       || undefined;
+    const identifier = sanitizeIdentifier(rawIdentifier);
 
     if (!identifier) {
       throw new DomainError('UNAUTHORIZED', { messageKey: 'error.unauthorized', status: 401 });

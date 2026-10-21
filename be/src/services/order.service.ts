@@ -1,6 +1,7 @@
 import { ActorType, Prisma } from '@prisma/client';
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
+import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
 
 type SubmitOrderInput = {
   readonly cartToken: string;
@@ -202,14 +203,32 @@ export const orderService = {
 
   async cancel(input: CancelOrderInput): Promise<{ code: string; status: string; paymentState: string }> {
     return prisma.$transaction(async (tx) => {
+      const trimmed = sanitizeIdentifier(input.identifier);
+      if (!trimmed) {
+        throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+      }
+
+      const isUuidIdentifier = isUuid(trimmed);
+      const customer = await tx.customer.findFirst({
+        where: {
+          isActive: true,
+          OR: [
+            ...(isUuidIdentifier ? [{ id: trimmed }] : []),
+            { email: trimmed.toLowerCase() },
+            { phone: trimmed },
+          ],
+        },
+      });
+
       const order = await tx.order.findFirst({
         where: {
           code: input.orderCode,
           isActive: true,
           OR: [
-            { customerId: input.identifier.trim() },
-            { receiverEmail: input.identifier.trim().toLowerCase() },
-            { receiverPhone: input.identifier.trim() },
+            ...(isUuidIdentifier ? [{ customerId: trimmed }] : []),
+            ...(customer ? [{ customerId: customer.id }] : []),
+            { receiverEmail: trimmed.toLowerCase() },
+            { receiverPhone: trimmed },
           ],
         },
         include: {
@@ -493,15 +512,20 @@ export const orderService = {
   },
 
   async getCustomerOrders(identifier?: string): Promise<readonly unknown[]> {
-    if (!identifier || !identifier.trim()) {
+    const trimmed = sanitizeIdentifier(identifier);
+    if (!trimmed) {
       return [];
     }
 
-    const trimmed = identifier.trim();
+    const isUuidIdentifier = isUuid(trimmed);
     const customer = await prisma.customer.findFirst({
       where: {
         isActive: true,
-        OR: [{ id: trimmed }, { email: trimmed.toLowerCase() }, { phone: trimmed }],
+        OR: [
+          ...(isUuidIdentifier ? [{ id: trimmed }] : []),
+          { email: trimmed.toLowerCase() },
+          { phone: trimmed },
+        ],
       },
     });
 
@@ -510,7 +534,7 @@ export const orderService = {
         isActive: true,
         OR: [
           ...(customer ? [{ customerId: customer.id }] : []),
-          { customerId: trimmed },
+          ...(isUuidIdentifier ? [{ customerId: trimmed }] : []),
           { receiverEmail: trimmed.toLowerCase() },
           { receiverPhone: trimmed },
         ],
