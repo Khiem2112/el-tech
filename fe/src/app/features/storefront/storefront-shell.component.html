@@ -54,16 +54,24 @@
     </div>
 
     <!-- Quick Search Bar -->
-    <div class="hidden xl:flex items-center bg-surface-dark/90 border border-line-dark/80 rounded-lg p-0.5 max-w-xl flex-1 mx-2">
+    <div class="hidden xl:flex items-center bg-surface-dark/90 border border-line-dark/80 rounded-lg p-0.5 max-w-xl flex-1 mx-2 relative">
       <div class="relative flex items-center flex-1">
         <input
           type="text"
           [(ngModel)]="searchQuery"
+          (input)="onSearchInput()"
+          (focus)="onSearchFocus()"
           (keyup.enter)="onSearch()"
           placeholder="Tìm kiếm CPU, RTX 5080, RAM DDR5, linh kiện PC..."
           class="w-full h-9 px-3 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
           aria-label="Tìm kiếm sản phẩm"
+          autocomplete="off"
         >
+        @if (isSearching()) {
+          <div class="mr-2 text-primary animate-spin">
+            <lucide-icon name="refresh-cw" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+          </div>
+        }
         <button
           type="button"
           (click)="onSearch()"
@@ -73,6 +81,76 @@
           <lucide-icon name="search" class="w-4 h-4" aria-hidden="true"></lucide-icon>
         </button>
       </div>
+
+      <!-- Live Search Results Dropdown -->
+      @if (searchDropdownOpen()) {
+        <div
+          class="absolute left-0 right-0 top-full mt-2 bg-surface border border-line rounded-xl shadow-2xl overflow-hidden z-50 text-foreground animate-in fade-in slide-in-from-top-1 duration-150"
+          (click)="$event.stopPropagation()"
+        >
+          @if (isSearching() && searchResults().length === 0) {
+            <div class="p-6 text-center text-xs text-muted flex items-center justify-center gap-2">
+              <lucide-icon name="refresh-cw" class="w-4 h-4 text-primary animate-spin" aria-hidden="true"></lucide-icon>
+              <span>Đang tìm kiếm linh kiện phù hợp...</span>
+            </div>
+          } @else if (searchResults().length === 0) {
+            <div class="p-6 text-center text-xs text-muted flex flex-col items-center justify-center gap-1.5">
+              <lucide-icon name="package" class="w-6 h-6 text-muted/60" aria-hidden="true"></lucide-icon>
+              <span>Không tìm thấy linh kiện nào khớp với "<strong>{{ searchQuery }}</strong>"</span>
+              <span class="text-[11px] text-muted/80">Thử tìm theo từ khóa như Intel, RTX, ASUS, DDR5...</span>
+            </div>
+          } @else {
+            <div class="px-3.5 py-2 bg-surface-alt/70 border-b border-line flex items-center justify-between text-[11px] font-semibold text-muted">
+              <span>Sản phẩm gợi ý ({{ searchResults().length }})</span>
+              <span>Bấm vào để xem chi tiết</span>
+            </div>
+            <div class="max-h-96 overflow-y-auto divide-y divide-line/60">
+              @for (product of searchResults(); track product.id) {
+                <div
+                  (click)="selectProduct(product)"
+                  class="flex items-center gap-3 px-3.5 py-2.5 hover:bg-surface-alt transition-colors cursor-pointer group"
+                >
+                  <div class="size-11 rounded-lg bg-surface-alt border border-line p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                    <img
+                      [src]="product.media | productImage"
+                      [alt]="product.name"
+                      class="size-full object-contain group-hover:scale-105 transition-transform"
+                      (error)="onImageError($event)"
+                    >
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-primary border border-line">
+                        {{ product.category.name }}
+                      </span>
+                      @if (product.brand?.name) {
+                        <span class="text-[11px] text-muted font-medium">{{ product.brand.name }}</span>
+                      }
+                    </div>
+                    <div class="text-xs font-bold text-foreground truncate mt-0.5 group-hover:text-primary transition-colors">
+                      {{ product.name }}
+                    </div>
+                  </div>
+                  <div class="text-right shrink-0 flex items-center gap-1.5">
+                    <div class="text-xs font-mono font-bold text-primary">
+                      {{ getMinPrice(product) | vnd }}
+                    </div>
+                    <lucide-icon name="chevron-right" class="w-3.5 h-3.5 text-muted group-hover:text-primary transition-colors" aria-hidden="true"></lucide-icon>
+                  </div>
+                </div>
+              }
+            </div>
+            <button
+              type="button"
+              (click)="onSearch()"
+              class="w-full p-2.5 bg-surface-alt hover:bg-line border-t border-line text-center text-xs font-semibold text-primary hover:text-primary-strong transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <span>Xem tất cả kết quả cho "<strong>{{ searchQuery }}</strong>"</span>
+              <lucide-icon name="arrow-right" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+            </button>
+          }
+        </div>
+      }
     </div>
 
     <!-- Navigation Links -->
@@ -145,15 +223,74 @@
   <!-- Mobile Navigation Drawer -->
   @if (mobileMenuOpen()) {
     <nav id="mobile-navigation" class="border-t border-line-dark bg-surface-dark px-4 py-3 lg:hidden space-y-1" aria-label="Điều hướng di động">
-      <div class="mb-3">
-        <input
-          type="text"
-          appInput
-          [(ngModel)]="searchQuery"
-          (keyup.enter)="onSearch()"
-          placeholder="Tìm sản phẩm..."
-          class="bg-surface-elevated border-line-dark text-white"
-        >
+      <div class="mb-3 relative">
+        <div class="relative flex items-center">
+          <input
+            type="text"
+            appInput
+            [(ngModel)]="searchQuery"
+            (input)="onSearchInput()"
+            (focus)="onSearchFocus()"
+            (keyup.enter)="onSearch()"
+            placeholder="Tìm sản phẩm..."
+            class="bg-surface-elevated border-line-dark text-white w-full pr-8"
+            autocomplete="off"
+          >
+          @if (isSearching()) {
+            <div class="absolute right-2.5 text-primary animate-spin">
+              <lucide-icon name="refresh-cw" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+            </div>
+          }
+        </div>
+
+        @if (searchDropdownOpen() && mobileMenuOpen()) {
+          <div
+            class="mt-2 bg-surface border border-line rounded-lg shadow-xl overflow-hidden text-foreground animate-in fade-in duration-150"
+            (click)="$event.stopPropagation()"
+          >
+            @if (isSearching() && searchResults().length === 0) {
+              <div class="p-4 text-center text-xs text-muted flex items-center justify-center gap-2">
+                <lucide-icon name="refresh-cw" class="w-3.5 h-3.5 text-primary animate-spin" aria-hidden="true"></lucide-icon>
+                <span>Đang tìm kiếm linh kiện...</span>
+              </div>
+            } @else if (searchResults().length === 0) {
+              <div class="p-4 text-center text-xs text-muted">
+                <span>Không tìm thấy linh kiện khớp với "<strong>{{ searchQuery }}</strong>"</span>
+              </div>
+            } @else {
+              <div class="max-h-64 overflow-y-auto divide-y divide-line/60">
+                @for (product of searchResults(); track product.id) {
+                  <div
+                    (click)="selectProduct(product)"
+                    class="flex items-center gap-2.5 p-2 hover:bg-surface-alt transition-colors cursor-pointer"
+                  >
+                    <div class="size-9 rounded bg-surface-alt border border-line p-0.5 flex items-center justify-center shrink-0 overflow-hidden">
+                      <img
+                        [src]="product.media | productImage"
+                        [alt]="product.name"
+                        class="size-full object-contain"
+                        (error)="onImageError($event)"
+                      >
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-[10px] text-primary font-bold uppercase truncate">{{ product.category.name }}</div>
+                      <div class="text-xs font-semibold text-foreground truncate">{{ product.name }}</div>
+                      <div class="text-[11px] font-mono font-bold text-primary">{{ getMinPrice(product) | vnd }}</div>
+                    </div>
+                  </div>
+                }
+              </div>
+              <button
+                type="button"
+                (click)="onSearch()"
+                class="w-full p-2 bg-surface-alt hover:bg-line border-t border-line text-center text-xs font-semibold text-primary transition-colors flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <span>Xem tất cả kết quả</span>
+                <lucide-icon name="arrow-right" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+              </button>
+            }
+          </div>
+        }
       </div>
       @for (item of navigation; track item.path) {
         <a
