@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, Output, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AppIconModule, ButtonDirective, InputDirective } from '../../components/atoms';
+import { AppIconModule, ButtonDirective, InputDirective, SelectComponent, SelectOption } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { handleProductImageError } from '../../core/constants/product.constants';
 
@@ -118,7 +118,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
 
 @Component({
   selector: 'app-component-swap-modal',
-  imports: [FormsModule, AppIconModule, ButtonDirective, InputDirective, VndPipe],
+  imports: [FormsModule, AppIconModule, ButtonDirective, InputDirective, SelectComponent, VndPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen) {
@@ -193,41 +193,28 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 >
               </div>
 
-              <div class="sm:col-span-3 relative">
-                <select
-                  class="w-full h-9 px-3 pr-8 bg-surface-alt border border-line rounded-lg text-xs font-semibold text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition-colors"
-                  [ngModel]="selectedPriceRange()"
-                  (ngModelChange)="selectedPriceRange.set($event)"
-                  aria-label="Lọc theo mức giá"
-                >
-                  <option value="all" class="bg-surface text-foreground py-1">Mức giá: Tất cả</option>
-                  <option value="under5m" class="bg-surface text-foreground py-1">Dưới 5.000.000 đ</option>
-                  <option value="5m-15m" class="bg-surface text-foreground py-1">5.000.000 đ - 15.000.000 đ</option>
-                  <option value="above15m" class="bg-surface text-foreground py-1">Trên 15.000.000 đ</option>
-                </select>
-                <lucide-icon
-                  name="chevron-down"
-                  class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted size-4"
-                  aria-hidden="true"
-                ></lucide-icon>
+              <div class="sm:col-span-3">
+                <app-select
+                  [options]="priceRangeOptions"
+                  [value]="selectedPriceRange()"
+                  (valueChange)="onPriceRangeChange($event)"
+                  size="md"
+                  class="h-9 text-xs font-semibold bg-surface-alt rounded-lg"
+                  placeholder="Mức giá: Tất cả"
+                  ariaLabel="Lọc theo mức giá"
+                />
               </div>
 
-              <div class="sm:col-span-3 relative">
-                <select
-                  class="w-full h-9 px-3 pr-8 bg-surface-alt border border-line rounded-lg text-xs font-semibold text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition-colors"
-                  [ngModel]="selectedBranch()"
-                  (ngModelChange)="selectedBranch.set($event)"
-                  aria-label="Lọc theo chi nhánh kho hàng"
-                >
-                  <option value="all" class="bg-surface text-foreground py-1">Kho: Toàn quốc (HN & HCM)</option>
-                  <option value="hn" class="bg-surface text-foreground py-1">Kho Hà Nội</option>
-                  <option value="hcm" class="bg-surface text-foreground py-1">Kho TP. Hồ Chí Minh</option>
-                </select>
-                <lucide-icon
-                  name="chevron-down"
-                  class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted size-4"
-                  aria-hidden="true"
-                ></lucide-icon>
+              <div class="sm:col-span-3">
+                <app-select
+                  [options]="branchOptions"
+                  [value]="selectedBranch()"
+                  (valueChange)="onBranchChange($event)"
+                  size="md"
+                  class="h-9 text-xs font-semibold bg-surface-alt rounded-lg"
+                  placeholder="Kho: Toàn quốc (HN & HCM)"
+                  ariaLabel="Lọc theo chi nhánh kho hàng"
+                />
               </div>
             </div>
 
@@ -313,24 +300,15 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                           <span class="text-[10px]">({{ spec.unit }})</span>
                         }
                       </label>
-                      <div class="relative">
-                        <select
-                          class="w-full h-8 px-2.5 pr-7 bg-surface-alt border border-line rounded-md text-xs font-medium text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
-                          [ngModel]="selectedSpecs()[spec.key] || ''"
-                          (ngModelChange)="onSpecFilterChange(spec.key, $event)"
-                          [attr.aria-label]="spec.label"
-                        >
-                          <option value="" class="bg-surface text-foreground py-1">Tất cả</option>
-                          @for (opt of spec.options; track opt.value) {
-                            <option [value]="opt.value" class="bg-surface text-foreground py-1">{{ opt.label }}</option>
-                          }
-                        </select>
-                        <lucide-icon
-                          name="chevron-down"
-                          class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted size-3.5"
-                          aria-hidden="true"
-                        ></lucide-icon>
-                      </div>
+                      <app-select
+                        [options]="spec.options"
+                        [value]="selectedSpecs()[spec.key] || ''"
+                        (valueChange)="onSpecFilterChange(spec.key, $event)"
+                        size="sm"
+                        class="h-8 text-xs font-medium bg-surface-alt rounded-md"
+                        placeholder="Tất cả"
+                        [ariaLabel]="spec.label"
+                      />
                     </div>
                   }
                 </div>
@@ -571,6 +549,27 @@ export class ComponentSwapModalComponent {
   protected readonly selectedBranch = signal<'all' | 'hn' | 'hcm'>('all');
   protected readonly selectedSpecs = signal<Record<string, string>>({});
 
+  protected readonly priceRangeOptions: readonly SelectOption[] = [
+    { value: 'all', label: 'Mức giá: Tất cả' },
+    { value: 'under5m', label: 'Dưới 5.000.000 đ' },
+    { value: '5m-15m', label: '5.000.000 đ - 15.000.000 đ' },
+    { value: 'above15m', label: 'Trên 15.000.000 đ' },
+  ];
+
+  protected readonly branchOptions: readonly SelectOption[] = [
+    { value: 'all', label: 'Kho: Toàn quốc (HN & HCM)' },
+    { value: 'hn', label: 'Kho Hà Nội' },
+    { value: 'hcm', label: 'Kho TP. Hồ Chí Minh' },
+  ];
+
+  protected onPriceRangeChange(val: string): void {
+    this.selectedPriceRange.set((val || 'all') as PriceFilterOption);
+  }
+
+  protected onBranchChange(val: string): void {
+    this.selectedBranch.set((val || 'all') as 'all' | 'hn' | 'hcm');
+  }
+
   protected readonly brands = computed<readonly string[]>(() => {
     const set = new Set<string>();
     for (const item of this.availableItems) {
@@ -583,7 +582,7 @@ export class ComponentSwapModalComponent {
     key: string;
     label: string;
     unit?: string;
-    options: readonly { value: string; label: string }[];
+    options: readonly SelectOption[];
   }[]>(() => {
     const cat = this.categoryKey.toLowerCase();
     const defs = CATEGORY_SPEC_CONFIG[cat] || [];
@@ -593,7 +592,7 @@ export class ComponentSwapModalComponent {
       key: string;
       label: string;
       unit?: string;
-      options: { value: string; label: string }[];
+      options: SelectOption[];
     }[] = [];
 
     for (const def of defs) {
@@ -615,15 +614,18 @@ export class ComponentSwapModalComponent {
           return a.localeCompare(b);
         });
 
-        const options = sortedVals.map((val) => {
-          let label = val;
-          if (def.formatValue) {
-            label = def.formatValue(val);
-          } else if (def.unit) {
-            label = `${val} ${def.unit}`;
-          }
-          return { value: val, label };
-        });
+        const options: SelectOption[] = [
+          { value: '', label: 'Tất cả' },
+          ...sortedVals.map((val) => {
+            let label = val;
+            if (def.formatValue) {
+              label = def.formatValue(val);
+            } else if (def.unit) {
+              label = `${val} ${def.unit}`;
+            }
+            return { value: val, label };
+          }),
+        ];
 
         result.push({
           key: def.key,

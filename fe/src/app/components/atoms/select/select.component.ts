@@ -44,6 +44,9 @@ export type SelectSize = 'sm' | 'md' | 'lg';
         cdkOverlayOrigin
         #origin="cdkOverlayOrigin"
         [class]="triggerClasses()"
+        [class.border-primary]="isOpen()"
+        [class.ring-1]="isOpen()"
+        [class.ring-primary]="isOpen()"
         [disabled]="disabled()"
         [attr.aria-expanded]="isOpen()"
         [attr.aria-haspopup]="'listbox'"
@@ -58,6 +61,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
           name="chevron-down"
           class="size-4 shrink-0 text-muted transition-transform duration-200"
           [class.rotate-180]="isOpen()"
+          [class.text-primary]="isOpen()"
           aria-hidden="true"
         ></lucide-icon>
       </button>
@@ -178,6 +182,20 @@ export class SelectComponent implements ControlValueAccessor {
       originX: 'start',
       originY: 'top',
       overlayX: 'start',
+      overlayY: 'bottom',
+      offsetY: -4,
+    },
+    {
+      originX: 'end',
+      originY: 'bottom',
+      overlayX: 'end',
+      overlayY: 'top',
+      offsetY: 4,
+    },
+    {
+      originX: 'end',
+      originY: 'top',
+      overlayX: 'end',
       overlayY: 'bottom',
       offsetY: -4,
     },
