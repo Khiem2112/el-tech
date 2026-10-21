@@ -19,6 +19,8 @@
   --color-line-dark: var(--line-dark);
   --color-foreground-dark: var(--foreground-dark);
   --color-border: var(--line);
+  --color-secondary-container: var(--secondary-container);
+  --color-surface-container-low: var(--surface-container-low);
 
   --radius-xs: 2px;
   --radius-sm: 4px;
@@ -49,6 +51,8 @@
   --warning: #df6500;
   --line-dark: #272f3d;
   --foreground-dark: #ffffff;
+  --secondary-container: #dcdfed;
+  --surface-container-low: #eff4ff;
   color-scheme: light;
 }
 * { box-sizing: border-box; }

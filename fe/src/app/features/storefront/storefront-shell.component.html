@@ -1,15 +1,15 @@
 <a class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:font-bold focus:text-primary-foreground" href="#main-content">Chuyển đến nội dung</a>
 
-<!-- Top Header Navigation Shell (NVIDIA Tech Theme) -->
-<header class="sticky top-0 z-40 bg-surface-dark/95 backdrop-blur-xl border-b border-line-dark text-white select-none shadow-[0_1px_8px_rgba(0,0,0,0.3)]">
+<!-- Top Header Navigation Shell (Light Theme Alignment) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-line text-foreground select-none shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
   <!-- Top Utility Telemetry Strip -->
-  <div class="bg-black/75 px-4 sm:px-6 lg:px-8 py-1.5 text-xs border-b border-line-dark/80 text-muted flex flex-wrap justify-between items-center gap-2">
+  <div class="bg-surface-alt px-4 sm:px-6 lg:px-8 py-1.5 text-xs border-b border-line/60 text-muted flex flex-wrap justify-between items-center gap-2">
     <div class="flex items-center gap-3">
-      <span class="flex items-center gap-1.5 text-foreground-dark/70">
+      <span class="flex items-center gap-1.5 text-foreground/80">
         <lucide-icon name="store" class="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         Showroom: HN 45 Thái Hà | HCM 280 Ba Tháng Hai | ĐN 112 Hàm Nghi
       </span>
-      <span class="hidden lg:inline text-slate-700">|</span>
+      <span class="hidden lg:inline text-line-strong">|</span>
       <span class="hidden lg:flex items-center gap-1 text-muted">
         <lucide-icon name="clock" class="w-3 h-3 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         08:30 - 21:30 (Mở cửa cả tuần)
@@ -20,10 +20,10 @@
         <lucide-icon name="phone" class="w-3 h-3 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         Hotline kỹ thuật: <strong class="text-primary font-bold">1900.6868</strong>
       </span>
-      <span class="text-slate-700">|</span>
-      <a routerLink="/tra-cuu-don" class="hover:text-primary transition-colors">Tra cứu đơn hàng</a>
-      <span class="text-slate-700">|</span>
-      <a routerLink="/chinh-sach" class="hover:text-primary transition-colors">Bảo hành &amp; Đổi trả</a>
+      <span class="text-line-strong">|</span>
+      <a routerLink="/tra-cuu-don" class="hover:text-primary transition-colors text-muted hover:text-foreground">Tra cứu đơn hàng</a>
+      <span class="text-line-strong">|</span>
+      <a routerLink="/chinh-sach" class="hover:text-primary transition-colors text-muted hover:text-foreground">Bảo hành &amp; Đổi trả</a>
     </div>
   </div>
 
@@ -31,7 +31,7 @@
   <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
     <div class="flex items-center gap-4">
       <button
-        class="grid size-9 place-items-center rounded-md text-xs font-bold text-foreground-dark/70 hover:bg-line-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:hidden cursor-pointer"
+        class="grid size-9 place-items-center rounded-md text-xs font-bold text-foreground/75 hover:bg-surface-alt hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary lg:hidden cursor-pointer"
         type="button"
         [attr.aria-expanded]="mobileMenuOpen()"
         aria-controls="mobile-navigation"
@@ -47,14 +47,14 @@
           <lucide-icon name="cpu" class="w-5 h-5 text-primary" aria-hidden="true"></lucide-icon>
         </div>
         <div class="flex flex-col">
-          <span class="text-lg font-black tracking-tight leading-none text-white uppercase font-bold">EL-TECH</span>
+          <span class="text-lg font-black tracking-tight leading-none text-foreground uppercase font-bold">EL-TECH</span>
           <span class="text-[11px] font-bold tracking-widest text-primary uppercase mt-0.5">HARDWARE LAB</span>
         </div>
       </a>
     </div>
 
     <!-- Quick Search Bar -->
-    <div class="hidden xl:flex items-center bg-surface-dark/90 border border-line-dark/80 rounded-lg p-0.5 max-w-xl flex-1 mx-2 relative">
+    <div class="hidden xl:flex items-center bg-surface-alt border border-line rounded-lg p-0.5 max-w-xl flex-1 mx-2 relative focus-within:border-primary transition-colors">
       <div class="relative flex items-center flex-1">
         <input
           type="text"
@@ -63,7 +63,7 @@
           (focus)="onSearchFocus()"
           (keyup.enter)="onSearch()"
           placeholder="Tìm kiếm CPU, RTX 5080, RAM DDR5, linh kiện PC..."
-          class="w-full h-9 px-3 bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
+          class="w-full h-9 px-3 bg-transparent text-sm text-foreground placeholder:text-muted/70 focus:outline-none"
           aria-label="Tìm kiếm sản phẩm"
           autocomplete="off"
         >
@@ -157,9 +157,9 @@
     <nav class="hidden md:flex items-center gap-1" aria-label="Điều hướng chính">
       @for (item of navigation; track item.path) {
         <a
-          class="rounded-md px-3 py-1.5 text-xs font-semibold text-foreground-dark/70 hover:bg-line-dark hover:text-white transition-colors"
+          class="rounded-md px-3 py-1.5 text-xs font-semibold text-foreground/75 hover:text-foreground hover:bg-surface-alt transition-colors"
           [routerLink]="item.path"
-          routerLinkActive="bg-line-dark text-primary"
+          routerLinkActive="bg-surface-alt text-primary font-bold"
           [routerLinkActiveOptions]="{ exact: item.path === '/' }"
         >
           {{ item.label }}
@@ -173,7 +173,7 @@
       @if (auth.isLoggedIn()) {
         <a
           routerLink="/tai-khoan"
-          class="h-9 px-3 rounded-lg border border-line-dark bg-surface-elevated hover:bg-line-dark text-foreground-dark/70 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors"
+          class="h-9 px-3 rounded-lg border border-line bg-surface-alt hover:bg-secondary-container text-foreground flex items-center gap-1.5 text-xs font-bold transition-colors"
           aria-label="Tài khoản cá nhân"
         >
           <lucide-icon name="user" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
@@ -183,7 +183,7 @@
         <button
           type="button"
           (click)="auth.openAuthModal()"
-          class="h-9 px-3 rounded-lg border border-line-dark bg-surface-elevated hover:bg-line-dark text-foreground-dark/70 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
+          class="h-9 px-3 rounded-lg border border-line bg-surface-alt hover:bg-secondary-container text-foreground flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
           aria-label="Đăng nhập tài khoản"
         >
           <lucide-icon name="user" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
@@ -195,7 +195,7 @@
       <button
         type="button"
         (click)="openCart()"
-        class="relative h-9 px-3 rounded-lg border border-line-dark bg-surface-elevated hover:border-primary hover:text-primary text-slate-200 flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
+        class="relative h-9 px-3 rounded-lg border border-line bg-surface-alt hover:bg-secondary-container text-foreground flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
         aria-label="Mở giỏ hàng"
       >
         <lucide-icon name="shopping-cart" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
@@ -208,21 +208,21 @@
   </div>
 
   <!-- Mega Category Ribbon Bar -->
-  <div class="bg-black/90 border-t border-line-dark px-4 sm:px-6 lg:px-8 py-1.5 overflow-x-auto custom-scrollbar flex items-center gap-1.5 text-xs">
-    <a routerLink="/san-pham" class="px-2.5 py-1 rounded-sm font-bold bg-line-dark text-primary whitespace-nowrap">Tất cả</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'cpu' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">CPU</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'vga' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">VGA Card</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'mainboard' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">Mainboard</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'ram' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">RAM DDR5</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'ssd' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">SSD NVMe</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'psu' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">Nguồn PSU</a>
-    <a routerLink="/san-pham" [queryParams]="{ category: 'case' }" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">Case &amp; Tản nhiệt</a>
-    <a routerLink="/pc-dung-san" class="px-2.5 py-1 rounded-sm font-medium text-foreground-dark/70 hover:text-white hover:bg-surface-dark whitespace-nowrap">PC Dựng sẵn</a>
+  <div class="bg-surface border-t border-line px-4 sm:px-6 lg:px-8 py-1.5 overflow-x-auto custom-scrollbar flex items-center gap-1.5 text-xs text-foreground">
+    <a routerLink="/san-pham" class="px-2.5 py-1 rounded-md font-bold bg-surface-alt text-primary border border-line whitespace-nowrap">Tất cả</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'cpu' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">CPU</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'vga' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">VGA Card</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'mainboard' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">Mainboard</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'ram' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">RAM DDR5</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'ssd' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">SSD NVMe</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'psu' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">Nguồn PSU</a>
+    <a routerLink="/san-pham" [queryParams]="{ category: 'case' }" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">Case &amp; Tản nhiệt</a>
+    <a routerLink="/pc-dung-san" class="px-2.5 py-1 rounded-md font-medium bg-surface-alt text-foreground/80 hover:bg-surface hover:text-primary border border-transparent hover:border-line whitespace-nowrap transition-colors">PC Dựng sẵn</a>
   </div>
 
   <!-- Mobile Navigation Drawer -->
   @if (mobileMenuOpen()) {
-    <nav id="mobile-navigation" class="border-t border-line-dark bg-surface-dark px-4 py-3 lg:hidden space-y-1" aria-label="Điều hướng di động">
+    <nav id="mobile-navigation" class="border-t border-line bg-surface text-foreground px-4 py-3 lg:hidden space-y-1 shadow-lg" aria-label="Điều hướng di động">
       <div class="mb-3 relative">
         <div class="relative flex items-center">
           <input
@@ -233,7 +233,7 @@
             (focus)="onSearchFocus()"
             (keyup.enter)="onSearch()"
             placeholder="Tìm sản phẩm..."
-            class="bg-surface-elevated border-line-dark text-white w-full pr-8"
+            class="bg-surface-alt border-line text-foreground w-full pr-8"
             autocomplete="off"
           >
           @if (isSearching()) {
@@ -294,16 +294,16 @@
       </div>
       @for (item of navigation; track item.path) {
         <a
-          class="block rounded-md px-3 py-2 text-sm font-semibold hover:bg-line-dark text-slate-200"
+          class="block rounded-md px-3 py-2 text-sm font-semibold hover:bg-surface-alt text-foreground/80 hover:text-foreground transition-colors"
           [routerLink]="item.path"
           (click)="closeOverlays()"
         >
           {{ item.label }}
         </a>
       }
-      <div class="pt-2 border-t border-line-dark">
+      <div class="pt-2 border-t border-line">
         <a
-          class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold bg-line-dark text-primary"
+          class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold bg-surface-alt text-primary hover:bg-secondary-container transition-colors"
           routerLink="/tai-khoan"
           (click)="closeOverlays()"
         >
