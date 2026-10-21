@@ -23,11 +23,12 @@
       "dest": "be/src/index.ts"
     },
     {
-      "handle": "filesystem"
+      "src": "/(.*\\.[a-zA-Z0-9]+)",
+      "dest": "/fe/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/fe/index.html"
     }
   ]
 }
