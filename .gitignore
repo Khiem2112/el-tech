@@ -13,3 +13,7 @@ __pycache__/
 ui-templates/
 graphify-out/
 task/
+report/
+QA/
+plan/
+contracts/
