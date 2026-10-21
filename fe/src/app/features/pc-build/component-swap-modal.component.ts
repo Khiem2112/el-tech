@@ -179,45 +179,55 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
 
           <!-- Filter & Search Controls -->
           <div class="p-4 border-b border-line bg-surface space-y-3 shrink-0">
-            <!-- Row 1: Search, Price, Branch -->
+            <!-- Search and quick filters -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
               <div class="sm:col-span-6 relative">
-                <lucide-icon name="search" class="size-4 absolute left-3 top-3 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
+                <lucide-icon name="search" class="size-4 absolute left-3 top-2.5 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
                 <input
                   appInput
                   type="text"
-                  class="w-full pl-9 text-xs"
+                  class="w-full pl-9 text-xs h-9"
                   placeholder="Tìm theo tên linh kiện, mã model, thương hiệu..."
                   [ngModel]="searchQuery()"
                   (ngModelChange)="searchQuery.set($event)"
                 >
               </div>
 
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-3 relative">
                 <select
-                  appInput
-                  class="w-full text-xs h-9"
+                  class="w-full h-9 px-3 pr-8 bg-surface-alt border border-line rounded-lg text-xs font-semibold text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition-colors"
                   [ngModel]="selectedPriceRange()"
                   (ngModelChange)="selectedPriceRange.set($event)"
+                  aria-label="Lọc theo mức giá"
                 >
-                  <option value="all">Mức giá: Tất cả</option>
-                  <option value="under5m">Dưới 5.000.000 đ</option>
-                  <option value="5m-15m">5.000.000 đ - 15.000.000 đ</option>
-                  <option value="above15m">Trên 15.000.000 đ</option>
+                  <option value="all" class="bg-surface text-foreground py-1">Mức giá: Tất cả</option>
+                  <option value="under5m" class="bg-surface text-foreground py-1">Dưới 5.000.000 đ</option>
+                  <option value="5m-15m" class="bg-surface text-foreground py-1">5.000.000 đ - 15.000.000 đ</option>
+                  <option value="above15m" class="bg-surface text-foreground py-1">Trên 15.000.000 đ</option>
                 </select>
+                <lucide-icon
+                  name="chevron-down"
+                  class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted size-4"
+                  aria-hidden="true"
+                ></lucide-icon>
               </div>
 
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-3 relative">
                 <select
-                  appInput
-                  class="w-full text-xs h-9"
+                  class="w-full h-9 px-3 pr-8 bg-surface-alt border border-line rounded-lg text-xs font-semibold text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-xs transition-colors"
                   [ngModel]="selectedBranch()"
                   (ngModelChange)="selectedBranch.set($event)"
+                  aria-label="Lọc theo chi nhánh kho hàng"
                 >
-                  <option value="all">Kho: Toàn quốc (HN & HCM)</option>
-                  <option value="hn">Kho Hà Nội</option>
-                  <option value="hcm">Kho TP. Hồ Chí Minh</option>
+                  <option value="all" class="bg-surface text-foreground py-1">Kho: Toàn quốc (HN & HCM)</option>
+                  <option value="hn" class="bg-surface text-foreground py-1">Kho Hà Nội</option>
+                  <option value="hcm" class="bg-surface text-foreground py-1">Kho TP. Hồ Chí Minh</option>
                 </select>
+                <lucide-icon
+                  name="chevron-down"
+                  class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted size-4"
+                  aria-hidden="true"
+                ></lucide-icon>
               </div>
             </div>
 
@@ -303,17 +313,24 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                           <span class="text-[10px]">({{ spec.unit }})</span>
                         }
                       </label>
-                      <select
-                        appInput
-                        class="w-full text-xs h-8 px-2 bg-surface-alt"
-                        [ngModel]="selectedSpecs()[spec.key] || ''"
-                        (ngModelChange)="onSpecFilterChange(spec.key, $event)"
-                      >
-                        <option value="">Tất cả</option>
-                        @for (opt of spec.options; track opt.value) {
-                          <option [value]="opt.value">{{ opt.label }}</option>
-                        }
-                      </select>
+                      <div class="relative">
+                        <select
+                          class="w-full h-8 px-2.5 pr-7 bg-surface-alt border border-line rounded-md text-xs font-medium text-foreground appearance-none cursor-pointer hover:border-line-strong focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                          [ngModel]="selectedSpecs()[spec.key] || ''"
+                          (ngModelChange)="onSpecFilterChange(spec.key, $event)"
+                          [attr.aria-label]="spec.label"
+                        >
+                          <option value="" class="bg-surface text-foreground py-1">Tất cả</option>
+                          @for (opt of spec.options; track opt.value) {
+                            <option [value]="opt.value" class="bg-surface text-foreground py-1">{{ opt.label }}</option>
+                          }
+                        </select>
+                        <lucide-icon
+                          name="chevron-down"
+                          class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-muted size-3.5"
+                          aria-hidden="true"
+                        ></lucide-icon>
+                      </div>
                     </div>
                   }
                 </div>
