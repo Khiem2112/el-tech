@@ -23,7 +23,11 @@ export class AdminShellComponent {
       items: [
         { label: 'Đơn hàng', path: '/admin/orders', icon: 'shopping-cart' },
         { label: 'Thanh toán & đối soát', path: '/admin/payments', icon: 'credit-card' },
+        { label: 'Hàng đợi QR', path: '/admin/payments/review-queue', icon: 'clock' },
+        { label: 'Hoàn tiền & COD', path: '/admin/payments/refunds', icon: 'rotate-ccw' },
         { label: 'Tồn kho & điều chuyển', path: '/admin/inventory/balances', icon: 'package' },
+        { label: 'Sổ kho & serial', path: '/admin/inventory/ledger', icon: 'file-text' },
+        { label: 'Phiếu điều chuyển', path: '/admin/inventory/transfers', icon: 'truck' },
       ],
     },
     {
