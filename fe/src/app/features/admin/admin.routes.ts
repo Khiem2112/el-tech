@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { Route, Routes } from '@angular/router';
 import { AdminShellComponent } from './admin-shell.component';
 import { AdminDashboardComponent } from './admin-dashboard.component';
 import { AdminListPageComponent } from './admin-list-page.component';
@@ -13,7 +13,7 @@ const rows: readonly ListRow[] = [
   { code: '#EL-10478', name: 'Đỗ Đức Nam', meta: 'HCM · Q.10 · QR lệch tiền', value: '26.150.000 ₫', status: 'Cần đối soát', tone: 'red' },
 ];
 
-const list = (title: string, description: string, eyebrow: string, actionLabel: string) => ({
+const list = (title: string, description: string, eyebrow: string, actionLabel: string): Route => ({
   component: AdminListPageComponent,
   data: { title, description, eyebrow, actionLabel, rows },
 });
