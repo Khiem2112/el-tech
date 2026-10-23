@@ -16,4 +16,5 @@ task/
 report/
 QA/
 plan/
-contracts/
+contracts/.impeccable/
+*.docx
