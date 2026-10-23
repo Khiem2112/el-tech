@@ -13,6 +13,7 @@ import { reviewRouter } from './routes/review.routes.js';
 import { pcBuildRouter } from './routes/pc-build.routes.js';
 import { adminAuthRouter } from './routes/admin/admin-auth.routes.js';
 import { adminBranchRouter } from './routes/admin/branch.routes.js';
+import { adminCategoryRouter } from './routes/admin/category.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -32,6 +33,8 @@ app.use('/api/admin/auth', adminAuthRouter);
 app.use('/v1/admin/auth', adminAuthRouter);
 app.use('/api/admin/branches', adminBranchRouter);
 app.use('/v1/admin/branches', adminBranchRouter);
+app.use('/api/admin/categories', adminCategoryRouter);
+app.use('/v1/admin/categories', adminCategoryRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {

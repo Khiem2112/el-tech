@@ -30,8 +30,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'catalog/categories',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./categories/admin-categories-page.component').then(
+            (module) => module.AdminCategoriesPageComponent,
           ),
       },
       {
