@@ -184,8 +184,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'settings/branches',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./branches/admin-branches-page.component').then(
+            (module) => module.AdminBranchesPageComponent,
           ),
       },
       {
