@@ -26,6 +26,7 @@ import { adminInventoryRouter } from './routes/admin/inventory.routes.js';
 import { adminSerialRouter } from './routes/admin/serial.routes.js';
 import { adminTransferRouter } from './routes/admin/transfer.routes.js';
 import { adminOrderRouter } from './routes/admin/order.routes.js';
+import { adminPromotionRouter } from './routes/admin/promotion.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -75,6 +76,8 @@ app.use('/api/admin/inventory/transfers', adminTransferRouter);
 app.use('/v1/admin/inventory/transfers', adminTransferRouter);
 app.use('/api/admin/orders', adminOrderRouter);
 app.use('/v1/admin/orders', adminOrderRouter);
+app.use('/api/admin/promotions', adminPromotionRouter);
+app.use('/v1/admin/promotions', adminPromotionRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {

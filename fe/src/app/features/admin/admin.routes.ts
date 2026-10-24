@@ -177,9 +177,20 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'promotions',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./promotions/admin-product-promotions-page.component').then(
+            (module) => module.AdminProductPromotionsPageComponent,
           ),
+      },
+      {
+        path: 'promotions/products',
+        loadComponent: () =>
+          import('./promotions/admin-product-promotions-page.component').then(
+            (module) => module.AdminProductPromotionsPageComponent,
+          ),
+      },
+      {
+        path: 'promotions/product-promotions',
+        redirectTo: 'promotions/products',
       },
       {
         path: 'settings/branches',
