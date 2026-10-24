@@ -72,8 +72,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'catalog/pc-bundles',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./pc-bundles/admin-pc-bundles-page.component').then(
+            (module) => module.AdminPcBundlesPageComponent,
           ),
       },
       {
