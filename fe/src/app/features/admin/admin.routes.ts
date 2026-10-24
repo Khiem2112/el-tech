@@ -100,8 +100,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'inventory/serials',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./serials/admin-serials-page.component').then(
+            (module) => module.AdminSerialsPageComponent,
           ),
       },
       {
