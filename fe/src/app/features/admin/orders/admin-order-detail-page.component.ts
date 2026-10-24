@@ -13,6 +13,10 @@ import { OrderFinanceSummaryComponent } from './components/order-finance-summary
 import { OrderLinesPcGroupComponent } from './components/order-lines-pc-group.component';
 import { OrderStatusBarComponent } from './components/order-status-bar.component';
 import { OrderTimelineHistoryComponent } from './components/order-timeline-history.component';
+import { ConfirmCodDialogComponent } from './components/modals/confirm-cod-dialog.component';
+import { PrepareDialogComponent } from './components/modals/prepare-dialog.component';
+import { AssembleDialogComponent } from './components/modals/assemble-dialog.component';
+import { ReadyForPickupDialogComponent } from './components/modals/ready-for-pickup-dialog.component';
 import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
 @Component({
@@ -27,6 +31,10 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
     OrderLinesPcGroupComponent,
     OrderFinanceSummaryComponent,
     OrderTimelineHistoryComponent,
+    ConfirmCodDialogComponent,
+    PrepareDialogComponent,
+    AssembleDialogComponent,
+    ReadyForPickupDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -171,6 +179,34 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
         <app-order-finance-summary [order]="ord" />
 
         <app-order-timeline-history [order]="ord" />
+
+        <app-confirm-cod-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-07'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xác nhận đơn hàng COD và khóa giữ tồn kho thành công.')"
+        />
+
+        <app-prepare-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-08'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã chuyển đơn hàng sang trạng thái Đang Soạn Hàng.')"
+        />
+
+        <app-assemble-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-09'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xuất kho và chuyển đơn sang khâu Lắp Ráp Máy Tính.')"
+        />
+
+        <app-ready-for-pickup-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-10'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã phát thông báo sẵn sàng nhận hàng tại showroom tới khách hàng.')"
+        />
       }
     </div>
   `,
@@ -181,6 +217,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
 
   readonly orderId = signal<string>('');
   readonly actionToastMessage = signal<string | null>(null);
+  readonly activeModal = signal<'MOD-07' | 'MOD-08' | 'MOD-09' | 'MOD-10' | null>(null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -198,9 +235,29 @@ export class AdminOrderDetailPageComponent implements OnInit {
   }
 
   onActionTriggered(event: ActionTriggerEvent): void {
-    this.actionToastMessage.set(
-      `Đã chọn thao tác: ${event.label} (Mã hành động: ${event.actionKey}${event.modalId ? ', Modal: ' + event.modalId : ''}). Modal nghiệp vụ tương ứng sẽ được kích hoạt ở các tác vụ tiếp theo (TASK-54, TASK-55, TASK-56).`
-    );
+    if (event.modalId === 'MOD-07' || event.actionKey === 'CONFIRM_COD') {
+      this.activeModal.set('MOD-07');
+    } else if (event.modalId === 'MOD-08' || event.actionKey === 'START_PREP') {
+      this.activeModal.set('MOD-08');
+    } else if (event.modalId === 'MOD-09' || event.actionKey === 'ASSEMBLE_PC') {
+      this.activeModal.set('MOD-09');
+    } else if (event.modalId === 'MOD-10' || event.actionKey === 'READY_PICKUP') {
+      this.activeModal.set('MOD-10');
+    } else {
+      this.actionToastMessage.set(
+        `Đã chọn thao tác: ${event.label} (Mã hành động: ${event.actionKey}${event.modalId ? ', Modal: ' + event.modalId : ''}). Modal nghiệp vụ tương ứng sẽ được kích hoạt ở các tác vụ tiếp theo (TASK-55, TASK-56).`
+      );
+    }
+  }
+
+  onModalClosed(): void {
+    this.activeModal.set(null);
+  }
+
+  onOperationConfirmed(message: string): void {
+    this.activeModal.set(null);
+    this.actionToastMessage.set(message);
+    this.loadOrder();
   }
 
   statusLabel(status: string): string {

@@ -5,6 +5,7 @@ import { adminAuthMiddleware } from '../../middleware/admin-auth.middleware.js';
 import { adminOrderService } from '../../services/admin/order.service.js';
 import { queryOrderSchema } from '../../validations/admin/order.schema.js';
 import { adminOrderDetailRouter } from './order-detail.routes.js';
+import { adminOrderOperationsRouter } from './order-operations.routes.js';
 
 export const adminOrderRouter = Router();
 
@@ -31,4 +32,5 @@ adminOrderRouter.get('/counts', async (_request, response, next): Promise<void> 
   }
 });
 
+adminOrderRouter.use('/', adminOrderOperationsRouter);
 adminOrderRouter.use('/', adminOrderDetailRouter);

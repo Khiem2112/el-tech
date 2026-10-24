@@ -45,7 +45,7 @@ export type ActionTriggerEvent = {
               class="px-3 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded flex items-center gap-1 cursor-pointer"
             >
               <span>Quy trình tiếp theo</span>
-              <span class="text-[10px] text-slate-400">▼</span>
+              <svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             @if (isWorkflowMenuOpen()) {
               <div
@@ -79,7 +79,7 @@ export type ActionTriggerEvent = {
               class="px-3 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded flex items-center gap-1 cursor-pointer"
             >
               <span>Ngoại lệ & Thao tác khác</span>
-              <span class="text-[10px] text-slate-400">▼</span>
+              <svg class="w-3 h-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             @if (isExceptionMenuOpen()) {
               <div

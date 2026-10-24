@@ -161,6 +161,65 @@ export type AdminOrderDetail = {
   availableTransitions: AdminOrderTransition[];
 };
 
+export type StockReadinessItem = {
+  skuId: number;
+  skuCode: string;
+  name: string;
+  requiredQuantity: number;
+  onHand: number;
+  reserved: number;
+  available: number;
+  isSufficient: boolean;
+};
+
+export type StockReadinessResult = {
+  orderId: string;
+  orderCode: string;
+  branch: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  canConfirm: boolean;
+  items: StockReadinessItem[];
+};
+
+export type AvailableSerialItem = {
+  id: string;
+  serialNumber: string;
+  status: string;
+};
+
+export type AssemblyRequirementItem = {
+  skuId: number;
+  skuCode: string;
+  name: string;
+  quantity: number;
+  serialRequired: boolean;
+  availableSerials: AvailableSerialItem[];
+};
+
+export type AssemblyRequirementsResult = {
+  orderId: string;
+  orderCode: string;
+  branch: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  hasAssembly: boolean;
+  items: AssemblyRequirementItem[];
+};
+
+export type OrderOperationResponse = {
+  success: boolean;
+  orderId: string;
+  orderCode: string;
+  status: string;
+  message: string;
+  stockMoveCode?: string;
+};
+
 @Injectable({ providedIn: 'root' })
 export class AdminOrderDetailService {
   private readonly http = inject(HttpClient);
@@ -248,5 +307,114 @@ export class AdminOrderDetailService {
     } finally {
       this.isSavingNotes.set(false);
     }
+  }
+
+  async fetchStockReadiness(orderId: string): Promise<StockReadinessResult | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<StockReadinessResult>>(
+          `${this.baseUrl}/${orderId}/stock-readiness`,
+          { headers: this.getAuthHeaders() },
+        ),
+      );
+
+      if (!response.success) {
+        throw new Error(response.error.messageKey);
+      }
+
+      return response.data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Khong the kiem tra ton kho don hang';
+      this.error.set(message);
+      return null;
+    }
+  }
+
+  async fetchAssemblyRequirements(orderId: string): Promise<AssemblyRequirementsResult | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<AssemblyRequirementsResult>>(
+          `${this.baseUrl}/${orderId}/assembly-requirements`,
+          { headers: this.getAuthHeaders() },
+        ),
+      );
+
+      if (!response.success) {
+        throw new Error(response.error.messageKey);
+      }
+
+      return response.data;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Khong the kiem tra linh kien can lap rap';
+      this.error.set(message);
+      return null;
+    }
+  }
+
+  async confirmCodOrder(orderId: string, note?: string): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/confirm-cod`,
+        { note },
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi xac nhan don hang COD');
+    }
+
+    return response.data;
+  }
+
+  async prepareOrder(orderId: string, note?: string): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/prepare`,
+        { note },
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi chuyen trang thai soan hang');
+    }
+
+    return response.data;
+  }
+
+  async assembleOrder(
+    orderId: string,
+    payload: { technicianName?: string; serialAssignments: Array<{ skuId: number; serialNumber: string }> },
+  ): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/assemble`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi chuyen ban lap rap PC');
+    }
+
+    return response.data;
+  }
+
+  async readyForPickup(orderId: string, note?: string): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/ready-for-pickup`,
+        { note },
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi bao san sang nhan tai showroom');
+    }
+
+    return response.data;
   }
 }

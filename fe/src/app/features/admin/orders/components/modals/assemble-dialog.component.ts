@@ -1,0 +1,393 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  AdminOrderDetail,
+  AdminOrderDetailService,
+  AssemblyRequirementsResult,
+} from '../../services/admin-order-detail.service';
+
+type SelectedSerialEntry = {
+  skuId: number;
+  serialNumber: string;
+};
+
+@Component({
+  selector: 'app-assemble-dialog',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    @if (isOpen()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+        <div class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-xl p-5 sm:p-6 space-y-4 text-xs text-slate-200 max-h-[90vh] flex flex-col">
+          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+            <div>
+              <h3 class="font-bold text-white uppercase text-sm tracking-wide">
+                Chuyển Sang Lắp Ráp Máy Tính (MOD-09)
+              </h3>
+              <p class="text-xs text-slate-400">
+                Quy trình: Đang soạn hàng sang Bàn giao lắp ráp PC
+              </p>
+            </div>
+            <button
+              type="button"
+              (click)="onClose()"
+              class="px-2 py-1 rounded bg-[#090d16] hover:bg-[#272f3d] text-slate-400 hover:text-white border border-[#272f3d] text-xs"
+              title="Đóng hộp thoại"
+            >
+              Đóng
+            </button>
+          </div>
+
+          <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded text-purple-300 text-xs leading-relaxed">
+            Chỉ áp dụng cho đơn hàng có linh kiện lắp ráp PC. Thao tác này sẽ tự động xác thực việc trừ tồn kho thực tế (onHand) và giải phóng số lượng giữ (reserved) của toàn bộ linh kiện cấu thành trong một giao dịch duy nhất.
+          </div>
+
+          <div class="space-y-1">
+            <label class="block font-semibold text-slate-400 text-xs uppercase">
+              Kỹ thuật viên phụ trách lắp ráp:
+            </label>
+            <input
+              type="text"
+              [(ngModel)]="technicianName"
+              placeholder="Nhập tên kỹ thuật viên hoặc mã KTV..."
+              class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
+          <div class="flex-1 overflow-y-auto space-y-3 pr-1">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-slate-300 uppercase">
+                Danh sách linh kiện lắp ráp & Gán số Sê-ri:
+              </span>
+              <span class="text-xs font-mono font-bold" [class.text-emerald-400]="isAllSerialsProvided()" [class.text-amber-400]="!isAllSerialsProvided()">
+                Đã gán {{ selectedSerialsCount() }}/{{ requiredSerialsCount() }} Serial
+              </span>
+            </div>
+
+            @if (isLoading()) {
+              <div class="p-6 text-center bg-[#090d16] border border-[#272f3d] rounded text-slate-400">
+                Đang tải danh sách linh kiện và kiểm tra số sê-ri khả dụng...
+              </div>
+            } @else if (requirements(); as req) {
+              <div class="space-y-2">
+                @for (item of req.items; track item.skuId) {
+                  <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <div>
+                        <div class="font-mono font-bold text-white">{{ item.skuCode }}</div>
+                        <div class="text-[11px] text-slate-400">{{ item.name }}</div>
+                      </div>
+                      <div class="text-right">
+                        <span class="text-xs font-bold text-white">SL: {{ item.quantity }}</span>
+                        <div>
+                          <span
+                            class="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold mt-0.5"
+                            [class.bg-purple-500/20]="item.serialRequired"
+                            [class.text-purple-300]="item.serialRequired"
+                            [class.border]="item.serialRequired"
+                            [class.border-purple-500/40]="item.serialRequired"
+                            [class.bg-slate-800]="!item.serialRequired"
+                            [class.text-slate-400]="!item.serialRequired"
+                          >
+                            {{ item.serialRequired ? 'Bắt buộc Serial' : 'Không quản lý Serial' }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    @if (item.serialRequired) {
+                      <div class="border-t border-[#272f3d] pt-2 space-y-2">
+                        <div class="flex items-center justify-between text-[11px]">
+                          <span class="text-slate-400">Số sê-ri đã gán cho linh kiện này:</span>
+                          <span class="font-mono font-bold" [class.text-emerald-400]="getItemAssignedCount(item.skuId) === item.quantity" [class.text-amber-400]="getItemAssignedCount(item.skuId) !== item.quantity">
+                            {{ getItemAssignedCount(item.skuId) }} / {{ item.quantity }}
+                          </span>
+                        </div>
+
+                        @if (getItemAssignedSerials(item.skuId).length > 0) {
+                          <div class="flex flex-wrap gap-1.5">
+                            @for (s of getItemAssignedSerials(item.skuId); track s) {
+                              <span class="px-2 py-0.5 bg-purple-500/20 border border-purple-500/40 text-purple-200 rounded font-mono text-[11px] flex items-center gap-1.5">
+                                <span>{{ s }}</span>
+                                <button
+                                  type="button"
+                                  (click)="removeSerial(item.skuId, s)"
+                                  class="text-rose-400 hover:text-white px-1 text-[10px] font-bold cursor-pointer"
+                                  title="Gỡ số sê-ri này"
+                                >
+                                  x
+                                </button>
+                              </span>
+                            }
+                          </div>
+                        }
+
+                        @if (getItemAssignedCount(item.skuId) < item.quantity) {
+                          <div class="space-y-1.5">
+                            <div class="flex gap-1.5">
+                              <input
+                                type="text"
+                                #barcodeInput
+                                placeholder="Quét mã vạch barcode hoặc gõ số sê-ri..."
+                                (keydown.enter)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
+                                class="flex-1 px-2.5 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white font-mono text-xs focus:outline-none focus:border-purple-400"
+                              />
+                              <button
+                                type="button"
+                                (click)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
+                                class="px-3 py-1.5 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-xs text-slate-300 cursor-pointer"
+                              >
+                                Gán
+                              </button>
+                            </div>
+
+                            @if (item.availableSerials.length > 0) {
+                              <div class="bg-[#161b26] p-2 rounded border border-[#272f3d] space-y-1 max-h-28 overflow-y-auto">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">
+                                  Serial khả dụng tại kho ({{ item.availableSerials.length }}):
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
+                                  @for (avail of item.availableSerials; track avail.id) {
+                                    <button
+                                      type="button"
+                                      (click)="toggleSerialSelection(item.skuId, avail.serialNumber)"
+                                      [disabled]="isSerialSelectedElsewhere(avail.serialNumber, item.skuId) || (getItemAssignedCount(item.skuId) >= item.quantity && !isSerialSelected(item.skuId, avail.serialNumber))"
+                                      class="text-left px-2 py-1 rounded border text-[11px] font-mono flex items-center justify-between cursor-pointer disabled:opacity-40"
+                                      [class.bg-purple-500/20]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.border-purple-500/50]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.text-purple-200]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.bg-[#090d16]]="!isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.border-[#272f3d]]="!isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.text-slate-300]="!isSerialSelected(item.skuId, avail.serialNumber)"
+                                    >
+                                      <span class="truncate">{{ avail.serialNumber }}</span>
+                                      <span class="text-[9px] text-emerald-400 uppercase">Sẵn sàng</span>
+                                    </button>
+                                  }
+                                </div>
+                              </div>
+                            } @else {
+                              <div class="text-[11px] text-amber-400 bg-amber-500/10 p-2 rounded border border-amber-500/20">
+                                Không tìm thấy serial sẵn sàng tại chi nhánh này. Bạn có thể quét mã vạch trực tiếp từ vỏ hộp.
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          @if (errorMessage()) {
+            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-300 text-xs">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+            <button
+              type="button"
+              (click)="onClose()"
+              [disabled]="isSubmitting()"
+              class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-xs text-slate-300 cursor-pointer disabled:opacity-50"
+            >
+              Hủy Bỏ
+            </button>
+            <button
+              type="button"
+              (click)="onSubmit()"
+              [disabled]="isSubmitting() || !isAllSerialsProvided()"
+              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {{ isSubmitting() ? 'Đang Xuất Kho Lắp Ráp...' : 'Xác Nhận Chuyển Bàn Lắp Ráp' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  `,
+})
+export class AssembleDialogComponent {
+  private readonly detailService = inject(AdminOrderDetailService);
+
+  readonly order = input.required<AdminOrderDetail>();
+  readonly isOpen = input<boolean>(false);
+
+  readonly closed = output<void>();
+  readonly confirmed = output<void>();
+
+  readonly requirements = signal<AssemblyRequirementsResult | null>(null);
+  readonly isLoading = signal<boolean>(false);
+  readonly isSubmitting = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
+
+  readonly selectedSerials = signal<SelectedSerialEntry[]>([]);
+
+  technicianName = 'Nguyễn Văn Kỹ Thuật (KTV-08)';
+
+  readonly requiredSerialsCount = computed<number>(() => {
+    const req = this.requirements();
+    if (!req) return 0;
+    return req.items
+      .filter((i) => i.serialRequired)
+      .reduce((sum, item) => sum + item.quantity, 0);
+  });
+
+  readonly selectedSerialsCount = computed<number>(() => {
+    return this.selectedSerials().length;
+  });
+
+  readonly isAllSerialsProvided = computed<boolean>(() => {
+    const req = this.requirements();
+    if (!req) return false;
+    for (const item of req.items) {
+      if (item.serialRequired) {
+        const count = this.selectedSerials().filter((s) => s.skuId === item.skuId).length;
+        if (count !== item.quantity) {
+          return false;
+        }
+      }
+    }
+    return true;
+  });
+
+  constructor() {
+    effect(() => {
+      if (this.isOpen()) {
+        this.loadRequirements();
+        this.selectedSerials.set([]);
+        this.errorMessage.set(null);
+      }
+    });
+  }
+
+  async loadRequirements(): Promise<void> {
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+    try {
+      const res = await this.detailService.fetchAssemblyRequirements(this.order().id);
+      this.requirements.set(res);
+
+      if (res) {
+        const autoSelected: SelectedSerialEntry[] = [];
+        for (const item of res.items) {
+          if (item.serialRequired && item.availableSerials.length > 0) {
+            const needed = item.quantity;
+            for (let i = 0; i < Math.min(needed, item.availableSerials.length); i++) {
+              autoSelected.push({
+                skuId: item.skuId,
+                serialNumber: item.availableSerials[i].serialNumber,
+              });
+            }
+          }
+        }
+        if (autoSelected.length > 0) {
+          this.selectedSerials.set(autoSelected);
+        }
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Loi khi tai linh kien lap rap';
+      this.errorMessage.set(msg);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  getItemAssignedSerials(skuId: number): string[] {
+    return this.selectedSerials()
+      .filter((s) => s.skuId === skuId)
+      .map((s) => s.serialNumber);
+  }
+
+  getItemAssignedCount(skuId: number): number {
+    return this.selectedSerials().filter((s) => s.skuId === skuId).length;
+  }
+
+  isSerialSelected(skuId: number, serialNumber: string): boolean {
+    return this.selectedSerials().some(
+      (s) => s.skuId === skuId && s.serialNumber === serialNumber,
+    );
+  }
+
+  isSerialSelectedElsewhere(serialNumber: string, currentSkuId: number): boolean {
+    return this.selectedSerials().some(
+      (s) => s.skuId !== currentSkuId && s.serialNumber === serialNumber,
+    );
+  }
+
+  toggleSerialSelection(skuId: number, serialNumber: string): void {
+    const list = this.selectedSerials();
+    const existingIndex = list.findIndex(
+      (s) => s.skuId === skuId && s.serialNumber === serialNumber,
+    );
+    if (existingIndex >= 0) {
+      this.selectedSerials.set(list.filter((_, idx) => idx !== existingIndex));
+    } else {
+      this.selectedSerials.set([...list, { skuId, serialNumber }]);
+    }
+  }
+
+  addCustomSerial(skuId: number, inputSerial: string): void {
+    const trimmed = inputSerial.trim();
+    if (!trimmed) return;
+
+    if (this.selectedSerials().some((s) => s.serialNumber === trimmed)) {
+      this.errorMessage.set(`Số sê-ri ${trimmed} đã được chọn.`);
+      return;
+    }
+
+    this.selectedSerials.set([...this.selectedSerials(), { skuId, serialNumber: trimmed }]);
+    this.errorMessage.set(null);
+  }
+
+  removeSerial(skuId: number, serialNumber: string): void {
+    this.selectedSerials.set(
+      this.selectedSerials().filter(
+        (s) => !(s.skuId === skuId && s.serialNumber === serialNumber),
+      ),
+    );
+  }
+
+  onClose(): void {
+    if (!this.isSubmitting()) {
+      this.closed.emit();
+    }
+  }
+
+  async onSubmit(): Promise<void> {
+    if (!this.isAllSerialsProvided()) {
+      this.errorMessage.set('Vui lòng quét hoặc chọn đầy đủ số sê-ri cho các linh kiện bắt buộc.');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+
+    try {
+      await this.detailService.assembleOrder(this.order().id, {
+        technicianName: this.technicianName.trim() || undefined,
+        serialAssignments: this.selectedSerials(),
+      });
+      this.confirmed.emit();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Khong the chuyen ban lap rap PC';
+      this.errorMessage.set(msg);
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+}
