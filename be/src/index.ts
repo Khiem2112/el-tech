@@ -18,6 +18,7 @@ import { adminCategoryRouter } from './routes/admin/category.routes.js';
 import { adminProductTemplateRouter } from './routes/admin/product-template.routes.js';
 import { adminProductVariantRouter } from './routes/admin/product-variant.routes.js';
 import { adminPcBundleRouter } from './routes/admin/pc-bundle.routes.js';
+import { adminSupplierRouter } from './routes/admin/supplier.routes.js';
 import { variantCatalogRouter } from './routes/admin/variant-catalog.routes.js';
 
 const app = express();
@@ -48,6 +49,8 @@ app.use('/api/admin/product-variants', adminProductVariantRouter);
 app.use('/v1/admin/product-variants', adminProductVariantRouter);
 app.use('/api/admin/pc-bundles', adminPcBundleRouter);
 app.use('/v1/admin/pc-bundles', adminPcBundleRouter);
+app.use('/api/admin/suppliers', adminSupplierRouter);
+app.use('/v1/admin/suppliers', adminSupplierRouter);
 app.use('/api/admin/catalog/variants', variantCatalogRouter);
 app.use('/v1/admin/catalog/variants', variantCatalogRouter);
 app.use(errorHandler);
