@@ -114,8 +114,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'inventory/transfers',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./inventory/admin-transfers-page.component').then(
+            (module) => module.AdminTransfersPageComponent,
           ),
       },
       {
