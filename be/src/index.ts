@@ -20,6 +20,7 @@ import { adminProductVariantRouter } from './routes/admin/product-variant.routes
 import { adminPcBundleRouter } from './routes/admin/pc-bundle.routes.js';
 import { adminSupplierRouter } from './routes/admin/supplier.routes.js';
 import { adminPurchaseOrderRouter } from './routes/admin/purchase-order.routes.js';
+import { adminSupplierReturnRouter } from './routes/admin/supplier-return.routes.js';
 import { variantCatalogRouter } from './routes/admin/variant-catalog.routes.js';
 
 const app = express();
@@ -54,6 +55,8 @@ app.use('/api/admin/suppliers', adminSupplierRouter);
 app.use('/v1/admin/suppliers', adminSupplierRouter);
 app.use('/api/admin/purchase-orders', adminPurchaseOrderRouter);
 app.use('/v1/admin/purchase-orders', adminPurchaseOrderRouter);
+app.use('/api/admin/supplier-returns', adminSupplierReturnRouter);
+app.use('/v1/admin/supplier-returns', adminSupplierReturnRouter);
 app.use('/api/admin/catalog/variants', variantCatalogRouter);
 app.use('/v1/admin/catalog/variants', variantCatalogRouter);
 app.use(errorHandler);

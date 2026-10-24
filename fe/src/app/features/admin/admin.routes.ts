@@ -149,8 +149,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'procurement/supplier-returns',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./procurement/admin-supplier-returns-page.component').then(
+            (module) => module.AdminSupplierReturnsPageComponent,
           ),
       },
       {
