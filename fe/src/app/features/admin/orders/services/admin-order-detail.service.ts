@@ -220,6 +220,81 @@ export type OrderOperationResponse = {
   stockMoveCode?: string;
 };
 
+export type StandaloneSerialRequirementItem = {
+  skuId: number;
+  skuCode: string;
+  name: string;
+  quantity: number;
+  availableSerials: AvailableSerialItem[];
+};
+
+export type PendingAmendmentItem = {
+  id: string;
+  type: string;
+  fee: string;
+  status: string;
+  reason: string;
+};
+
+export type ShippingRequirementsResult = {
+  orderId: string;
+  orderCode: string;
+  hasAssembly: boolean;
+  fulfillmentMethod: 'PICKUP' | 'DELIVERY';
+  status: AdminOrderStatus;
+  pendingAmendments: PendingAmendmentItem[];
+  hasUnpaidAmendments: boolean;
+  standaloneSerialRequirements: StandaloneSerialRequirementItem[];
+};
+
+export type ReturnItem = {
+  skuId: number;
+  skuCode: string;
+  name: string;
+  quantity: number;
+};
+
+export type ReturnIssuedSerial = {
+  id: string;
+  serialNumber: string;
+  skuId: number;
+  skuCode: string;
+};
+
+export type ReturnRequirementsResult = {
+  orderId: string;
+  orderCode: string;
+  status: AdminOrderStatus;
+  items: ReturnItem[];
+  issuedSerials: ReturnIssuedSerial[];
+};
+
+export type ShipOrderPayload = {
+  carrier: string;
+  trackingCode: string;
+  note?: string;
+  serialAssignments?: Array<{ skuId: number; serialNumber: string }>;
+};
+
+export type DeliveryFailedPayload = {
+  reason: string;
+  note?: string;
+};
+
+export type ScheduleRedeliveryPayload = {
+  redeliveryDate: string;
+  note?: string;
+};
+
+export type InitiateReturnPayload = {
+  note?: string;
+};
+
+export type ReceiveReturnPayload = {
+  note?: string;
+  verifiedSerialNumbers?: string[];
+};
+
 @Injectable({ providedIn: 'root' })
 export class AdminOrderDetailService {
   private readonly http = inject(HttpClient);
@@ -413,6 +488,122 @@ export class AdminOrderDetailService {
 
     if (!response.success) {
       throw new Error(response.error.messageKey || 'Loi khi bao san sang nhan tai showroom');
+    }
+
+    return response.data;
+  }
+
+  async getShippingRequirements(orderId: string): Promise<ShippingRequirementsResult> {
+    const response = await firstValueFrom(
+      this.http.get<ApiResponse<ShippingRequirementsResult>>(
+        `${this.baseUrl}/${orderId}/shipping-requirements`,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi tai thong tin dieu kien xuat kho giao hang');
+    }
+
+    return response.data;
+  }
+
+  async getReturnRequirements(orderId: string): Promise<ReturnRequirementsResult> {
+    const response = await firstValueFrom(
+      this.http.get<ApiResponse<ReturnRequirementsResult>>(
+        `${this.baseUrl}/${orderId}/return-requirements`,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi tai danh sach linh kien nhan hang chuyen hoan');
+    }
+
+    return response.data;
+  }
+
+  async shipOrder(orderId: string, payload: ShipOrderPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/ship`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      const detailsMsg = response.error.details && typeof response.error.details === 'object' && 'message' in response.error.details
+        ? String(response.error.details['message'])
+        : null;
+      throw new Error(detailsMsg || response.error.messageKey || 'Loi khi xuat kho ban giao van chuyen');
+    }
+
+    return response.data;
+  }
+
+  async deliveryFailed(orderId: string, payload: DeliveryFailedPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/delivery-failed`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi ghi nhan giao hang that bai');
+    }
+
+    return response.data;
+  }
+
+  async scheduleRedelivery(orderId: string, payload: ScheduleRedeliveryPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/schedule-redelivery`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      const detailsMsg = response.error.details && typeof response.error.details === 'object' && 'message' in response.error.details
+        ? String(response.error.details['message'])
+        : null;
+      throw new Error(detailsMsg || response.error.messageKey || 'Loi khi len lich hen giao lai');
+    }
+
+    return response.data;
+  }
+
+  async initiateReturn(orderId: string, payload?: InitiateReturnPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/initiate-return`,
+        payload || {},
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi xac nhan kien hang chuyen hoan ve kho');
+    }
+
+    return response.data;
+  }
+
+  async receiveReturn(orderId: string, payload?: ReceiveReturnPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/receive-return`,
+        payload || {},
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi xac nhan nhan hang hoan ve kho chi nhanh');
     }
 
     return response.data;

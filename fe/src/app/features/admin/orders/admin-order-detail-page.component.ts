@@ -17,6 +17,11 @@ import { ConfirmCodDialogComponent } from './components/modals/confirm-cod-dialo
 import { PrepareDialogComponent } from './components/modals/prepare-dialog.component';
 import { AssembleDialogComponent } from './components/modals/assemble-dialog.component';
 import { ReadyForPickupDialogComponent } from './components/modals/ready-for-pickup-dialog.component';
+import { ShipDialogComponent } from './components/modals/ship-dialog.component';
+import { DeliveryFailedDialogComponent } from './components/modals/delivery-failed-dialog.component';
+import { RedeliveryDialogComponent } from './components/modals/redelivery-dialog.component';
+import { ReturnInitiateDialogComponent } from './components/modals/return-initiate-dialog.component';
+import { ReturnReceiveDialogComponent } from './components/modals/return-receive-dialog.component';
 import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
 @Component({
@@ -35,6 +40,11 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
     PrepareDialogComponent,
     AssembleDialogComponent,
     ReadyForPickupDialogComponent,
+    ShipDialogComponent,
+    DeliveryFailedDialogComponent,
+    RedeliveryDialogComponent,
+    ReturnInitiateDialogComponent,
+    ReturnReceiveDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -207,6 +217,41 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           (closed)="onModalClosed()"
           (confirmed)="onOperationConfirmed('Đã phát thông báo sẵn sàng nhận hàng tại showroom tới khách hàng.')"
         />
+
+        <app-ship-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-11'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xuất kho và chuyển đơn hàng sang trạng thái Đang Giao Hàng.')"
+        />
+
+        <app-delivery-failed-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-12'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã ghi nhận giao hàng thất bại thành công.')"
+        />
+
+        <app-redelivery-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-13'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã lên lịch hẹn giao lại thành công.')"
+        />
+
+        <app-return-initiate-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-14'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xác nhận kiện hàng đang chuyển hoàn về kho chi nhánh.')"
+        />
+
+        <app-return-receive-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-15'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã đối soát 100% linh kiện, khôi phục tồn kho onHand và chuyển đơn sang trạng thái Đã Về Kho.')"
+        />
       }
     </div>
   `,
@@ -217,7 +262,18 @@ export class AdminOrderDetailPageComponent implements OnInit {
 
   readonly orderId = signal<string>('');
   readonly actionToastMessage = signal<string | null>(null);
-  readonly activeModal = signal<'MOD-07' | 'MOD-08' | 'MOD-09' | 'MOD-10' | null>(null);
+  readonly activeModal = signal<
+    | 'MOD-07'
+    | 'MOD-08'
+    | 'MOD-09'
+    | 'MOD-10'
+    | 'MOD-11'
+    | 'MOD-12'
+    | 'MOD-13'
+    | 'MOD-14'
+    | 'MOD-15'
+    | null
+  >(null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -243,9 +299,19 @@ export class AdminOrderDetailPageComponent implements OnInit {
       this.activeModal.set('MOD-09');
     } else if (event.modalId === 'MOD-10' || event.actionKey === 'READY_PICKUP') {
       this.activeModal.set('MOD-10');
+    } else if (event.modalId === 'MOD-11' || event.actionKey === 'SHIP_ORDER') {
+      this.activeModal.set('MOD-11');
+    } else if (event.modalId === 'MOD-12' || event.actionKey === 'DELIVERY_FAILED') {
+      this.activeModal.set('MOD-12');
+    } else if (event.modalId === 'MOD-13' || event.actionKey === 'REDELIVERY') {
+      this.activeModal.set('MOD-13');
+    } else if (event.modalId === 'MOD-14' || event.actionKey === 'RETURNING') {
+      this.activeModal.set('MOD-14');
+    } else if (event.modalId === 'MOD-15' || event.actionKey === 'RETURNED_TO_BRANCH') {
+      this.activeModal.set('MOD-15');
     } else {
       this.actionToastMessage.set(
-        `Đã chọn thao tác: ${event.label} (Mã hành động: ${event.actionKey}${event.modalId ? ', Modal: ' + event.modalId : ''}). Modal nghiệp vụ tương ứng sẽ được kích hoạt ở các tác vụ tiếp theo (TASK-55, TASK-56).`
+        `Đã chọn thao tác: ${event.label} (Mã hành động: ${event.actionKey}${event.modalId ? ', Modal: ' + event.modalId : ''}).`
       );
     }
   }
