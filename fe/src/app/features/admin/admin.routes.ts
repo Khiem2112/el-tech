@@ -86,8 +86,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'orders/:id',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./orders/admin-order-detail-page.component').then(
+            (module) => module.AdminOrderDetailPageComponent,
           ),
       },
       {

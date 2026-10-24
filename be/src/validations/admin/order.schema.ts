@@ -50,3 +50,10 @@ export type QueryOrderInput = z.infer<typeof queryOrderSchema>;
 export type OrderStatusType = z.infer<typeof orderStatusEnum>;
 export type FulfillmentMethodType = z.infer<typeof fulfillmentMethodEnum>;
 export type PaymentMethodType = z.infer<typeof paymentMethodEnum>;
+
+export const updateOrderNotesSchema = z.object({
+  internalNotes: z.string().trim().max(2000).optional(),
+  customerNotes: z.string().trim().max(2000).optional(),
+});
+
+export type UpdateOrderNotesInput = z.infer<typeof updateOrderNotesSchema>;
