@@ -37,8 +37,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'catalog/brands',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./brands/admin-brands-page.component').then(
+            (module) => module.AdminBrandsPageComponent,
           ),
       },
       {

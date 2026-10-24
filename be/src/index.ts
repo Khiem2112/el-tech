@@ -13,6 +13,7 @@ import { reviewRouter } from './routes/review.routes.js';
 import { pcBuildRouter } from './routes/pc-build.routes.js';
 import { adminAuthRouter } from './routes/admin/admin-auth.routes.js';
 import { adminBranchRouter } from './routes/admin/branch.routes.js';
+import { adminBrandRouter } from './routes/admin/brand.routes.js';
 import { adminCategoryRouter } from './routes/admin/category.routes.js';
 
 const app = express();
@@ -35,6 +36,8 @@ app.use('/api/admin/branches', adminBranchRouter);
 app.use('/v1/admin/branches', adminBranchRouter);
 app.use('/api/admin/categories', adminCategoryRouter);
 app.use('/v1/admin/categories', adminCategoryRouter);
+app.use('/api/admin/brands', adminBrandRouter);
+app.use('/v1/admin/brands', adminBrandRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {
