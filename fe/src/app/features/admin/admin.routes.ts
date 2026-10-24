@@ -93,8 +93,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'inventory/balances',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./inventory/admin-inventory-balances-page.component').then(
+            (module) => module.AdminInventoryBalancesPageComponent,
           ),
       },
       {
@@ -107,8 +107,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'inventory/ledger',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./inventory/admin-stock-ledger-page.component').then(
+            (module) => module.AdminStockLedgerPageComponent,
           ),
       },
       {

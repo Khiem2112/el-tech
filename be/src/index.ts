@@ -22,6 +22,7 @@ import { adminSupplierRouter } from './routes/admin/supplier.routes.js';
 import { adminPurchaseOrderRouter } from './routes/admin/purchase-order.routes.js';
 import { adminSupplierReturnRouter } from './routes/admin/supplier-return.routes.js';
 import { variantCatalogRouter } from './routes/admin/variant-catalog.routes.js';
+import { adminInventoryRouter } from './routes/admin/inventory.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -59,6 +60,8 @@ app.use('/api/admin/supplier-returns', adminSupplierReturnRouter);
 app.use('/v1/admin/supplier-returns', adminSupplierReturnRouter);
 app.use('/api/admin/catalog/variants', variantCatalogRouter);
 app.use('/v1/admin/catalog/variants', variantCatalogRouter);
+app.use('/api/admin/inventory', adminInventoryRouter);
+app.use('/v1/admin/inventory', adminInventoryRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {
