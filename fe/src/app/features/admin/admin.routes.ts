@@ -128,22 +128,22 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'procurement/purchase-orders',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./procurement/admin-purchase-orders-page.component').then(
+            (module) => module.AdminPurchaseOrdersPageComponent,
           ),
       },
       {
         path: 'procurement/purchase-orders/new',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./procurement/admin-purchase-order-detail-page.component').then(
+            (module) => module.AdminPurchaseOrderDetailPageComponent,
           ),
       },
       {
         path: 'procurement/purchase-orders/:id',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./procurement/admin-purchase-order-detail-page.component').then(
+            (module) => module.AdminPurchaseOrderDetailPageComponent,
           ),
       },
       {
