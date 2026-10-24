@@ -22,6 +22,12 @@ import { DeliveryFailedDialogComponent } from './components/modals/delivery-fail
 import { RedeliveryDialogComponent } from './components/modals/redelivery-dialog.component';
 import { ReturnInitiateDialogComponent } from './components/modals/return-initiate-dialog.component';
 import { ReturnReceiveDialogComponent } from './components/modals/return-receive-dialog.component';
+import { CompleteOrderDialogComponent } from './components/modals/complete-order-dialog.component';
+import { CancelOrderDialogComponent } from './components/modals/cancel-order-dialog.component';
+import { ResolveHoldDialogComponent } from './components/modals/resolve-hold-dialog.component';
+import { PickupToDeliveryAmendmentDialogComponent } from './components/modals/pickup-to-delivery-amendment-dialog.component';
+import { ResolveQrDiscrepancyDialogComponent } from './components/modals/resolve-qr-discrepancy-dialog.component';
+import { ManualRefundDialogComponent } from './components/modals/manual-refund-dialog.component';
 import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
 @Component({
@@ -45,6 +51,12 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
     RedeliveryDialogComponent,
     ReturnInitiateDialogComponent,
     ReturnReceiveDialogComponent,
+    CompleteOrderDialogComponent,
+    CancelOrderDialogComponent,
+    ResolveHoldDialogComponent,
+    PickupToDeliveryAmendmentDialogComponent,
+    ResolveQrDiscrepancyDialogComponent,
+    ManualRefundDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -186,7 +198,10 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
         <app-order-lines-pc-group [order]="ord" />
 
-        <app-order-finance-summary [order]="ord" />
+        <app-order-finance-summary
+          [order]="ord"
+          (openModalRequested)="onActionTriggered({ actionKey: $event, modalId: $event, targetStatus: '', label: $event })"
+        />
 
         <app-order-timeline-history [order]="ord" />
 
@@ -252,6 +267,48 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           (closed)="onModalClosed()"
           (confirmed)="onOperationConfirmed('Đã đối soát 100% linh kiện, khôi phục tồn kho onHand và chuyển đơn sang trạng thái Đã Về Kho.')"
         />
+
+        <app-complete-order-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-16'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã hoàn tất đơn hàng, quyết toán tài chính và kích hoạt quyền đánh giá đã xác minh thành công.')"
+        />
+
+        <app-cancel-order-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-17'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã hủy đơn hàng, giải phóng kho giữ chỗ và cập nhật trạng thái tiền cọc/hoàn tiền.')"
+        />
+
+        <app-resolve-hold-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-18'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã cập nhật trạng thái ngoại lệ tạm giữ của đơn hàng thành công.')"
+        />
+
+        <app-pickup-to-delivery-amendment-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-19'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã tạo phụ lục chuyển sang giao hàng tận nơi thành công.')"
+        />
+
+        <app-resolve-qr-discrepancy-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-20'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xử lý đối soát giao dịch VietQR thành công.')"
+        />
+
+        <app-manual-refund-dialog
+          [order]="ord"
+          [isOpen]="activeModal() === 'MOD-21'"
+          (closed)="onModalClosed()"
+          (confirmed)="onOperationConfirmed('Đã xác nhận chuyển khoản hoàn tiền thủ công thành công.')"
+        />
       }
     </div>
   `,
@@ -272,6 +329,12 @@ export class AdminOrderDetailPageComponent implements OnInit {
     | 'MOD-13'
     | 'MOD-14'
     | 'MOD-15'
+    | 'MOD-16'
+    | 'MOD-17'
+    | 'MOD-18'
+    | 'MOD-19'
+    | 'MOD-20'
+    | 'MOD-21'
     | null
   >(null);
 
@@ -309,6 +372,22 @@ export class AdminOrderDetailPageComponent implements OnInit {
       this.activeModal.set('MOD-14');
     } else if (event.modalId === 'MOD-15' || event.actionKey === 'RETURNED_TO_BRANCH') {
       this.activeModal.set('MOD-15');
+    } else if (event.modalId === 'MOD-16' || event.actionKey === 'COMPLETE_ORDER') {
+      this.activeModal.set('MOD-16');
+    } else if (event.modalId === 'MOD-17' || event.actionKey === 'CANCEL_ORDER') {
+      this.activeModal.set('MOD-17');
+    } else if (
+      event.modalId === 'MOD-18' ||
+      event.actionKey === 'HOLD_ORDER' ||
+      event.actionKey === 'RESOLVE_HOLD'
+    ) {
+      this.activeModal.set('MOD-18');
+    } else if (event.modalId === 'MOD-19' || event.actionKey === 'PICKUP_TO_DELIVERY') {
+      this.activeModal.set('MOD-19');
+    } else if (event.modalId === 'MOD-20' || event.actionKey === 'RESOLVE_QR_DISCREPANCY') {
+      this.activeModal.set('MOD-20');
+    } else if (event.modalId === 'MOD-21' || event.actionKey === 'MANUAL_REFUND') {
+      this.activeModal.set('MOD-21');
     } else {
       this.actionToastMessage.set(
         `Đã chọn thao tác: ${event.label} (Mã hành động: ${event.actionKey}${event.modalId ? ', Modal: ' + event.modalId : ''}).`

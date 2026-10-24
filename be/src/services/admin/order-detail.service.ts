@@ -3,8 +3,10 @@ import {
   FulfillmentMethod,
   OrderHoldReason,
   OrderStatus,
+  PaymentChargeStatus,
   PaymentMethod,
   PaymentState,
+  RefundStatus,
   SalesLineType,
   ServiceType,
 } from '@prisma/client';
@@ -124,6 +126,7 @@ export type AdminOrderDetailDto = {
       chargeType: string;
       providerReference: string;
       expectedAmount: string;
+      receivedAmount?: string;
       status: string;
       createdAt: Date;
       providerTransactionId?: string;
@@ -173,6 +176,9 @@ function calculateAvailableTransitions(
   fulfillmentMethod: FulfillmentMethod,
   hasAssembly: boolean,
   redeliveryAttemptCount: number,
+  holdReason?: OrderHoldReason | null,
+  hasPendingRefund?: boolean,
+  hasQrReview?: boolean,
 ): AdminOrderTransitionDto[] {
   const transitions: AdminOrderTransitionDto[] = [];
 
@@ -310,6 +316,12 @@ function calculateAvailableTransitions(
         isPrimary: true,
       });
       transitions.push({
+        targetStatus: OrderStatus.READY_FOR_PICKUP,
+        label: 'Doi Sang Giao Tan Noi',
+        actionKey: 'PICKUP_TO_DELIVERY',
+        modalId: 'MOD-19',
+      });
+      transitions.push({
         targetStatus: OrderStatus.ON_HOLD,
         label: 'Tam Giu Don Hang',
         actionKey: 'HOLD_ORDER',
@@ -380,13 +392,30 @@ function calculateAvailableTransitions(
       break;
 
     case OrderStatus.ON_HOLD:
+      if (holdReason === OrderHoldReason.PAYMENT_REVIEW || hasQrReview) {
+        transitions.push({
+          targetStatus: OrderStatus.CONFIRMED,
+          label: 'Doi Soat Lech VietQR',
+          actionKey: 'RESOLVE_QR_DISCREPANCY',
+          modalId: 'MOD-20',
+          isPrimary: true,
+        });
+      }
       transitions.push({
         targetStatus: OrderStatus.CONFIRMED,
         label: 'Xu Ly Xong - Tiep Tuc Don',
         actionKey: 'RESOLVE_HOLD',
         modalId: 'MOD-18',
-        isPrimary: true,
+        isPrimary: !(holdReason === OrderHoldReason.PAYMENT_REVIEW || hasQrReview),
       });
+      if (holdReason === OrderHoldReason.PICKUP_EXPIRED) {
+        transitions.push({
+          targetStatus: OrderStatus.READY_FOR_PICKUP,
+          label: 'Chuyen Sang Giao Tan Noi',
+          actionKey: 'PICKUP_TO_DELIVERY',
+          modalId: 'MOD-19',
+        });
+      }
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
         label: 'Huy Don Hang',
@@ -398,6 +427,15 @@ function calculateAvailableTransitions(
 
     default:
       break;
+  }
+
+  if (hasPendingRefund) {
+    transitions.push({
+      targetStatus: status,
+      label: 'Xac Nhan Hoan Tien Thu Cong',
+      actionKey: 'MANUAL_REFUND',
+      modalId: 'MOD-21',
+    });
   }
 
   return transitions;
@@ -652,11 +690,21 @@ export class AdminOrderDetailService {
 
     const pcBuildGroups = Array.from(pcBuildMap.values());
 
+    const hasPendingRefund = Boolean(
+      order.payment?.refunds.some((r) => r.status === RefundStatus.PENDING),
+    );
+    const hasQrReview = Boolean(
+      order.payment?.charges.some((c) => c.status === PaymentChargeStatus.REVIEW),
+    );
+
     const availableTransitions = calculateAvailableTransitions(
       order.status,
       order.fulfillmentMethod,
       hasAssembly,
       order.redeliveryAttemptCount,
+      order.holdReason,
+      hasPendingRefund,
+      hasQrReview,
     );
 
     return {
@@ -717,6 +765,7 @@ export class AdminOrderDetailService {
               chargeType: c.chargeType,
               providerReference: c.providerReference,
               expectedAmount: c.expectedAmount.toString(),
+              receivedAmount: c.transactions[0]?.receivedAmount?.toString(),
               status: c.status,
               createdAt: c.createdAt,
               providerTransactionId: c.transactions[0]?.providerTransactionId,

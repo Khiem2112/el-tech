@@ -117,6 +117,7 @@ export type AdminOrderDetail = {
       chargeType: string;
       providerReference: string;
       expectedAmount: string;
+      receivedAmount?: string;
       status: string;
       createdAt: string;
       providerTransactionId?: string;
@@ -293,6 +294,82 @@ export type InitiateReturnPayload = {
 export type ReceiveReturnPayload = {
   note?: string;
   verifiedSerialNumbers?: string[];
+};
+
+export type CancellationPreview = {
+  orderId: string;
+  orderCode: string;
+  currentStatus: AdminOrderStatus;
+  canCancel: boolean;
+  blockReason?: string;
+  isCustomPc: boolean;
+  hasPreparedComponents: boolean;
+  depositRequired: string;
+  isDepositForfeited: boolean;
+  totalReceived: string;
+  refundableAmount: string;
+  reservedItemsCount: number;
+};
+
+export type QrDiscrepancyDetail = {
+  orderId: string;
+  orderCode: string;
+  expectedAmount: string;
+  receivedAmount: string;
+  differenceAmount: string;
+  isUnderpaid: boolean;
+  isOverpaid: boolean;
+  isExactMatch: boolean;
+  chargeId: string;
+  providerReference: string;
+  providerTransactionId?: string;
+  reviewDeadlineAt?: string;
+};
+
+export type CompleteOrderPayload = {
+  codCollectedAmount?: number;
+  actorName?: string;
+  note?: string;
+  confirmedSerialNumbers?: string[];
+};
+
+export type CancelOrderPayload = {
+  reason: string;
+  note?: string;
+};
+
+export type HoldOrderPayload = {
+  holdReason: 'PAYMENT_REVIEW' | 'PAID_BUT_OUT_OF_STOCK' | 'PICKUP_EXPIRED';
+  note: string;
+};
+
+export type ResolveHoldPayload = {
+  action: 'CONFIRM_RESUME' | 'CANCEL_REFUND' | 'EXTEND_PICKUP';
+  reason: string;
+  note?: string;
+};
+
+export type PickupToDeliveryPayload = {
+  receiverName: string;
+  receiverPhone: string;
+  deliveryAddress: string;
+  shippingFee: number;
+  reason?: string;
+  acceptanceChannel?: 'PHONE' | 'EMAIL' | 'IN_APP';
+  acceptedByValue?: string;
+};
+
+export type ResolveQrDiscrepancyPayload = {
+  resolutionType: 'MANUAL_MATCH' | 'CANCEL_REFUND';
+  note: string;
+  transactionReference?: string;
+};
+
+export type ManualRefundPayload = {
+  transactionReference: string;
+  bankName?: string;
+  transferredAt?: string;
+  note?: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -604,6 +681,161 @@ export class AdminOrderDetailService {
 
     if (!response.success) {
       throw new Error(response.error.messageKey || 'Loi khi xac nhan nhan hang hoan ve kho chi nhanh');
+    }
+
+    return response.data;
+  }
+
+  async getCancellationPreview(orderId: string): Promise<CancellationPreview | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<CancellationPreview>>(
+          `${this.baseUrl}/${orderId}/cancel-preview`,
+          { headers: this.getAuthHeaders() },
+        ),
+      );
+      return response.success ? response.data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async getQrDiscrepancy(orderId: string): Promise<QrDiscrepancyDetail | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<QrDiscrepancyDetail>>(
+          `${this.baseUrl}/${orderId}/qr-discrepancy`,
+          { headers: this.getAuthHeaders() },
+        ),
+      );
+      return response.success ? response.data : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async completeOrder(orderId: string, payload: CompleteOrderPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/complete`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi hoan tat don hang');
+    }
+
+    return response.data;
+  }
+
+  async cancelOrder(orderId: string, payload: CancelOrderPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/cancel`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      const detailsMsg =
+        response.error.details &&
+        typeof response.error.details === 'object' &&
+        'message' in response.error.details
+          ? String(response.error.details['message'])
+          : null;
+      throw new Error(detailsMsg || response.error.messageKey || 'Loi khi huy don hang');
+    }
+
+    return response.data;
+  }
+
+  async holdOrder(orderId: string, payload: HoldOrderPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/hold`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi tam giu don hang');
+    }
+
+    return response.data;
+  }
+
+  async resolveHold(orderId: string, payload: ResolveHoldPayload): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/resolve-hold`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi giai quyet ngoai le ON_HOLD');
+    }
+
+    return response.data;
+  }
+
+  async pickupToDelivery(
+    orderId: string,
+    payload: PickupToDeliveryPayload,
+  ): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/pickup-to-delivery`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi tao phu luc chuyen sang giao hang tan noi');
+    }
+
+    return response.data;
+  }
+
+  async resolveQrDiscrepancy(
+    orderId: string,
+    payload: ResolveQrDiscrepancyPayload,
+  ): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/${orderId}/resolve-qr-discrepancy`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi xu ly doi soat giao dich VietQR');
+    }
+
+    return response.data;
+  }
+
+  async processManualRefund(
+    refundId: string,
+    payload: ManualRefundPayload,
+  ): Promise<OrderOperationResponse> {
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<OrderOperationResponse>>(
+        `${this.baseUrl}/refunds/${refundId}/process-manual`,
+        payload,
+        { headers: this.getAuthHeaders() },
+      ),
+    );
+
+    if (!response.success) {
+      throw new Error(response.error.messageKey || 'Loi khi xac nhan hoan tien thu cong');
     }
 
     return response.data;

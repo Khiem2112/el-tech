@@ -139,12 +139,29 @@ export class OrderActionBarComponent {
 
   readonly standardActions = computed<AdminOrderTransition[]>(() => {
     const transitions = this.order().availableTransitions;
-    return transitions.filter((t) => !t.isPrimary && !t.isDestructive && t.actionKey !== 'HOLD_ORDER');
+    return transitions.filter(
+      (t) =>
+        !t.isPrimary &&
+        !t.isDestructive &&
+        t.actionKey !== 'HOLD_ORDER' &&
+        t.actionKey !== 'AMENDMENT' &&
+        t.actionKey !== 'PICKUP_TO_DELIVERY' &&
+        t.actionKey !== 'RESOLVE_QR_DISCREPANCY' &&
+        t.actionKey !== 'MANUAL_REFUND',
+    );
   });
 
   readonly exceptionActions = computed<AdminOrderTransition[]>(() => {
     const transitions = this.order().availableTransitions;
-    return transitions.filter((t) => t.isDestructive || t.actionKey === 'HOLD_ORDER' || t.actionKey === 'AMENDMENT');
+    return transitions.filter(
+      (t) =>
+        t.isDestructive ||
+        t.actionKey === 'HOLD_ORDER' ||
+        t.actionKey === 'AMENDMENT' ||
+        t.actionKey === 'PICKUP_TO_DELIVERY' ||
+        t.actionKey === 'RESOLVE_QR_DISCREPANCY' ||
+        t.actionKey === 'MANUAL_REFUND',
+    );
   });
 
   toggleWorkflowMenu(): void {

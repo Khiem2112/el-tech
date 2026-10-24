@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { AdminOrderDetail } from '../services/admin-order-detail.service';
 
 @Component({
@@ -34,6 +34,32 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
               Đối với đơn đặt hàng COD có dịch vụ lắp ráp máy tính (PC Build), hệ thống yêu cầu cọc tối thiểu 10% qua chuyển khoản VietQR để xác thực linh kiện. Số tiền còn lại thu tiền mặt (COD) tại quầy hoặc khi giao hàng.
             </div>
           </div>
+
+          @if (hasQrReview()) {
+            <div class="p-2.5 bg-rose-500/15 border border-rose-500/30 rounded flex items-center justify-between text-xs text-rose-300">
+              <span>Phát hiện giao dịch chuyển khoản VietQR bị lệch cần đối soát.</span>
+              <button
+                type="button"
+                (click)="openModalRequested.emit('MOD-20')"
+                class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded text-[11px] font-bold cursor-pointer"
+              >
+                Đối Soát QR
+              </button>
+            </div>
+          }
+
+          @if (hasPendingRefund()) {
+            <div class="p-2.5 bg-amber-500/15 border border-amber-500/30 rounded flex items-center justify-between text-xs text-amber-300">
+              <span>Có khoản hoàn tiền đang ở trạng thái chờ thực hiện chuyển khoản.</span>
+              <button
+                type="button"
+                (click)="openModalRequested.emit('MOD-21')"
+                class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-slate-950 rounded text-[11px] font-bold cursor-pointer"
+              >
+                Hoàn Tiền
+              </button>
+            </div>
+          }
         </div>
 
         <div class="bg-[#090d16] p-4 rounded-lg border border-[#272f3d] space-y-2">
@@ -112,8 +138,17 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
 })
 export class OrderFinanceSummaryComponent {
   readonly order = input.required<AdminOrderDetail>();
+  readonly openModalRequested = output<string>();
 
   readonly Number = Number;
+
+  readonly hasQrReview = computed<boolean>(() => {
+    return Boolean(this.order().payment?.charges.some((c) => c.status === 'REVIEW'));
+  });
+
+  readonly hasPendingRefund = computed<boolean>(() => {
+    return Boolean(this.order().payment?.refunds.some((r) => r.status === 'PENDING'));
+  });
 
   readonly totalAssemblyFee = computed<number>(() => {
     let sum = 0;
