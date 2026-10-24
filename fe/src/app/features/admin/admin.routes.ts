@@ -65,8 +65,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'catalog/variants',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./variants/admin-variants-page.component').then(
+            (module) => module.AdminVariantsPageComponent,
           ),
       },
       {

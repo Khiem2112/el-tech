@@ -17,6 +17,7 @@ import { adminBrandRouter } from './routes/admin/brand.routes.js';
 import { adminCategoryRouter } from './routes/admin/category.routes.js';
 import { adminProductTemplateRouter } from './routes/admin/product-template.routes.js';
 import { adminProductVariantRouter } from './routes/admin/product-variant.routes.js';
+import { variantCatalogRouter } from './routes/admin/variant-catalog.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -44,6 +45,8 @@ app.use('/api/admin/product-templates', adminProductTemplateRouter);
 app.use('/v1/admin/product-templates', adminProductTemplateRouter);
 app.use('/api/admin/product-variants', adminProductVariantRouter);
 app.use('/v1/admin/product-variants', adminProductVariantRouter);
+app.use('/api/admin/catalog/variants', variantCatalogRouter);
+app.use('/v1/admin/catalog/variants', variantCatalogRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {
