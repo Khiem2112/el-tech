@@ -44,22 +44,22 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'catalog/templates',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./templates/admin-product-templates-page.component').then(
+            (module) => module.AdminProductTemplatesPageComponent,
           ),
       },
       {
         path: 'catalog/templates/new',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./templates/admin-product-template-detail-page.component').then(
+            (module) => module.AdminProductTemplateDetailPageComponent,
           ),
       },
       {
         path: 'catalog/templates/:id',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./templates/admin-product-template-detail-page.component').then(
+            (module) => module.AdminProductTemplateDetailPageComponent,
           ),
       },
       {
