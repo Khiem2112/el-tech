@@ -30,6 +30,8 @@ import { adminPromotionRouter } from './routes/admin/promotion.routes.js';
 import { adminCouponRouter } from './routes/admin/coupon.routes.js';
 import { adminCustomerRouter } from './routes/admin/customer.routes.js';
 import { adminDeliveryFeeRouter } from './routes/admin/delivery-fee.routes.js';
+import { adminReviewRouter } from './routes/admin/review.routes.js';
+import { adminNotificationRouter } from './routes/admin/notification.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -89,6 +91,10 @@ app.use('/api/admin/delivery-fees', adminDeliveryFeeRouter);
 app.use('/v1/admin/delivery-fees', adminDeliveryFeeRouter);
 app.use('/api/admin/shipping-fees', adminDeliveryFeeRouter);
 app.use('/v1/admin/shipping-fees', adminDeliveryFeeRouter);
+app.use('/api/admin/reviews', adminReviewRouter);
+app.use('/v1/admin/reviews', adminReviewRouter);
+app.use('/api/admin/notifications', adminNotificationRouter);
+app.use('/v1/admin/notifications', adminNotificationRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {

@@ -170,8 +170,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'reviews',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./reviews/admin-reviews-page.component').then(
+            (module) => module.AdminReviewsPageComponent,
           ),
       },
       {
@@ -216,8 +216,8 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'settings/notification-outbox',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./notifications/admin-notification-outbox-page.component').then(
+            (module) => module.AdminNotificationOutboxPageComponent,
           ),
       },
     ],
