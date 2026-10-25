@@ -27,6 +27,7 @@ import { adminSerialRouter } from './routes/admin/serial.routes.js';
 import { adminTransferRouter } from './routes/admin/transfer.routes.js';
 import { adminOrderRouter } from './routes/admin/order.routes.js';
 import { adminPromotionRouter } from './routes/admin/promotion.routes.js';
+import { adminCouponRouter } from './routes/admin/coupon.routes.js';
 
 const app = express();
 const corsOrigin = environment.CORS_ORIGIN === '*' ? true : environment.CORS_ORIGIN;
@@ -78,6 +79,8 @@ app.use('/api/admin/orders', adminOrderRouter);
 app.use('/v1/admin/orders', adminOrderRouter);
 app.use('/api/admin/promotions', adminPromotionRouter);
 app.use('/v1/admin/promotions', adminPromotionRouter);
+app.use('/api/admin/coupons', adminCouponRouter);
+app.use('/v1/admin/coupons', adminCouponRouter);
 app.use(errorHandler);
 
 if (!process.env.VERCEL) {

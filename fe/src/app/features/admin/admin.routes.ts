@@ -193,6 +193,13 @@ export const ADMIN_ROUTES: Routes = [
         redirectTo: 'promotions/products',
       },
       {
+        path: 'promotions/coupons',
+        loadComponent: () =>
+          import('./coupons/admin-coupons-page.component').then(
+            (module) => module.AdminCouponsPageComponent,
+          ),
+      },
+      {
         path: 'settings/branches',
         loadComponent: () =>
           import('./branches/admin-branches-page.component').then(

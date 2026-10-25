@@ -104,20 +104,15 @@ type ToastNotification = {
           </span>
         </button>
 
-        <button
-          type="button"
-          (click)="activeTab.set('coupons')"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors"
-          [class.border-[#76b900]]="activeTab() === 'coupons'"
-          [class.text-[#76b900]]="activeTab() === 'coupons'"
-          [class.border-transparent]="activeTab() !== 'coupons'"
-          [class.text-slate-400]="activeTab() !== 'coupons'"
+        <a
+          routerLink="/admin/promotions/coupons"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
         >
           <span>Mã giảm giá (Coupon)</span>
           <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
             SCR-24
           </span>
-        </button>
+        </a>
 
         <button
           type="button"

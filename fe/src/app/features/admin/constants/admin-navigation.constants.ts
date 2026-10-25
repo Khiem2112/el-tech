@@ -173,6 +173,13 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         module: 'Chính Sách & Cài Đặt',
       },
       {
+        code: 'SCR-24',
+        title: 'Mã Giảm Giá Coupons',
+        route: 'promotions/coupons',
+        fullPath: '/admin/promotions/coupons',
+        module: 'Chính Sách & Cài Đặt',
+      },
+      {
         code: 'SCR-29',
         title: 'Chi Nhánh & Khu Vực',
         route: 'settings/branches',
