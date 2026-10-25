@@ -200,6 +200,13 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'promotions/shipping-fee',
+        loadComponent: () =>
+          import('./shipping-fee/admin-shipping-fee-page.component').then(
+            (module) => module.AdminShippingFeePageComponent,
+          ),
+      },
+      {
         path: 'settings/branches',
         loadComponent: () =>
           import('./branches/admin-branches-page.component').then(

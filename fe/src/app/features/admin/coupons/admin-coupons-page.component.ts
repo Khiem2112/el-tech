@@ -86,14 +86,15 @@ type ToastNotification = {
           </span>
         </a>
 
-        <div
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400"
+        <a
+          routerLink="/admin/promotions/shipping-fee"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
         >
           <span>Biểu phí giao hàng & Freeship</span>
           <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
             SCR-25
           </span>
-        </div>
+        </a>
       </nav>
 
       <!-- Guideline Note Banner -->

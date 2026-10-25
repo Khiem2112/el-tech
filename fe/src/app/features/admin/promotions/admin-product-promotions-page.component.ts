@@ -114,20 +114,15 @@ type ToastNotification = {
           </span>
         </a>
 
-        <button
-          type="button"
-          (click)="activeTab.set('shipping')"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors"
-          [class.border-[#76b900]]="activeTab() === 'shipping'"
-          [class.text-[#76b900]]="activeTab() === 'shipping'"
-          [class.border-transparent]="activeTab() !== 'shipping'"
-          [class.text-slate-400]="activeTab() !== 'shipping'"
+        <a
+          routerLink="/admin/promotions/shipping-fee"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
         >
           <span>Biểu phí giao hàng & Freeship</span>
           <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
             SCR-25
           </span>
-        </button>
+        </a>
       </nav>
 
       @if (activeTab() === 'promotions') {

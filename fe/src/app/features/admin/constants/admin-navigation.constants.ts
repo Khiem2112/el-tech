@@ -180,6 +180,13 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         module: 'Chính Sách & Cài Đặt',
       },
       {
+        code: 'SCR-25',
+        title: 'Biểu Phí Giao Hàng',
+        route: 'promotions/shipping-fee',
+        fullPath: '/admin/promotions/shipping-fee',
+        module: 'Chính Sách & Cài Đặt',
+      },
+      {
         code: 'SCR-29',
         title: 'Chi Nhánh & Khu Vực',
         route: 'settings/branches',
