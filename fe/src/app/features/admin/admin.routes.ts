@@ -23,7 +23,7 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./pages/admin-dashboard-page.component').then(
+          import('./dashboard/admin-dashboard-page.component').then(
             (module) => module.AdminDashboardPageComponent,
           ),
       },

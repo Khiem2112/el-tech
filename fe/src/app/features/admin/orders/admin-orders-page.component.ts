@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminBranch, AdminBranchService } from '../branches/services/admin-branch.service';
 import {
   AdminOrderListItem,
@@ -489,6 +489,7 @@ export class AdminOrdersPageComponent implements OnInit {
   readonly orderService = inject(AdminOrderService);
   private readonly branchService = inject(AdminBranchService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly branchList = signal<AdminBranch[]>([]);
   readonly groupMode = signal<'flat' | 'status' | 'branch'>('flat');
@@ -556,6 +557,18 @@ export class AdminOrdersPageComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    const queryTab = this.route.snapshot.queryParams['tab'] || this.route.snapshot.queryParams['status'];
+    const branchIdParam = this.route.snapshot.queryParams['branchId'];
+    if (queryTab) {
+      this.orderService.selectedTab.set(queryTab);
+    }
+    if (branchIdParam) {
+      const branchId = Number(branchIdParam);
+      if (!Number.isNaN(branchId) && branchId > 0) {
+        this.orderService.selectedBranchId.set(branchId);
+      }
+    }
+
     await Promise.all([
       this.orderService.loadOrders(),
       this.loadBranches(),

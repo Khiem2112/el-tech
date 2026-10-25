@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { StockLedgerSheetComponent } from './components/stock-ledger-sheet.component';
 import {
   AdminInventoryService,
@@ -333,6 +333,7 @@ import {
 })
 export class AdminInventoryBalancesPageComponent implements OnInit {
   readonly inventoryService = inject(AdminInventoryService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly searchQuery = signal<string>('');
   readonly selectedBranchId = signal<number | null>(null);
@@ -345,6 +346,24 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
   readonly summary = computed(() => this.inventoryService.balancesSummary());
 
   ngOnInit(): void {
+    const stockStatusParam =
+      this.route.snapshot.queryParams['stockStatus'] ||
+      (this.route.snapshot.queryParams['filter'] === 'zero' ? 'OUT_OF_STOCK' : null);
+    const branchIdParam = this.route.snapshot.queryParams['branchId'];
+    if (
+      stockStatusParam === 'OUT_OF_STOCK' ||
+      stockStatusParam === 'LOW_STOCK' ||
+      stockStatusParam === 'IN_STOCK'
+    ) {
+      this.selectedStockStatus.set(stockStatusParam);
+    }
+    if (branchIdParam) {
+      const branchId = Number(branchIdParam);
+      if (!Number.isNaN(branchId) && branchId > 0) {
+        this.selectedBranchId.set(branchId);
+      }
+    }
+
     void this.inventoryService.loadBranches();
     void this.inventoryService.loadCategories();
     void this.loadBalances();
