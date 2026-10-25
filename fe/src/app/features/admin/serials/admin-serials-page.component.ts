@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SerialDetailDialogComponent } from './components/serial-detail-dialog.component';
 import { AdminSerialService } from './services/admin-serial.service';
 
@@ -467,6 +467,7 @@ import { AdminSerialService } from './services/admin-serial.service';
 })
 export class AdminSerialsPageComponent implements OnInit {
   private readonly serialService = inject(AdminSerialService);
+  private readonly route = inject(ActivatedRoute);
 
   @ViewChild('scannerInput') scannerInputElement?: ElementRef<HTMLInputElement>;
 
@@ -501,6 +502,10 @@ export class AdminSerialsPageComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (searchParam) {
+      this.tableSearch = searchParam;
+    }
     void this.serialService.loadBranches();
     void this.loadTableData();
   }

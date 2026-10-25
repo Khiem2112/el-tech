@@ -350,6 +350,8 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
       this.route.snapshot.queryParams['stockStatus'] ||
       (this.route.snapshot.queryParams['filter'] === 'zero' ? 'OUT_OF_STOCK' : null);
     const branchIdParam = this.route.snapshot.queryParams['branchId'];
+    const categoryIdParam = this.route.snapshot.queryParams['categoryId'];
+    const searchParam = this.route.snapshot.queryParams['search'];
     if (
       stockStatusParam === 'OUT_OF_STOCK' ||
       stockStatusParam === 'LOW_STOCK' ||
@@ -362,6 +364,15 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
       if (!Number.isNaN(branchId) && branchId > 0) {
         this.selectedBranchId.set(branchId);
       }
+    }
+    if (categoryIdParam) {
+      const categoryId = Number(categoryIdParam);
+      if (!Number.isNaN(categoryId) && categoryId > 0) {
+        this.selectedCategoryId.set(categoryId);
+      }
+    }
+    if (searchParam) {
+      this.searchQuery.set(searchParam);
     }
 
     void this.inventoryService.loadBranches();

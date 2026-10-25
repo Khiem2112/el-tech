@@ -136,6 +136,11 @@ export class AdminVariantService {
         params = params.set('sku', skuVal.trim());
       }
 
+      const templateIdVal = overrides?.productTemplateId;
+      if (templateIdVal !== undefined && templateIdVal !== null) {
+        params = params.set('productTemplateId', templateIdVal.toString());
+      }
+
       const catVal = overrides?.categoryId !== undefined ? overrides.categoryId : this.categoryFilter();
       if (catVal !== null && catVal !== undefined) {
         params = params.set('categoryId', catVal.toString());

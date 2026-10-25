@@ -211,16 +211,15 @@ type FlattenedCategoryRow = AdminCategory & {
                           {{ cat.totalInventory }} tồn
                         </button>
 
-                        @if (cat.activeTransfers > 0) {
-                          <button
-                            type="button"
-                            (click)="onNavigateToTransfers(cat)"
-                            class="px-2.5 py-0.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded font-bold text-xs transition-colors cursor-pointer"
-                            title="Bấm để xem phiếu điều chuyển kho đang xử lý"
-                          >
-                            {{ cat.activeTransfers }} điều chuyển
-                          </button>
-                        }
+                        <button
+                          type="button"
+                          (click)="onNavigateToTransfers(cat)"
+                          class="px-2.5 py-0.5 rounded font-bold text-xs transition-colors cursor-pointer"
+                          [ngClass]="cat.activeTransfers > 0 ? 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-[#090d16] hover:bg-[#272f3d] text-slate-400 border border-[#272f3d]'"
+                          title="Bấm để xem phiếu điều chuyển kho liên quan đến danh mục này"
+                        >
+                          {{ cat.activeTransfers }} điều chuyển
+                        </button>
                       </div>
                     </td>
 

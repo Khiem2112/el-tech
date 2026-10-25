@@ -258,23 +258,48 @@ type ToastMessage = {
               <div class="text-[10px] text-slate-400 uppercase tracking-wider">Nhà Cung Cấp</div>
             </a>
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center min-w-[100px]">
-              <div
-                class="font-bold text-xs font-mono truncate"
-                [class.text-emerald-400]="po.receiptMove"
-                [class.text-amber-400]="!po.receiptMove"
+            @if (po.receiptMove) {
+              <a
+                [routerLink]="['/admin/inventory/ledger']"
+                [queryParams]="{ search: po.code }"
+                class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
+                title="Nhấp để xem chứng từ nhập kho trong sổ kho bất biến SCR-16"
               >
-                {{ po.receiptMove ? po.receiptMove.code : 'Chờ nhập' }}
+                <div class="font-bold text-xs font-mono text-emerald-400 truncate group-hover:scale-105 transition-transform">
+                  {{ po.receiptMove.code }}
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phiếu Nhập Kho</div>
+              </a>
+            } @else if (po.status === 'CONFIRMED') {
+              <button
+                type="button"
+                (click)="openValidateReceiptModal()"
+                class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block w-full"
+                title="Nhấp để mở giao diện quét mã và đối soát nhập kho MOD-30"
+              >
+                <div class="font-bold text-xs font-mono text-amber-400 truncate group-hover:scale-105 transition-transform">
+                  Chờ Nhập Kho
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-wider">Đối Soát Kho</div>
+              </button>
+            } @else {
+              <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center min-w-[100px]">
+                <div class="font-bold text-xs font-mono text-slate-500 truncate">Chưa Tạo</div>
+                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Phiếu Nhập Kho</div>
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phiếu Nhập Kho</div>
-            </div>
+            }
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center min-w-[100px]">
-              <div class="font-bold text-white text-xs font-mono">
+            <a
+              [routerLink]="['/admin/inventory/serials']"
+              [queryParams]="{ search: po.code }"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
+              title="Nhấp để xem danh sách sê-ri linh kiện đã nạp từ đơn PO này SCR-17"
+            >
+              <div class="font-bold text-white text-xs font-mono group-hover:scale-105 transition-transform">
                 {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}
               </div>
               <div class="text-[10px] text-slate-400 uppercase tracking-wider">Serial Đã Gán</div>
-            </div>
+            </a>
 
             @if (po.supersedesPurchaseOrder) {
               <a

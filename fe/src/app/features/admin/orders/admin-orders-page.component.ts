@@ -559,6 +559,7 @@ export class AdminOrdersPageComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const queryTab = this.route.snapshot.queryParams['tab'] || this.route.snapshot.queryParams['status'];
     const branchIdParam = this.route.snapshot.queryParams['branchId'];
+    const searchParam = this.route.snapshot.queryParams['search'];
     if (queryTab) {
       this.orderService.selectedTab.set(queryTab);
     }
@@ -567,6 +568,9 @@ export class AdminOrdersPageComponent implements OnInit {
       if (!Number.isNaN(branchId) && branchId > 0) {
         this.orderService.selectedBranchId.set(branchId);
       }
+    }
+    if (searchParam) {
+      this.orderService.searchQuery.set(searchParam);
     }
 
     await Promise.all([

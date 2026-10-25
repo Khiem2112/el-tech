@@ -7,7 +7,7 @@ import {
   inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import {
   AdminPurchaseOrderService,
   PurchaseOrderListItem,
@@ -229,12 +229,17 @@ import {
 })
 export class AdminPurchaseOrdersPageComponent implements OnInit {
   readonly poService = inject(AdminPurchaseOrderService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly visibleOrders = computed<PurchaseOrderListItem[]>(() => {
     return this.poService.purchaseOrders();
   });
 
   ngOnInit(): void {
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (searchParam) {
+      this.poService.searchQuery.set(searchParam);
+    }
     void this.poService.loadPurchaseOrders();
   }
 

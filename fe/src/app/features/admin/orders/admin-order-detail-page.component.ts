@@ -156,41 +156,64 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
             </div>
           </div>
 
+          <!-- Smart Buttons Block (Odoo Style) -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="font-mono font-bold text-[#76b900] truncate">
+            <a
+              [routerLink]="['/admin/customers', ord.customer.id]"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              title="Nhấp để xem hồ sơ chi tiết khách hàng SCR-27"
+            >
+              <div class="font-mono font-bold text-[#76b900] truncate group-hover:scale-105 transition-transform">
                 {{ ord.customer.name }}
               </div>
-              <div class="text-[10px] text-slate-400 uppercase">Khách Hàng</div>
-            </div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Khách Hàng</div>
+            </a>
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="font-mono font-bold text-amber-400">
+            <a
+              [routerLink]="['/admin/inventory/ledger']"
+              [queryParams]="{ search: ord.code }"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              title="Nhấp để xem các chứng từ và bút toán xuất giữ trong sổ kho bất biến SCR-16"
+            >
+              <div class="font-mono font-bold text-amber-400 group-hover:scale-105 transition-transform">
                 {{ ord.stockMoves.length }} phiếu
               </div>
-              <div class="text-[10px] text-slate-400 uppercase">Phiếu Kho Giữ</div>
-            </div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phiếu Xuất/Giữ Kho</div>
+            </a>
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="font-mono font-bold text-emerald-400">
-                {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã trả 100%' : 'Cọc 10%') : 'Chưa thu' }}
+            <a
+              href="#section-finance"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              title="Nhấp để xem chi tiết chứng từ thanh toán và quyết toán"
+            >
+              <div class="font-mono font-bold text-emerald-400 group-hover:scale-105 transition-transform">
+                {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn tiền' : 'Cọc 10%')) : 'Chưa thu' }}
               </div>
-              <div class="text-[10px] text-slate-400 uppercase">Thanh Toán</div>
-            </div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Thanh Toán</div>
+            </a>
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="font-mono font-bold text-slate-200">
-                {{ ord.amendments.length }}
+            <a
+              href="#section-timeline"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              title="Nhấp để xem các phụ lục đơn hàng và lịch sử thay đổi"
+            >
+              <div class="font-mono font-bold text-slate-200 group-hover:scale-105 transition-transform">
+                {{ ord.amendments.length }} phụ lục
               </div>
-              <div class="text-[10px] text-slate-400 uppercase">Phụ Lục Đơn</div>
-            </div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phụ Lục Đơn</div>
+            </a>
 
-            <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="font-mono font-bold text-[#76b900]">
-                {{ ord.statusHistories.length }}
+            <a
+              [routerLink]="['/admin/settings/notification-outbox']"
+              [queryParams]="{ search: ord.code }"
+              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              title="Nhấp để xem nhật ký thông báo email/SMS đã phát cho đơn này SCR-30"
+            >
+              <div class="font-mono font-bold text-[#76b900] group-hover:scale-105 transition-transform">
+                {{ ord.statusHistories.length }} sự kiện
               </div>
-              <div class="text-[10px] text-slate-400 uppercase">Nhật Ký Bước</div>
-            </div>
+              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Nhật Ký Outbox</div>
+            </a>
           </div>
         </div>
 
@@ -198,12 +221,16 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
         <app-order-lines-pc-group [order]="ord" />
 
-        <app-order-finance-summary
-          [order]="ord"
-          (openModalRequested)="onActionTriggered({ actionKey: $event, modalId: $event, targetStatus: '', label: $event })"
-        />
+        <div id="section-finance">
+          <app-order-finance-summary
+            [order]="ord"
+            (openModalRequested)="onActionTriggered({ actionKey: $event, modalId: $event, targetStatus: '', label: $event })"
+          />
+        </div>
 
-        <app-order-timeline-history [order]="ord" />
+        <div id="section-timeline">
+          <app-order-timeline-history [order]="ord" />
+        </div>
 
         <app-confirm-cod-dialog
           [order]="ord"

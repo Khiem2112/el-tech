@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { NotificationDetailDialogComponent } from './components/notification-detail-dialog.component';
 import {
   AdminNotificationItem,
@@ -298,6 +298,7 @@ type ToastNotification = {
 })
 export class AdminNotificationOutboxPageComponent implements OnInit {
   readonly notificationService = inject(AdminNotificationService);
+  private readonly route = inject(ActivatedRoute);
 
   searchQuery = '';
   selectedChannel: 'ALL' | 'IN_APP' | 'EMAIL' | 'SMS' = 'ALL';
@@ -308,6 +309,10 @@ export class AdminNotificationOutboxPageComponent implements OnInit {
   readonly toasts = signal<readonly ToastNotification[]>([]);
 
   ngOnInit(): void {
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (searchParam) {
+      this.searchQuery = searchParam;
+    }
     void this.loadData();
   }
 

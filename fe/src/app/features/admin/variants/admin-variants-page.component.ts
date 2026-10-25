@@ -12,7 +12,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
 import { AdminCategoryService } from '../categories/services/admin-category.service';
 import {
@@ -629,6 +629,7 @@ export class AdminVariantsPageComponent implements OnInit, AfterViewInit {
   private readonly categoryService = inject(AdminCategoryService);
   private readonly brandService = inject(AdminBrandService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly variants = this.variantService.variants;
   readonly isLoading = this.variantService.isLoading;
@@ -688,8 +689,27 @@ export class AdminVariantsPageComponent implements OnInit, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
+    const productTemplateIdParam =
+      this.route.snapshot.queryParams['productTemplateId'] ||
+      this.route.snapshot.queryParams['templateId'];
+    const searchParam = this.route.snapshot.queryParams['search'];
+
+    let initialTemplateId: number | undefined;
+    if (productTemplateIdParam) {
+      const parsedId = Number(productTemplateIdParam);
+      if (!Number.isNaN(parsedId) && parsedId > 0) {
+        initialTemplateId = parsedId;
+      }
+    }
+
+    if (searchParam) {
+      this.variantService.searchQuery.set(searchParam);
+    }
+
     await Promise.all([
-      this.variantService.loadVariants(),
+      this.variantService.loadVariants(
+        initialTemplateId ? { productTemplateId: initialTemplateId } : undefined,
+      ),
       this.categoryService.loadCategories({ tree: false }),
       this.brandService.loadBrands(),
     ]);

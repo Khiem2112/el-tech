@@ -258,8 +258,23 @@ export class AdminProductTemplateService {
         throw new Error(response.error.messageKey);
       }
 
-      this.currentTemplate.set(response.data);
-      return response.data;
+      const rawData = response.data as unknown as Record<string, unknown>;
+      const statsObj = (rawData['stats'] || rawData['smartMetrics'] || {}) as ProductTemplateSmartMetrics;
+      const smartMetrics: ProductTemplateSmartMetrics = {
+        skuCount: statsObj.skuCount ?? (response.data.variants ? response.data.variants.length : 0),
+        totalOnHand: statsObj.totalOnHand ?? 0,
+        totalAvailable: statsObj.totalAvailable ?? 0,
+        orderCount: statsObj.orderCount ?? 0,
+        poCount: statsObj.poCount ?? 0,
+        stockMoveCount: statsObj.stockMoveCount ?? 0,
+      };
+      const normalizedData: ProductTemplateDetail = {
+        ...response.data,
+        smartMetrics,
+      };
+
+      this.currentTemplate.set(normalizedData);
+      return normalizedData;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Loi khi tai chi tiet mau san pham';
       this.error.set(msg);
@@ -312,8 +327,23 @@ export class AdminProductTemplateService {
         throw new Error(response.error.messageKey);
       }
 
-      this.currentTemplate.set(response.data);
-      return response.data;
+      const rawData = response.data as unknown as Record<string, unknown>;
+      const statsObj = (rawData['stats'] || rawData['smartMetrics'] || {}) as ProductTemplateSmartMetrics;
+      const smartMetrics: ProductTemplateSmartMetrics = {
+        skuCount: statsObj.skuCount ?? (response.data.variants ? response.data.variants.length : 0),
+        totalOnHand: statsObj.totalOnHand ?? 0,
+        totalAvailable: statsObj.totalAvailable ?? 0,
+        orderCount: statsObj.orderCount ?? 0,
+        poCount: statsObj.poCount ?? 0,
+        stockMoveCount: statsObj.stockMoveCount ?? 0,
+      };
+      const normalizedData: ProductTemplateDetail = {
+        ...response.data,
+        smartMetrics,
+      };
+
+      this.currentTemplate.set(normalizedData);
+      return normalizedData;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Loi khi cap nhat mau san pham';
       this.error.set(msg);

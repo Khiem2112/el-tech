@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
 import { AdminCategoryService } from '../categories/services/admin-category.service';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
@@ -437,6 +437,7 @@ export class AdminProductTemplatesPageComponent implements OnInit {
   private readonly categoryService = inject(AdminCategoryService);
   private readonly brandService = inject(AdminBrandService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly templates = this.templateService.templates;
   readonly isLoading = this.templateService.isLoading;
@@ -466,6 +467,18 @@ export class AdminProductTemplatesPageComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    const categoryIdParam = this.route.snapshot.queryParams['categoryId'];
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (categoryIdParam) {
+      const catId = Number(categoryIdParam);
+      if (!Number.isNaN(catId) && catId > 0) {
+        this.templateService.categoryFilter.set(catId);
+      }
+    }
+    if (searchParam) {
+      this.templateService.searchQuery.set(searchParam);
+    }
+
     await Promise.all([
       this.templateService.loadTemplates(),
       this.categoryService.loadCategories({ tree: false }),

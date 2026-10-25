@@ -16,6 +16,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 import { z } from 'zod';
 import {
   AdminCategory,
@@ -94,6 +95,46 @@ function slugify(text: string): string {
           @if (errorMessage()) {
             <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
               {{ errorMessage() }}
+            </div>
+          }
+
+          @if (isEditMode() && categoryToEdit(); as cat) {
+            <div class="grid grid-cols-3 gap-2 p-2.5 bg-[#090d16] border border-[#272f3d] rounded-lg">
+              <button
+                type="button"
+                (click)="navigateToTemplates(cat)"
+                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                title="Xem danh sách mẫu sản phẩm thuộc danh mục này"
+              >
+                <div class="text-sm font-bold text-white group-hover:text-[#76b900] tabular-nums transition-colors">
+                  {{ cat.productTemplateCount }}
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Sản Phẩm</div>
+              </button>
+
+              <button
+                type="button"
+                (click)="navigateToInventory(cat)"
+                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                title="Xem tổng tồn kho linh kiện của danh mục này"
+              >
+                <div class="text-sm font-bold text-emerald-400 group-hover:scale-105 tabular-nums transition-transform">
+                  {{ cat.totalInventory }}
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Tổng Tồn Kho</div>
+              </button>
+
+              <button
+                type="button"
+                (click)="navigateToTransfers(cat)"
+                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                title="Xem phiếu điều chuyển kho đang xử lý của danh mục này"
+              >
+                <div class="text-sm font-bold text-blue-400 group-hover:scale-105 tabular-nums transition-transform">
+                  {{ cat.activeTransfers }}
+                </div>
+                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Phiếu Chuyển Kho</div>
+              </button>
             </div>
           }
 
@@ -214,6 +255,7 @@ function slugify(text: string): string {
 export class CategoryFormDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly categoryService = inject(AdminCategoryService);
+  private readonly router = inject(Router);
 
   readonly isOpen = input<boolean>(false);
   readonly categoryToEdit = input<AdminCategory | null>(null);
@@ -334,6 +376,27 @@ export class CategoryFormDialogComponent {
       return `Tối đa ${field.errors['maxlength'].requiredLength} ký tự`;
     }
     return 'Dữ liệu không hợp lệ';
+  }
+
+  navigateToTemplates(cat: AdminCategory): void {
+    this.onClose();
+    void this.router.navigate(['/admin/catalog/templates'], {
+      queryParams: { categoryId: cat.id, category: cat.slug },
+    });
+  }
+
+  navigateToInventory(cat: AdminCategory): void {
+    this.onClose();
+    void this.router.navigate(['/admin/inventory/balances'], {
+      queryParams: { categoryId: cat.id, category: cat.slug },
+    });
+  }
+
+  navigateToTransfers(cat: AdminCategory): void {
+    this.onClose();
+    void this.router.navigate(['/admin/inventory/transfers'], {
+      queryParams: { categoryId: cat.id, category: cat.slug },
+    });
   }
 
   async onSubmit(): Promise<void> {

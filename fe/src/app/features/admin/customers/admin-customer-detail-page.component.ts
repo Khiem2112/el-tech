@@ -131,18 +131,32 @@ type ToastNotification = {
           </div>
         }
 
+        <!-- Smart Buttons Block (Odoo Style) -->
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <div
-            (click)="activeTab.set('orders')"
-            class="p-4 bg-[#161b26] border rounded-lg cursor-pointer transition-all hover:border-[#76b900]/50"
+            class="p-4 bg-[#161b26] border rounded-lg transition-all hover:border-[#76b900]/50 group"
             [ngClass]="activeTab() === 'orders' ? 'border-[#76b900] shadow-sm' : 'border-[#272f3d]'"
             title="Tổng số đơn hàng khách đã đặt trên hệ thống"
           >
-            <div class="text-2xl font-black text-white tabular-nums">
-              {{ cust.stats.orderCount }}
-            </div>
-            <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1">
-              Đơn Hàng Đã Đặt
+            <div class="flex items-center justify-between">
+              <div (click)="activeTab.set('orders')" class="cursor-pointer flex-1">
+                <div class="text-2xl font-black text-white tabular-nums group-hover:text-[#76b900] transition-colors">
+                  {{ cust.stats.orderCount }}
+                </div>
+                <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1">
+                  Đơn Hàng Đã Đặt
+                </div>
+              </div>
+              <a
+                [routerLink]="['/admin/orders']"
+                [queryParams]="{ search: cust.phone || cust.name }"
+                class="p-1 hover:text-[#76b900] text-slate-500 transition-colors"
+                title="Mở danh sách đơn hàng toàn màn hình SCR-09"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           </div>
 
@@ -160,11 +174,11 @@ type ToastNotification = {
 
           <div
             (click)="activeTab.set('coupons')"
-            class="p-4 bg-[#161b26] border rounded-lg cursor-pointer transition-all hover:border-[#76b900]/50"
+            class="p-4 bg-[#161b26] border rounded-lg cursor-pointer transition-all hover:border-[#76b900]/50 group"
             [ngClass]="activeTab() === 'coupons' ? 'border-[#76b900] shadow-sm' : 'border-[#272f3d]'"
             title="Số lượng voucher giảm giá đã áp dụng"
           >
-            <div class="text-2xl font-black text-white tabular-nums">
+            <div class="text-2xl font-black text-white tabular-nums group-hover:text-[#76b900] transition-colors">
               {{ cust.stats.couponUsageCount }}
             </div>
             <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1">
@@ -173,16 +187,29 @@ type ToastNotification = {
           </div>
 
           <div
-            (click)="activeTab.set('reviews')"
-            class="p-4 bg-[#161b26] border rounded-lg cursor-pointer transition-all hover:border-[#76b900]/50"
+            class="p-4 bg-[#161b26] border rounded-lg transition-all hover:border-[#76b900]/50 group"
             [ngClass]="activeTab() === 'reviews' ? 'border-[#76b900] shadow-sm' : 'border-[#272f3d]'"
             title="Số bài đánh giá linh kiện khách đã gửi"
           >
-            <div class="text-2xl font-black text-white tabular-nums">
-              {{ cust.stats.reviewCount }}
-            </div>
-            <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1">
-              Đánh Giá Linh Kiện
+            <div class="flex items-center justify-between">
+              <div (click)="activeTab.set('reviews')" class="cursor-pointer flex-1">
+                <div class="text-2xl font-black text-white tabular-nums group-hover:text-[#76b900] transition-colors">
+                  {{ cust.stats.reviewCount }}
+                </div>
+                <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-1">
+                  Đánh Giá Linh Kiện
+                </div>
+              </div>
+              <a
+                [routerLink]="['/admin/reviews']"
+                [queryParams]="{ search: cust.phone || cust.name }"
+                class="p-1 hover:text-[#76b900] text-slate-500 transition-colors"
+                title="Mở danh sách kiểm duyệt đánh giá SCR-28"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           </div>
 

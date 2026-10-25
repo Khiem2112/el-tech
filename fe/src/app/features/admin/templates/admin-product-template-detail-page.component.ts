@@ -78,6 +78,20 @@ type ToastNotification = {
             Quay lại
           </a>
 
+          @if (!isNew() && detailData(); as tpl) {
+            <a
+              [routerLink]="['/admin/inventory/transfers']"
+              [queryParams]="{ search: tpl.name }"
+              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-[#76b900] rounded font-semibold text-xs transition-colors inline-flex items-center gap-1.5"
+              title="Tạo lệnh điều chuyển kho giữa các chi nhánh cho sản phẩm này"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+              <span>Chuyển Kho Nhanh</span>
+            </a>
+          }
+
           @if (!isNew()) {
             <div class="flex items-center gap-1 bg-[#090d16] p-1 rounded border border-[#272f3d]">
               <span class="text-[11px] font-bold uppercase text-slate-400 px-1.5">Trạng thái:</span>
@@ -196,50 +210,80 @@ type ToastNotification = {
           </div>
         </div>
 
-        <!-- Smart Buttons Block -->
-        @if (!isNew() && detailData()) {
-          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2">
-            <a href="#section-variants" class="p-2.5 bg-[#090d16] hover:bg-[#272f3d]/50 border border-[#272f3d] rounded text-center transition-colors">
-              <div class="text-base font-bold text-[#76b900] tabular-nums">
-                {{ detailData()?.smartMetrics?.skuCount ?? 0 }}
+        <!-- Smart Buttons Block (Odoo Style) -->
+        @if (!isNew() && detailData(); as tpl) {
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+            <a
+              [routerLink]="['/admin/catalog/variants']"
+              [queryParams]="{ productTemplateId: tpl.id, search: tpl.name }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              title="Nhấp để lọc danh sách biến thể SKU của mẫu sản phẩm này"
+            >
+              <div class="text-base font-bold text-[#76b900] tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.skuCount ?? tpl.variants.length }}
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Biến thể SKU</div>
             </a>
 
-            <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="text-base font-bold text-white tabular-nums">
-                {{ detailData()?.smartMetrics?.totalOnHand ?? 0 }}
+            <a
+              [routerLink]="['/admin/inventory/balances']"
+              [queryParams]="{ search: tpl.name }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              title="Nhấp để kiểm tra tồn kho thực tế tại các chi nhánh"
+            >
+              <div class="text-base font-bold text-white tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.totalOnHand ?? 0 }}
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Tồn thực tế</div>
-            </div>
+            </a>
 
-            <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="text-base font-bold text-emerald-400 tabular-nums">
-                {{ detailData()?.smartMetrics?.totalAvailable ?? 0 }}
+            <a
+              [routerLink]="['/admin/inventory/balances']"
+              [queryParams]="{ search: tpl.name, stockStatus: 'IN_STOCK' }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              [title]="getAvailableBranchTooltip()"
+            >
+              <div class="text-base font-bold text-emerald-400 tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.totalAvailable ?? 0 }}
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Khả dụng</div>
-            </div>
+            </a>
 
-            <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="text-base font-bold text-slate-300 tabular-nums">
-                {{ detailData()?.smartMetrics?.stockMoveCount ?? 0 }}
+            <a
+              [routerLink]="['/admin/inventory/ledger']"
+              [queryParams]="{ search: tpl.name }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              title="Nhấp để tra cứu toàn bộ biến động nhập xuất trong sổ kho bất biến"
+            >
+              <div class="text-base font-bold text-slate-300 tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.stockMoveCount ?? 0 }}
               </div>
               <div class="text-[11px] text-slate-400 font-medium">Biến động kho</div>
-            </div>
+            </a>
 
-            <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="text-base font-bold text-slate-300 tabular-nums">
-                {{ detailData()?.smartMetrics?.poCount ?? 0 }}
+            <a
+              [routerLink]="['/admin/procurement/purchase-orders']"
+              [queryParams]="{ search: tpl.name }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              title="Nhấp để xem lịch sử các đơn mua hàng PO chứa sản phẩm này"
+            >
+              <div class="text-base font-bold text-slate-300 tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.poCount ?? 0 }}
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Đơn mua PO</div>
-            </div>
+              <div class="text-[11px] text-slate-400 font-medium">Lịch sử mua PO</div>
+            </a>
 
-            <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-center">
-              <div class="text-base font-bold text-emerald-400 tabular-nums">
-                {{ detailData()?.smartMetrics?.orderCount ?? 0 }}
+            <a
+              [routerLink]="['/admin/orders']"
+              [queryParams]="{ search: tpl.name }"
+              class="p-2.5 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+              title="Nhấp để xem các đơn hàng khách hàng đã đặt có chứa sản phẩm này"
+            >
+              <div class="text-base font-bold text-emerald-400 tabular-nums group-hover:scale-105 transition-transform">
+                {{ tpl.smartMetrics?.orderCount ?? 0 }}
               </div>
-              <div class="text-[11px] text-slate-400 font-medium">Đã bán</div>
-            </div>
+              <div class="text-[11px] text-slate-400 font-medium">Lịch sử bán hàng</div>
+            </a>
           </div>
         }
       </div>
@@ -927,6 +971,30 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
       case 'DISCONTINUED':
         return 'px-2 py-0.5 rounded text-[11px] font-bold bg-rose-950 text-rose-400 border border-rose-800';
     }
+  }
+
+  getAvailableBranchTooltip(): string {
+    const detail = this.detailData();
+    if (!detail || !detail.variants) {
+      return 'Tồn khả dụng toàn hệ thống';
+    }
+    const branchMap = new Map<string, number>();
+    for (const v of detail.variants) {
+      if (v.stockQuants) {
+        for (const q of v.stockQuants) {
+          const bName = q.branchName || `Chi nhánh ${q.branchId}`;
+          branchMap.set(bName, (branchMap.get(bName) ?? 0) + (q.available ?? 0));
+        }
+      }
+    }
+    if (branchMap.size === 0) {
+      return 'Tồn khả dụng: 0';
+    }
+    const parts: string[] = [];
+    branchMap.forEach((qty, name) => {
+      parts.push(`${name}: ${qty}`);
+    });
+    return `Phân bổ khả dụng: ${parts.join(', ')}`;
   }
 
   private showToast(message: string, type: 'success' | 'error' | 'info'): void {

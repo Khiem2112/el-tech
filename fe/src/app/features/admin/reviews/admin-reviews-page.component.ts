@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReviewDetailDialogComponent } from './components/review-detail-dialog.component';
 import {
   AdminReviewItem,
@@ -252,6 +252,7 @@ type ToastNotification = {
 })
 export class AdminReviewsPageComponent implements OnInit {
   readonly reviewService = inject(AdminReviewService);
+  private readonly route = inject(ActivatedRoute);
 
   searchQuery = '';
   selectedRating = '';
@@ -261,6 +262,10 @@ export class AdminReviewsPageComponent implements OnInit {
   readonly toasts = signal<readonly ToastNotification[]>([]);
 
   ngOnInit(): void {
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (searchParam) {
+      this.searchQuery = searchParam;
+    }
     void this.loadData();
   }
 

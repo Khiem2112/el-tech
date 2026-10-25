@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CancelTransferDialogComponent } from './components/cancel-transfer-dialog.component';
 import { CreateTransferDialogComponent } from './components/create-transfer-dialog.component';
 import { DispatchTransferDialogComponent } from './components/dispatch-transfer-dialog.component';
@@ -501,6 +501,7 @@ import {
 export class AdminTransfersPageComponent implements OnInit {
   protected readonly Math = Math;
   private readonly transferService = inject(AdminTransferService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly transfers = this.transferService.transfers;
   readonly total = this.transferService.transfersTotal;
@@ -530,6 +531,17 @@ export class AdminTransfersPageComponent implements OnInit {
   });
 
   async ngOnInit(): Promise<void> {
+    const searchParam =
+      this.route.snapshot.queryParams['search'] ||
+      this.route.snapshot.queryParams['code'];
+    const statusParam = this.route.snapshot.queryParams['status'];
+    if (searchParam) {
+      this.searchFilter.set(searchParam);
+    }
+    if (statusParam) {
+      this.statusFilter.set(statusParam);
+    }
+
     await Promise.all([
       this.transferService.loadBranches(),
       this.fetchTransfers(),
