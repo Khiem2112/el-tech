@@ -28,6 +28,7 @@ import { adminTransferRouter } from './routes/admin/transfer.routes.js';
 import { adminOrderRouter } from './routes/admin/order.routes.js';
 import { adminPromotionRouter } from './routes/admin/promotion.routes.js';
 import { adminCouponRouter } from './routes/admin/coupon.routes.js';
+import { adminCustomerRouter } from './routes/admin/customer.routes.js';
 import { adminDeliveryFeeRouter } from './routes/admin/delivery-fee.routes.js';
 
 const app = express();
@@ -78,6 +79,8 @@ app.use('/api/admin/inventory/transfers', adminTransferRouter);
 app.use('/v1/admin/inventory/transfers', adminTransferRouter);
 app.use('/api/admin/orders', adminOrderRouter);
 app.use('/v1/admin/orders', adminOrderRouter);
+app.use('/api/admin/customers', adminCustomerRouter);
+app.use('/v1/admin/customers', adminCustomerRouter);
 app.use('/api/admin/promotions', adminPromotionRouter);
 app.use('/v1/admin/promotions', adminPromotionRouter);
 app.use('/api/admin/coupons', adminCouponRouter);

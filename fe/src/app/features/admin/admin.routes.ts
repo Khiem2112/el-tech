@@ -156,15 +156,15 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'customers',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./customers/admin-customers-page.component').then(
+            (module) => module.AdminCustomersPageComponent,
           ),
       },
       {
         path: 'customers/:id',
         loadComponent: () =>
-          import('./pages/admin-placeholder-page.component').then(
-            (module) => module.AdminPlaceholderPageComponent,
+          import('./customers/admin-customer-detail-page.component').then(
+            (module) => module.AdminCustomerDetailPageComponent,
           ),
       },
       {
