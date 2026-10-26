@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { CategoryFormDialogComponent } from './components/category-form-dialog.component';
 import { SpecSchemaSheetComponent } from './components/spec-schema-sheet.component';
 import {
@@ -34,33 +36,33 @@ type FlattenedCategoryRow = AdminCategory & {
   imports: [
     CommonModule,
     FormsModule,
+    ButtonDirective,
+    SelectComponent,
     CategoryFormDialogComponent,
     SpecSchemaSheetComponent,
   ],
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
-        <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
-            SCR-03
-          </span>
-          <div>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
-              Danh Mục Sản Phẩm
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Quản lý cây phân cấp ngành hàng linh kiện PC và cấu hình schema thông số kỹ thuật động (CAT-001, CAT-006, CAT-009)
-            </p>
-          </div>
+    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Danh Mục Sản Phẩm
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Quản lý cây phân cấp ngành hàng linh kiện PC và cấu hình schema thông số kỹ thuật động
+          </p>
         </div>
 
         <div class="flex items-center gap-3">
           <button
             type="button"
+            appButton
+            variant="primary"
+            size="sm"
             (click)="openCreateModal()"
-            class="px-3.5 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5 uppercase tracking-wide"
+            class="uppercase tracking-wide"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             <span>Thêm Danh Mục</span>
@@ -68,7 +70,7 @@ type FlattenedCategoryRow = AdminCategory & {
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      <div class="bg-surface border border-line rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div class="relative flex-1">
             <input
@@ -76,10 +78,10 @@ type FlattenedCategoryRow = AdminCategory & {
               [ngModel]="categoryService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm kiếm theo tên hoặc mã đường dẫn slug..."
-              class="w-full pl-9 pr-4 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
-              class="w-4 h-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none"
+              class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -90,63 +92,60 @@ type FlattenedCategoryRow = AdminCategory & {
           </div>
 
           <div class="flex items-center gap-2">
-            <label for="status-filter" class="text-xs text-slate-400 font-medium whitespace-nowrap">Trạng thái:</label>
-            <select
-              id="status-filter"
-              [ngModel]="categoryService.statusFilter()"
-              (ngModelChange)="onStatusFilterChange($event)"
-              class="px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-slate-200 focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả trạng thái</option>
-              <option value="ACTIVE">Đang hoạt động</option>
-              <option value="INACTIVE">Tạm dừng hoạt động</option>
-            </select>
+            <span class="text-xs text-muted font-medium whitespace-nowrap">Trạng thái:</span>
+            <app-select
+              [options]="statusOptions"
+              [value]="categoryService.statusFilter()"
+              (valueChange)="onStatusFilterChange($event)"
+              size="sm"
+              class="w-48"
+            />
           </div>
         </div>
 
-        <div class="text-xs text-slate-400 text-right">
-          Tổng số: <strong class="text-white">{{ visibleCategories().length }}</strong> danh mục
+        <div class="text-xs text-muted text-right">
+          Tổng số: <strong class="text-foreground">{{ visibleCategories().length }}</strong> danh mục
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+          <table class="w-full text-left border-collapse min-w-[1000px]">
+            <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
-                <th class="py-3 px-4">Tên Danh Mục Ngành Hàng</th>
-                <th class="py-3 px-4">Mã Đường Dẫn (Slug)</th>
-                <th class="py-3 px-4 text-center">Phiên Bản Schema</th>
-                <th class="py-3 px-4 text-center">Smart Buttons (Sản Phẩm & Tồn Kho)</th>
-                <th class="py-3 px-4 text-center">Trạng Thái</th>
-                <th class="py-3 px-4 text-right">Thao Tác</th>
+                <th class="py-3 px-4 whitespace-nowrap">Tên Danh Mục Ngành Hàng</th>
+                <th class="py-3 px-4 whitespace-nowrap">Mã Đường Dẫn (Slug)</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Phiên Bản Schema</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Smart Buttons (Sản Phẩm & Tồn Kho)</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#272f3d] text-xs">
+            <tbody class="divide-y divide-line text-xs">
               @if (categoryService.isLoading()) {
                 <tr>
-                  <td colspan="6" class="py-12 text-center text-slate-400">
-                    <div class="inline-block w-6 h-6 border-2 border-[#76b900] border-t-transparent rounded-full animate-spin mb-2"></div>
+                  <td colspan="6" class="py-12 text-center text-muted">
+                    <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
                     <p>Đang tải cây danh mục ngành hàng...</p>
                   </td>
                 </tr>
               } @else if (visibleCategories().length === 0) {
                 <tr>
-                  <td colspan="6" class="py-12 text-center text-slate-400">
-                    <p class="font-medium">Không tìm thấy danh mục ngành hàng nào phù hợp</p>
-                    <p class="text-[11px] text-slate-500 mt-1">Vui lòng điều chỉnh lại bộ lọc hoặc tạo danh mục mới</p>
+                  <td colspan="6" class="py-12 text-center text-muted">
+                    <p class="font-medium text-foreground">Không tìm thấy danh mục ngành hàng nào phù hợp</p>
+                    <p class="text-xs text-muted mt-1">Vui lòng điều chỉnh lại bộ lọc hoặc tạo danh mục mới</p>
                   </td>
                 </tr>
               } @else {
                 @for (cat of visibleCategories(); track cat.id) {
-                  <tr class="hover:bg-[#1c2331] transition-colors group">
-                    <td class="py-3 px-4 font-bold text-white">
+                  <tr class="hover:bg-surface-alt/70 transition-colors group">
+                    <td class="py-3 px-4 font-bold text-foreground">
                       <div class="flex items-center gap-2" [style.padding-left.px]="cat.depth * 24">
                         @if (cat.hasChildren) {
                           <button
                             type="button"
                             (click)="toggleExpand(cat.id)"
-                            class="p-0.5 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+                            class="p-0.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                             [title]="cat.isExpanded ? 'Thu gọn' : 'Mở rộng'"
                           >
                             <svg
@@ -161,7 +160,7 @@ type FlattenedCategoryRow = AdminCategory & {
                             </svg>
                           </button>
                         } @else if (cat.depth > 0) {
-                          <span class="w-3.5 h-3.5 flex items-center justify-center text-slate-600 font-mono text-[10px]">
+                          <span class="w-3.5 h-3.5 flex items-center justify-center text-muted font-mono text-xs">
                             --
                           </span>
                         } @else {
@@ -170,33 +169,33 @@ type FlattenedCategoryRow = AdminCategory & {
 
                         <span
                           class="w-2 h-2 rounded-full"
-                          [ngClass]="cat.isActive ? 'bg-[#76b900]' : 'bg-slate-600'"
+                          [ngClass]="cat.isActive ? 'bg-primary' : 'bg-slate-300'"
                         ></span>
                         <span>{{ cat.name }}</span>
                         @if (cat.description) {
-                          <span class="text-[10px] text-slate-500 font-normal hidden md:inline truncate max-w-xs" [title]="cat.description">
+                          <span class="text-xs text-muted font-normal hidden md:inline truncate max-w-xs" [title]="cat.description">
                             - {{ cat.description }}
                           </span>
                         }
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-slate-400 text-xs">
+                    <td class="py-3 px-4 font-mono text-muted text-xs whitespace-nowrap">
                       {{ cat.slug }}
                     </td>
 
-                    <td class="py-3 px-4 text-center">
-                      <span class="px-2.5 py-0.5 rounded font-mono font-bold bg-[#090d16] text-[#76b900] border border-[#272f3d] text-xs">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                      <span class="px-2.5 py-0.5 rounded font-mono font-bold bg-surface-alt text-primary-strong border border-line text-xs">
                         v{{ cat.specificationSchemaVersion }}
                       </span>
                     </td>
 
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       <div class="flex items-center justify-center gap-1.5 flex-wrap">
                         <button
                           type="button"
                           (click)="onNavigateToTemplates(cat)"
-                          class="px-2.5 py-0.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-bold text-xs text-white transition-colors cursor-pointer"
+                          class="px-2.5 py-0.5 bg-surface-alt hover:bg-surface border border-line rounded font-bold text-xs text-foreground transition-colors cursor-pointer"
                           title="Bấm để xem danh sách mẫu sản phẩm thuộc danh mục này"
                         >
                           {{ cat.productTemplateCount }} mẫu
@@ -205,7 +204,7 @@ type FlattenedCategoryRow = AdminCategory & {
                         <button
                           type="button"
                           (click)="onNavigateToInventory(cat)"
-                          class="px-2.5 py-0.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded font-bold text-xs transition-colors cursor-pointer"
+                          class="px-2.5 py-0.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded font-bold text-xs transition-colors cursor-pointer"
                           title="Bấm để xem số lượng tồn kho của danh mục này"
                         >
                           {{ cat.totalInventory }} tồn
@@ -215,7 +214,7 @@ type FlattenedCategoryRow = AdminCategory & {
                           type="button"
                           (click)="onNavigateToTransfers(cat)"
                           class="px-2.5 py-0.5 rounded font-bold text-xs transition-colors cursor-pointer"
-                          [ngClass]="cat.activeTransfers > 0 ? 'bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-[#090d16] hover:bg-[#272f3d] text-slate-400 border border-[#272f3d]'"
+                          [ngClass]="cat.activeTransfers > 0 ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200' : 'bg-surface-alt hover:bg-surface text-muted border border-line'"
                           title="Bấm để xem phiếu điều chuyển kho liên quan đến danh mục này"
                         >
                           {{ cat.activeTransfers }} điều chuyển
@@ -223,13 +222,13 @@ type FlattenedCategoryRow = AdminCategory & {
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (cat.isActive) {
-                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           Đang hoạt động
                         </span>
                       } @else {
-                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                           Tạm dừng
                         </span>
                       }
@@ -239,7 +238,7 @@ type FlattenedCategoryRow = AdminCategory & {
                       <button
                         type="button"
                         (click)="openSpecSchemaSheet(cat)"
-                        class="p-1.5 rounded hover:bg-[#272f3d] text-[#76b900] transition-colors"
+                        class="p-1.5 rounded hover:bg-surface-alt text-primary-strong transition-colors"
                         title="Cấu hình thuộc tính kỹ thuật động"
                         aria-label="Cấu hình thuộc tính kỹ thuật động"
                       >
@@ -255,7 +254,7 @@ type FlattenedCategoryRow = AdminCategory & {
                       <button
                         type="button"
                         (click)="openEditModal(cat)"
-                        class="p-1.5 rounded hover:bg-[#272f3d] text-slate-300 hover:text-white transition-colors"
+                        class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                         title="Chỉnh sửa danh mục"
                         aria-label="Chỉnh sửa danh mục"
                       >
@@ -267,8 +266,8 @@ type FlattenedCategoryRow = AdminCategory & {
                       <button
                         type="button"
                         (click)="toggleCategoryStatus(cat)"
-                        class="p-1.5 rounded hover:bg-[#272f3d] transition-colors"
-                        [ngClass]="cat.isActive ? 'text-amber-400 hover:text-amber-300' : 'text-emerald-400 hover:text-emerald-300'"
+                        class="p-1.5 rounded hover:bg-surface-alt transition-colors"
+                        [ngClass]="cat.isActive ? 'text-amber-600 hover:text-amber-700' : 'text-emerald-600 hover:text-emerald-700'"
                         [title]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
                         [aria-label]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
                       >
@@ -286,7 +285,7 @@ type FlattenedCategoryRow = AdminCategory & {
       </div>
     </div>
 
-    <!-- Hộp thoại Thêm/Sửa Danh Mục Ngành Hàng (MOD-01) -->
+    <!-- Hộp thoại Thêm/Sửa Danh Mục Ngành Hàng -->
     <app-category-form-dialog
       [isOpen]="isFormModalOpen()"
       [categoryToEdit]="selectedCategoryForEdit()"
@@ -295,7 +294,7 @@ type FlattenedCategoryRow = AdminCategory & {
       (saved)="onCategorySaved($event)"
     />
 
-    <!-- Bảng trượt Cấu Hình Schema Thông Số Kỹ Thuật Động (MOD-02) -->
+    <!-- Bảng trượt Cấu Hình Schema Thông Số Kỹ Thuật Động -->
     <app-spec-schema-sheet
       [isOpen]="isSpecSheetOpen()"
       [category]="selectedCategoryForSpec()"
@@ -307,18 +306,18 @@ type FlattenedCategoryRow = AdminCategory & {
     <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
       @for (toast of toasts(); track toast.id) {
         <div
-          class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center justify-between gap-3 border transition-all transform translate-y-0"
+          class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center justify-between gap-3 border transition-all transform translate-y-0 bg-surface"
           [ngClass]="{
-            'bg-emerald-950/90 text-emerald-200 border-emerald-500/40': toast.type === 'success',
-            'bg-rose-950/90 text-rose-200 border-rose-500/40': toast.type === 'error',
-            'bg-blue-950/90 text-blue-200 border-blue-500/40': toast.type === 'info'
+            'text-emerald-800 border-emerald-400': toast.type === 'success',
+            'text-rose-800 border-rose-400': toast.type === 'error',
+            'text-blue-800 border-blue-400': toast.type === 'info'
           }"
         >
           <span>{{ toast.message }}</span>
           <button
             type="button"
             (click)="dismissToast(toast.id)"
-            class="p-0.5 rounded text-slate-400 hover:text-white transition-colors"
+            class="p-0.5 rounded text-muted hover:text-foreground transition-colors"
             title="Đóng thông báo"
             aria-label="Đóng thông báo"
           >
@@ -335,6 +334,12 @@ type FlattenedCategoryRow = AdminCategory & {
 export class AdminCategoriesPageComponent implements OnInit {
   readonly categoryService = inject(AdminCategoryService);
   private readonly router = inject(Router);
+
+  readonly statusOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'ACTIVE', label: 'Đang hoạt động' },
+    { value: 'INACTIVE', label: 'Tạm dừng hoạt động' },
+  ];
 
   readonly isFormModalOpen = signal<boolean>(false);
   readonly selectedCategoryForEdit = signal<AdminCategory | null>(null);
@@ -413,8 +418,8 @@ export class AdminCategoriesPageComponent implements OnInit {
     this.categoryService.searchQuery.set(term);
   }
 
-  onStatusFilterChange(filter: 'ALL' | 'ACTIVE' | 'INACTIVE'): void {
-    this.categoryService.statusFilter.set(filter);
+  onStatusFilterChange(filter: string): void {
+    this.categoryService.statusFilter.set(filter as 'ALL' | 'ACTIVE' | 'INACTIVE');
     this.categoryService.loadCategories();
   }
 

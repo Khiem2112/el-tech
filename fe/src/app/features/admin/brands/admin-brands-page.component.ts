@@ -8,6 +8,8 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { BrandFormDialogComponent } from './components/brand-form-dialog.component';
 import {
   AdminBrand,
@@ -23,31 +25,29 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-brands-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, BrandFormDialogComponent],
+  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent, BrandFormDialogComponent],
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
-        <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
-            SCR-04
-          </span>
-          <div>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
-              Quản Lý Thương Hiệu
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Danh sách nhà sản xuất linh kiện máy tính và thống kê mẫu sản phẩm liên kết (CAT-004)
-            </p>
-          </div>
+    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Quản Lý Thương Hiệu
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Danh sách nhà sản xuất linh kiện máy tính và thống kê mẫu sản phẩm liên kết
+          </p>
         </div>
 
         <div class="flex items-center gap-3">
           <button
             type="button"
+            appButton
+            variant="primary"
+            size="sm"
             (click)="openCreateModal()"
-            class="px-3.5 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5 uppercase tracking-wide"
+            class="uppercase tracking-wide"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
             </svg>
             <span>Thêm Thương Hiệu</span>
@@ -55,7 +55,7 @@ type ToastNotification = {
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+      <div class="bg-surface border border-line rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <div class="relative flex-1">
             <input
@@ -63,10 +63,10 @@ type ToastNotification = {
               [ngModel]="brandService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm kiếm thương hiệu hoặc mã đường dẫn slug..."
-              class="w-full pl-9 pr-4 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
-              class="w-4 h-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none"
+              class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -77,127 +77,126 @@ type ToastNotification = {
           </div>
 
           <div class="flex items-center gap-2">
-            <label for="brand-status-filter" class="text-xs text-slate-400 font-medium whitespace-nowrap">Trạng thái:</label>
-            <select
-              id="brand-status-filter"
-              [ngModel]="brandService.statusFilter()"
-              (ngModelChange)="onStatusFilterChange($event)"
-              class="px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-slate-200 focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả trạng thái</option>
-              <option value="ACTIVE">Đang hoạt động</option>
-              <option value="INACTIVE">Tạm dừng hoạt động</option>
-            </select>
+            <span class="text-xs text-muted font-medium whitespace-nowrap">Trạng thái:</span>
+            <app-select
+              [options]="statusOptions"
+              [value]="brandService.statusFilter()"
+              (valueChange)="onStatusFilterChange($event)"
+              size="sm"
+              class="w-48"
+            />
           </div>
         </div>
 
-        <div class="text-xs text-slate-400 text-right">
-          Tổng số: <strong class="text-white">{{ visibleBrands().length }}</strong> thương hiệu
+        <div class="text-xs text-muted text-right">
+          Tổng số: <strong class="text-foreground">{{ visibleBrands().length }}</strong> thương hiệu
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         @if (brandService.isLoading()) {
-          <div class="p-8 text-center text-slate-400 space-y-3">
-            <div class="inline-block w-8 h-8 border-2 border-t-[#76b900] border-r-transparent border-b-[#76b900] border-l-transparent rounded-full animate-spin"></div>
+          <div class="p-8 text-center text-muted space-y-3">
+            <div class="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             <p class="text-xs">Đang tải danh sách thương hiệu...</p>
           </div>
         } @else if (visibleBrands().length === 0) {
-          <div class="p-12 text-center text-slate-400 space-y-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-[#090d16] border border-[#272f3d] flex items-center justify-center text-slate-500">
+          <div class="p-12 text-center text-muted space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
             </div>
-            <h3 class="text-sm font-semibold text-slate-300">Không tìm thấy thương hiệu phù hợp</h3>
-            <p class="text-xs text-slate-500 max-w-sm mx-auto">
+            <h3 class="text-sm font-semibold text-foreground">Không tìm thấy thương hiệu phù hợp</h3>
+            <p class="text-xs text-muted max-w-sm mx-auto">
               Không có thương hiệu nào khớp với từ khóa tìm kiếm hoặc bộ lọc được chọn.
             </p>
             <button
               type="button"
+              appButton
+              variant="secondary"
+              size="sm"
               (click)="clearFilters()"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-xs text-slate-300 transition-colors"
             >
               Xóa bộ lọc
             </button>
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left border-collapse min-w-[1000px]">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-3 px-4">Thương Hiệu</th>
-                  <th class="py-3 px-4">Đường Dẫn (Slug)</th>
-                  <th class="py-3 px-4">Ngành Hàng Liên Kết</th>
-                  <th class="py-3 px-4 text-center">Mẫu Sản Phẩm</th>
-                  <th class="py-3 px-4 text-center">Trạng Thái</th>
-                  <th class="py-3 px-4 text-right">Thao Tác</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Thương Hiệu</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Đường Dẫn (Slug)</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Ngành Hàng Liên Kết</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Mẫu Sản Phẩm</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#272f3d]">
+              <tbody class="divide-y divide-line text-xs">
                 @for (brand of visibleBrands(); track brand.id) {
-                  <tr class="hover:bg-[#1f2633] transition-colors group">
-                    <td class="py-3 px-4 font-semibold text-white">
+                  <tr class="hover:bg-surface-alt/70 transition-colors group">
+                    <td class="py-3 px-4 font-semibold text-foreground">
                       <div class="flex items-center gap-2">
                         <span
                           class="w-2 h-2 rounded-full flex-shrink-0"
-                          [class.bg-[#76b900]]="brand.isActive"
-                          [class.bg-slate-500]="!brand.isActive"
+                          [class.bg-primary]="brand.isActive"
+                          [class.bg-slate-300]="!brand.isActive"
                         ></span>
-                        <span class="font-bold text-white">{{ brand.name }}</span>
+                        <span class="font-bold text-foreground">{{ brand.name }}</span>
                       </div>
                       @if (brand.description) {
-                        <div class="text-xs text-slate-400 font-normal mt-0.5 line-clamp-1 max-w-xs">
+                        <div class="text-xs text-muted font-normal mt-0.5 line-clamp-1 max-w-xs">
                           {{ brand.description }}
                         </div>
                       }
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-xs text-slate-400">
+                    <td class="py-3 px-4 font-mono text-xs text-muted whitespace-nowrap">
                       {{ brand.slug }}
                     </td>
 
-                    <td class="py-3 px-4">
+                    <td class="py-3 px-4 whitespace-nowrap">
                       @if (brand.categories.length > 0) {
                         <div class="flex flex-wrap gap-1 max-w-xs">
                           @for (cat of brand.categories; track cat.id) {
-                            <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-950/60 text-blue-300 border border-blue-800/50">
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
                               {{ cat.name }}
                             </span>
                           }
                         </div>
                       } @else {
-                        <span class="text-xs text-slate-500 italic">Chưa liên kết</span>
+                        <span class="text-xs text-muted italic">Chưa liên kết</span>
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-center tabular-nums">
-                      <div class="font-bold text-white">
+                    <td class="py-3 px-4 text-center tabular-nums whitespace-nowrap">
+                      <div class="font-bold text-foreground">
                         {{ brand.productTemplateCount }}
                       </div>
-                      <div class="text-[11px] text-slate-400">mẫu sản phẩm</div>
+                      <div class="text-xs text-muted">mẫu sản phẩm</div>
                     </td>
 
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (brand.isActive) {
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-[#76b900]/10 text-[#76b900] border border-[#76b900]/30">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                           Hoạt động
                         </span>
                       } @else {
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                           Tạm dừng
                         </span>
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right">
+                    <td class="py-3 px-4 text-right whitespace-nowrap">
                       <div class="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           (click)="toggleBreakdown(brand.id)"
                           [title]="isExpanded(brand.id) ? 'Thu gọn cơ cấu' : 'Xem chi tiết cơ cấu'"
-                          class="p-1.5 rounded hover:bg-[#272f3d] text-slate-400 hover:text-[#76b900] transition-colors"
-                          [class.text-[#76b900]]="isExpanded(brand.id)"
+                          class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-primary-strong transition-colors"
+                          [class.text-primary-strong]="isExpanded(brand.id)"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -212,7 +211,7 @@ type ToastNotification = {
                           type="button"
                           (click)="openEditModal(brand)"
                           title="Chỉnh sửa thông tin"
-                          class="p-1.5 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+                          class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
@@ -223,9 +222,9 @@ type ToastNotification = {
                           type="button"
                           (click)="toggleBrandStatus(brand)"
                           [title]="brand.isActive ? 'Tạm dừng hoạt động' : 'Kích hoạt hoạt động'"
-                          class="p-1.5 rounded hover:bg-[#272f3d] transition-colors"
-                          [class.text-amber-400]="brand.isActive"
-                          [class.text-[#76b900]]="!brand.isActive"
+                          class="p-1.5 rounded hover:bg-surface-alt transition-colors"
+                          [class.text-amber-600]="brand.isActive"
+                          [class.text-emerald-600]="!brand.isActive"
                         >
                           @if (brand.isActive) {
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -244,7 +243,7 @@ type ToastNotification = {
                             type="button"
                             (click)="deleteBrand(brand)"
                             title="Xóa thương hiệu"
-                            class="p-1.5 rounded hover:bg-[#272f3d] text-slate-400 hover:text-rose-400 transition-colors"
+                            class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-rose-600 transition-colors"
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -256,14 +255,14 @@ type ToastNotification = {
                   </tr>
 
                   @if (isExpanded(brand.id)) {
-                    <tr class="bg-[#121620] border-b border-[#272f3d]">
+                    <tr class="bg-surface-alt border-b border-line">
                       <td colspan="6" class="p-4">
-                        <div class="bg-[#161b26] border border-[#272f3d] rounded-md p-4 space-y-3">
-                          <div class="flex items-center justify-between pb-2 border-b border-[#272f3d]">
-                            <span class="text-xs font-bold text-white uppercase tracking-wider">
+                        <div class="bg-surface border border-line rounded-md p-4 space-y-3 shadow-xs">
+                          <div class="flex items-center justify-between pb-2 border-b border-line">
+                            <span class="text-xs font-bold text-foreground uppercase tracking-wider">
                               Cơ cấu ngành hàng liên kết: {{ brand.name }}
                             </span>
-                            <span class="text-xs text-slate-400">
+                            <span class="text-xs text-muted">
                               Tổng cộng: {{ brand.categories.length }} ngành hàng
                             </span>
                           </div>
@@ -271,19 +270,19 @@ type ToastNotification = {
                           @if (brand.categories.length > 0) {
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                               @for (cat of brand.categories; track cat.id) {
-                                <div class="p-2.5 rounded bg-[#090d16] border border-[#272f3d] flex items-center justify-between">
+                                <div class="p-2.5 rounded bg-surface-alt border border-line flex items-center justify-between">
                                   <div>
-                                    <div class="font-semibold text-xs text-white">{{ cat.name }}</div>
-                                    <div class="font-mono text-[11px] text-slate-400">{{ cat.slug }}</div>
+                                    <div class="font-semibold text-xs text-foreground">{{ cat.name }}</div>
+                                    <div class="font-mono text-xs text-muted">{{ cat.slug }}</div>
                                   </div>
-                                  <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/50">
+                                  <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     Đang phân phối
                                   </span>
                                 </div>
                               }
                             </div>
                           } @else {
-                            <div class="py-3 text-center text-xs text-slate-500">
+                            <div class="py-3 text-center text-xs text-muted">
                               Chưa có sản phẩm nào thuộc thương hiệu này được liên kết với danh mục ngành hàng.
                             </div>
                           }
@@ -308,14 +307,13 @@ type ToastNotification = {
       <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
         @for (toast of toasts(); track toast.id) {
           <div
-            class="pointer-events-auto px-4 py-3 rounded-lg shadow-xl border text-xs font-medium transition-all"
-            [class.bg-[#161b26]]="true"
-            [class.border-[#76b900]]="toast.type === 'success'"
-            [class.text-[#76b900]]="toast.type === 'success'"
-            [class.border-rose-500]="toast.type === 'error'"
-            [class.text-rose-400]="toast.type === 'error'"
-            [class.border-blue-500]="toast.type === 'info'"
-            [class.text-blue-400]="toast.type === 'info'"
+            class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg border text-xs font-medium transition-all bg-surface"
+            [class.border-emerald-400]="toast.type === 'success'"
+            [class.text-emerald-800]="toast.type === 'success'"
+            [class.border-rose-400]="toast.type === 'error'"
+            [class.text-rose-800]="toast.type === 'error'"
+            [class.border-blue-400]="toast.type === 'info'"
+            [class.text-blue-800]="toast.type === 'info'"
           >
             {{ toast.message }}
           </div>
@@ -327,6 +325,12 @@ type ToastNotification = {
 })
 export class AdminBrandsPageComponent implements OnInit {
   readonly brandService = inject(AdminBrandService);
+
+  readonly statusOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'ACTIVE', label: 'Đang hoạt động' },
+    { value: 'INACTIVE', label: 'Tạm dừng hoạt động' },
+  ];
 
   readonly isModalOpen = signal<boolean>(false);
   readonly selectedBrand = signal<AdminBrand | null>(null);
@@ -361,8 +365,8 @@ export class AdminBrandsPageComponent implements OnInit {
     this.brandService.searchQuery.set(value);
   }
 
-  onStatusFilterChange(value: 'ALL' | 'ACTIVE' | 'INACTIVE'): void {
-    this.brandService.statusFilter.set(value);
+  onStatusFilterChange(value: string): void {
+    this.brandService.statusFilter.set(value as 'ALL' | 'ACTIVE' | 'INACTIVE');
     void this.brandService.loadBrands();
   }
 

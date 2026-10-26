@@ -18,6 +18,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { z } from 'zod';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import {
   AdminCategory,
   AdminCategoryService,
@@ -57,32 +59,33 @@ function slugify(text: string): string {
 @Component({
   selector: 'app-category-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonDirective, SelectComponent],
   template: `
     @if (isOpen()) {
       <div
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
+        data-modal-id="MOD-01"
         [attr.aria-labelledby]="'category-modal-title'"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-white"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h2 id="category-modal-title" class="font-bold text-white uppercase text-base tracking-wide">
+              <h2 id="category-modal-title" class="font-bold text-foreground uppercase text-base tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Danh Mục Ngành Hàng' : 'Thêm Danh Mục Ngành Hàng' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 {{ isEditMode() ? 'Cập nhật thông tin phân cấp và thuộc tính danh mục' : 'Tạo mới danh mục ngành hàng phần cứng và linh kiện PC' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -93,55 +96,55 @@ function slugify(text: string): string {
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+            <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               {{ errorMessage() }}
             </div>
           }
 
           @if (isEditMode() && categoryToEdit(); as cat) {
-            <div class="grid grid-cols-3 gap-2 p-2.5 bg-[#090d16] border border-[#272f3d] rounded-lg">
+            <div class="grid grid-cols-3 gap-2 p-2.5 bg-surface-alt border border-line rounded-lg">
               <button
                 type="button"
                 (click)="navigateToTemplates(cat)"
-                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem danh sách mẫu sản phẩm thuộc danh mục này"
               >
-                <div class="text-sm font-bold text-white group-hover:text-[#76b900] tabular-nums transition-colors">
+                <div class="text-sm font-bold text-foreground group-hover:text-primary tabular-nums transition-colors">
                   {{ cat.productTemplateCount }}
                 </div>
-                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Sản Phẩm</div>
+                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Sản Phẩm</div>
               </button>
 
               <button
                 type="button"
                 (click)="navigateToInventory(cat)"
-                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem tổng tồn kho linh kiện của danh mục này"
               >
-                <div class="text-sm font-bold text-emerald-400 group-hover:scale-105 tabular-nums transition-transform">
+                <div class="text-sm font-bold text-emerald-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.totalInventory }}
                 </div>
-                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Tổng Tồn Kho</div>
+                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Tổng Tồn Kho</div>
               </button>
 
               <button
                 type="button"
                 (click)="navigateToTransfers(cat)"
-                class="p-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group"
+                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem phiếu điều chuyển kho đang xử lý của danh mục này"
               >
-                <div class="text-sm font-bold text-blue-400 group-hover:scale-105 tabular-nums transition-transform">
+                <div class="text-sm font-bold text-blue-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.activeTransfers }}
                 </div>
-                <div class="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">Phiếu Chuyển Kho</div>
+                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Phiếu Chuyển Kho</div>
               </button>
             </div>
           }
 
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
             <div>
-              <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Tên danh mục ngành hàng <span class="text-rose-400">*</span>
+              <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+                Tên danh mục ngành hàng <span class="text-rose-500">*</span>
               </label>
               <input
                 id="name"
@@ -149,57 +152,51 @@ function slugify(text: string): string {
                 formControlName="name"
                 (input)="onNameInput()"
                 placeholder="Ví dụ: Bo Mạch Chủ (Mainboard)"
-                class="w-full px-3 py-2 bg-[#090d16] border rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('name')"
               />
               @if (isFieldInvalid('name')) {
-                <p class="text-rose-400 text-[11px] mt-1">{{ getFieldError('name') }}</p>
+                <p class="text-rose-500 text-xs mt-1">{{ getFieldError('name') }}</p>
               }
             </div>
 
             <div>
-              <label for="slug" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Mã đường dẫn (Slug) <span class="text-rose-400">*</span>
+              <label for="slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+                Mã đường dẫn (Slug) <span class="text-rose-500">*</span>
               </label>
               <input
                 id="slug"
                 type="text"
                 formControlName="slug"
                 placeholder="mainboard-bo-mach-chu"
-                class="w-full px-3 py-2 bg-[#090d16] border rounded text-xs font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('slug')"
               />
-              <p class="text-slate-400 text-[11px] mt-1">
+              <p class="text-muted text-xs mt-1">
                 Slug là duy nhất toàn hệ thống, tự động chuẩn hóa chữ thường không dấu và dấu gạch nối.
               </p>
               @if (isFieldInvalid('slug')) {
-                <p class="text-rose-400 text-[11px] mt-1">{{ getFieldError('slug') }}</p>
+                <p class="text-rose-500 text-xs mt-1">{{ getFieldError('slug') }}</p>
               }
             </div>
 
             <div>
-              <label for="parentId" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Danh mục cấp cha (Tùy chọn)
               </label>
-              <select
-                id="parentId"
-                formControlName="parentId"
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900]"
-              >
-                <option [ngValue]="null">Không có (Danh mục gốc cấp cao nhất)</option>
-                @for (cat of selectableParents(); track cat.id) {
-                  <option [ngValue]="cat.id">
-                    {{ cat.name }} ({{ cat.slug }})
-                  </option>
-                }
-              </select>
-              <p class="text-slate-400 text-[11px] mt-1">
-                Quy tắc CAT-001: Không cho phép chọn chính danh mục đó hoặc các danh mục con của nó làm danh mục cha.
+              <app-select
+                [options]="parentOptions()"
+                [value]="selectedParentIdString()"
+                (valueChange)="onParentChange($event)"
+                size="sm"
+              />
+              <p class="text-muted text-xs mt-1">
+                Không cho phép chọn chính danh mục đó hoặc các danh mục con của nó làm danh mục cha.
               </p>
             </div>
 
             <div>
-              <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Mô tả ngành hàng
               </label>
               <textarea
@@ -207,7 +204,7 @@ function slugify(text: string): string {
                 rows="3"
                 formControlName="description"
                 placeholder="Nhập thông tin giới thiệu và quy chuẩn kỹ thuật của ngành hàng..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               ></textarea>
             </div>
 
@@ -216,29 +213,34 @@ function slugify(text: string): string {
                 id="isActive"
                 type="checkbox"
                 formControlName="isActive"
-                class="w-4 h-4 rounded bg-[#090d16] border-[#272f3d] text-[#76b900] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                class="w-4 h-4 rounded bg-surface-alt border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
-              <label for="isActive" class="text-xs text-slate-200 cursor-pointer">
+              <label for="isActive" class="text-xs text-foreground cursor-pointer">
                 Kích hoạt hiển thị danh mục trong hệ thống và bộ lọc linh kiện
               </label>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#272f3d]">
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-line">
               <button
                 type="button"
+                appButton
+                variant="secondary"
+                size="sm"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 rounded bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-xs font-semibold text-slate-200 transition-colors"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
+                appButton
+                variant="primary"
+                size="sm"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 rounded bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] text-xs font-bold transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                class="inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting()) {
-                  <span class="inline-block w-3.5 h-3.5 border-2 border-[#090d16] border-t-transparent rounded-full animate-spin"></span>
+                  <span class="inline-block w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></span>
                   <span>Đang lưu...</span>
                 } @else {
                   <span>{{ isEditMode() ? 'Cập nhật danh mục' : 'Lưu danh mục' }}</span>
@@ -293,6 +295,19 @@ export class CategoryFormDialogComponent {
     return list.filter((item) => !excludedIds.has(item.id));
   });
 
+  readonly parentOptions = computed<SelectOption[]>(() => {
+    const options: SelectOption[] = [
+      { value: '', label: 'Không có (Danh mục gốc cấp cao nhất)' },
+    ];
+    for (const cat of this.selectableParents()) {
+      options.push({
+        value: String(cat.id),
+        label: `${cat.name} (${cat.slug})`,
+      });
+    }
+    return options;
+  });
+
   readonly form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
     slug: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
@@ -300,6 +315,16 @@ export class CategoryFormDialogComponent {
     description: [''],
     isActive: [true],
   });
+
+  readonly selectedParentIdString = computed(() => {
+    const val = this.form.get('parentId')?.value;
+    return val !== null && val !== undefined ? String(val) : '';
+  });
+
+  onParentChange(val: string): void {
+    this.form.patchValue({ parentId: val ? Number(val) : null });
+    this.form.get('parentId')?.markAsDirty();
+  }
 
   constructor() {
     effect(() => {

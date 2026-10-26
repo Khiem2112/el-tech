@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
 import {
   AdminProductTemplateService,
   ProductLifecycle,
@@ -18,24 +19,24 @@ import {
 @Component({
   selector: 'app-lifecycle-transition-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective],
   template: `
     @if (isOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs">
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-slate-200">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+        <div data-modal-id="MOD-05" class="bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-foreground">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-white uppercase text-base">
+              <h3 class="font-bold text-foreground uppercase text-base">
                 Chuyển Trạng Thái Vòng Đời
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">
-                {{ targetName() }} (MOD-05)
+              <p class="text-xs text-muted mt-0.5">
+                {{ targetName() }}
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1.5 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -45,14 +46,14 @@ import {
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 bg-rose-950/50 border border-rose-800 rounded text-rose-300 text-xs">
+            <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
 
           <div class="space-y-4">
             <div>
-              <label class="block font-semibold text-slate-400 uppercase text-xs mb-1.5">
+              <label class="block font-semibold text-muted uppercase text-xs mb-1.5">
                 Chọn Trạng Thái Mục Tiêu
               </label>
               <div class="grid grid-cols-2 gap-2">
@@ -60,21 +61,21 @@ import {
                   <button
                     type="button"
                     (click)="selectedState.set(state.key)"
-                    [class.border-[#76b900]]="selectedState() === state.key"
-                    [class.bg-[#76b900]/10]="selectedState() === state.key"
-                    [class.border-[#272f3d]]="selectedState() !== state.key"
-                    [class.bg-[#090d16]]="selectedState() !== state.key"
+                    [class.border-primary]="selectedState() === state.key"
+                    [class.bg-primary/10]="selectedState() === state.key"
+                    [class.border-line]="selectedState() !== state.key"
+                    [class.bg-surface-alt]="selectedState() !== state.key"
                     class="p-2.5 rounded border text-left transition-all"
                   >
                     <div class="flex items-center justify-between">
-                      <span class="font-bold text-xs" [class.text-[#76b900]]="selectedState() === state.key" [class.text-white]="selectedState() !== state.key">
+                      <span class="font-bold text-xs" [class.text-primary]="selectedState() === state.key" [class.text-foreground]="selectedState() !== state.key">
                         {{ state.label }}
                       </span>
                       @if (currentState() === state.key) {
-                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-slate-800 text-slate-300">Hiện tại</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-surface border border-line text-muted">Hiện tại</span>
                       }
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-1 line-clamp-1">
+                    <p class="text-xs text-muted mt-1 line-clamp-1">
                       {{ state.description }}
                     </p>
                   </button>
@@ -83,51 +84,51 @@ import {
             </div>
 
             @if (targetType() === 'template' && selectedState() === 'ACTIVE') {
-              <div class="space-y-2 bg-[#090d16] p-3.5 rounded border border-[#272f3d]">
-                <div class="flex items-center justify-between border-b border-[#272f3d] pb-1.5">
-                  <span class="font-bold text-white text-xs uppercase tracking-wide">
-                    Kiểm Tra Điều Kiện Kích Hoạt (CAT-008)
+              <div class="space-y-2 bg-surface-alt p-3.5 rounded border border-line">
+                <div class="flex items-center justify-between border-b border-line pb-1.5">
+                  <span class="font-bold text-foreground text-xs uppercase tracking-wide">
+                    Kiểm Tra Điều Kiện Kích Hoạt
                   </span>
                   @if (canTransitionToActive()) {
-                    <span class="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 text-xs font-bold">ĐỦ ĐIỀU KIỆN</span>
+                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold">ĐỦ ĐIỀU KIỆN</span>
                   } @else {
-                    <span class="px-2 py-0.5 rounded bg-rose-950 text-rose-400 text-xs font-bold">CHƯA ĐẠT</span>
+                    <span class="px-2 py-0.5 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-bold">CHƯA ĐẠT</span>
                   }
                 </div>
 
                 <div class="space-y-2 pt-1 text-xs">
-                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-800]="isSpecComplete()" [class.bg-emerald-950/20]="isSpecComplete()" [class.border-rose-900]="!isSpecComplete()" [class.bg-rose-950/20]="!isSpecComplete()">
+                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-500/30]="isSpecComplete()" [class.bg-emerald-500/5]="isSpecComplete()" [class.border-destructive/30]="!isSpecComplete()" [class.bg-destructive/5]="!isSpecComplete()">
                     <div class="pr-2">
-                      <span class="font-bold text-white">100% Thông số kỹ thuật bắt buộc</span>
+                      <span class="font-bold text-foreground">100% Thông số kỹ thuật bắt buộc</span>
                       @if (missingSpecKeys().length > 0) {
-                        <p class="text-rose-400 text-[11px] mt-0.5">
+                        <p class="text-destructive text-xs mt-0.5">
                           Còn thiếu các trường: {{ missingSpecKeys().join(', ') }}
                         </p>
                       } @else {
-                        <p class="text-emerald-400 text-[11px] mt-0.5">
+                        <p class="text-emerald-600 text-xs mt-0.5">
                           Đã điền đầy đủ tất cả thông số bắt buộc của danh mục.
                         </p>
                       }
                     </div>
-                    <span class="font-bold" [class.text-emerald-400]="isSpecComplete()" [class.text-rose-400]="!isSpecComplete()">
+                    <span class="font-bold text-xs" [class.text-emerald-600]="isSpecComplete()" [class.text-destructive]="!isSpecComplete()">
                       {{ isSpecComplete() ? 'ĐẠT' : 'THIẾU' }}
                     </span>
                   </div>
 
-                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-800]="hasActiveVariant()" [class.bg-emerald-950/20]="hasActiveVariant()" [class.border-rose-900]="!hasActiveVariant()" [class.bg-rose-950/20]="!hasActiveVariant()">
+                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-500/30]="hasActiveVariant()" [class.bg-emerald-500/5]="hasActiveVariant()" [class.border-destructive/30]="!hasActiveVariant()" [class.bg-destructive/5]="!hasActiveVariant()">
                     <div class="pr-2">
-                      <span class="font-bold text-white">Tối thiểu 1 biến thể SKU hoạt động</span>
+                      <span class="font-bold text-foreground">Tối thiểu 1 biến thể SKU hoạt động</span>
                       @if (activeVariantCount() > 0) {
-                        <p class="text-emerald-400 text-[11px] mt-0.5">
+                        <p class="text-emerald-600 text-xs mt-0.5">
                           Có {{ activeVariantCount() }} biến thể đang ở trạng thái ACTIVE.
                         </p>
                       } @else {
-                        <p class="text-rose-400 text-[11px] mt-0.5">
+                        <p class="text-destructive text-xs mt-0.5">
                           Chưa có biến thể SKU nào ở trạng thái ACTIVE. Vui lòng kích hoạt ít nhất 1 SKU trước.
                         </p>
                       }
                     </div>
-                    <span class="font-bold" [class.text-emerald-400]="hasActiveVariant()" [class.text-rose-400]="!hasActiveVariant()">
+                    <span class="font-bold text-xs" [class.text-emerald-600]="hasActiveVariant()" [class.text-destructive]="!hasActiveVariant()">
                       {{ hasActiveVariant() ? 'ĐẠT' : 'THIẾU' }}
                     </span>
                   </div>
@@ -136,7 +137,7 @@ import {
             }
 
             <div>
-              <label class="block font-semibold text-slate-400 uppercase text-xs mb-1">
+              <label class="block font-semibold text-muted uppercase text-xs mb-1">
                 Lý Do Chuyển Trạng Thái (Tùy chọn)
               </label>
               <textarea
@@ -144,24 +145,29 @@ import {
                 (input)="reason.set($any($event.target).value)"
                 rows="2"
                 placeholder="Nhập ghi chú lý do thay đổi trạng thái..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               ></textarea>
             </div>
           </div>
 
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#272f3d]">
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-line">
             <button
               type="button"
+              appButton
+              variant="outline"
+              size="sm"
               (click)="onCancel()"
-              class="px-4 py-2 bg-[#272f3d] hover:bg-[#343e50] text-slate-200 rounded font-semibold text-xs transition-colors"
             >
               Hủy
             </button>
             <button
               type="button"
+              appButton
+              variant="primary"
+              size="sm"
               [disabled]="isConfirmDisabled()"
               (click)="onConfirm()"
-              class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors disabled:opacity-50"
+              class="disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang chuyển...' : 'Xác Nhận Chuyển' }}
             </button>

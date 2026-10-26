@@ -17,6 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { z } from 'zod';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
 import {
   AdminBrand,
   AdminBrandService,
@@ -55,32 +56,33 @@ function slugify(text: string): string {
 @Component({
   selector: 'app-brand-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ButtonDirective],
   template: `
     @if (isOpen()) {
       <div
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
+        data-modal-id="MOD-03"
         [attr.aria-labelledby]="'brand-modal-title'"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-white"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h2 id="brand-modal-title" class="font-bold text-white uppercase text-base tracking-wide">
+              <h2 id="brand-modal-title" class="font-bold text-foreground uppercase text-base tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Thương Hiệu' : 'Thêm Thương Hiệu Mới' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 {{ isEditMode() ? 'Cập nhật thông tin chi tiết của hãng sản xuất' : 'Thêm mới hãng sản xuất linh kiện máy tính vào hệ thống' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -91,15 +93,15 @@ function slugify(text: string): string {
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+            <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               {{ errorMessage() }}
             </div>
           }
 
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
             <div>
-              <label for="brand-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                Tên thương hiệu <span class="text-rose-400">*</span>
+              <label for="brand-name" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
+                Tên thương hiệu <span class="text-rose-500">*</span>
               </label>
               <input
                 id="brand-name"
@@ -107,19 +109,19 @@ function slugify(text: string): string {
                 formControlName="name"
                 (input)="onNameInput()"
                 placeholder="Ví dụ: ASUS, Corsair, MSI..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [class.border-rose-500]="isFieldInvalid('name')"
               />
               @if (isFieldInvalid('name')) {
-                <p class="mt-1 text-xs text-rose-400">
+                <p class="mt-1 text-xs text-rose-500">
                   {{ getFieldError('name') }}
                 </p>
               }
             </div>
 
             <div>
-              <label for="brand-slug" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                Đường dẫn định danh (Slug) <span class="text-rose-400">*</span>
+              <label for="brand-slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
+                Đường dẫn định danh (Slug) <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <input
@@ -128,22 +130,22 @@ function slugify(text: string): string {
                   formControlName="slug"
                   (input)="onSlugManualInput()"
                   placeholder="corsair"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('slug')"
                 />
               </div>
-              <p class="mt-1 text-[11px] text-slate-400">
+              <p class="mt-1 text-xs text-muted">
                 Định danh duy nhất trên URL (chỉ gồm chữ thường không dấu, số và gạch ngang).
               </p>
               @if (isFieldInvalid('slug')) {
-                <p class="mt-1 text-xs text-rose-400">
+                <p class="mt-1 text-xs text-rose-500">
                   {{ getFieldError('slug') }}
                 </p>
               }
             </div>
 
             <div>
-              <label for="brand-description" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              <label for="brand-description" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                 Mô tả giới thiệu
               </label>
               <textarea
@@ -151,7 +153,7 @@ function slugify(text: string): string {
                 rows="3"
                 formControlName="description"
                 placeholder="Nhập thông tin giới thiệu ngắn gọn về thương hiệu..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900] resize-y"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary resize-y"
               ></textarea>
             </div>
 
@@ -160,33 +162,35 @@ function slugify(text: string): string {
                 <input
                   type="checkbox"
                   formControlName="isActive"
-                  class="w-4 h-4 rounded bg-[#090d16] border-[#272f3d] text-[#76b900] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                  class="w-4 h-4 rounded bg-surface-alt border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
                 />
-                <span class="text-xs font-medium text-slate-200">
+                <span class="text-xs font-medium text-foreground">
                   Kích hoạt trạng thái hoạt động của thương hiệu
                 </span>
               </label>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#272f3d]">
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-line">
               <button
                 type="button"
+                appButton
+                variant="secondary"
+                size="sm"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-transparent hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-slate-300 hover:text-white text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
+                appButton
+                variant="primary"
+                size="sm"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-1.5"
+                class="inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting()) {
-                  <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                  </svg>
+                  <span class="inline-block w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></span>
                   <span>Đang lưu...</span>
                 } @else {
                   <span>{{ isEditMode() ? 'Lưu thay đổi' : 'Thêm thương hiệu' }}</span>

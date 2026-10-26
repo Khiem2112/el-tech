@@ -11,6 +11,8 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import { AdminCategoryService } from '../../categories/services/admin-category.service';
 import { AdminVariantCatalogItem, ProductLifecycle } from '../../variants/services/admin-variant.service';
 import {
@@ -37,34 +39,34 @@ type EditableBomItem = {
 @Component({
   selector: 'app-pc-bundle-sheet',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-xs"
         role="dialog"
         aria-modal="true"
         [attr.aria-labelledby]="'bundle-sheet-title'"
       >
         <div
-          class="relative bg-[#161b26] border-l border-[#272f3d] shadow-2xl w-full max-w-3xl h-full flex flex-col text-xs text-white"
+          data-modal-id="MOD-06"
+          class="relative bg-surface border-l border-line shadow-2xl w-full max-w-3xl h-full flex flex-col text-xs text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <!-- Sheet Header -->
-          <div class="h-14 px-6 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0 bg-[#090d16]">
+          <div class="h-14 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
-              <h2 id="bundle-sheet-title" class="font-bold text-white uppercase text-sm tracking-wide">
+              <h2 id="bundle-sheet-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
                 {{ isEditMode() ? 'Cấu Hình Định Mức BOM Bộ Máy Tính' : 'Tạo Mới Cấu Hình Bộ Máy Tính' }}
               </h2>
-              <p class="text-xs text-slate-400">
+              <p class="text-xs text-muted">
                 {{ isEditMode() ? ('Bộ máy: ' + name()) : 'Thiết lập định mức linh kiện ảo (Virtual BOM)' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface text-muted hover:text-foreground transition-colors"
               title="Đóng bảng trượt (ESC)"
               aria-label="Đóng bảng trượt"
             >
@@ -74,39 +76,34 @@ type EditableBomItem = {
             </button>
           </div>
 
-          <!-- Business Rules Notice (PCB-001, PCB-002) -->
-          <div class="p-3.5 bg-amber-500/10 border-b border-amber-500/30 text-amber-300 text-xs flex items-start gap-2.5">
-            <svg class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <div class="p-3.5 bg-amber-500/10 border-b border-amber-500/20 text-amber-700 text-xs flex items-start gap-2.5">
+            <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div>
-              <strong class="font-bold">Quy tắc PCB-001 & PCB-002:</strong>
               Bộ PC dựng sẵn là định mức linh kiện ảo (BOM) không lưu tồn kho vật lý riêng. Tồn kho và giá trị cấu hình được tính toán trực tiếp từ các SKU thành phần đang ở trạng thái ACTIVE.
             </div>
           </div>
 
-          <!-- Error Alert Banner -->
           @if (errorMessage()) {
-            <div class="m-4 p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium flex items-center justify-between gap-2">
+            <div class="m-4 p-3 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 text-destructive flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{{ errorMessage() }}</span>
               </div>
-              <button type="button" (click)="errorMessage.set(null)" class="text-rose-400 hover:text-white" title="Ẩn thông báo">
+              <button type="button" (click)="errorMessage.set(null)" class="text-destructive hover:opacity-80" title="Ẩn thông báo">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
           }
 
-          <!-- Sheet Content (Scrollable) -->
           <div class="flex-1 overflow-y-auto p-6 space-y-5">
-            <!-- Thong tin co ban cua bo PC -->
-            <div class="space-y-3 p-4 bg-[#090d16] border border-[#272f3d] rounded-lg">
+            <div class="space-y-3 p-4 bg-surface-alt border border-line rounded-lg">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label for="bundle-name-input" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                  <label for="bundle-name-input" class="block font-semibold text-muted text-xs uppercase mb-1">
                     Tên Bộ Máy Tính *
                   </label>
                   <input
@@ -115,19 +112,19 @@ type EditableBomItem = {
                     [ngModel]="name()"
                     (ngModelChange)="onNameChange($event)"
                     placeholder="VD: EL-TECH TITAN X: AMD 9800X3D + RTX 5090"
-                    class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-white font-semibold focus:outline-none focus:border-[#76b900] text-xs"
+                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-xs"
                   />
                 </div>
 
                 <div>
                   <div class="flex items-center justify-between mb-1">
-                    <label for="bundle-slug-input" class="block font-semibold text-slate-400 text-xs uppercase">
+                    <label for="bundle-slug-input" class="block font-semibold text-muted text-xs uppercase">
                       Đường Dẫn Slug *
                     </label>
                     <button
                       type="button"
                       (click)="autoGenerateSlug()"
-                      class="text-[11px] text-[#76b900] hover:underline"
+                      class="text-xs text-primary hover:underline"
                     >
                       Tạo tự động
                     </button>
@@ -138,13 +135,13 @@ type EditableBomItem = {
                     [ngModel]="slug()"
                     (ngModelChange)="slug.set($event)"
                     placeholder="VD: el-tech-titan-x-9800x3d-rtx5090"
-                    class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-white font-mono focus:outline-none focus:border-[#76b900] text-xs"
+                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label for="bundle-desc-input" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                <label for="bundle-desc-input" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Mô Tả Bộ Máy
                 </label>
                 <textarea
@@ -153,26 +150,21 @@ type EditableBomItem = {
                   [ngModel]="description()"
                   (ngModelChange)="description.set($event)"
                   placeholder="Mô tả tóm tắt đối tượng sử dụng, phân khúc hiệu năng..."
-                  class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-white focus:outline-none focus:border-[#76b900] text-xs resize-none"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-xs resize-none"
                 ></textarea>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label for="bundle-lifecycle-select" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                  <label class="block font-semibold text-muted text-xs uppercase mb-1">
                     Trạng Thái Vòng Đời
                   </label>
-                  <select
-                    id="bundle-lifecycle-select"
-                    [ngModel]="lifecycleState()"
-                    (ngModelChange)="lifecycleState.set($event)"
-                    class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-white font-medium focus:outline-none focus:border-[#76b900] text-xs"
-                  >
-                    <option value="DRAFT">Bản nháp (DRAFT)</option>
-                    <option value="ACTIVE">Đang kinh doanh (ACTIVE)</option>
-                    <option value="PAUSED">Tạm dừng bán (PAUSED)</option>
-                    <option value="DISCONTINUED">Ngừng kinh doanh (DISCONTINUED)</option>
-                  </select>
+                  <app-select
+                    [options]="lifecycleOptions"
+                    [value]="lifecycleState()"
+                    (valueChange)="onLifecycleSelectChange($event)"
+                    placeholder="Chọn trạng thái"
+                  />
                 </div>
 
                 <div class="flex items-center gap-2 pt-6">
@@ -181,45 +173,46 @@ type EditableBomItem = {
                     type="checkbox"
                     [checked]="isActive()"
                     (change)="isActive.set(!isActive())"
-                    class="w-4 h-4 rounded border-[#272f3d] bg-[#161b26] text-[#76b900] focus:ring-0"
+                    class="w-4 h-4 rounded border-line bg-surface text-primary focus:ring-0"
                   />
-                  <label for="bundle-is-active" class="font-medium text-slate-300 text-xs cursor-pointer select-none">
+                  <label for="bundle-is-active" class="font-medium text-foreground text-xs cursor-pointer select-none">
                     Kích hoạt hiển thị hệ thống
                   </label>
                 </div>
               </div>
             </div>
 
-            <!-- Bang danh sach linh kien Bo PC -->
             <div class="space-y-2">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="font-bold text-white uppercase tracking-wider text-xs">
+                  <span class="font-bold text-foreground uppercase tracking-wider text-xs">
                     Danh Sách Linh Kiện Cấu Thành (BOM)
                   </span>
-                  <span class="text-slate-400 ml-2">({{ bomItems().length }} linh kiện)</span>
+                  <span class="text-muted ml-2">({{ bomItems().length }} linh kiện)</span>
                 </div>
                 <button
                   type="button"
+                  appButton
+                  variant="outline"
+                  size="sm"
                   (click)="showSearchPanel.set(!showSearchPanel())"
-                  class="px-3 py-1 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-white text-xs transition-colors inline-flex items-center gap-1.5"
+                  class="inline-flex items-center gap-1.5"
                 >
-                  <svg class="w-3.5 h-3.5 text-[#76b900]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
                   <span>{{ showSearchPanel() ? 'Đóng Bộ Tìm Kiếm' : 'Thêm Linh Kiện Vào BOM' }}</span>
                 </button>
               </div>
 
-              <!-- Hop thoai tim kiem nhanh linh kien SKU -->
               @if (showSearchPanel()) {
-                <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded-lg space-y-3">
-                  <div class="font-bold text-white text-xs uppercase flex items-center justify-between pb-1 border-b border-[#272f3d]">
-                    <span class="text-[#76b900]">Tra cứu SKU linh kiện đang hoạt động (ACTIVE)</span>
+                <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-3">
+                  <div class="font-bold text-foreground text-xs uppercase flex items-center justify-between pb-1 border-b border-line">
+                    <span class="text-primary">Tra cứu SKU linh kiện đang hoạt động (ACTIVE)</span>
                     <button
                       type="button"
                       (click)="showSearchPanel.set(false)"
-                      class="text-slate-400 hover:text-white"
+                      class="text-muted hover:text-foreground"
                       title="Đóng"
                     >
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -228,16 +221,12 @@ type EditableBomItem = {
 
                   <div class="grid grid-cols-1 md:grid-cols-12 gap-2">
                     <div class="md:col-span-5">
-                      <select
-                        [ngModel]="searchCategoryId()"
-                        (ngModelChange)="onSearchCategoryChange($event)"
-                        class="w-full px-2.5 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                      >
-                        <option [ngValue]="null">Tất cả ngành hàng linh kiện</option>
-                        @for (category of categories(); track category.id) {
-                          <option [ngValue]="category.id">{{ category.name }}</option>
-                        }
-                      </select>
+                      <app-select
+                        [options]="categorySearchOptions()"
+                        [value]="searchCategoryId() !== null ? String(searchCategoryId()) : ''"
+                        (valueChange)="onSearchCategorySelectChange($event)"
+                        placeholder="Tất cả ngành hàng linh kiện"
+                      />
                     </div>
 
                     <div class="md:col-span-7 flex items-center gap-1.5">
@@ -247,37 +236,39 @@ type EditableBomItem = {
                         (ngModelChange)="searchKeyword.set($event)"
                         (keydown.enter)="executeVariantSearch()"
                         placeholder="Nhập tên linh kiện, mã SKU hoặc barcode..."
-                        class="flex-1 px-3 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+                        class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
                       />
                       <button
                         type="button"
+                        appButton
+                        variant="primary"
+                        size="sm"
                         (click)="executeVariantSearch()"
                         [disabled]="isSearchingVariants()"
-                        class="px-3 py-1.5 bg-[#272f3d] hover:bg-[#343e50] text-white font-semibold text-xs rounded transition-colors whitespace-nowrap"
+                        class="whitespace-nowrap"
                       >
                         {{ isSearchingVariants() ? 'Đang tìm...' : 'Tìm Kiếm' }}
                       </button>
                     </div>
                   </div>
 
-                  <!-- Ket qua tim kiem linh kien -->
                   @if (variantSearchResults().length > 0) {
-                    <div class="max-h-48 overflow-y-auto border border-[#272f3d] rounded divide-y divide-[#272f3d] bg-[#161b26]">
+                    <div class="max-h-48 overflow-y-auto border border-line rounded divide-y divide-line bg-surface">
                       @for (sku of variantSearchResults(); track sku.id) {
-                        <div class="p-2.5 flex items-center justify-between hover:bg-[#090d16] transition-colors gap-2">
+                        <div class="p-2.5 flex items-center justify-between hover:bg-surface-alt transition-colors gap-2">
                           <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-2">
-                              <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-[10px] text-slate-300 font-medium uppercase">
+                              <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-xs text-muted font-medium uppercase">
                                 {{ sku.productTemplate.category.name }}
                               </span>
-                              <span class="font-semibold text-white truncate text-xs">{{ sku.productTemplate.name }}</span>
+                              <span class="font-semibold text-foreground truncate text-xs">{{ sku.productTemplate.name }}</span>
                               @if (sku.variationLabel) {
-                                <span class="text-slate-400 text-[11px]">({{ sku.variationLabel }})</span>
+                                <span class="text-muted text-xs">({{ sku.variationLabel }})</span>
                               }
                             </div>
-                            <div class="text-[11px] text-slate-400 font-mono mt-0.5 flex items-center gap-3">
+                            <div class="text-xs text-muted font-mono mt-0.5 flex items-center gap-3">
                               <span>SKU: {{ sku.sku }}</span>
-                              <span class="text-[#76b900] font-bold tabular-nums">
+                              <span class="text-primary font-bold tabular-nums">
                                 {{ formatCurrency(parsePrice(sku.sellingPrice)) }}
                               </span>
                               <span>Tồn khả dụng: {{ sku.totalAvailable }}</span>
@@ -286,8 +277,11 @@ type EditableBomItem = {
 
                           <button
                             type="button"
+                            appButton
+                            variant="primary"
+                            size="sm"
                             (click)="addVariantToBom(sku)"
-                            class="px-2.5 py-1 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors whitespace-nowrap shadow-xs"
+                            class="whitespace-nowrap shadow-xs"
                           >
                             + Chọn
                           </button>
@@ -295,17 +289,16 @@ type EditableBomItem = {
                       }
                     </div>
                   } @else if (hasSearched() && !isSearchingVariants()) {
-                    <div class="p-3 text-center text-slate-400 text-xs italic bg-[#161b26] border border-[#272f3d] rounded">
+                    <div class="p-3 text-center text-muted text-xs italic bg-surface border border-line rounded">
                       Không tìm thấy linh kiện biến thể ACTIVE phù hợp với từ khóa.
                     </div>
                   }
                 </div>
               }
 
-              <!-- Bang linh kien BOM da chon -->
-              <div class="border border-[#272f3d] rounded-lg overflow-hidden shadow-xs bg-[#090d16]">
+              <div class="border border-line rounded-lg overflow-hidden shadow-xs bg-surface">
                 <table class="w-full text-left text-xs">
-                  <thead class="bg-[#161b26] border-b border-[#272f3d] text-slate-400 font-semibold uppercase text-xs">
+                  <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase text-xs">
                     <tr>
                       <th class="py-2.5 px-3">Ngành Hàng</th>
                       <th class="py-2.5 px-3">Linh Kiện & Mã SKU</th>
@@ -315,22 +308,22 @@ type EditableBomItem = {
                       <th class="py-2.5 px-3 text-center w-14">Xóa</th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-[#272f3d]">
+                  <tbody class="divide-y divide-line">
                     @if (bomItems().length === 0) {
                       <tr>
-                        <td colspan="6" class="py-6 text-center text-slate-400 italic">
+                        <td colspan="6" class="py-6 text-center text-muted italic">
                           Chưa có linh kiện nào trong cấu hình BOM. Hãy nhấn nút "Thêm Linh Kiện Vào BOM" ở trên để nạp linh kiện.
                         </td>
                       </tr>
                     } @else {
                       @for (item of bomItems(); track item.skuId; let idx = $index) {
-                        <tr class="hover:bg-[#161b26]/50 transition-colors">
-                          <td class="py-2.5 px-3 font-semibold text-slate-300 whitespace-nowrap">
+                        <tr class="hover:bg-surface-alt/50 transition-colors">
+                          <td class="py-2.5 px-3 font-semibold text-foreground whitespace-nowrap">
                             {{ item.categoryName }}
                           </td>
                           <td class="py-2.5 px-3 min-w-0">
-                            <div class="font-medium text-white">{{ item.productName }}</div>
-                            <div class="font-mono text-slate-400 text-[11px]">{{ item.sku }}</div>
+                            <div class="font-medium text-foreground">{{ item.productName }}</div>
+                            <div class="font-mono text-muted text-xs">{{ item.sku }}</div>
                           </td>
                           <td class="py-2.5 px-2 text-center">
                             <input
@@ -339,20 +332,20 @@ type EditableBomItem = {
                               max="99"
                               [ngModel]="item.quantity"
                               (ngModelChange)="updateItemQuantity(idx, $event)"
-                              class="w-12 px-1 py-1 bg-[#161b26] border border-[#272f3d] rounded text-center font-bold tabular-nums text-xs text-white focus:outline-none focus:border-[#76b900]"
+                              class="w-12 px-1 py-1 bg-surface border border-line rounded text-center font-bold tabular-nums text-xs text-foreground focus:outline-none focus:border-primary"
                             />
                           </td>
-                          <td class="py-2.5 px-3 text-right tabular-nums text-slate-400 whitespace-nowrap">
+                          <td class="py-2.5 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
                             {{ formatCurrency(item.sellingPrice) }}
                           </td>
-                          <td class="py-2.5 px-3 text-right tabular-nums font-bold text-white whitespace-nowrap">
+                          <td class="py-2.5 px-3 text-right font-mono tabular-nums font-bold text-foreground whitespace-nowrap">
                             {{ formatCurrency(item.lineTotal) }}
                           </td>
                           <td class="py-2.5 px-3 text-center">
                             <button
                               type="button"
                               (click)="removeBomItem(idx)"
-                              class="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-[#272f3d] transition-colors"
+                              class="p-1 rounded text-destructive hover:opacity-80 hover:bg-surface-alt transition-colors"
                               title="Xóa linh kiện khỏi BOM"
                             >
                               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -369,26 +362,23 @@ type EditableBomItem = {
               </div>
             </div>
 
-            <!-- Khoi Dinh Gia Tu Dong Theo BOM -->
-            <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded-lg space-y-3">
-              <div class="font-bold text-white text-xs uppercase tracking-wider border-b border-[#272f3d] pb-2 flex items-center justify-between">
+            <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-3">
+              <div class="font-bold text-foreground text-xs uppercase tracking-wider border-b border-line pb-2 flex items-center justify-between">
                 <span>Cơ Chế Định Giá Bộ Máy Tính</span>
-                <span class="text-slate-400 text-[11px] font-normal">Tự động tổng hợp thời gian thực</span>
+                <span class="text-muted text-xs font-normal">Tự động tổng hợp thời gian thực</span>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                <!-- Tong gia linh kien -->
-                <div class="bg-[#161b26] p-3 rounded border border-[#272f3d] space-y-1">
-                  <span class="block text-slate-400 text-xs uppercase font-semibold">Tổng Giá Linh Kiện</span>
-                  <div class="text-base font-black text-white tabular-nums">
+                <div class="bg-surface p-3 rounded border border-line space-y-1">
+                  <span class="block text-muted text-xs uppercase font-semibold">Tổng Giá Linh Kiện</span>
+                  <div class="text-base font-bold font-mono text-foreground tabular-nums">
                     {{ formatCurrency(grossTotal()) }}
                   </div>
-                  <p class="text-[11px] text-slate-500">Tự động tính từ tổng đơn giá linh kiện</p>
+                  <p class="text-xs text-muted">Tự động tính từ tổng đơn giá linh kiện</p>
                 </div>
 
-                <!-- Giam gia goi may tinh -->
-                <div class="bg-[#161b26] p-3 rounded border border-[#272f3d] space-y-1">
-                  <label for="bundle-discount-input" class="block text-xs uppercase font-semibold text-rose-400">
+                <div class="bg-surface p-3 rounded border border-line space-y-1">
+                  <label for="bundle-discount-input" class="block text-xs uppercase font-semibold text-destructive">
                     Giảm Giá Bộ Máy (VNĐ)
                   </label>
                   <input
@@ -398,46 +388,49 @@ type EditableBomItem = {
                     min="0"
                     [ngModel]="discount()"
                     (ngModelChange)="onDiscountChange($event)"
-                    class="w-full px-2.5 py-1.5 bg-[#090d16] border border-[#272f3d] rounded font-black text-rose-400 tabular-nums text-sm focus:outline-none focus:border-rose-400"
+                    class="w-full px-2.5 py-1.5 bg-surface-alt border border-line rounded font-bold font-mono text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
                   />
-                  <p class="text-[11px] text-slate-500">Khoản giảm ưu đãi khi mua trọn bộ</p>
+                  <p class="text-xs text-muted">Khoản giảm ưu đãi khi mua trọn bộ</p>
                 </div>
 
-                <!-- Gia ban tron bo -->
-                <div class="bg-[#76b900]/10 p-3 rounded border border-[#76b900]/40 space-y-1">
-                  <span class="block text-xs uppercase font-bold text-[#76b900]">Giá Bán Trọn Bộ</span>
-                  <div class="text-lg font-black text-[#76b900] tabular-nums">
+                <div class="bg-primary/10 p-3 rounded border border-primary/30 space-y-1">
+                  <span class="block text-xs uppercase font-bold text-primary">Giá Bán Trọn Bộ</span>
+                  <div class="text-lg font-bold font-mono text-primary tabular-nums">
                     {{ formatCurrency(finalPrice()) }}
                   </div>
-                  <p class="text-[11px] text-[#76b900]/80 font-medium">Giá niêm yết áp dụng cho khách hàng</p>
+                  <p class="text-xs text-primary/80 font-medium">Giá niêm yết áp dụng cho khách hàng</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Sheet Footer Actions -->
-          <div class="h-14 px-6 border-t border-[#272f3d] flex items-center justify-between flex-shrink-0 bg-[#090d16]">
-            <div class="text-slate-400 text-xs truncate max-w-sm">
-              <span>Tổng linh kiện: <strong class="text-white">{{ formatCurrency(grossTotal()) }}</strong></span>
+          <div class="h-14 px-6 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
+            <div class="text-muted text-xs truncate max-w-sm">
+              <span>Tổng linh kiện: <strong class="text-foreground font-mono">{{ formatCurrency(grossTotal()) }}</strong></span>
               @if (discount() > 0) {
-                <span class="ml-2 text-rose-400">| Giảm: -{{ formatCurrency(discount()) }}</span>
+                <span class="ml-2 text-destructive font-mono">| Giảm: -{{ formatCurrency(discount()) }}</span>
               }
-              <span class="ml-2">| Giá bán: <strong class="text-[#76b900]">{{ formatCurrency(finalPrice()) }}</strong></span>
+              <span class="ml-2">| Giá bán: <strong class="text-primary font-mono">{{ formatCurrency(finalPrice()) }}</strong></span>
             </div>
 
             <div class="flex items-center gap-2">
               <button
                 type="button"
+                appButton
+                variant="outline"
+                size="sm"
                 (click)="onClose()"
-                class="px-4 py-2 bg-[#272f3d] hover:bg-[#343e50] text-slate-200 font-semibold rounded text-xs transition-colors"
               >
                 Hủy
               </button>
               <button
                 type="button"
+                appButton
+                variant="primary"
+                size="sm"
                 (click)="onSave()"
                 [disabled]="isSaving()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs shadow-sm transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                class="disabled:opacity-50 inline-flex items-center gap-1.5"
               >
                 @if (isSaving()) {
                   <span>Đang lưu...</span>
@@ -453,6 +446,8 @@ type EditableBomItem = {
   `,
 })
 export class PcBundleSheetComponent {
+  protected readonly String = String;
+
   private readonly bundleService = inject(AdminPcBundleService);
   private readonly categoryService = inject(AdminCategoryService);
 
@@ -480,6 +475,18 @@ export class PcBundleSheetComponent {
   readonly errorMessage = signal<string | null>(null);
 
   readonly categories = this.categoryService.categories;
+
+  readonly lifecycleOptions: SelectOption[] = [
+    { value: 'DRAFT', label: 'Bản nháp (DRAFT)' },
+    { value: 'ACTIVE', label: 'Đang kinh doanh (ACTIVE)' },
+    { value: 'PAUSED', label: 'Tạm dừng bán (PAUSED)' },
+    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh (DISCONTINUED)' },
+  ];
+
+  readonly categorySearchOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Tất cả ngành hàng linh kiện' },
+    ...this.categories().map((c) => ({ value: String(c.id), label: c.name })),
+  ]);
 
   readonly isEditMode = computed(() => Boolean(this.bundle() && this.bundle()!.id));
 
@@ -601,6 +608,10 @@ export class PcBundleSheetComponent {
       .slice(0, 100);
   }
 
+  onLifecycleSelectChange(val: string | number): void {
+    this.lifecycleState.set(val as ProductLifecycle);
+  }
+
   onDiscountChange(val: number | string): void {
     const num = Number(val);
     this.discount.set(Number.isFinite(num) && num >= 0 ? num : 0);
@@ -626,7 +637,8 @@ export class PcBundleSheetComponent {
     this.bomItems.set(items);
   }
 
-  onSearchCategoryChange(catId: number | null): void {
+  onSearchCategorySelectChange(val: string | number): void {
+    const catId = val ? Number(val) : null;
     this.searchCategoryId.set(catId);
     this.executeVariantSearch();
   }
@@ -649,7 +661,7 @@ export class PcBundleSheetComponent {
 
   addVariantToBom(sku: AdminVariantCatalogItem): void {
     if (sku.lifecycleState !== 'ACTIVE' || !sku.isActive) {
-      this.errorMessage.set(`Linh kiện ${sku.sku} không ở trạng thái ACTIVE (Quy tắc PCB-001).`);
+      this.errorMessage.set(`Linh kiện ${sku.sku} không ở trạng thái ACTIVE.`);
       return;
     }
 
@@ -693,7 +705,7 @@ export class PcBundleSheetComponent {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('vi-VN').format(value) + ' ₫';
+    return new Intl.NumberFormat('vi-VN').format(value) + ' đ';
   }
 
   onClose(): void {
@@ -724,7 +736,7 @@ export class PcBundleSheetComponent {
 
     for (const item of this.bomItems()) {
       if (!item.isActive || item.lifecycleState !== 'ACTIVE') {
-        this.errorMessage.set(`Linh kiện SKU ${item.sku} không ở trạng thái ACTIVE (Quy tắc PCB-001)`);
+        this.errorMessage.set(`Linh kiện SKU ${item.sku} không ở trạng thái ACTIVE`);
         return;
       }
     }
