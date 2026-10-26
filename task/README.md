@@ -245,7 +245,7 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-74 | Nhóm 1-6 UI/UX (Catalog, mẫu sản phẩm, biến thể SKU, trường nhập chiết khấu PC Bundles) | frontend | P1 | Complete |
 | TASK-75 | Nhóm 1-6 UI/UX & FQ36-A đối soát QR không thu tiền mặt, chặn sáp nhập tài khoản có user | frontend | P1 | Complete |
 | TASK-76 | Polish Audit Nhóm 1 (Xóa bỏ dải màu tím, xanh lơ, chàm ngoài hệ thống; chuẩn hóa về token NVIDIA) | frontend | P1 | Complete |
-| TASK-77 | Polish Audit Nhóm 2 (Bảo vệ 12 vị trí ảnh admin khỏi lỗi hộp ảnh vỡ bằng fallback placeholder) | frontend | P1 | Pending |
+| TASK-77 | Polish Audit Nhóm 2 (Bảo vệ 12 vị trí ảnh admin khỏi lỗi hộp ảnh vỡ bằng fallback placeholder) | frontend | P1 | Complete |
 | TASK-78 | Polish Audit Nhóm 3 (Chuẩn hóa 15 tệp dùng select thô sang app-select; chuyển svg inline sang Lucide) | frontend | P1 | Pending |
 | TASK-79 | Polish Audit Nhóm 4 (Gắn class tabular cho 190 vị trí số tiền; sửa tương phản chữ và xóa bounce animation) | frontend | P1 | Pending |
 | TASK-80 | Polish Audit Nhóm 5 (Bổ sung empty state, skeleton loading cho tra cứu đơn; xóa mã thừa admin/pages) | frontend | P1 | Pending |

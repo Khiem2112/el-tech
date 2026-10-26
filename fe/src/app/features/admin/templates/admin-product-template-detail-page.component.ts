@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
@@ -197,7 +198,13 @@ type ToastNotification = {
         <div class="flex items-center gap-4">
           <div class="w-16 h-16 rounded-md bg-surface-alt border border-line p-1 flex items-center justify-center overflow-hidden">
             @if (firstCoverMedia()) {
-              <img [src]="firstCoverMedia()" [alt]="templateName()" class="w-full h-full object-contain" />
+              <img
+                src="/images/products/placeholder.webp"
+                [src]="firstCoverMedia() || '/images/products/placeholder.webp'"
+                [alt]="templateName() || 'Mẫu sản phẩm'"
+                class="w-full h-full object-contain"
+                (error)="onImageError($event)"
+              />
             } @else {
               <span class="text-xs text-muted font-mono">NO IMG</span>
             }
@@ -454,7 +461,13 @@ type ToastNotification = {
                   <div class="grid grid-cols-3 gap-3">
                     @for (imgUrl of mediaList(); track imgUrl; let i = $index) {
                       <div class="relative group border border-line rounded-md bg-surface-alt p-1 flex items-center justify-center h-24 overflow-hidden">
-                        <img [src]="imgUrl" alt="Media" class="max-h-full max-w-full object-contain" />
+                        <img
+                          src="/images/products/placeholder.webp"
+                          [src]="imgUrl || '/images/products/placeholder.webp'"
+                          [alt]="templateName() ? templateName() + ' - Ảnh ' + (i + 1) : 'Ảnh mẫu sản phẩm ' + (i + 1)"
+                          class="max-h-full max-w-full object-contain"
+                          (error)="onImageError($event)"
+                        />
                         @if (i === 0) {
                           <span class="absolute top-1 left-1 bg-primary text-primary-foreground font-extrabold text-xs px-1.5 py-0.5 rounded">
                             ẢNH CHÍNH
@@ -665,6 +678,7 @@ type ToastNotification = {
 })
 export class AdminProductTemplateDetailPageComponent implements OnInit {
   protected readonly String = String;
+  protected readonly onImageError = handleProductImageError;
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

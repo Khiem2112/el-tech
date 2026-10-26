@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { handleProductImageError } from '../../../../core/constants/product.constants';
 import { AdminOrderDetail } from '../services/admin-order-detail.service';
 
 @Component({
@@ -60,7 +61,13 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                     <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       <div class="w-9 h-9 rounded border border-line bg-surface overflow-hidden mx-auto flex items-center justify-center">
                         @if (item.imageUrl) {
-                          <img [src]="item.imageUrl" [alt]="item.nameSnapshot" class="w-full h-full object-contain p-0.5" />
+                          <img
+                            src="/images/products/placeholder.webp"
+                            [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                            [alt]="item.nameSnapshot || 'Linh kiện PC'"
+                            class="w-full h-full object-contain p-0.5"
+                            (error)="onImageError($event)"
+                          />
                         } @else {
                           <span class="text-xs text-muted font-mono">HW</span>
                         }
@@ -148,7 +155,13 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                     <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       <div class="w-9 h-9 rounded border border-line bg-surface overflow-hidden mx-auto flex items-center justify-center">
                         @if (item.imageUrl) {
-                          <img [src]="item.imageUrl" [alt]="item.nameSnapshot" class="w-full h-full object-contain p-0.5" />
+                          <img
+                            src="/images/products/placeholder.webp"
+                            [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                            [alt]="item.nameSnapshot || 'Linh kiện PC'"
+                            class="w-full h-full object-contain p-0.5"
+                            (error)="onImageError($event)"
+                          />
                         } @else {
                           <span class="text-xs text-muted font-mono">HW</span>
                         }
@@ -203,6 +216,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
 })
 export class OrderLinesPcGroupComponent {
   readonly order = input.required<AdminOrderDetail>();
+  protected readonly onImageError = handleProductImageError;
 
   formatVnd(amount: string | number | undefined | null): string {
     if (amount === undefined || amount === null) {

@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ConfirmPODialogComponent } from './components/confirm-po-dialog.component';
 import { ShortShipmentDialogComponent } from './components/short-shipment-dialog.component';
 import { ValidatePOReceiptDialogComponent } from './components/validate-po-receipt-dialog.component';
@@ -493,7 +494,13 @@ type ToastMessage = {
                       <td class="py-2.5 px-4 text-center">
                         <div class="w-9 h-9 rounded bg-[#090d16] border border-[#272f3d] overflow-hidden flex items-center justify-center mx-auto">
                           @if (line.imageUrl) {
-                            <img [src]="line.imageUrl" [alt]="line.sku" class="w-full h-full object-contain p-0.5" />
+                            <img
+                              src="/images/products/placeholder.webp"
+                              [src]="line.imageUrl || '/images/products/placeholder.webp'"
+                              [alt]="line.name || line.sku || 'Linh kiện nhập kho'"
+                              class="w-full h-full object-contain p-0.5"
+                              (error)="onImageError($event)"
+                            />
                           } @else {
                             <span class="text-[10px] text-slate-600 font-mono">PC</span>
                           }
@@ -615,6 +622,7 @@ type ToastMessage = {
   `,
 })
 export class AdminPurchaseOrderDetailPageComponent implements OnInit {
+  protected readonly onImageError = handleProductImageError;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly poService = inject(AdminPurchaseOrderService);

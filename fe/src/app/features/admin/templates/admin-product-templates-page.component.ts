@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
@@ -199,7 +200,13 @@ type ToastNotification = {
                       <td class="py-3 px-4 text-center">
                         <div class="w-11 h-11 rounded border border-line bg-surface-alt overflow-hidden flex items-center justify-center mx-auto">
                           @if (getFirstMedia(tpl)) {
-                            <img [src]="getFirstMedia(tpl)" [alt]="tpl.name" class="w-full h-full object-contain p-0.5" />
+                            <img
+                              src="/images/products/placeholder.webp"
+                              [src]="getFirstMedia(tpl) || '/images/products/placeholder.webp'"
+                              [alt]="tpl.name || 'Mẫu sản phẩm'"
+                              class="w-full h-full object-contain p-0.5"
+                              (error)="onImageError($event)"
+                            />
                           } @else {
                             <span class="text-xs text-muted font-mono">NO IMG</span>
                           }
@@ -285,7 +292,13 @@ type ToastNotification = {
               <div class="bg-surface border border-line rounded-lg overflow-hidden flex flex-col justify-between hover:border-primary/50 transition-all shadow-xs text-foreground">
                 <div class="relative h-44 bg-surface-alt flex items-center justify-center p-3 border-b border-line">
                   @if (getFirstMedia(tpl)) {
-                    <img [src]="getFirstMedia(tpl)" [alt]="tpl.name" class="max-h-full max-w-full object-contain" />
+                    <img
+                      src="/images/products/placeholder.webp"
+                      [src]="getFirstMedia(tpl) || '/images/products/placeholder.webp'"
+                      [alt]="tpl.name || 'Mẫu sản phẩm'"
+                      class="max-h-full max-w-full object-contain"
+                      (error)="onImageError($event)"
+                    />
                   } @else {
                     <div class="text-muted font-mono text-xs">NO COVER IMAGE</div>
                   }
@@ -429,6 +442,8 @@ type ToastNotification = {
 })
 export class AdminProductTemplatesPageComponent implements OnInit {
   protected readonly String = String;
+  protected readonly onImageError = handleProductImageError;
+
   private readonly templateService = inject(AdminProductTemplateService);
   private readonly categoryService = inject(AdminCategoryService);
   private readonly brandService = inject(AdminBrandService);

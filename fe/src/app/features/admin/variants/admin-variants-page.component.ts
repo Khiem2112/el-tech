@@ -13,6 +13,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
@@ -269,7 +270,13 @@ type ToastNotification = {
                         title="Bấm để xem ảnh phóng to"
                       >
                         @if (item.imageUrl) {
-                          <img [src]="item.imageUrl" [alt]="item.sku" class="w-full h-full object-contain p-0.5" />
+                          <img
+                            src="/images/products/placeholder.webp"
+                            [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                            [alt]="item.productTemplate?.name || item.sku || 'Biến thể sản phẩm'"
+                            class="w-full h-full object-contain p-0.5"
+                            (error)="onImageError($event)"
+                          />
                         } @else {
                           <span class="text-xs font-mono text-muted uppercase">NO IMG</span>
                         }
@@ -539,7 +546,13 @@ type ToastNotification = {
             </div>
             <div class="p-6 bg-surface-alt flex items-center justify-center min-h-[260px]">
               @if (preview.imageUrl) {
-                <img [src]="preview.imageUrl" [alt]="preview.sku" class="max-h-72 max-w-full object-contain" />
+                <img
+                  src="/images/products/placeholder.webp"
+                  [src]="preview.imageUrl || '/images/products/placeholder.webp'"
+                  [alt]="preview.productTemplate?.name || preview.sku || 'Xem trước biến thể'"
+                  class="max-h-72 max-w-full object-contain"
+                  (error)="onImageError($event)"
+                />
               } @else {
                 <span class="text-muted text-xs">Không có hình ảnh</span>
               }
@@ -581,6 +594,7 @@ type ToastNotification = {
 })
 export class AdminVariantsPageComponent implements OnInit, AfterViewInit {
   protected readonly String = String;
+  protected readonly onImageError = handleProductImageError;
   @ViewChild('barcodeInput') barcodeInputRef?: ElementRef<HTMLInputElement>;
 
   private readonly variantService = inject(AdminVariantService);

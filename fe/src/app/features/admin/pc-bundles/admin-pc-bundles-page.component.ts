@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { AdminBranchService } from '../branches/services/admin-branch.service';
@@ -243,7 +244,13 @@ type ToastNotification = {
                       <td class="py-3 px-4 text-center">
                         <div class="w-10 h-10 rounded border border-line bg-surface-alt flex items-center justify-center overflow-hidden mx-auto">
                           @if (bundle.primaryImage) {
-                            <img [src]="bundle.primaryImage" [alt]="bundle.name" class="w-full h-full object-contain p-0.5" />
+                            <img
+                              src="/images/products/placeholder.webp"
+                              [src]="bundle.primaryImage || '/images/products/placeholder.webp'"
+                              [alt]="bundle.name || 'Bộ máy PC'"
+                              class="w-full h-full object-contain p-0.5"
+                              (error)="onImageError($event)"
+                            />
                           } @else {
                             <svg class="w-5 h-5 text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                               <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -369,7 +376,13 @@ type ToastNotification = {
                 <div>
                   <div class="h-44 bg-surface-alt relative flex items-center justify-center p-3 border-b border-line">
                     @if (bundle.primaryImage) {
-                      <img [src]="bundle.primaryImage" [alt]="bundle.name" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" />
+                      <img
+                        src="/images/products/placeholder.webp"
+                        [src]="bundle.primaryImage || '/images/products/placeholder.webp'"
+                        [alt]="bundle.name || 'Bộ máy PC'"
+                        class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
+                        (error)="onImageError($event)"
+                      />
                     } @else {
                       <svg class="w-14 h-14 text-muted" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -521,6 +534,7 @@ type ToastNotification = {
 })
 export class AdminPcBundlesPageComponent implements OnInit {
   protected readonly String = String;
+  protected readonly onImageError = handleProductImageError;
 
   readonly bundleService = inject(AdminPcBundleService);
   readonly branchService = inject(AdminBranchService);

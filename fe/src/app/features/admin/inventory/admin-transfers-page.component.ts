@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { handleProductImageError } from '../../../core/constants/product.constants';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
@@ -234,7 +235,13 @@ import {
                     <td class="py-3 px-4 text-center">
                       <div class="w-9 h-9 rounded border border-line bg-surface-alt overflow-hidden flex items-center justify-center mx-auto">
                         @if (item.primaryProductImage) {
-                          <img [src]="item.primaryProductImage" [alt]="item.primaryProductName" class="w-full h-full object-contain p-0.5" />
+                          <img
+                            src="/images/products/placeholder.webp"
+                            [src]="item.primaryProductImage || '/images/products/placeholder.webp'"
+                            [alt]="item.primaryProductName || 'Sản phẩm chuyển kho'"
+                            class="w-full h-full object-contain p-0.5"
+                            (error)="onImageError($event)"
+                          />
                         } @else {
                           <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -522,6 +529,7 @@ import {
 })
 export class AdminTransfersPageComponent implements OnInit {
   protected readonly Math = Math;
+  protected readonly onImageError = handleProductImageError;
   private readonly transferService = inject(AdminTransferService);
   private readonly route = inject(ActivatedRoute);
 
