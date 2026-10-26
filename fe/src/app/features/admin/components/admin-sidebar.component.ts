@@ -24,34 +24,34 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
   imports: [CommonModule, RouterModule, FormsModule],
   template: `
     <aside
-      class="w-72 h-full bg-[#090d16] border-r border-[#272f3d] flex flex-col select-none shadow-xl text-white"
+      class="w-72 h-full bg-surface border-r border-line flex flex-col select-none text-foreground"
     >
       <div
-        class="h-14 px-4 flex items-center justify-between border-b border-[#272f3d] bg-[#090d16] flex-shrink-0"
+        class="h-14 px-4 flex items-center justify-between border-b border-line bg-surface flex-shrink-0"
       >
         <div class="flex items-center gap-2.5">
           <div
-            class="w-7 h-7 rounded-md bg-[#76b900] shadow-sm text-[#090d16] font-black flex items-center justify-center text-xs tracking-tighter"
+            class="w-7 h-7 rounded-md bg-[#76b900] shadow-sm text-black font-black flex items-center justify-center text-xs tracking-tighter"
           >
             EL
           </div>
           <div>
-            <div class="font-extrabold text-white text-sm tracking-wider flex items-center gap-1.5 leading-none">
+            <div class="font-extrabold text-foreground text-sm tracking-wider flex items-center gap-1.5 leading-none">
               EL-TECH
               <span
-                class="text-[10px] bg-[#161b26] text-[#76b900] border border-[#272f3d] px-1.5 py-0.5 rounded-full font-mono font-bold"
+                class="text-[10px] bg-primary/10 text-primary-strong border border-primary/20 px-1.5 py-0.5 rounded-full font-mono font-bold"
               >
                 PORTAL
               </span>
             </div>
-            <div class="text-[11px] text-slate-400 tracking-tight mt-0.5">Quản Trị Bán Hàng & Vận Hành</div>
+            <div class="text-[11px] text-muted-foreground tracking-tight mt-0.5">Quản Trị Bán Hàng & Vận Hành</div>
           </div>
         </div>
 
         <button
           type="button"
           (click)="closeSidebar.emit()"
-          class="lg:hidden p-1 rounded text-slate-400 hover:text-white hover:bg-[#161b26]"
+          class="lg:hidden p-1 rounded text-muted-foreground hover:text-foreground hover:bg-surface-alt"
           aria-label="Đóng thanh điều hướng"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -60,20 +60,20 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         </button>
       </div>
 
-      <div class="p-3 border-b border-[#272f3d] bg-[#090d16] flex-shrink-0 space-y-1">
+      <div class="p-3 border-b border-line bg-surface flex-shrink-0 space-y-1">
         <div class="relative">
           <input
             type="text"
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchChange($event)"
-            placeholder="Tìm nhanh màn hình, mã SCR..."
-            class="w-full px-3 py-1.5 bg-[#161b26] border border-[#272f3d] rounded-md text-xs text-slate-200 placeholder-slate-500 focus:border-[#76b900] focus:outline-none transition-colors"
+            placeholder="Tìm nhanh chức năng, danh mục..."
+            class="w-full px-3 py-1.5 bg-canvas border border-line rounded-md text-xs text-foreground placeholder-muted-foreground focus:border-primary focus:outline-none transition-colors"
           />
           @if (searchQuery()) {
             <button
               type="button"
               (click)="onClearSearch()"
-              class="absolute right-2 top-2 text-slate-400 hover:text-white"
+              class="absolute right-2 top-2 text-muted-foreground hover:text-foreground"
               title="Xóa tìm kiếm"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -84,15 +84,15 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         </div>
 
         @if (searchQuery()) {
-          <div class="text-[11px] text-slate-400 px-1 flex items-center justify-between pt-1">
+          <div class="text-[11px] text-muted-foreground px-1 flex items-center justify-between pt-1">
             <span>
               Kết quả:
-              <strong class="text-[#76b900] tabular-nums">{{ filteredCount() }}</strong>
+              <strong class="text-primary-strong tabular-nums">{{ filteredCount() }}</strong>
             </span>
             <button
               type="button"
               (click)="onClearSearch()"
-              class="text-[#76b900] hover:underline"
+              class="text-primary hover:underline"
             >
               Hiện tất cả
             </button>
@@ -106,18 +106,18 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
             <button
               type="button"
               (click)="toggleGroup(group.id)"
-              class="w-full px-2 py-1.5 rounded-md hover:bg-[#161b26] text-[11px] font-bold uppercase tracking-wider text-slate-300 hover:text-white flex items-center justify-between transition-colors"
+              class="w-full px-2 py-1.5 rounded-md hover:bg-surface-alt text-[11px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center justify-between transition-colors"
             >
               <div class="flex items-center gap-1.5 truncate">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#76b900] flex-shrink-0"></span>
                 <span class="truncate">{{ group.label }}</span>
               </div>
               <div class="flex items-center gap-1.5 flex-shrink-0">
-                <span class="text-[10px] text-slate-400 font-normal tabular-nums">
+                <span class="text-[10px] text-muted-foreground font-normal tabular-nums">
                   {{ group.items.length }}
                 </span>
                 <svg
-                  class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+                  class="w-3.5 h-3.5 text-muted-foreground transition-transform duration-200"
                   [class.rotate-180]="isGroupOpen(group.id)"
                   fill="none"
                   stroke="currentColor"
@@ -133,16 +133,11 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
                 @for (item of group.items; track item.code) {
                   <a
                     [routerLink]="item.fullPath"
-                    routerLinkActive="bg-[#161b26] text-[#76b900] font-semibold border-l-2 border-[#76b900]"
+                    routerLinkActive="bg-primary/10 text-primary-strong font-bold border-l-2 border-primary"
                     (click)="onItemClick()"
-                    class="flex items-center justify-between px-2.5 py-1.5 rounded-md text-slate-300 hover:bg-[#161b26] hover:text-white transition-colors"
+                    class="flex items-center px-2.5 py-1.5 rounded-md text-muted-foreground hover:bg-surface-alt hover:text-foreground transition-colors"
                   >
                     <span class="truncate">{{ item.title }}</span>
-                    <span
-                      class="text-slate-400 text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-[#161b26] border border-[#272f3d] flex-shrink-0"
-                    >
-                      {{ item.code }}
-                    </span>
                   </a>
                 }
               </div>
@@ -152,19 +147,19 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
       </nav>
 
       <div
-        class="p-3 border-t border-[#272f3d] bg-[#090d16] flex items-center justify-between text-xs flex-shrink-0"
+        class="p-3 border-t border-line bg-surface flex items-center justify-between text-xs flex-shrink-0"
       >
         <div class="flex items-center gap-2 truncate">
           <div
-            class="w-8 h-8 rounded-full bg-[#161b26] border border-[#272f3d] flex items-center justify-center font-bold text-xs text-[#76b900] flex-shrink-0"
+            class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong flex-shrink-0"
           >
             AD
           </div>
           <div class="truncate">
-            <div class="text-white font-semibold text-xs leading-tight truncate">
+            <div class="text-foreground font-semibold text-xs leading-tight truncate">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
-            <div class="text-[11px] text-slate-400 leading-tight font-mono truncate">
+            <div class="text-[11px] text-muted-foreground leading-tight font-mono truncate">
               {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
             </div>
           </div>
@@ -173,7 +168,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         <button
           type="button"
           (click)="onLogout()"
-          class="text-xs text-slate-400 hover:text-rose-400 px-2 py-1.5 rounded-md hover:bg-[#161b26] transition-colors inline-flex items-center gap-1 flex-shrink-0"
+          class="text-xs text-muted-foreground hover:text-rose-600 px-2 py-1.5 rounded-md hover:bg-surface-alt transition-colors inline-flex items-center gap-1 flex-shrink-0"
           title="Đăng xuất khỏi hệ thống"
         >
           <span>Đăng xuất</span>

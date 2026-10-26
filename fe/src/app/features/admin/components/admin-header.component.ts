@@ -16,13 +16,13 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
   imports: [CommonModule, AdminBreadcrumbComponent],
   template: `
     <header
-      class="h-14 bg-[#161b26] border-b border-[#272f3d] flex items-center justify-between px-4 lg:px-6 flex-shrink-0 z-20"
+      class="h-14 bg-surface border-b border-line shadow-xs flex items-center justify-between px-4 lg:px-6 flex-shrink-0 z-20"
     >
       <div class="flex items-center gap-3 min-w-0">
         <button
           type="button"
           (click)="toggleSidebar.emit()"
-          class="lg:hidden p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#272f3d] transition-colors"
+          class="lg:hidden p-1.5 rounded-md text-foreground hover:bg-surface-alt transition-colors"
           aria-label="Mở trình đơn điều hướng"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -34,22 +34,17 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
       </div>
 
       <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#090d16] border border-[#272f3d] rounded-full text-xs">
-          <span class="w-2 h-2 rounded-full bg-[#76b900] animate-pulse"></span>
-          <span class="text-slate-300 font-medium">Hệ Thống Trực Tuyến</span>
-        </div>
-
-        <div class="flex items-center gap-2 pl-2 border-l border-[#272f3d]">
+        <div class="flex items-center gap-2 pl-2 border-l border-line">
           <div
-            class="w-8 h-8 rounded-full bg-[#090d16] border border-[#272f3d] flex items-center justify-center font-bold text-xs text-[#76b900]"
+            class="w-8 h-8 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-xs text-primary"
           >
             AD
           </div>
           <div class="hidden md:block text-left">
-            <div class="text-white font-semibold text-xs leading-tight">
+            <div class="text-foreground font-semibold text-xs leading-tight">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
-            <div class="text-[11px] text-slate-400 leading-tight font-mono">
+            <div class="text-xs text-muted leading-tight font-mono">
               {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
             </div>
           </div>
@@ -58,7 +53,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
         <button
           type="button"
           (click)="onLogout()"
-          class="px-2.5 py-1.5 rounded-md text-xs text-slate-300 hover:text-rose-400 hover:bg-[#272f3d] transition-colors inline-flex items-center gap-1.5"
+          class="px-2.5 py-1.5 rounded-md text-xs text-muted hover:text-rose-600 hover:bg-rose-50 border border-line transition-colors inline-flex items-center gap-1.5"
           title="Đăng xuất khỏi hệ thống"
         >
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

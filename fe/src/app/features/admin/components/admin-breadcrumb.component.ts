@@ -23,26 +23,20 @@ type BreadcrumbState = {
   imports: [CommonModule, RouterModule],
   template: `
     <div class="flex items-center gap-3 min-w-0">
-      <span
-        class="px-2.5 py-0.5 rounded-full bg-[#090d16] text-[#76b900] font-mono text-xs font-bold border border-[#272f3d] flex-shrink-0"
-      >
-        {{ state().code }}
-      </span>
-
       <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-2 text-xs truncate">
-        <span class="text-slate-400 font-medium truncate">{{ state().module }}</span>
-        <span class="text-slate-600">/</span>
+        <span class="text-muted font-medium truncate">{{ state().module }}</span>
+        <span class="text-muted/50">/</span>
         <a
           [routerLink]="state().parentUrl || state().fullPath"
-          class="font-bold text-slate-100 text-sm truncate hover:text-[#76b900] transition-colors"
+          class="font-bold text-foreground text-sm truncate hover:text-primary transition-colors"
           [title]="state().parentUrl ? 'Quay lại danh sách cha với bộ lọc bảo toàn' : 'Quay lại danh sách cha'"
         >
           {{ state().title }}
         </a>
 
         @if (state().subTitle) {
-          <span class="text-slate-600">/</span>
-          <span class="text-slate-300 font-medium truncate">{{ state().subTitle }}</span>
+          <span class="text-muted/50">/</span>
+          <span class="text-foreground/80 font-medium truncate">{{ state().subTitle }}</span>
         }
       </nav>
     </div>
