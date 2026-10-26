@@ -9,30 +9,30 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
   imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm">
-      <div class="p-4 border-b border-[#272f3d] flex items-center justify-between flex-wrap gap-2">
+    <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
+      <div class="p-5 border-b border-line flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h2 class="text-xs font-bold uppercase tracking-wider text-white">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-foreground">
             Tiến Độ Vận Hành Đơn Hàng Theo Chi Nhánh
           </h2>
-          <p class="text-xs text-slate-400 mt-0.5">
+          <p class="text-[13px] text-muted mt-0.5">
             Theo dõi số lượng đơn đang xử lý tại từng chi nhánh kho kiêm showroom
           </p>
         </div>
         <a
           [routerLink]="['/admin/orders']"
-          class="text-xs font-semibold text-[#76b900] hover:underline"
+          class="text-[13px] font-semibold text-primary-strong hover:underline"
         >
           Quản lý tất cả đơn hàng
         </a>
       </div>
 
-      <div class="p-4 border-b border-[#272f3d]/60 bg-[#090d16]/40">
-        <div class="flex items-center justify-between text-xs mb-2">
-          <span class="text-slate-400 font-medium">Phân Bổ Trạng Thái Đang Xử Lý:</span>
-          <span class="font-bold text-white font-mono">{{ activeTotal() }} đơn</span>
+      <div class="p-5 border-b border-line bg-surface-alt/40">
+        <div class="flex items-center justify-between text-[13px] mb-2">
+          <span class="text-muted font-medium">Phân Bổ Trạng Thái Đang Xử Lý:</span>
+          <span class="font-bold text-foreground font-mono text-sm">{{ activeTotal() }} đơn</span>
         </div>
-        <div class="h-3 w-full bg-[#272f3d] rounded-full overflow-hidden flex">
+        <div class="h-3.5 w-full bg-slate-200 rounded-full overflow-hidden flex">
           @if (activeTotal() > 0) {
             <div
               class="bg-slate-400 transition-all duration-300"
@@ -67,124 +67,124 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
           }
         </div>
 
-        <div class="flex flex-wrap items-center gap-4 mt-3 text-xs">
+        <div class="flex flex-wrap items-center gap-4 mt-3 text-[13px]">
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
-            <span class="text-slate-400">Đã xác nhận:</span>
-            <span class="font-bold text-white font-mono">{{ activeStats().confirmed }}</span>
+            <span class="text-muted">Đã xác nhận:</span>
+            <span class="font-bold text-foreground font-mono">{{ activeStats().confirmed }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-            <span class="text-slate-400">Đang soạn hàng:</span>
-            <span class="font-bold text-blue-400 font-mono">{{ activeStats().preparingComponents }}</span>
+            <span class="text-muted">Đang soạn hàng:</span>
+            <span class="font-bold text-blue-700 font-mono">{{ activeStats().preparingComponents }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
-            <span class="text-slate-400">Đang lắp ráp:</span>
-            <span class="font-bold text-primary font-mono">{{ activeStats().assembling }}</span>
+            <span class="text-muted">Đang lắp ráp:</span>
+            <span class="font-bold text-primary-strong font-mono">{{ activeStats().assembling }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-            <span class="text-slate-400">Sẵn sàng nhận:</span>
-            <span class="font-bold text-teal-400 font-mono">{{ activeStats().readyForPickup }}</span>
+            <span class="text-muted">Sẵn sàng nhận:</span>
+            <span class="font-bold text-teal-700 font-mono">{{ activeStats().readyForPickup }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <span class="text-slate-400">Đang giao:</span>
-            <span class="font-bold text-emerald-400 font-mono">{{ activeStats().shipping }}</span>
+            <span class="text-muted">Đang giao:</span>
+            <span class="font-bold text-emerald-700 font-mono">{{ activeStats().shipping }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-            <span class="text-slate-400">Tạm giữ:</span>
-            <span class="font-bold text-rose-400 font-mono">{{ activeStats().onHold }}</span>
+            <span class="text-muted">Tạm giữ:</span>
+            <span class="font-bold text-rose-700 font-mono">{{ activeStats().onHold }}</span>
           </div>
         </div>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-xs">
+        <table class="w-full text-left text-[13px]">
+          <thead class="bg-surface-alt/80 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
             <tr>
-              <th class="py-2.5 px-4">Chi nhánh</th>
-              <th class="py-2.5 px-4 text-center">Đã xác nhận</th>
-              <th class="py-2.5 px-4 text-center">Đang soạn hàng</th>
-              <th class="py-2.5 px-4 text-center">Đang lắp ráp</th>
-              <th class="py-2.5 px-4 text-center">Sẵn sàng nhận</th>
-              <th class="py-2.5 px-4 text-center">Đang giao hàng</th>
-              <th class="py-2.5 px-4 text-center">Tạm giữ</th>
-              <th class="py-2.5 px-4 text-right">Tổng đang xử lý</th>
+              <th class="py-3 px-4">Chi nhánh</th>
+              <th class="py-3 px-4 text-center">Đã xác nhận</th>
+              <th class="py-3 px-4 text-center">Đang soạn hàng</th>
+              <th class="py-3 px-4 text-center">Đang lắp ráp</th>
+              <th class="py-3 px-4 text-center">Sẵn sàng nhận</th>
+              <th class="py-3 px-4 text-center">Đang giao hàng</th>
+              <th class="py-3 px-4 text-center">Tạm giữ</th>
+              <th class="py-3 px-4 text-right">Tổng đang xử lý</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-[#272f3d]">
+          <tbody class="divide-y divide-line">
             @for (branch of distribution()?.byBranch ?? []; track branch.branchId) {
               <tr
-                class="hover:bg-[#090d16]/30 transition-colors"
-                [class.bg-[#76b900]/5]="selectedBranchId() === branch.branchId"
-                [class.border-l-2]="selectedBranchId() === branch.branchId"
-                [class.border-l-[#76b900]]="selectedBranchId() === branch.branchId"
+                class="hover:bg-surface-alt/50 transition-colors"
+                [class.bg-primary/5]="selectedBranchId() === branch.branchId"
+                [class.border-l-4]="selectedBranchId() === branch.branchId"
+                [class.border-l-primary]="selectedBranchId() === branch.branchId"
               >
-                <td class="py-3 px-4 font-semibold text-white">
+                <td class="py-3 px-4 font-semibold text-foreground">
                   <div>{{ branch.branchCode }}: {{ branch.branchName }}</div>
                 </td>
                 <td class="py-3 px-4 text-center font-semibold tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'CONFIRMED', status: 'CONFIRMED', branchId: branch.branchId }"
-                    class="hover:underline text-slate-300"
+                    class="hover:underline text-foreground"
                   >
                     {{ branch.confirmed }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-blue-400 bg-blue-950/20">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-blue-700 bg-blue-50/50">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'PREPARING_COMPONENTS', status: 'PREPARING_COMPONENTS', branchId: branch.branchId }"
-                    class="hover:underline text-blue-400"
+                    class="hover:underline text-blue-700"
                   >
                     {{ branch.preparingComponents }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-primary bg-primary/10">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-primary-strong bg-primary/10">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'ASSEMBLING', status: 'ASSEMBLING', branchId: branch.branchId }"
-                    class="hover:underline text-primary"
+                    class="hover:underline text-primary-strong"
                   >
                     {{ branch.assembling }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-teal-400">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-teal-700 bg-teal-50/50">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'READY_FOR_PICKUP', status: 'READY_FOR_PICKUP', branchId: branch.branchId }"
-                    class="hover:underline text-teal-400"
+                    class="hover:underline text-teal-700"
                   >
                     {{ branch.readyForPickup }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-emerald-400">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-emerald-700 bg-emerald-50/50">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'SHIPPING', status: 'SHIPPING', branchId: branch.branchId }"
-                    class="hover:underline text-emerald-400"
+                    class="hover:underline text-emerald-700"
                   >
                     {{ branch.shipping }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-rose-400 bg-rose-950/20">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-rose-700 bg-rose-50/50">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'ON_HOLD', status: 'ON_HOLD', branchId: branch.branchId }"
-                    class="hover:underline text-rose-400"
+                    class="hover:underline text-rose-700"
                   >
                     {{ branch.onHold }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-right font-black tabular-nums text-white">
+                <td class="py-3 px-4 text-right font-black tabular-nums text-foreground">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ branchId: branch.branchId }"
-                    class="hover:underline text-[#76b900]"
+                    class="hover:underline text-primary-strong"
                   >
                     {{ branch.total }}
                   </a>
@@ -192,28 +192,28 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               </tr>
             }
           </tbody>
-          <tfoot class="bg-[#090d16] font-bold text-white border-t border-[#272f3d] text-xs">
+          <tfoot class="bg-surface-alt font-bold text-foreground border-t-2 border-line text-[13px]">
             <tr>
-              <td class="py-2.5 px-4 uppercase text-slate-300">Tổng cộng toàn hệ thống</td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-slate-200">
+              <td class="py-3 px-4 uppercase text-foreground">Tổng cộng toàn hệ thống</td>
+              <td class="py-3 px-4 text-center tabular-nums text-foreground">
                 {{ distribution()?.systemTotal?.confirmed ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-blue-400">
+              <td class="py-3 px-4 text-center tabular-nums text-blue-700 bg-blue-50/50">
                 {{ distribution()?.systemTotal?.preparingComponents ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-primary">
+              <td class="py-3 px-4 text-center tabular-nums text-primary-strong bg-primary/10">
                 {{ distribution()?.systemTotal?.assembling ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-teal-400">
+              <td class="py-3 px-4 text-center tabular-nums text-teal-700 bg-teal-50/50">
                 {{ distribution()?.systemTotal?.readyForPickup ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-emerald-400">
+              <td class="py-3 px-4 text-center tabular-nums text-emerald-700 bg-emerald-50/50">
                 {{ distribution()?.systemTotal?.shipping ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-rose-400">
+              <td class="py-3 px-4 text-center tabular-nums text-rose-700 bg-rose-50/50">
                 {{ distribution()?.systemTotal?.onHold ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-right tabular-nums text-[#76b900] font-black">
+              <td class="py-3 px-4 text-right tabular-nums text-primary-strong font-black">
                 {{ distribution()?.systemTotal?.total ?? 0 }}
               </td>
             </tr>

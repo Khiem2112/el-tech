@@ -59,40 +59,40 @@ type ToastMessage = {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden text-sm text-slate-200">
-      <div class="h-9 bg-[#161b26] border-b border-[#272f3d] px-6 flex items-center justify-between text-xs flex-shrink-0">
-        <nav class="flex items-center gap-1.5 text-slate-400">
-          <a routerLink="/admin/procurement/purchase-orders" class="hover:text-[#76b900] transition-colors">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden text-[13px] text-foreground bg-white w-full">
+      <div class="h-9 bg-white border-b border-line px-6 flex items-center justify-between text-xs flex-shrink-0">
+        <nav class="flex items-center gap-1.5 text-muted">
+          <a routerLink="/admin/procurement/purchase-orders" class="hover:text-primary transition-colors">
             Đơn Mua Hàng
           </a>
           <span>/</span>
-          <span class="font-mono font-bold text-white">
+          <span class="font-mono font-bold text-foreground">
             {{ isNew() ? 'Tạo Đơn PO Mới' : (order()?.code || 'Đang tải...') }}
           </span>
           @if (!isNew() && order()?.supplier) {
             <span>/</span>
-            <span class="truncate max-w-xs text-slate-300">
+            <span class="truncate max-w-xs text-muted">
               Nhà Cung Cấp: {{ order()?.supplier?.name }}
             </span>
           }
         </nav>
-        <span class="text-[11px] text-slate-500 font-mono">SCR-21</span>
+        <span class="text-[11px] text-muted font-mono">SCR-21</span>
       </div>
 
-      <header class="bg-[#161b26] border-b border-[#272f3d] px-6 py-2.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0 shadow-xs">
+      <header class="bg-white border-b border-line px-6 py-2.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0 shadow-xs">
         <div class="flex items-center gap-2 flex-wrap">
           @if (isNew()) {
             <button
               type="button"
               (click)="saveNewPurchaseOrder()"
               [disabled]="isSubmitting() || editableLines().length === 0"
-              class="px-4 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm disabled:opacity-50"
+              class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs rounded transition-colors shadow-xs disabled:opacity-50"
             >
               Lưu Bản Thảo PO
             </button>
             <a
               routerLink="/admin/procurement/purchase-orders"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors"
+              class="px-3 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line text-foreground font-semibold text-xs rounded transition-colors"
             >
               Hủy Bỏ
             </a>
@@ -103,21 +103,21 @@ type ToastMessage = {
                   type="button"
                   (click)="saveDraftChanges()"
                   [disabled]="isSubmitting()"
-                  class="px-3.5 py-1.5 bg-[#1f2736] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded transition-colors"
+                  class="px-3.5 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line text-foreground font-semibold text-xs rounded transition-colors"
                 >
                   Lưu Thay Đổi
                 </button>
                 <button
                   type="button"
                   (click)="openConfirmModal()"
-                  class="px-3.5 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm"
+                  class="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs rounded transition-colors shadow-xs"
                 >
                   Xác Nhận PO
                 </button>
                 <button
                   type="button"
                   (click)="openCancelModal()"
-                  class="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-950/80 text-rose-300 border border-rose-800 text-xs rounded transition-colors"
+                  class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs rounded transition-colors"
                 >
                   Hủy Đơn PO
                 </button>
@@ -126,21 +126,21 @@ type ToastMessage = {
                 <button
                   type="button"
                   (click)="openValidateReceiptModal()"
-                  class="px-4 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded shadow-sm transition-colors"
+                  class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs rounded shadow-xs transition-colors"
                 >
                   Đối Soát & Nhập Kho 100%
                 </button>
                 <button
                   type="button"
                   (click)="openShortShipmentModal()"
-                  class="px-3.5 py-1.5 bg-amber-950/40 hover:bg-amber-950/80 text-amber-300 border border-amber-800 font-bold text-xs rounded transition-colors"
+                  class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs rounded transition-colors"
                 >
                   Báo Giao Thiếu Hàng
                 </button>
                 <button
                   type="button"
                   (click)="openCancelModal()"
-                  class="px-3 py-1.5 bg-rose-950/40 hover:bg-rose-950/80 text-rose-300 border border-rose-800 text-xs rounded transition-colors"
+                  class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs rounded transition-colors"
                 >
                   Hủy Đơn PO
                 </button>
@@ -150,18 +150,18 @@ type ToastMessage = {
                   type="button"
                   (click)="closePurchaseOrder()"
                   [disabled]="isSubmitting()"
-                  class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded shadow-sm transition-colors"
+                  class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded shadow-xs transition-colors"
                 >
                   Đóng Đơn PO
                 </button>
               }
               @case ('CLOSED') {
-                <span class="px-3 py-1 bg-slate-800 text-slate-300 rounded text-xs font-semibold border border-slate-700">
+                <span class="px-3 py-1 bg-surface-alt text-muted rounded text-xs font-semibold border border-line">
                   Đơn PO đã hoàn tất và đóng
                 </span>
               }
               @case ('CANCELLED') {
-                <span class="px-3 py-1 bg-rose-950/60 text-rose-300 rounded text-xs font-semibold border border-rose-800">
+                <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded text-xs font-semibold border border-rose-200">
                   Đơn PO đã bị hủy ({{ po.cancellationReason || 'Không có lý do' }})
                 </span>
               }
@@ -172,40 +172,40 @@ type ToastMessage = {
         <div class="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider">
           <div
             class="px-2.5 py-1 rounded transition-colors"
-            [class.bg-[#76b900]]="currentStep() >= 1"
-            [class.text-[#090d16]]="currentStep() >= 1"
-            [class.bg-[#090d16]]="currentStep() < 1"
-            [class.text-slate-400]="currentStep() < 1"
+            [class.bg-primary]="currentStep() >= 1"
+            [class.text-primary-foreground]="currentStep() >= 1"
+            [class.bg-surface-alt]="currentStep() < 1"
+            [class.text-muted]="currentStep() < 1"
           >
             Bản Thảo
           </div>
-          <span class="text-slate-600">&rarr;</span>
+          <span class="text-muted">&rarr;</span>
           <div
             class="px-2.5 py-1 rounded transition-colors"
-            [class.bg-[#76b900]]="currentStep() >= 2"
-            [class.text-[#090d16]]="currentStep() >= 2"
-            [class.bg-[#090d16]]="currentStep() < 2"
-            [class.text-slate-400]="currentStep() < 2"
+            [class.bg-primary]="currentStep() >= 2"
+            [class.text-primary-foreground]="currentStep() >= 2"
+            [class.bg-surface-alt]="currentStep() < 2"
+            [class.text-muted]="currentStep() < 2"
           >
             Đã Xác Nhận
           </div>
-          <span class="text-slate-600">&rarr;</span>
+          <span class="text-muted">&rarr;</span>
           <div
             class="px-2.5 py-1 rounded transition-colors"
-            [class.bg-[#76b900]]="currentStep() >= 3"
-            [class.text-[#090d16]]="currentStep() >= 3"
-            [class.bg-[#090d16]]="currentStep() < 3"
-            [class.text-slate-400]="currentStep() < 3"
+            [class.bg-primary]="currentStep() >= 3"
+            [class.text-primary-foreground]="currentStep() >= 3"
+            [class.bg-surface-alt]="currentStep() < 3"
+            [class.text-muted]="currentStep() < 3"
           >
             Đã Nhập Kho
           </div>
-          <span class="text-slate-600">&rarr;</span>
+          <span class="text-muted">&rarr;</span>
           <div
             class="px-2.5 py-1 rounded transition-colors"
-            [class.bg-[#76b900]]="currentStep() >= 4"
-            [class.text-[#090d16]]="currentStep() >= 4"
-            [class.bg-[#090d16]]="currentStep() < 4"
-            [class.text-slate-400]="currentStep() < 4"
+            [class.bg-primary]="currentStep() >= 4"
+            [class.text-primary-foreground]="currentStep() >= 4"
+            [class.bg-surface-alt]="currentStep() < 4"
+            [class.text-muted]="currentStep() < 4"
           >
             Đóng PO
           </div>
@@ -213,42 +213,42 @@ type ToastMessage = {
       </header>
 
       @if (!isNew() && order(); as po) {
-        <div class="bg-[#161b26] border-b border-[#272f3d] px-6 py-3.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0">
+        <div class="bg-surface border-b border-line px-6 py-3.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0">
           <div>
             <div class="flex items-center gap-2">
-              <h1 class="text-xl font-black text-white font-mono tracking-tight">
+              <h1 class="text-xl font-black text-foreground font-mono tracking-tight">
                 ĐƠN MUA HÀNG #{{ po.code }}
               </h1>
               @switch (po.status) {
                 @case ('DRAFT') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-950/80 text-amber-300 border border-amber-800">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
                     Bản thảo
                   </span>
                 }
                 @case ('CONFIRMED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-950/80 text-blue-300 border border-blue-800">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
                     Đã xác nhận
                   </span>
                 }
                 @case ('RECEIVED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Đã nhập kho
                   </span>
                 }
                 @case ('CLOSED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-slate-800 text-slate-300 border border-slate-700">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-muted border border-line">
                     Đã đóng
                   </span>
                 }
                 @case ('CANCELLED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-950/80 text-rose-300 border border-rose-800">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
                     Đã hủy
                   </span>
                 }
               }
             </div>
-            <div class="text-xs text-slate-400 mt-1">
-              Nhà cung cấp: <strong class="text-white">{{ po.supplier.name }}</strong> | Chi nhánh nhận: <strong class="text-white">{{ po.receivingBranch.name }}</strong>
+            <div class="text-xs text-muted mt-1">
+              Nhà cung cấp: <strong class="text-foreground">{{ po.supplier.name }}</strong> | Chi nhánh nhận: <strong class="text-foreground">{{ po.receivingBranch.name }}</strong>
             </div>
           </div>
 
@@ -256,78 +256,78 @@ type ToastMessage = {
             <a
               [routerLink]="['/admin/procurement/suppliers']"
               [queryParams]="{ search: po.supplier.code }"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px]"
+              class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px]"
               title="Mở danh bạ nhà cung cấp"
             >
-              <div class="font-bold text-[#76b900] text-xs font-mono">{{ po.supplier.code }}</div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Nhà Cung Cấp</div>
+              <div class="font-bold text-primary text-xs font-mono">{{ po.supplier.code }}</div>
+              <div class="text-[10px] text-muted uppercase tracking-wider">Nhà Cung Cấp</div>
             </a>
 
             @if (po.receiptMove) {
               <a
                 [routerLink]="['/admin/inventory/ledger']"
                 [queryParams]="{ search: po.code }"
-                class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
+                class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
                 title="Nhấp để xem chứng từ nhập kho trong sổ kho bất biến"
               >
-                <div class="font-bold text-xs font-mono text-emerald-400 truncate group-hover:scale-105 transition-transform">
+                <div class="font-bold text-xs font-mono text-emerald-700 truncate group-hover:scale-105 transition-transform">
                   {{ po.receiptMove.code }}
                 </div>
-                <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phiếu Nhập Kho</div>
+                <div class="text-[10px] text-muted uppercase tracking-wider">Phiếu Nhập Kho</div>
               </a>
             } @else if (po.status === 'CONFIRMED') {
               <button
                 type="button"
                 (click)="openValidateReceiptModal()"
-                class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block w-full"
+                class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block w-full"
                 title="Nhấp để mở giao diện quét mã và đối soát nhập kho"
               >
-                <div class="font-bold text-xs font-mono text-amber-400 truncate group-hover:scale-105 transition-transform">
+                <div class="font-bold text-xs font-mono text-amber-700 truncate group-hover:scale-105 transition-transform">
                   Chờ Nhập Kho
                 </div>
-                <div class="text-[10px] text-slate-400 uppercase tracking-wider">Đối Soát Kho</div>
+                <div class="text-[10px] text-muted uppercase tracking-wider">Đối Soát Kho</div>
               </button>
             } @else {
-              <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center min-w-[100px]">
-                <div class="font-bold text-xs font-mono text-slate-500 truncate">Chưa Tạo</div>
-                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Phiếu Nhập Kho</div>
+              <div class="p-2 bg-white border border-line rounded text-center min-w-[100px]">
+                <div class="font-bold text-xs font-mono text-muted truncate">Chưa Tạo</div>
+                <div class="text-[10px] text-muted uppercase tracking-wider">Phiếu Nhập Kho</div>
               </div>
             }
 
             <a
               [routerLink]="['/admin/inventory/serials']"
               [queryParams]="{ search: po.code }"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
+              class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
               title="Nhấp để xem danh sách sê-ri linh kiện đã nạp từ đơn PO này"
             >
-              <div class="font-bold text-white text-xs font-mono group-hover:scale-105 transition-transform">
+              <div class="font-bold text-foreground text-xs font-mono group-hover:scale-105 transition-transform">
                 {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Serial Đã Gán</div>
+              <div class="text-[10px] text-muted uppercase tracking-wider">Serial Đã Gán</div>
             </a>
 
             @if (po.supersedesPurchaseOrder) {
               <a
                 [routerLink]="['/admin/procurement/purchase-orders', po.supersedesPurchaseOrder.id]"
-                class="p-2 bg-amber-950/30 hover:bg-amber-950/60 border border-amber-800 rounded text-center transition-colors min-w-[100px]"
+                class="p-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded text-center transition-colors min-w-[100px]"
                 title="Bấm để xem đơn mua hàng gốc bị hủy"
               >
-                <div class="font-bold text-amber-300 text-xs font-mono">{{ po.supersedesPurchaseOrder.code }}</div>
-                <div class="text-[10px] text-amber-400 uppercase tracking-wider">Đơn Gốc</div>
+                <div class="font-bold text-amber-800 text-xs font-mono">{{ po.supersedesPurchaseOrder.code }}</div>
+                <div class="text-[10px] text-amber-800 uppercase tracking-wider">Đơn Gốc</div>
               </a>
             } @else if (po.supersededByOrders.length > 0) {
               <a
                 [routerLink]="['/admin/procurement/purchase-orders', po.supersededByOrders[0].id]"
-                class="p-2 bg-rose-950/30 hover:bg-rose-950/60 border border-rose-800 rounded text-center transition-colors min-w-[100px]"
+                class="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded text-center transition-colors min-w-[100px]"
                 title="Bấm để xem đơn mua hàng thay thế"
               >
-                <div class="font-bold text-rose-300 text-xs font-mono">{{ po.supersededByOrders[0].code }}</div>
-                <div class="text-[10px] text-rose-400 uppercase tracking-wider">PO Thay Thế</div>
+                <div class="font-bold text-rose-700 text-xs font-mono">{{ po.supersededByOrders[0].code }}</div>
+                <div class="text-[10px] text-rose-700 uppercase tracking-wider">PO Thay Thế</div>
               </a>
             } @else {
-              <div class="p-2 bg-[#090d16] border border-[#272f3d] rounded text-center min-w-[100px]">
-                <div class="font-bold text-slate-400 text-xs font-mono">Đơn gốc</div>
-                <div class="text-[10px] text-slate-500 uppercase tracking-wider">PO Thay Thế</div>
+              <div class="p-2 bg-white border border-line rounded text-center min-w-[100px]">
+                <div class="font-bold text-muted text-xs font-mono">Đơn gốc</div>
+                <div class="text-[10px] text-muted uppercase tracking-wider">PO Thay Thế</div>
               </div>
             }
           </div>
@@ -335,25 +335,27 @@ type ToastMessage = {
       }
 
       <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6">
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-5 shadow-sm space-y-4">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-2">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-white">
+        <div class="bg-white border border-line rounded-lg p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-line pb-2">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
               Thông Tin Đơn Mua Hàng
             </h2>
             <span
               class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              [class.bg-emerald-950]="isNew() || order()?.status === 'DRAFT'"
-              [class.text-emerald-300]="isNew() || order()?.status === 'DRAFT'"
-              [class.bg-slate-800]="!isNew() && order()?.status !== 'DRAFT'"
-              [class.text-slate-400]="!isNew() && order()?.status !== 'DRAFT'"
+              [class.bg-emerald-50]="isNew() || order()?.status === 'DRAFT'"
+              [class.text-emerald-700]="isNew() || order()?.status === 'DRAFT'"
+              [class.border]="isNew() || order()?.status === 'DRAFT'"
+              [class.border-emerald-200]="isNew() || order()?.status === 'DRAFT'"
+              [class.bg-surface-alt]="!isNew() && order()?.status !== 'DRAFT'"
+              [class.text-muted]="!isNew() && order()?.status !== 'DRAFT'"
             >
               {{ (isNew() || order()?.status === 'DRAFT') ? 'Có thể chỉnh sửa' : 'Dữ liệu đã khóa' }}
             </span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-[13px]">
             <div>
-              <label class="block text-slate-400 font-semibold uppercase mb-1">Nhà Cung Cấp</label>
+              <label class="block text-muted font-semibold uppercase text-xs mb-1">Nhà Cung Cấp</label>
               @if (isNew() || order()?.status === 'DRAFT') {
                 <app-select
                   [options]="supplierOptions()"
@@ -364,13 +366,13 @@ type ToastMessage = {
                   ariaLabel="Nhà Cung Cấp"
                 />
               } @else {
-                <div class="font-bold text-white text-sm pt-1">{{ order()?.supplier?.name }}</div>
-                <div class="text-slate-400 text-xs font-mono mt-0.5">{{ order()?.supplier?.code }}</div>
+                <div class="font-bold text-foreground text-sm pt-1">{{ order()?.supplier?.name }}</div>
+                <div class="text-muted text-xs font-mono mt-0.5">{{ order()?.supplier?.code }}</div>
               }
             </div>
 
             <div>
-              <label class="block text-slate-400 font-semibold uppercase mb-1">Kho Nhận Hàng</label>
+              <label class="block text-muted font-semibold uppercase text-xs mb-1">Kho Nhận Hàng</label>
               @if (isNew() || order()?.status === 'DRAFT') {
                 <app-select
                   [options]="branchOptions()"
@@ -381,42 +383,42 @@ type ToastMessage = {
                   ariaLabel="Kho Nhận Hàng"
                 />
               } @else {
-                <div class="font-bold text-white text-sm pt-1">{{ order()?.receivingBranch?.name }}</div>
-                <div class="text-slate-400 text-xs font-mono mt-0.5">{{ order()?.receivingBranch?.code }}</div>
+                <div class="font-bold text-foreground text-sm pt-1">{{ order()?.receivingBranch?.name }}</div>
+                <div class="text-muted text-xs font-mono mt-0.5">{{ order()?.receivingBranch?.code }}</div>
               }
             </div>
 
             <div>
-              <label class="block text-slate-400 font-semibold uppercase mb-1">Ghi Chú Đơn Hàng</label>
+              <label class="block text-muted font-semibold uppercase text-xs mb-1">Ghi Chú Đơn Hàng</label>
               @if (isNew() || order()?.status === 'DRAFT') {
                 <input
                   type="text"
                   [(ngModel)]="orderNote"
                   placeholder="Ghi chú nội bộ hoặc điều khoản giao hàng..."
-                  class="w-full px-2.5 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-2.5 py-2 bg-surface border border-line rounded text-[13px] text-foreground focus:outline-none focus:border-primary"
                 />
               } @else {
-                <div class="text-slate-300 text-xs pt-1">{{ order()?.note || 'Không có ghi chú' }}</div>
+                <div class="text-foreground text-[13px] pt-1">{{ order()?.note || 'Không có ghi chú' }}</div>
               }
             </div>
 
             <div>
-              <label class="block text-slate-400 font-semibold uppercase mb-1">Tổng Giá Trị Đơn PO</label>
-              <div class="font-black text-[#76b900] text-base pt-1 tabular tabular-nums font-mono">
+              <label class="block text-muted font-semibold uppercase text-xs mb-1">Tổng Giá Trị Đơn PO</label>
+              <div class="font-black text-primary text-base pt-1 tabular tabular-nums font-mono">
                 {{ formatCurrency(calculatedTotalAmount()) }} ₫
               </div>
-              <div class="text-slate-400 text-[10px] mt-0.5">Đã bao gồm đơn giá thỏa thuận VAT</div>
+              <div class="text-muted text-[10px] mt-0.5">Đã bao gồm đơn giá thỏa thuận VAT</div>
             </div>
           </div>
         </div>
 
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm">
-          <div class="p-4 border-b border-[#272f3d] flex items-center justify-between flex-wrap gap-2">
+        <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2">
             <div>
-              <h2 class="text-xs font-bold uppercase tracking-wider text-white">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Danh Sách Linh Kiện Đặt Mua
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 {{ (isNew() || order()?.status === 'DRAFT') ? 'Thêm mới hoặc chỉnh sửa linh kiện và đơn giá thỏa thuận' : 'Dòng hàng được khóa cứng theo quy tắc PUR-005' }}
               </p>
             </div>
@@ -428,31 +430,31 @@ type ToastMessage = {
                   [ngModel]="variantSearchTerm()"
                   (ngModelChange)="onSearchVariants($event)"
                   placeholder="+ Thêm SKU linh kiện vào PO..."
-                  class="w-full pl-8 pr-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full pl-8 pr-3 py-1.5 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 />
                 <lucide-icon
                   name="plus"
-                  class="size-3.5 text-slate-500 absolute left-2.5 top-2.5 pointer-events-none"
+                  class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
                   aria-hidden="true"
                 ></lucide-icon>
 
                 @if (searchedVariants().length > 0) {
-                  <div class="absolute left-0 right-0 mt-1 bg-[#090d16] border border-[#272f3d] rounded-lg shadow-xl z-30 max-h-56 overflow-y-auto">
+                  <div class="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-xl z-30 max-h-56 overflow-y-auto">
                     @for (v of searchedVariants(); track v.id) {
                       <div
                         (click)="addVariantToOrder(v)"
-                        class="p-2 hover:bg-[#1f2736] cursor-pointer border-b border-[#272f3d]/60 last:border-none flex items-center justify-between gap-2"
+                        class="p-2 hover:bg-surface-alt cursor-pointer border-b border-line last:border-none flex items-center justify-between gap-2"
                       >
                         <div class="min-w-0 flex-1">
-                          <div class="font-mono font-bold text-white text-xs truncate">{{ v.sku }}</div>
-                          <div class="text-[11px] text-slate-400 truncate">{{ v.productTemplate.name }}</div>
+                          <div class="font-mono font-bold text-foreground text-[13px] truncate">{{ v.sku }}</div>
+                          <div class="text-xs text-muted truncate">{{ v.productTemplate.name }}</div>
                         </div>
                         <div class="text-right flex-shrink-0">
-                          <span class="text-[#76b900] text-xs font-mono font-bold tabular">
+                          <span class="text-primary text-[13px] font-mono font-bold tabular">
                             {{ formatCurrency(v.sellingPrice) }} ₫
                           </span>
                           @if (v.serialRequired) {
-                            <div class="text-[9px] text-blue-400">Cần Serial</div>
+                            <div class="text-[10px] text-blue-600 font-semibold">Cần Serial</div>
                           }
                         </div>
                       </div>
@@ -464,8 +466,8 @@ type ToastMessage = {
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left border-collapse text-[13px]">
+              <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
                   <th class="py-2.5 px-4">Mã SKU</th>
@@ -479,18 +481,18 @@ type ToastMessage = {
                   }
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#272f3d]">
+              <tbody class="divide-y divide-line">
                 @if (editableLines().length === 0) {
                   <tr>
-                    <td [attr.colspan]="(isNew() || order()?.status === 'DRAFT') ? 8 : 7" class="py-8 text-center text-slate-500">
+                    <td [attr.colspan]="(isNew() || order()?.status === 'DRAFT') ? 8 : 7" class="py-8 text-center text-muted">
                       Chưa có linh kiện nào trong đơn mua hàng. Vui lòng tìm và thêm linh kiện ở trên.
                     </td>
                   </tr>
                 } @else {
                   @for (line of editableLines(); track line.skuId) {
-                    <tr class="hover:bg-[#1f2736]/60 transition-colors">
+                    <tr class="hover:bg-surface-alt/40 transition-colors">
                       <td class="py-2.5 px-4 text-center">
-                        <div class="w-9 h-9 rounded bg-[#090d16] border border-[#272f3d] overflow-hidden flex items-center justify-center mx-auto">
+                        <div class="w-9 h-9 rounded bg-surface border border-line overflow-hidden flex items-center justify-center mx-auto">
                           @if (line.imageUrl) {
                             <img
                               src="/images/products/placeholder.webp"
@@ -500,23 +502,23 @@ type ToastMessage = {
                               (error)="onImageError($event)"
                             />
                           } @else {
-                            <span class="text-[10px] text-slate-600 font-mono">PC</span>
+                            <span class="text-[10px] text-muted font-mono">PC</span>
                           }
                         </div>
                       </td>
-                      <td class="py-2.5 px-4 font-mono font-bold text-white">
+                      <td class="py-2.5 px-4 font-mono font-bold text-foreground">
                         {{ line.sku }}
                       </td>
-                      <td class="py-2.5 px-4 font-semibold text-slate-200">
+                      <td class="py-2.5 px-4 font-semibold text-foreground">
                         {{ line.name }}
                       </td>
                       <td class="py-2.5 px-4 text-center">
                         @if (line.serialRequired) {
-                          <span class="px-2 py-0.5 rounded bg-blue-950/80 text-blue-300 border border-blue-800 text-[10px] font-semibold">
+                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold">
                             Bắt buộc Serial
                           </span>
                         } @else {
-                          <span class="text-slate-500 text-[10px]">Không</span>
+                          <span class="text-muted text-[11px]">Không</span>
                         }
                       </td>
                       <td class="py-2.5 px-4 text-center">
@@ -526,10 +528,10 @@ type ToastMessage = {
                             min="1"
                             [ngModel]="line.quantity"
                             (ngModelChange)="onLineQuantityChange(line.skuId, $event)"
-                            class="w-20 px-2 py-1 bg-[#090d16] border border-[#272f3d] rounded text-center font-bold text-white text-xs focus:outline-none focus:border-[#76b900]"
+                            class="w-20 px-2 py-1 bg-surface border border-line rounded text-center font-bold text-foreground text-[13px] focus:outline-none focus:border-primary"
                           />
                         } @else {
-                          <span class="font-black text-white tabular tabular-nums text-sm">
+                          <span class="font-black text-foreground tabular tabular-nums text-sm">
                             {{ line.quantity }} chiếc
                           </span>
                         }
@@ -541,15 +543,15 @@ type ToastMessage = {
                             min="0"
                             [ngModel]="line.agreedUnitCost"
                             (ngModelChange)="onLineCostChange(line.skuId, $event)"
-                            class="w-32 px-2 py-1 bg-[#090d16] border border-[#272f3d] rounded text-right font-mono font-bold text-white text-xs focus:outline-none focus:border-[#76b900] tabular"
+                            class="w-32 px-2 py-1 bg-surface border border-line rounded text-right font-mono font-bold text-foreground text-[13px] focus:outline-none focus:border-primary tabular"
                           />
                         } @else {
-                          <span class="font-mono text-slate-300 tabular tabular-nums">
+                          <span class="font-mono text-foreground tabular tabular-nums">
                             {{ formatCurrency(line.agreedUnitCost) }} ₫
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right font-black tabular tabular-nums font-mono text-[#76b900] text-sm">
+                      <td class="py-2.5 px-4 text-right font-black tabular tabular-nums font-mono text-primary text-sm">
                         {{ formatCurrency(line.lineTotal) }} ₫
                       </td>
                       @if (isNew() || order()?.status === 'DRAFT') {
@@ -602,13 +604,14 @@ type ToastMessage = {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
           @for (toast of toasts(); track toast.id) {
             <div
-              class="px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold text-white pointer-events-auto border transition-all duration-200 ease-out"
-              [class.bg-emerald-800]="toast.type === 'success'"
-              [class.border-emerald-600]="toast.type === 'success'"
-              [class.bg-rose-900]="toast.type === 'error'"
-              [class.border-rose-700]="toast.type === 'error'"
-              [class.bg-[#161b26]]="toast.type === 'info'"
-              [class.border-[#272f3d]]="toast.type === 'info'"
+              class="px-4 py-2.5 rounded-lg shadow-xl text-[13px] font-semibold pointer-events-auto border transition-all duration-200 ease-out"
+              [class.bg-white]="true"
+              [class.text-emerald-700]="toast.type === 'success'"
+              [class.border-emerald-300]="toast.type === 'success'"
+              [class.text-rose-700]="toast.type === 'error'"
+              [class.border-rose-300]="toast.type === 'error'"
+              [class.text-foreground]="toast.type === 'info'"
+              [class.border-line]="toast.type === 'info'"
             >
               {{ toast.text }}
             </div>

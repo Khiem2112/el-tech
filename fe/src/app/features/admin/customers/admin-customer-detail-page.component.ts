@@ -27,7 +27,7 @@ type ToastNotification = {
   imports: [CommonModule, FormsModule, RouterLink, MergeCustomerDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-5 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-5 text-sm text-foreground">
       @if (toasts().length > 0) {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
           @for (toast of toasts(); track toast.id) {

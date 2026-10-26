@@ -61,28 +61,28 @@ const supplierFormSchema = z.object({
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
         role="dialog"
         aria-modal="true"
         [attr.aria-labelledby]="'supplier-modal-title'"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-sm text-white"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-[13px] text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h2 id="supplier-modal-title" class="font-bold text-white uppercase text-base tracking-wide">
+              <h2 id="supplier-modal-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Nhà Cung Cấp' : 'Thêm Nhà Cung Cấp' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 {{ isEditMode() ? 'Cập nhật thông tin đối tác và nhà phân phối linh kiện' : 'Thêm đối tác nhà phân phối linh kiện phần cứng mới' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -93,7 +93,7 @@ const supplierFormSchema = z.object({
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+            <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               {{ errorMessage() }}
             </div>
           }
@@ -101,38 +101,38 @@ const supplierFormSchema = z.object({
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label for="supplier-code" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Mã nhà cung cấp <span class="text-rose-400">*</span>
+                <label for="supplier-code" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
+                  Mã nhà cung cấp <span class="text-rose-600">*</span>
                 </label>
                 <input
                   id="supplier-code"
                   type="text"
                   formControlName="code"
                   placeholder="Ví dụ: SUP-ASUS-VN"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900] uppercase"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary uppercase"
                   [class.border-rose-500]="isFieldInvalid('code')"
                 />
                 @if (isFieldInvalid('code')) {
-                  <p class="mt-1 text-xs text-rose-400">
+                  <p class="mt-1 text-xs text-rose-600">
                     {{ getFieldError('code') }}
                   </p>
                 }
               </div>
 
               <div>
-                <label for="supplier-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
-                  Tên nhà cung cấp <span class="text-rose-400">*</span>
+                <label for="supplier-name" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
+                  Tên nhà cung cấp <span class="text-rose-600">*</span>
                 </label>
                 <input
                   id="supplier-name"
                   type="text"
                   formControlName="name"
                   placeholder="Ví dụ: Công ty TNHH ASUS Technology..."
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('name')"
                 />
                 @if (isFieldInvalid('name')) {
-                  <p class="mt-1 text-xs text-rose-400">
+                  <p class="mt-1 text-xs text-rose-600">
                     {{ getFieldError('name') }}
                   </p>
                 }
@@ -141,7 +141,7 @@ const supplierFormSchema = z.object({
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label for="supplier-contact" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label for="supplier-contact" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                   Người liên hệ
                 </label>
                 <input
@@ -149,18 +149,18 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="contactName"
                   placeholder="Họ và tên..."
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('contactName')"
                 />
                 @if (isFieldInvalid('contactName')) {
-                  <p class="mt-1 text-xs text-rose-400">
+                  <p class="mt-1 text-xs text-rose-600">
                     {{ getFieldError('contactName') }}
                   </p>
                 }
               </div>
 
               <div>
-                <label for="supplier-phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label for="supplier-phone" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                   Số điện thoại
                 </label>
                 <input
@@ -168,18 +168,18 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="phone"
                   placeholder="028.3811.9999"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm font-mono text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('phone')"
                 />
                 @if (isFieldInvalid('phone')) {
-                  <p class="mt-1 text-xs text-rose-400">
+                  <p class="mt-1 text-xs text-rose-600">
                     {{ getFieldError('phone') }}
                   </p>
                 }
               </div>
 
               <div>
-                <label for="supplier-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+                <label for="supplier-email" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                   Email
                 </label>
                 <input
@@ -187,11 +187,11 @@ const supplierFormSchema = z.object({
                   type="email"
                   formControlName="email"
                   placeholder="sales@asus.com.vn"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('email')"
                 />
                 @if (isFieldInvalid('email')) {
-                  <p class="mt-1 text-xs text-rose-400">
+                  <p class="mt-1 text-xs text-rose-600">
                     {{ getFieldError('email') }}
                   </p>
                 }
@@ -199,7 +199,7 @@ const supplierFormSchema = z.object({
             </div>
 
             <div>
-              <label for="supplier-address" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1">
+              <label for="supplier-address" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                 Kho xuất hàng / Địa chỉ trụ sở
               </label>
               <textarea
@@ -207,7 +207,7 @@ const supplierFormSchema = z.object({
                 rows="2"
                 formControlName="address"
                 placeholder="Địa chỉ chi tiết kho giao hàng hoặc trụ sở chính..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900] resize-y"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary resize-y"
               ></textarea>
             </div>
 
@@ -216,27 +216,27 @@ const supplierFormSchema = z.object({
                 <input
                   type="checkbox"
                   formControlName="isActive"
-                  class="w-4 h-4 rounded bg-[#090d16] border-[#272f3d] text-[#76b900] focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                  class="w-4 h-4 rounded bg-surface border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
                 />
-                <span class="text-xs font-medium text-slate-200">
+                <span class="text-[13px] font-medium text-foreground">
                   Kích hoạt trạng thái hợp tác của nhà cung cấp
                 </span>
               </label>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#272f3d]">
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-line">
               <button
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-transparent hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-slate-300 hover:text-white text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-foreground text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-1.5"
+                class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting()) {
                   <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">

@@ -35,7 +35,7 @@ type OrderGroup = {
   imports: [CommonModule, FormsModule, RouterModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line"
       >
@@ -66,7 +66,7 @@ type OrderGroup = {
             <button
               type="button"
               (click)="onTabClick(tab.key)"
-              class="px-3 py-1.5 rounded-full whitespace-nowrap transition-colors flex items-center gap-1.5 text-xs font-semibold"
+              class="px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors flex items-center gap-1.5 text-[13px] font-semibold"
               [class.bg-primary]="orderService.selectedTab() === tab.key"
               [class.text-primary-foreground]="orderService.selectedTab() === tab.key"
               [class.font-bold]="orderService.selectedTab() === tab.key"
@@ -105,7 +105,7 @@ type OrderGroup = {
                 [ngModel]="orderService.searchQuery()"
                 (ngModelChange)="onSearchInput($event)"
                 placeholder="Mã đơn ORD-, SĐT, email, tên..."
-                class="w-full h-9 pl-8 pr-3 bg-surface border border-line rounded text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-xs font-sans"
+                class="w-full h-9 pl-8 pr-3 bg-surface border border-line rounded text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-[13px] font-sans"
               />
               <svg
                 class="w-3.5 h-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
@@ -279,9 +279,9 @@ type OrderGroup = {
                 </div>
               }
 
-              <table class="w-full text-left text-xs">
+              <table class="w-full text-left text-[13px]">
                 <thead
-                  class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider"
+                  class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs"
                 >
                   <tr>
                     <th class="py-2.5 px-4 whitespace-nowrap">Mã đơn</th>
@@ -312,7 +312,7 @@ type OrderGroup = {
                         <div class="mt-0.5">
                           @if (order.hasAssembly) {
                             <span
-                              class="text-xs font-mono text-primary bg-surface-elevated border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-xs font-mono text-primary-strong bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
                             >
                               Lắp ráp PC
                             </span>
@@ -326,7 +326,7 @@ type OrderGroup = {
                         </div>
                       </td>
 
-                      <td class="py-3 px-4 text-muted text-xs whitespace-nowrap">
+                      <td class="py-3 px-4 text-muted whitespace-nowrap">
                         <div>{{ formatDateTime(order.submittedAt) }}</div>
                       </td>
 
@@ -336,8 +336,8 @@ type OrderGroup = {
                       </td>
 
                       <td class="py-3 px-4 text-foreground whitespace-nowrap">
-                        <div class="font-semibold text-xs">{{ order.branch.code }}</div>
-                        <div class="text-xs text-muted truncate max-w-[140px]">{{ order.branch.name }}</div>
+                        <div class="font-semibold">{{ order.branch.code }}</div>
+                        <div class="text-muted text-xs truncate max-w-[140px]">{{ order.branch.name }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">

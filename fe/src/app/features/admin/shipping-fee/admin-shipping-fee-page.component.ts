@@ -25,7 +25,7 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, RouterLink, DeliveryFeeFormDialogComponent],
   template: `
-    <div class="space-y-6 p-4 lg:p-6 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full space-y-6 p-4 lg:p-6 text-sm text-foreground">
       <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
         <div>
           <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">

@@ -28,7 +28,7 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonDirective, BadgeDirective, SelectComponent, SupplierFormDialogComponent],
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">

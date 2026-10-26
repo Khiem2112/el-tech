@@ -36,7 +36,7 @@ type ToastNotification = {
     PromotionFormDialogComponent,
   ],
   template: `
-    <div class="p-4 lg:p-6 space-y-5 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-5 text-sm text-foreground">
       @if (toasts().length > 0) {
         <div class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none">
           @for (t of toasts(); track t.id) {

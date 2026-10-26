@@ -60,7 +60,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="h-9 bg-surface border border-line rounded px-4 flex items-center justify-between text-xs shadow-card">
         <nav class="flex items-center gap-1.5 text-muted">
           <a

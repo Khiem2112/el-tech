@@ -13,114 +13,114 @@ import { UrgentQueuesData } from '../services/admin-dashboard.service';
       <div class="flex items-center justify-between mb-3">
         <div class="flex items-center gap-2">
           <span class="w-2.5 h-2.5 bg-rose-500 rounded-full"></span>
-          <h2 class="text-xs font-bold uppercase tracking-wider text-white">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-foreground">
             Hàng Đợi Khẩn Cấp Cần Xử Lý Trong Ngày
           </h2>
         </div>
-        <span class="text-xs text-slate-400">
+        <span class="text-[13px] text-muted">
           Ưu tiên xử lý cao nhất trước khi sang các nghiệp vụ khác
         </span>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 shadow-sm flex flex-col justify-between">
+        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold text-slate-400 uppercase">COD Chờ Duyệt</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span class="text-[13px] font-semibold text-muted uppercase">COD Chờ Duyệt</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                 CHỜ XÁC NHẬN
               </span>
             </div>
-            <div class="text-2xl font-black text-white tabular-nums">
+            <div class="text-3xl font-black text-foreground tabular-nums">
               {{ (urgentQueues()?.pendingCodConfirmation ?? 0) | number:'2.0-0' }}
             </div>
-            <p class="text-xs text-slate-400 mt-1">
+            <p class="text-[13px] text-muted mt-1.5">
               Đơn COD mới đặt cần gọi điện chốt đơn và giữ hàng
             </p>
           </div>
-          <div class="mt-4 pt-3 border-t border-[#272f3d]">
+          <div class="mt-4 pt-3 border-t border-line">
             <a
               [routerLink]="['/admin/orders']"
               [queryParams]="orderCodQueryParams()"
-              class="text-xs font-bold text-[#76b900] hover:underline block"
+              class="text-[13px] font-bold text-primary-strong hover:underline block"
             >
               Xem {{ urgentQueues()?.pendingCodConfirmation ?? 0 }} đơn chờ duyệt
             </a>
           </div>
         </div>
 
-        <div class="bg-[#161b26] border border-rose-900/60 rounded-lg p-4 shadow-sm flex flex-col justify-between bg-rose-950/20">
+        <div class="bg-rose-50/30 border border-rose-200 rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-rose-300 transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold text-rose-300 uppercase">Hàng Đợi Lệch QR (24h)</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              <span class="text-[13px] font-semibold text-rose-700 uppercase">Hàng Đợi Lệch QR (24h)</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
                 ĐỐI SOÁT
               </span>
             </div>
-            <div class="text-2xl font-black text-rose-400 tabular-nums">
+            <div class="text-3xl font-black text-rose-600 tabular-nums">
               {{ (urgentQueues()?.paymentReview ?? 0) | number:'2.0-0' }}
             </div>
-            <p class="text-xs text-slate-400 mt-1">
+            <p class="text-[13px] text-muted mt-1.5">
               Giao dịch sai mã hoặc chậm webhook. Cần khớp tay hoặc hủy hoàn tiền
             </p>
           </div>
-          <div class="mt-4 pt-3 border-t border-rose-900/40">
+          <div class="mt-4 pt-3 border-t border-rose-200">
             <a
               [routerLink]="['/admin/orders']"
               [queryParams]="orderQrReviewQueryParams()"
-              class="text-xs font-bold text-rose-400 hover:underline block"
+              class="text-[13px] font-bold text-rose-600 hover:underline block"
             >
               Vào hàng đợi đối soát mã QR
             </a>
           </div>
         </div>
 
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 shadow-sm flex flex-col justify-between">
+        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold text-slate-400 uppercase">Nhận Tại Showroom Quá 14 Ngày</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <span class="text-[13px] font-semibold text-muted uppercase">Nhận Tại Showroom Quá 14 Ngày</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                 QUÁ HẠN
               </span>
             </div>
-            <div class="text-2xl font-black text-white tabular-nums">
+            <div class="text-3xl font-black text-foreground tabular-nums">
               {{ (urgentQueues()?.pickupExpired ?? 0) | number:'2.0-0' }}
             </div>
-            <p class="text-xs text-slate-400 mt-1">
+            <p class="text-[13px] text-muted mt-1.5">
               Khách chưa đến nhận tại cửa hàng. Cần gọi điện hoặc hủy đơn
             </p>
           </div>
-          <div class="mt-4 pt-3 border-t border-[#272f3d]">
+          <div class="mt-4 pt-3 border-t border-line">
             <a
               [routerLink]="['/admin/orders']"
               [queryParams]="orderPickupExpiredQueryParams()"
-              class="text-xs font-bold text-[#76b900] hover:underline block"
+              class="text-[13px] font-bold text-primary-strong hover:underline block"
             >
               Xử lý đơn quá hạn
             </a>
           </div>
         </div>
 
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 shadow-sm flex flex-col justify-between">
+        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-semibold text-rose-400 uppercase">Linh Kiện Chạm Ngưỡng Đặt Hàng</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              <span class="text-[13px] font-semibold text-rose-600 uppercase">Linh Kiện Chạm Ngưỡng Đặt Hàng</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
                 SẮP HẾT
               </span>
             </div>
-            <div class="text-2xl font-black text-rose-400 tabular-nums">
+            <div class="text-3xl font-black text-rose-600 tabular-nums">
               {{ (urgentQueues()?.lowStockSkuCount ?? 0) | number:'2.0-0' }}
             </div>
-            <p class="text-xs text-slate-400 mt-1">
+            <p class="text-[13px] text-muted mt-1.5">
               Tồn khả dụng chạm ngưỡng an toàn. Cần lập đơn mua PO bổ sung
             </p>
           </div>
-          <div class="mt-4 pt-3 border-t border-[#272f3d]">
+          <div class="mt-4 pt-3 border-t border-line">
             <a
               [routerLink]="['/admin/inventory/balances']"
               [queryParams]="inventoryOutOfStockQueryParams()"
-              class="text-xs font-bold text-rose-400 hover:underline block"
+              class="text-[13px] font-bold text-rose-600 hover:underline block"
             >
               Kiểm tra {{ urgentQueues()?.lowStockSkuCount ?? 0 }} SKU sắp hết
             </a>

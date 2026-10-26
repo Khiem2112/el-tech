@@ -143,7 +143,7 @@ function slugify(text: string): string {
 
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
             <div>
-              <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="name" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Tên danh mục ngành hàng <span class="text-rose-500">*</span>
               </label>
               <input
@@ -152,7 +152,7 @@ function slugify(text: string): string {
                 formControlName="name"
                 (input)="onNameInput()"
                 placeholder="Ví dụ: Bo Mạch Chủ (Mainboard)"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('name')"
               />
               @if (isFieldInvalid('name')) {
@@ -161,7 +161,7 @@ function slugify(text: string): string {
             </div>
 
             <div>
-              <label for="slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="slug" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Mã đường dẫn (Slug) <span class="text-rose-500">*</span>
               </label>
               <input
@@ -169,7 +169,7 @@ function slugify(text: string): string {
                 type="text"
                 formControlName="slug"
                 placeholder="mainboard-bo-mach-chu"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('slug')"
               />
               <p class="text-muted text-xs mt-1">
@@ -181,7 +181,7 @@ function slugify(text: string): string {
             </div>
 
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Danh mục cấp cha (Tùy chọn)
               </label>
               <app-select
@@ -196,7 +196,7 @@ function slugify(text: string): string {
             </div>
 
             <div>
-              <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="description" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Mô tả ngành hàng
               </label>
               <textarea
@@ -204,7 +204,7 @@ function slugify(text: string): string {
                 rows="3"
                 formControlName="description"
                 placeholder="Nhập thông tin giới thiệu và quy chuẩn kỹ thuật của ngành hàng..."
-                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               ></textarea>
             </div>
 
@@ -215,7 +215,7 @@ function slugify(text: string): string {
                 formControlName="isActive"
                 class="w-4 h-4 rounded bg-surface-alt border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
-              <label for="isActive" class="text-xs text-foreground cursor-pointer">
+              <label for="isActive" class="text-[13px] text-foreground cursor-pointer">
                 Kích hoạt hiển thị danh mục trong hệ thống và bộ lọc linh kiện
               </label>
             </div>
@@ -382,7 +382,7 @@ export class CategoryFormDialogComponent {
     const invalid = this.isFieldInvalid(fieldName);
     return {
       'border-rose-500': invalid,
-      'border-[#272f3d]': !invalid,
+      'border-line': !invalid,
     };
   }
 

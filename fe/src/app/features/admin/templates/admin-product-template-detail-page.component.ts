@@ -308,7 +308,7 @@ type ToastNotification = {
         }
       </div>
 
-      <div class="p-4 lg:p-6 space-y-6 max-w-7xl mx-auto">
+      <div class="w-full p-4 lg:p-6 space-y-6">
         @if (formError()) {
           <div class="p-3.5 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
             {{ formError() }}

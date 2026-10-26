@@ -41,7 +41,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
             AD
           </div>
           <div class="hidden md:block text-left">
-            <div class="text-foreground font-semibold text-xs leading-tight">
+            <div class="text-foreground font-semibold text-sm leading-tight">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
             <div class="text-xs text-muted leading-tight font-mono">
@@ -53,7 +53,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
         <button
           type="button"
           (click)="onLogout()"
-          class="px-2.5 py-1.5 rounded-md text-xs text-muted hover:text-rose-600 hover:bg-rose-50 border border-line transition-colors inline-flex items-center gap-1.5"
+          class="px-2.5 py-1.5 rounded-md text-[13px] text-muted hover:text-rose-600 hover:bg-rose-50 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
           title="Đăng xuất khỏi hệ thống"
         >
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

@@ -22,7 +22,7 @@ import { AdminSerialService } from './services/admin-serial.service';
   imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SelectComponent, SerialDetailDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-6 max-w-7xl mx-auto text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-6 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">

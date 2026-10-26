@@ -65,28 +65,28 @@ const branchFormSchema = z.object({
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs"
         role="dialog"
         aria-modal="true"
         [attr.aria-labelledby]="'branch-modal-title'"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-white"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-[13px] text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h2 id="branch-modal-title" class="font-bold text-white uppercase text-base">
+              <h2 id="branch-modal-title" class="font-bold text-foreground uppercase text-sm">
                 {{ isEditMode() ? 'Chỉnh Sửa Chi Nhánh' : 'Thêm Chi Nhánh Mới' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 {{ isEditMode() ? 'Cập nhật thông tin chi nhánh và khu vực phục vụ' : 'Thêm mới chi nhánh showroom và kho trung chuyển' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -97,7 +97,7 @@ const branchFormSchema = z.object({
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+            <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               {{ errorMessage() }}
             </div>
           }
@@ -105,77 +105,77 @@ const branchFormSchema = z.object({
           <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label for="branch-code" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                  Mã chi nhánh <span class="text-rose-400">*</span>
+                <label for="branch-code" class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Mã chi nhánh <span class="text-rose-600">*</span>
                 </label>
                 <input
                   id="branch-code"
                   type="text"
                   formControlName="code"
                   placeholder="Ví dụ: HN-01"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded font-mono font-bold text-white text-sm focus:outline-none uppercase placeholder:text-slate-600"
-                  [ngClass]="hasError('code') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded font-mono font-bold text-foreground text-[13px] focus:outline-none uppercase placeholder:text-muted"
+                  [ngClass]="hasError('code') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('code')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('code') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('code') }}</p>
                 }
               </div>
 
               <div>
-                <label for="branch-name" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                  Tên chi nhánh <span class="text-rose-400">*</span>
+                <label for="branch-name" class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Tên chi nhánh <span class="text-rose-600">*</span>
                 </label>
                 <input
                   id="branch-name"
                   type="text"
                   formControlName="name"
                   placeholder="Ví dụ: EL-TECH Cầu Giấy"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded text-white text-sm focus:outline-none font-semibold placeholder:text-slate-600"
-                  [ngClass]="hasError('name') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none font-semibold placeholder:text-muted"
+                  [ngClass]="hasError('name') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('name')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('name') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('name') }}</p>
                 }
               </div>
             </div>
 
             <div>
-              <label for="branch-address" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                Địa chỉ chi nhánh <span class="text-rose-400">*</span>
+              <label for="branch-address" class="block font-semibold text-muted text-xs uppercase mb-1">
+                Địa chỉ chi nhánh <span class="text-rose-600">*</span>
               </label>
               <input
                 id="branch-address"
                 type="text"
                 formControlName="address"
                 placeholder="Số 12 Duy Tân, P. Dịch Vọng Hậu, Q. Cầu Giấy, Hà Nội"
-                class="w-full px-3 py-2 bg-[#090d16] border rounded text-white text-sm focus:outline-none placeholder:text-slate-600"
-                [ngClass]="hasError('address') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                [ngClass]="hasError('address') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
               />
               @if (hasError('address')) {
-                <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('address') }}</p>
+                <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('address') }}</p>
               }
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label for="branch-hours" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                  Giờ mở cửa <span class="text-rose-400">*</span>
+                <label for="branch-hours" class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Giờ mở cửa <span class="text-rose-600">*</span>
                 </label>
                 <input
                   id="branch-hours"
                   type="text"
                   formControlName="openingHour"
                   placeholder="08:30 - 21:00"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded text-white text-sm focus:outline-none placeholder:text-slate-600"
-                  [ngClass]="hasError('openingHour') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  [ngClass]="hasError('openingHour') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('openingHour')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('openingHour') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('openingHour') }}</p>
                 }
               </div>
 
               <div>
-                <label for="branch-priority" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                <label for="branch-priority" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Độ ưu tiên giao hàng
                 </label>
                 <input
@@ -184,18 +184,18 @@ const branchFormSchema = z.object({
                   formControlName="deliveryPriority"
                   min="0"
                   max="100"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded font-mono font-bold text-white text-sm focus:outline-none"
-                  [ngClass]="hasError('deliveryPriority') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded font-mono font-bold text-foreground text-[13px] focus:outline-none"
+                  [ngClass]="hasError('deliveryPriority') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('deliveryPriority')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('deliveryPriority') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('deliveryPriority') }}</p>
                 }
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label for="branch-phone" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                <label for="branch-phone" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Số điện thoại
                 </label>
                 <input
@@ -203,16 +203,16 @@ const branchFormSchema = z.object({
                   type="tel"
                   formControlName="phone"
                   placeholder="0987654321"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded text-white text-sm focus:outline-none placeholder:text-slate-600"
-                  [ngClass]="hasError('phone') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  [ngClass]="hasError('phone') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('phone')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('phone') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('phone') }}</p>
                 }
               </div>
 
               <div>
-                <label for="branch-email" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                <label for="branch-email" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Email liên hệ
                 </label>
                 <input
@@ -220,17 +220,17 @@ const branchFormSchema = z.object({
                   type="email"
                   formControlName="email"
                   placeholder="branch@eltech.vn"
-                  class="w-full px-3 py-2 bg-[#090d16] border rounded text-white text-sm focus:outline-none placeholder:text-slate-600"
-                  [ngClass]="hasError('email') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  [ngClass]="hasError('email') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('email')) {
-                  <p class="text-rose-400 text-[11px] mt-1">{{ getErrorMessage('email') }}</p>
+                  <p class="text-rose-600 text-xs mt-1">{{ getErrorMessage('email') }}</p>
                 }
               </div>
             </div>
 
             <div>
-              <label for="branch-areas" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+              <label for="branch-areas" class="block font-semibold text-muted text-xs uppercase mb-1">
                 Danh sách mã khu vực phục vụ
               </label>
               <input
@@ -238,10 +238,10 @@ const branchFormSchema = z.object({
                 type="text"
                 formControlName="deliveryAreaCodes"
                 placeholder="HN-*, VP-*, BN-* (phân cách bằng dấu phẩy)"
-                class="w-full px-3 py-2 bg-[#090d16] border rounded font-mono text-white text-sm focus:outline-none placeholder:text-slate-600"
-                [ngClass]="hasError('deliveryAreaCodes') ? 'border-rose-500 focus:border-rose-500' : 'border-[#272f3d] focus:border-[#76b900]'"
+                class="w-full px-3 py-2 bg-surface border rounded font-mono text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                [ngClass]="hasError('deliveryAreaCodes') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
               />
-              <p class="text-[11px] text-slate-400 mt-1">
+              <p class="text-xs text-muted mt-1">
                 Các tiền tố mã bưu chính hoặc khu vực chi nhánh sẽ tiếp nhận đơn giao hàng (cách nhau bởi dấu phẩy).
               </p>
             </div>
@@ -251,26 +251,26 @@ const branchFormSchema = z.object({
                 id="branch-active"
                 type="checkbox"
                 formControlName="isActive"
-                class="w-4 h-4 rounded bg-[#090d16] border-[#272f3d] text-[#76b900] focus:ring-[#76b900] focus:ring-offset-0 focus:ring-1"
+                class="w-4 h-4 rounded bg-surface border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
-              <label for="branch-active" class="text-xs text-slate-300 font-medium select-none cursor-pointer">
+              <label for="branch-active" class="text-[13px] text-foreground font-medium select-none cursor-pointer">
                 Kích hoạt hoạt động cho chi nhánh này
               </label>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#272f3d]">
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-line">
               <button
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-[#1e2533] hover:bg-[#272f3d] text-slate-300 font-semibold rounded text-sm border border-[#272f3d] transition-colors"
+                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 text-foreground font-semibold rounded text-[13px] border border-line transition-colors"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:opacity-50 text-[#090d16] font-bold rounded shadow-sm text-sm transition-colors"
+                class="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-primary-foreground font-bold rounded shadow-xs text-[13px] transition-colors"
               >
                 {{ isSubmitting() ? 'Đang lưu...' : (isEditMode() ? 'Lưu Thay Đổi' : 'Tạo Chi Nhánh') }}
               </button>

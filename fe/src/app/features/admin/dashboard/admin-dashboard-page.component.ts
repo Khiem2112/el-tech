@@ -20,25 +20,25 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-6 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
+    <div class="w-full min-h-full p-4 lg:p-6 space-y-6 text-sm text-foreground bg-white">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
+            <span class="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary-strong font-mono text-xs font-bold">
               SCR-02
             </span>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
+            <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
               Trung Tâm Vận Hành
             </h1>
           </div>
-          <p class="text-xs text-slate-400 mt-1">
+          <p class="text-[13px] text-muted mt-1">
             Giám sát trạng thái vận hành tức thời và các hàng đợi tác vụ khẩn cấp trong ngày
           </p>
         </div>
 
         <div class="flex items-center gap-3 flex-wrap">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-slate-400 font-medium whitespace-nowrap">Chi nhánh:</span>
+          <div class="flex items-center gap-2 text-[13px]">
+            <span class="text-muted font-medium whitespace-nowrap">Chi nhánh:</span>
             <app-select
               [options]="branchOptions()"
               [value]="selectedBranchValue()"
@@ -53,7 +53,7 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
             type="button"
             (click)="onRefresh()"
             [disabled]="dashboardService.isLoading()"
-            class="px-3 py-1.5 text-xs bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-white font-medium rounded transition-colors disabled:opacity-50"
+            class="px-3.5 py-1.5 text-[13px] bg-white hover:bg-surface-alt border border-line text-foreground font-medium rounded transition-colors shadow-xs disabled:opacity-50"
           >
             Làm mới
           </button>
@@ -61,12 +61,12 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
       </div>
 
       @if (dashboardService.error()) {
-        <div class="p-4 rounded-lg bg-rose-950/40 border border-rose-900/60 text-rose-300 text-xs flex items-center justify-between">
+        <div class="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-[13px] flex items-center justify-between">
           <span>{{ dashboardService.error() }}</span>
           <button
             type="button"
             (click)="onRefresh()"
-            class="px-2 py-1 bg-rose-900/60 hover:bg-rose-800 text-white rounded font-semibold"
+            class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded font-semibold text-xs"
           >
             Thử lại
           </button>
@@ -74,9 +74,9 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
       }
 
       @if (dashboardService.isLoading() && !dashboardService.summary()) {
-        <div class="p-16 text-center text-slate-400 space-y-3">
-          <div class="inline-block w-8 h-8 border-2 border-t-[#76b900] border-r-transparent border-b-[#76b900] border-l-transparent rounded-full animate-spin"></div>
-          <p class="text-xs">Đang tải dữ liệu trung tâm vận hành...</p>
+        <div class="p-16 text-center text-muted space-y-3">
+          <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
+          <p class="text-[13px]">Đang tải dữ liệu trung tâm vận hành...</p>
         </div>
       } @else {
         <app-urgent-queues-grid
@@ -94,38 +94,38 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           [selectedBranchId]="dashboardService.selectedBranchId()"
         />
 
-        <div class="p-4 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+        <div class="p-5 bg-white border border-line rounded-lg shadow-xs">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-muted mb-3">
             Lối Tắt Thao Tác Nhanh
           </h2>
-          <div class="flex flex-wrap gap-2 text-xs">
+          <div class="flex flex-wrap gap-2 text-[13px]">
             <a
               routerLink="/admin/orders"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-200 transition-colors"
+              class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors shadow-xs hover:border-primary/50"
             >
               Quản Lý Đơn Hàng
             </a>
             <a
               routerLink="/admin/inventory/balances"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-200 transition-colors"
+              class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors shadow-xs hover:border-primary/50"
             >
               Tra Cứu Tồn Kho
             </a>
             <a
               routerLink="/admin/inventory/transfers"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-200 transition-colors"
+              class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors shadow-xs hover:border-primary/50"
             >
               Lập Lệnh Điều Chuyển
             </a>
             <a
               routerLink="/admin/procurement/purchase-orders"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-200 transition-colors"
+              class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors shadow-xs hover:border-primary/50"
             >
               Đơn Mua Hàng PO
             </a>
             <a
               routerLink="/admin/catalog/templates"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-200 transition-colors"
+              class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors shadow-xs hover:border-primary/50"
             >
               Danh Mục Mẫu Sản Phẩm
             </a>

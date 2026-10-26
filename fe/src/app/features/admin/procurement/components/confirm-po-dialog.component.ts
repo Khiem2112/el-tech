@@ -17,26 +17,26 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
     @if (isOpen && po) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
           (click)="onCancel()"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 z-10 text-xs text-slate-200"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 z-10 text-[13px] text-foreground"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-white uppercase text-sm tracking-wide">
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
                 Xác Nhận Đơn Mua Hàng
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 Bản thảo &rarr; Đã xác nhận (Phê duyệt đơn PO #{{ po.code }})
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -45,8 +45,8 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
             </button>
           </div>
 
-          <div class="p-3.5 bg-blue-950/40 border border-blue-800/60 rounded text-blue-200 text-xs leading-relaxed space-y-1.5">
-            <div class="font-semibold text-blue-300">Quy tắc nghiệp vụ PUR-003, PUR-005:</div>
+          <div class="p-3.5 bg-blue-50 border border-blue-200 rounded text-blue-800 text-xs leading-relaxed space-y-1.5">
+            <div class="font-semibold text-blue-900">Quy tắc nghiệp vụ PUR-003, PUR-005:</div>
             <div>
               Khi xác nhận, hệ thống sẽ khóa cứng toàn bộ thông tin đối tác nhà cung cấp (<strong>{{ po.supplier.name }}</strong>), kho chi nhánh nhận hàng (<strong>{{ po.receivingBranch.name }}</strong>), danh sách linh kiện, số lượng đặt và đơn giá thỏa thuận.
             </div>
@@ -55,27 +55,27 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
             </div>
           </div>
 
-          <div class="bg-[#090d16] p-3 rounded border border-[#272f3d] space-y-1">
-            <div class="flex justify-between text-slate-400">
+          <div class="bg-surface p-3 rounded border border-line space-y-1">
+            <div class="flex justify-between text-muted text-xs">
               <span>Tổng số mặt hàng:</span>
-              <strong class="text-white">{{ po.lines.length }} linh kiện</strong>
+              <strong class="text-foreground">{{ po.lines.length }} linh kiện</strong>
             </div>
-            <div class="flex justify-between text-slate-400">
+            <div class="flex justify-between text-muted text-xs">
               <span>Tổng số lượng:</span>
-              <strong class="text-white">{{ po.totalQuantity }} chiếc</strong>
+              <strong class="text-foreground">{{ po.totalQuantity }} chiếc</strong>
             </div>
-            <div class="flex justify-between text-slate-400 pt-1 border-t border-[#272f3d]">
+            <div class="flex justify-between text-muted text-xs pt-1 border-t border-line">
               <span>Tổng giá trị đơn:</span>
-              <strong class="text-[#76b900] text-sm tabular-nums font-mono">{{ po.totalAmount }} ₫</strong>
+              <strong class="text-primary text-[13px] tabular-nums font-mono font-bold">{{ po.totalAmount }} ₫</strong>
             </div>
           </div>
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
             <button
               type="button"
               (click)="onCancel()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-xs text-slate-300 transition-colors"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-[13px] text-foreground transition-colors"
             >
               Hủy Bỏ
             </button>
@@ -83,10 +83,10 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               type="button"
               (click)="onConfirm()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors shadow-sm disabled:opacity-50 inline-flex items-center gap-1.5"
+              class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-[13px] transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
             >
               @if (isSubmitting) {
-                <div class="w-3.5 h-3.5 border-2 border-t-[#090d16] border-r-transparent border-b-[#090d16] border-l-transparent rounded-full animate-spin"></div>
+                <div class="w-3.5 h-3.5 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
                 <span>Đang xử lý...</span>
               } @else {
                 <span>Xác Nhận Đơn Mua</span>

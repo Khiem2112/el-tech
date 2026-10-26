@@ -30,31 +30,31 @@ import {
     @if (isOpen) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           (click)="onCancel()"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-xl max-h-[92vh] flex flex-col z-10 text-xs text-slate-200"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl max-h-[92vh] flex flex-col z-10 text-[13px] text-foreground"
         >
-          <div class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0">
             <div>
               <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-[#76b900] font-mono text-[10px] font-bold">
+                <span class="px-1.5 py-0.5 rounded bg-muted/20 border border-line text-primary font-mono text-[11px] font-bold">
                   MOD-32
                 </span>
-                <h3 class="font-bold text-white uppercase text-sm tracking-wide">
+                <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
                   Tạo Phiếu Xuất Trả Nhà Cung Cấp
                 </h3>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 Lập phiếu xuất trả linh kiện lỗi hoặc đổi trả đối chiếu phiếu nhập kho gốc (PUR-011, PUR-012, PUR-013)
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-muted/10 text-muted hover:text-foreground transition-colors"
               title="Đóng"
               aria-label="Đóng hộp thoại"
             >
@@ -64,24 +64,24 @@ import {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-amber-950/30 border border-amber-800/60 rounded text-amber-200 text-xs leading-relaxed">
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-xs leading-relaxed">
                 Số lượng trả không được vượt quá số lượng đã nhận của đơn PO gốc trừ các lần trả trước đó. Kho sẽ tự động giảm tồn thực tế hoặc kho cách ly lỗi.
               </div>
 
               @if (errorMessage()) {
-                <div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded text-rose-300 text-xs">
+                <div class="p-3 bg-rose-50 border border-rose-200 rounded text-rose-700 text-xs">
                   {{ errorMessage() }}
                 </div>
               }
 
               <div>
-                <label for="receipt-select" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                <label for="receipt-select" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Đơn Mua Hàng PO Gốc Đã Nhập Kho
                 </label>
                 @if (isLoadingReceipts()) {
-                  <div class="p-2 text-slate-500 italic">Đang tải danh sách phiếu nhập kho...</div>
+                  <div class="p-2 text-muted italic">Đang tải danh sách phiếu nhập kho...</div>
                 } @else if (eligibleReceipts().length === 0) {
-                  <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded text-slate-400">
+                  <div class="p-3 bg-surface border border-line rounded text-muted">
                     Không có phiếu nhập kho nào khả dụng hoặc toàn bộ đã được xuất trả tối đa.
                   </div>
                 } @else {
@@ -98,18 +98,18 @@ import {
               @if (currentReceipt()) {
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label class="block font-semibold text-muted text-xs uppercase mb-1">
                       Phiếu Nhập Kho Gốc
                     </label>
                     <input
                       type="text"
                       readonly
                       [value]="currentReceipt()!.inboundMoveCode"
-                      class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded font-mono font-bold text-white text-xs"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded font-mono font-bold text-foreground text-[13px]"
                     />
                   </div>
                   <div>
-                    <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label class="block font-semibold text-muted text-xs uppercase mb-1">
                       Nguồn Xuất Trả
                     </label>
                     <app-select
@@ -124,7 +124,7 @@ import {
 
                 @if (currentReceipt()!.skus.length > 1) {
                   <div>
-                    <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label class="block font-semibold text-muted text-xs uppercase mb-1">
                       Chọn Linh Kiện Cần Xuất Trả
                     </label>
                     <app-select
@@ -138,30 +138,30 @@ import {
                 }
 
                 @if (currentSku()) {
-                  <div class="p-3 bg-[#090d16] rounded border border-[#272f3d] text-xs space-y-1.5">
+                  <div class="p-3 bg-surface rounded border border-line text-[13px] space-y-1.5">
                     <div class="flex justify-between">
-                      <span class="text-slate-400">Linh kiện:</span>
-                      <strong class="text-white">{{ currentSku()!.skuCode }} - {{ currentSku()!.skuName }}</strong>
+                      <span class="text-muted">Linh kiện:</span>
+                      <strong class="text-foreground">{{ currentSku()!.skuCode }} - {{ currentSku()!.skuName }}</strong>
                     </div>
                     <div class="flex justify-between">
-                      <span class="text-slate-400">Tổng số lượng thực nhận từ phiếu nhập:</span>
-                      <strong class="tabular-nums text-white">{{ currentSku()!.receivedQuantity }} chiếc</strong>
+                      <span class="text-muted">Tổng số lượng thực nhận từ phiếu nhập:</span>
+                      <strong class="tabular-nums text-foreground">{{ currentSku()!.receivedQuantity }} chiếc</strong>
                     </div>
                     <div class="flex justify-between">
-                      <span class="text-slate-400">Đã xuất trả các đợt trước:</span>
-                      <strong class="tabular-nums text-white">{{ currentSku()!.alreadyReturnedQuantity }} chiếc</strong>
+                      <span class="text-muted">Đã xuất trả các đợt trước:</span>
+                      <strong class="tabular-nums text-foreground">{{ currentSku()!.alreadyReturnedQuantity }} chiếc</strong>
                     </div>
-                    <div class="flex justify-between border-t border-[#272f3d] pt-1.5">
-                      <span class="font-bold text-slate-300">Hạn mức tối đa cho phép trả:</span>
-                      <strong class="tabular-nums text-[#76b900] font-bold">
+                    <div class="flex justify-between border-t border-line pt-1.5">
+                      <span class="font-bold text-foreground">Hạn mức tối đa cho phép trả:</span>
+                      <strong class="tabular-nums text-primary font-bold">
                         Tối đa {{ currentSku()!.maxReturnableQuantity }} chiếc
                       </strong>
                     </div>
-                    <div class="flex justify-between border-t border-[#272f3d] pt-1.5">
-                      <span class="text-slate-400">
+                    <div class="flex justify-between border-t border-line pt-1.5">
+                      <span class="text-muted">
                         {{ returnSource() === 'quarantineDamaged' ? 'Tồn kho cách ly lỗi hiện tại:' : 'Tồn khả dụng hiện tại (OnHand):' }}
                       </span>
-                      <strong class="tabular-nums text-amber-400 font-bold">
+                      <strong class="tabular-nums text-amber-700 font-bold">
                         {{ availableSourceStock() }} chiếc
                       </strong>
                     </div>
@@ -169,11 +169,11 @@ import {
 
                   <div>
                     <div class="flex items-center justify-between mb-1">
-                      <label for="return-quantity-input" class="block font-semibold text-slate-400 text-xs uppercase">
+                      <label for="return-quantity-input" class="block font-semibold text-muted text-xs uppercase">
                         Số Lượng Xuất Trả
                       </label>
-                      <span class="text-xs text-slate-400">
-                        Trần cho phép: <strong class="text-[#76b900]">{{ currentSku()!.maxReturnableQuantity }}</strong> chiếc
+                      <span class="text-xs text-muted">
+                        Trần cho phép: <strong class="text-primary">{{ currentSku()!.maxReturnableQuantity }}</strong> chiếc
                       </span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -181,7 +181,7 @@ import {
                         type="text"
                         readonly
                         [value]="currentSku()!.skuCode"
-                        class="flex-1 px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded font-mono font-bold text-white text-xs"
+                        class="flex-1 px-3 py-2 bg-surface border border-line rounded font-mono font-bold text-foreground text-[13px]"
                       />
                       <input
                         id="return-quantity-input"
@@ -191,16 +191,16 @@ import {
                         [ngModel]="returnQuantity()"
                         (ngModelChange)="onQuantityChange($event)"
                         name="quantity"
-                        class="w-28 px-3 py-2 bg-[#090d16] border rounded text-center font-bold tabular-nums text-white focus:outline-none focus:border-[#76b900] text-xs"
+                        class="w-28 px-3 py-2 bg-white border rounded text-center font-bold tabular-nums text-foreground focus:outline-none focus:border-primary text-[13px]"
                         [ngClass]="{
-                          'border-rose-600 text-rose-300': quantityError(),
-                          'border-[#272f3d]': !quantityError()
+                          'border-rose-600 text-rose-600': quantityError(),
+                          'border-line': !quantityError()
                         }"
                       />
                     </div>
 
                     @if (quantityError()) {
-                      <div class="mt-2 p-2 bg-rose-950/40 border border-rose-800 rounded text-rose-300 text-xs font-semibold">
+                      <div class="mt-2 p-2 bg-rose-50 border border-rose-200 rounded text-rose-700 text-xs font-semibold">
                         {{ quantityError() }}
                       </div>
                     }
@@ -209,36 +209,36 @@ import {
                   @if (currentSku()!.serialRequired || eligibleSerials().length > 0) {
                     <div>
                       <div class="flex items-center justify-between mb-1">
-                        <label class="block font-semibold text-slate-400 text-xs uppercase">
+                        <label class="block font-semibold text-muted text-xs uppercase">
                           Chọn Số Serial Xuất Trả
                         </label>
-                        <span class="text-xs" [ngClass]="selectedSerials().length === returnQuantity() ? 'text-[#76b900]' : 'text-amber-400'">
+                        <span class="text-xs" [ngClass]="selectedSerials().length === returnQuantity() ? 'text-primary' : 'text-amber-600'">
                           Đã chọn: <strong>{{ selectedSerials().length }}</strong> / {{ returnQuantity() }} serial
                         </span>
                       </div>
 
                       @if (eligibleSerials().length === 0) {
-                        <div class="p-2.5 bg-[#090d16] border border-[#272f3d] rounded text-slate-400 text-xs">
+                        <div class="p-2.5 bg-surface border border-line rounded text-muted text-[13px]">
                           Không tìm thấy số serial hợp lệ cho nguồn kho đã chọn.
                         </div>
                       } @else {
-                        <div class="max-h-36 overflow-y-auto p-2 bg-[#090d16] border border-[#272f3d] rounded space-y-1">
+                        <div class="max-h-36 overflow-y-auto p-2 bg-surface border border-line rounded space-y-1">
                           @for (serial of eligibleSerials(); track serial) {
-                            <label class="flex items-center gap-2 p-1.5 hover:bg-[#161b26] rounded cursor-pointer">
+                            <label class="flex items-center gap-2 p-1.5 hover:bg-muted/10 rounded cursor-pointer">
                               <input
                                 type="checkbox"
                                 [checked]="isSerialSelected(serial)"
                                 (change)="toggleSerial(serial)"
-                                class="rounded border-[#272f3d] text-[#76b900] focus:ring-0"
+                                class="rounded border-line text-primary focus:ring-0"
                               />
-                              <span class="font-mono text-xs text-white">{{ serial }}</span>
+                              <span class="font-mono text-[13px] text-foreground">{{ serial }}</span>
                             </label>
                           }
                         </div>
                       }
 
                       @if (serialError()) {
-                        <div class="mt-1.5 text-xs text-rose-400">
+                        <div class="mt-1.5 text-xs text-rose-600">
                           {{ serialError() }}
                         </div>
                       }
@@ -246,7 +246,7 @@ import {
                   }
 
                   <div>
-                    <label for="return-reason" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label for="return-reason" class="block font-semibold text-muted text-xs uppercase mb-1">
                       Lý Do Xuất Trả
                     </label>
                     <textarea
@@ -256,25 +256,25 @@ import {
                       (ngModelChange)="returnReason.set($event)"
                       name="reason"
                       placeholder="Ghi nhận lỗi linh kiện hoặc lý do xuất trả cho nhà cung cấp..."
-                      class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                      class="w-full px-3 py-2 bg-white border border-line rounded text-foreground text-[13px] placeholder:text-muted focus:outline-none focus:border-primary"
                     ></textarea>
                   </div>
                 }
               }
             </div>
 
-            <div class="flex items-center justify-end gap-2 p-4 border-t border-[#272f3d] flex-shrink-0">
+            <div class="flex items-center justify-end gap-2 p-4 border-t border-line flex-shrink-0">
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-4 py-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-slate-200 font-semibold rounded text-xs transition-colors"
+                class="px-4 py-2 bg-surface hover:bg-muted/10 border border-line text-foreground font-semibold rounded text-[13px] transition-colors"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitDisabled()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed text-[#090d16] font-bold rounded shadow-sm text-xs transition-colors uppercase tracking-wide"
+                class="px-4 py-2 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-bold rounded shadow-sm text-[13px] transition-colors uppercase tracking-wide"
               >
                 @if (isSubmitting()) {
                   Đang Tạo...
