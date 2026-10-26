@@ -41,3 +41,13 @@ export const queryStockLedgerSchema = z.object({
 });
 
 export type QueryStockLedgerInput = z.infer<typeof queryStockLedgerSchema>;
+
+export const quarantineStockSchema = z.object({
+  branchId: z.coerce.number().int().positive(),
+  skuId: z.coerce.number().int().positive(),
+  quantity: z.coerce.number().int().positive(),
+  serialIds: z.array(z.string().trim()).optional(),
+  reason: z.string().trim().min(3),
+});
+
+export type QuarantineStockInput = z.infer<typeof quarantineStockSchema>;

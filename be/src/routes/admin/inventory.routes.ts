@@ -44,3 +44,17 @@ adminInventoryRouter.get('/ledger', async (request, response, next): Promise<voi
     next(error);
   }
 });
+
+adminInventoryRouter.post('/quarantine', async (request, response, next): Promise<void> => {
+  try {
+    const { parseBody } = await import('../../lib/request.js');
+    const { quarantineStockSchema } = await import('../../validations/admin/inventory.schema.js');
+    const payload = parseBody(quarantineStockSchema, request.body);
+    const correlationId = response.locals.correlationId as string;
+    const adminUserId = response.locals.adminUser?.id as string | undefined;
+    const result = await adminInventoryService.quarantineStock(payload, adminUserId);
+    response.json(success(result, correlationId));
+  } catch (error: unknown) {
+    next(error);
+  }
+});

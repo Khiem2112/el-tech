@@ -1,7 +1,15 @@
-import { Prisma, StockLedgerEntryType } from '@prisma/client';
+import {
+  ActorType,
+  Prisma,
+  SerialStatus,
+  StockLedgerEntryType,
+  StockMoveStatus,
+  StockMoveType,
+} from '@prisma/client';
 import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
 import {
+  QuarantineStockInput,
   QueryInventoryBalancesInput,
   QueryStockLedgerInput,
 } from '../../validations/admin/inventory.schema.js';
@@ -26,11 +34,25 @@ export type InventoryBalanceItemDto = {
   reserved: number;
   quarantineDamaged: number;
   available: number;
+  hasInvariantBreach: boolean;
   weightedAverageCost: string;
   sellingPrice: string;
   serialRequired: boolean;
   version: number;
   updatedAt: Date;
+};
+
+export type QuarantineStockResult = {
+  success: boolean;
+  stockQuantId: string;
+  stockMoveId: string;
+  stockMoveCode: string;
+  skuId: number;
+  branchId: number;
+  quarantinedQuantity: number;
+  quarantineDamagedAfter: number;
+  availableAfter: number;
+  message: string;
 };
 
 export type InventoryBalancesSummaryDto = {
@@ -175,7 +197,8 @@ export class AdminInventoryService {
     });
 
     let mappedItems: InventoryBalanceItemDto[] = quants.map((quant) => {
-      const available = Math.max(0, quant.onHand - quant.reserved - quant.quarantineDamaged);
+      const available = quant.onHand - quant.reserved - quant.quarantineDamaged;
+      const hasInvariantBreach = available < 0;
       return {
         id: quant.id,
         branchId: quant.branchId,
@@ -196,6 +219,7 @@ export class AdminInventoryService {
         reserved: quant.reserved,
         quarantineDamaged: quant.quarantineDamaged,
         available,
+        hasInvariantBreach,
         weightedAverageCost: quant.weightedAverageCost.toFixed(0),
         sellingPrice: quant.sku.sellingPrice.toFixed(0),
         serialRequired: quant.sku.serialRequired,
@@ -277,7 +301,7 @@ export class AdminInventoryService {
       });
     }
 
-    const available = Math.max(0, quant.onHand - quant.reserved - quant.quarantineDamaged);
+    const available = quant.onHand - quant.reserved - quant.quarantineDamaged;
     const quantDto: InventoryBalanceItemDto = {
       id: quant.id,
       branchId: quant.branchId,
@@ -298,6 +322,7 @@ export class AdminInventoryService {
       reserved: quant.reserved,
       quarantineDamaged: quant.quarantineDamaged,
       available,
+      hasInvariantBreach: available < 0,
       weightedAverageCost: quant.weightedAverageCost.toFixed(0),
       sellingPrice: quant.sku.sellingPrice.toFixed(0),
       serialRequired: quant.sku.serialRequired,
@@ -536,6 +561,169 @@ export class AdminInventoryService {
       limit,
       totalPages,
     };
+  }
+
+  async quarantineStock(
+    input: QuarantineStockInput,
+    adminUserId?: string,
+  ): Promise<QuarantineStockResult> {
+    const quant = await prisma.stockQuant.findUnique({
+      where: {
+        branchId_skuId: {
+          branchId: input.branchId,
+          skuId: input.skuId,
+        },
+      },
+      include: {
+        sku: true,
+      },
+    });
+
+    if (!quant) {
+      throw new DomainError('STOCK_QUANT_NOT_FOUND', {
+        messageKey: 'Khong tim thay so du ton kho cua san pham tai chi nhanh nay',
+        status: 404,
+      });
+    }
+
+    const available = quant.onHand - quant.reserved - quant.quarantineDamaged;
+    if (available < input.quantity) {
+      throw new DomainError('INSUFFICIENT_AVAILABLE_STOCK', {
+        messageKey: `So luong ton kha dung khong du de cach ly (kha dung: ${available}, yeu cau: ${input.quantity})`,
+        status: 400,
+        details: {
+          available,
+          requested: input.quantity,
+        },
+      });
+    }
+
+    let serialUnitsToQuarantine: { id: string; serialNumber: string; status: SerialStatus }[] = [];
+    if (quant.sku.serialRequired) {
+      if (!input.serialIds || input.serialIds.length !== input.quantity) {
+        throw new DomainError('SERIAL_REQUIRED', {
+          messageKey: `SKU yeu cau quan ly so se-ri. Can cung cap chinh xac ${input.quantity} so se-ri.`,
+          status: 400,
+        });
+      }
+
+      serialUnitsToQuarantine = await prisma.serialUnit.findMany({
+        where: {
+          skuId: input.skuId,
+          currentBranchId: input.branchId,
+          OR: [
+            { id: { in: input.serialIds } },
+            { serialNumber: { in: input.serialIds } },
+          ],
+        },
+        select: { id: true, serialNumber: true, status: true },
+      });
+
+      if (serialUnitsToQuarantine.length !== input.quantity) {
+        throw new DomainError('INVALID_SERIAL_COUNT', {
+          messageKey: 'Danh sach so se-ri khong khop voi so luong yeu cau hoac khong thuoc chi nhanh nay',
+          status: 400,
+        });
+      }
+
+      const notAvailable = serialUnitsToQuarantine.filter(
+        (u) => u.status !== SerialStatus.AVAILABLE,
+      );
+      if (notAvailable.length > 0) {
+        throw new DomainError('SERIAL_NOT_AVAILABLE', {
+          messageKey: `Cac so se-ri sau khong o trang thai kha dung: ${notAvailable.map((s) => s.serialNumber).join(', ')}`,
+          status: 400,
+        });
+      }
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const updatedQuant = await tx.stockQuant.update({
+        where: { id: quant.id },
+        data: {
+          quarantineDamaged: { increment: input.quantity },
+          version: { increment: 1 },
+        },
+      });
+
+      const moveCode = `MOVE-QR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+      const stockMove = await tx.stockMove.create({
+        data: {
+          code: moveCode,
+          idempotencyKey: `move:quarantine:${quant.id}:${Date.now()}:${Math.floor(Math.random() * 10000)}`,
+          sourceBranchId: input.branchId,
+          moveType: StockMoveType.INTERNAL_CORRECTION,
+          status: StockMoveStatus.VALIDATED,
+          reason: input.reason,
+          validatedAt: new Date(),
+          validatedById: adminUserId ?? null,
+        },
+      });
+
+      const stockMoveLine = await tx.stockMoveLine.create({
+        data: {
+          stockMoveId: stockMove.id,
+          skuId: input.skuId,
+          quantity: input.quantity,
+          unitCost: quant.weightedAverageCost,
+        },
+      });
+
+      await tx.stockLedgerEntry.create({
+        data: {
+          stockQuantId: quant.id,
+          stockMoveLineId: stockMoveLine.id,
+          entryType: StockLedgerEntryType.QUARANTINE,
+          deltaOnHand: 0,
+          deltaReserved: 0,
+          deltaQuarantine: input.quantity,
+          onHandAfter: updatedQuant.onHand,
+          reservedAfter: updatedQuant.reserved,
+          quarantineAfter: updatedQuant.quarantineDamaged,
+          actorType: ActorType.ADMIN,
+          actorId: adminUserId ?? null,
+          occurredAt: new Date(),
+        },
+      });
+
+      for (const unit of serialUnitsToQuarantine) {
+        await tx.serialUnit.update({
+          where: { id: unit.id },
+          data: {
+            status: SerialStatus.QUARANTINED,
+          },
+        });
+
+        await tx.serialMovement.create({
+          data: {
+            serialUnitId: unit.id,
+            stockMoveLineId: stockMoveLine.id,
+            fromBranchId: input.branchId,
+            toBranchId: input.branchId,
+            resultingStatus: SerialStatus.QUARANTINED,
+            occurredAt: new Date(),
+          },
+        });
+      }
+
+      const availableAfter =
+        updatedQuant.onHand - updatedQuant.reserved - updatedQuant.quarantineDamaged;
+
+      return {
+        success: true,
+        stockQuantId: quant.id,
+        stockMoveId: stockMove.id,
+        stockMoveCode: stockMove.code,
+        skuId: input.skuId,
+        branchId: input.branchId,
+        quarantinedQuantity: input.quantity,
+        quarantineDamagedAfter: updatedQuant.quarantineDamaged,
+        availableAfter,
+        message: `Da cach ly thanh cong ${input.quantity} san pham vao kho hong loi.`,
+      };
+    });
+
+    return result;
   }
 }
 

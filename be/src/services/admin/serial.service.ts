@@ -1,6 +1,7 @@
 import { Prisma, SerialStatus } from '@prisma/client';
 import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
+import { adminInventoryService } from './inventory.service.js';
 import {
   QuerySerialsInput,
   UpdateSerialStatusInput,
@@ -473,6 +474,7 @@ export class AdminSerialService {
   async updateSerialStatus(
     identifier: string,
     payload: UpdateSerialStatusInput,
+    adminUserId?: string,
   ): Promise<SerialDetailResponse> {
     const trimmed = identifier.trim();
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(trimmed);
@@ -490,15 +492,38 @@ export class AdminSerialService {
       });
     }
 
+    if (payload.branchId && payload.branchId !== unit.currentBranchId) {
+      throw new DomainError('SERIAL_BRANCH_TRANSFER_FORBIDDEN', {
+        messageKey: 'Khong the thay doi chi nhanh truc tiep tren so se-ri. Bat buoc phai thuc hien thong qua quy trinh tao phieu dieu chuyen kho.',
+        status: 400,
+      });
+    }
+
+    if (payload.status === SerialStatus.QUARANTINED && unit.status !== SerialStatus.QUARANTINED) {
+      if (!unit.currentBranchId) {
+        throw new DomainError('SERIAL_NO_BRANCH', {
+          messageKey: 'So se-ri khong nam o chi nhanh nao de thuc hien cach ly',
+          status: 400,
+        });
+      }
+
+      await adminInventoryService.quarantineStock(
+        {
+          branchId: unit.currentBranchId,
+          skuId: unit.skuId,
+          quantity: 1,
+          serialIds: [unit.id],
+          reason: 'Admin cap nhat trang thai se-ri sang QUARANTINED',
+        },
+        adminUserId,
+      );
+
+      return this.getSerialDetail(unit.id);
+    }
+
     const dataToUpdate: Prisma.SerialUnitUpdateInput = {
       status: payload.status,
     };
-
-    if (payload.branchId) {
-      dataToUpdate.currentBranch = {
-        connect: { id: payload.branchId },
-      };
-    }
 
     await prisma.serialUnit.update({
       where: { id: unit.id },
