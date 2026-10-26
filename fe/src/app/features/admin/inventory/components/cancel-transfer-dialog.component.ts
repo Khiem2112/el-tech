@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
 import {
   AdminTransferService,
   TransferDetail,
@@ -20,37 +21,32 @@ import {
 @Component({
   selector: 'app-cancel-transfer-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen && transfer) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           (click)="onCancel()"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-xs text-slate-200"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-xs text-foreground"
         >
-          <div class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-rose-400 font-mono text-[10px] font-bold">
-                  MOD-27
-                </span>
-                <h3 class="font-bold text-rose-400 uppercase text-sm tracking-wide">
-                  Hủy Phiếu Yêu Cầu Điều Chuyển
-                </h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Phiếu: <strong class="text-white font-mono">{{ transfer.code }}</strong>
+              <h3 class="font-bold text-danger uppercase text-sm tracking-wide">
+                Hủy Phiếu Yêu Cầu Điều Chuyển
+              </h3>
+              <p class="text-xs text-muted mt-0.5">
+                Phiếu: <strong class="text-foreground font-mono">{{ transfer.code }}</strong>
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface text-muted hover:text-foreground transition-colors border border-transparent hover:border-line"
               title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -61,19 +57,19 @@ import {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-rose-950/30 border border-rose-800/60 rounded text-rose-200 text-xs leading-relaxed">
-                Chỉ cho phép hủy khi phiếu điều chuyển đang ở trạng thái Chờ xuất (REQUESTED) và chưa xuất hàng khỏi kho (TRF-002).
+              <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs leading-relaxed font-medium">
+                Chỉ cho phép hủy khi phiếu điều chuyển đang ở trạng thái Chờ xuất và chưa xuất hàng khỏi kho.
               </div>
 
               @if (errorMessage()) {
-                <div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded text-rose-300 text-xs">
+                <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
                 </div>
               }
 
               <div>
-                <label for="cancel-reason" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
-                  Lý Do Hủy Yêu Cầu Điều Chuyển <span class="text-rose-400">*</span>
+                <label for="cancel-reason" class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Lý Do Hủy Yêu Cầu Điều Chuyển <span class="text-danger">*</span>
                 </label>
                 <textarea
                   id="cancel-reason"
@@ -83,23 +79,27 @@ import {
                   (ngModelChange)="reason.set($event)"
                   name="cancelReason"
                   placeholder="Nhập chi tiết lý do hủy phiếu điều chuyển này..."
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-rose-400"
+                  class="w-full h-24 px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-danger focus:ring-1 focus:ring-danger"
                 ></textarea>
               </div>
             </div>
 
-            <div class="p-4 border-t border-[#272f3d] flex items-center justify-end gap-3 flex-shrink-0 bg-[#161b26]">
+            <div class="p-4 border-t border-line flex items-center justify-end gap-3 flex-shrink-0 bg-surface-alt">
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors"
+                appButton
+                variant="secondary"
+                size="sm"
               >
                 Đóng
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting() || reason().trim().length < 3"
-                class="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold text-xs rounded transition-colors shadow-sm"
+                appButton
+                variant="danger"
+                size="sm"
               >
                 @if (isSubmitting()) {
                   Đang hủy phiếu...

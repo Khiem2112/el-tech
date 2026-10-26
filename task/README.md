@@ -233,7 +233,7 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-69 | ISS-012, ISS-018 (Bỏ quên Coupon ở Checkout, không thu hồi lượt dùng khi đơn hết hạn 30 phút) | backend | P0 | Complete |
 | TASK-70 | ISS-006, ISS-008, ISS-009 (Xung đột phạm vi Supplier Return, sáp nhập tài khoản User, trùng biểu phí tương lai) | backend, docs | P2 | Complete |
 | TASK-71 | Nhóm 1, 2, 5, 6 (Shell/Header/Sidebar/Breadcrumb nền sáng, cỡ chữ, xóa SCR-xx, xóa Hệ Thống Trực Tuyến) | frontend | P0 | Complete |
-| TASK-72 | Nhóm 1, 2, 3, 4, 5, 6 (Bảng kho vỡ layout ngắt dòng, app-select, whitespace-nowrap, xóa TRF-001) | frontend | P1 | Pending |
+| TASK-72 | Nhóm 1, 2, 3, 4, 5, 6 (Bảng kho vỡ layout ngắt dòng, app-select, whitespace-nowrap, xóa TRF-001) | frontend | P1 | Complete |
 | TASK-73 | Nhóm 1-6 UI/UX & MOD-09/11 quét sê-ri, MOD-19 mã OTP/QR thu phụ phí, xóa tiền tố MOD-xx | frontend | P1 | Pending |
 | TASK-74 | Nhóm 1-6 UI/UX (Catalog, mẫu sản phẩm, biến thể SKU, trường nhập chiết khấu PC Bundles) | frontend | P1 | Pending |
 | TASK-75 | Nhóm 1-6 UI/UX & FQ36-A đối soát QR không thu tiền mặt, chặn sáp nhập tài khoản có user | frontend | P1 | Pending |

@@ -7,10 +7,13 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import {
   AdminTransferService,
   BranchOption,
@@ -31,37 +34,32 @@ type TransferItemDraft = {
 @Component({
   selector: 'app-create-transfer-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           (click)="onCancel()"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-2xl max-h-[92vh] flex flex-col z-10 text-xs text-slate-200"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col z-10 text-xs text-foreground"
         >
-          <div class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-[#76b900] font-mono text-[10px] font-bold">
-                  MOD-24
-                </span>
-                <h3 class="font-bold text-white uppercase text-sm tracking-wide">
-                  Tạo Yêu Cầu Điều Chuyển Kho
-                </h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Điều chuyển linh kiện giữa các chi nhánh để cân bằng định mức tồn kho hoặc gom hàng (TRF-001, TRF-002)
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+                Tạo Yêu Cầu Điều Chuyển Kho
+              </h3>
+              <p class="text-xs text-muted mt-0.5">
+                Điều chuyển linh kiện giữa các chi nhánh để cân bằng định mức tồn kho hoặc gom hàng
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface text-muted hover:text-foreground transition-colors border border-transparent hover:border-line"
               title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -72,54 +70,48 @@ type TransferItemDraft = {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-amber-950/30 border border-amber-800/60 rounded text-amber-200 text-xs leading-relaxed">
+              <div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-xs leading-relaxed">
                 Kho xuất và kho nhận phải khác nhau. Số lượng điều chuyển không được vượt quá tồn khả dụng thực tế tại kho xuất.
               </div>
 
               @if (errorMessage()) {
-                <div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded text-rose-300 text-xs">
+                <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
                 </div>
               }
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="source-branch" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                  <span class="block font-semibold text-muted text-xs uppercase mb-1">
                     Kho Xuất Hàng
-                  </label>
-                  <select
-                    id="source-branch"
-                    [ngModel]="sourceBranchId()"
-                    (ngModelChange)="onSourceBranchChange($event)"
-                    name="sourceBranchId"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    @for (b of branches(); track b.id) {
-                      <option [value]="b.id">{{ b.code }} - {{ b.name }}</option>
-                    }
-                  </select>
+                  </span>
+                  <app-select
+                    [options]="sourceBranchOptions()"
+                    [value]="sourceBranchFilterId()"
+                    (valueChange)="onSourceBranchSelect($event)"
+                    [searchable]="true"
+                    searchPlaceholder="Tìm kho xuất..."
+                    size="md"
+                  />
                 </div>
 
                 <div>
-                  <label for="dest-branch" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                  <span class="block font-semibold text-muted text-xs uppercase mb-1">
                     Kho Nhận Hàng
-                  </label>
-                  <select
-                    id="dest-branch"
-                    [ngModel]="destinationBranchId()"
-                    (ngModelChange)="destinationBranchId.set($event)"
-                    name="destinationBranchId"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    @for (b of branches(); track b.id) {
-                      <option [value]="b.id">{{ b.code }} - {{ b.name }}</option>
-                    }
-                  </select>
+                  </span>
+                  <app-select
+                    [options]="destBranchOptions()"
+                    [value]="destBranchFilterId()"
+                    (valueChange)="onDestBranchSelect($event)"
+                    [searchable]="true"
+                    searchPlaceholder="Tìm kho nhận..."
+                    size="md"
+                  />
                 </div>
               </div>
 
               <div>
-                <label for="transfer-reason" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                <label for="transfer-reason" class="block font-semibold text-muted text-xs uppercase mb-1">
                   Mục Đích / Ghi Chú Điều Chuyển
                 </label>
                 <input
@@ -129,20 +121,23 @@ type TransferItemDraft = {
                   (ngModelChange)="reason.set($event)"
                   name="reason"
                   placeholder="Ví dụ: Bổ sung hàng cho chi nhánh Hà Nội phục vụ đơn Custom PC"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+                  class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
                 />
               </div>
 
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span class="font-semibold text-slate-400 text-xs uppercase">
+                  <span class="font-semibold text-muted text-xs uppercase">
                     Danh Sách Linh Kiện Cần Chuyển
                   </span>
                   @if (eligibleSkus().length > 0) {
                     <button
                       type="button"
                       (click)="addLine()"
-                      class="px-2.5 py-1 bg-[#161b26] hover:bg-[#272f3d] border border-[#76b900] text-[#76b900] font-bold text-xs rounded transition-colors"
+                      appButton
+                      variant="secondary"
+                      size="sm"
+                      class="text-xs font-bold"
                     >
                       + Thêm linh kiện
                     </button>
@@ -150,37 +145,33 @@ type TransferItemDraft = {
                 </div>
 
                 @if (isLoadingSkus()) {
-                  <div class="p-3 text-slate-400 italic">Đang tải danh sách tồn kho khả dụng tại kho xuất...</div>
+                  <div class="p-3 text-muted italic">Đang tải danh sách tồn kho khả dụng tại kho xuất...</div>
                 } @else if (eligibleSkus().length === 0) {
-                  <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded text-slate-400 text-center">
+                  <div class="p-4 bg-surface-alt border border-line rounded text-muted text-center">
                     Kho xuất hiện tại không có linh kiện nào có số lượng khả dụng dương.
                   </div>
                 } @else if (draftLines().length === 0) {
-                  <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded text-slate-400 text-center">
+                  <div class="p-4 bg-surface-alt border border-line rounded text-muted text-center">
                     Chưa có linh kiện nào được chọn. Nhấp "+ Thêm linh kiện" để chọn mặt hàng cần điều chuyển.
                   </div>
                 } @else {
                   <div class="space-y-3">
                     @for (line of draftLines(); track $index) {
-                      <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded flex items-center gap-3">
+                      <div class="p-3 bg-surface-alt border border-line rounded flex items-center gap-3">
                         <div class="flex-1 min-w-0">
-                          <select
-                            [ngModel]="line.skuId"
-                            (ngModelChange)="onLineSkuChange($index, $event)"
-                            [name]="'lineSku_' + $index"
-                            class="w-full px-2.5 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                          >
-                            @for (item of eligibleSkus(); track item.skuId) {
-                              <option [value]="item.skuId">
-                                {{ item.skuCode }} - {{ item.productName }} (Khả dụng: {{ item.availableQuantity }})
-                              </option>
-                            }
-                          </select>
+                          <app-select
+                            [options]="skuOptions()"
+                            [value]="String(line.skuId)"
+                            (valueChange)="onLineSkuChange($index, +$event)"
+                            [searchable]="true"
+                            searchPlaceholder="Tìm linh kiện..."
+                            size="sm"
+                          />
                         </div>
 
                         <div class="w-28 flex-shrink-0">
                           <div class="flex items-center gap-1.5">
-                            <span class="text-slate-400 text-[11px]">SL:</span>
+                            <span class="text-muted text-[11px] font-semibold">SL:</span>
                             <input
                               type="number"
                               min="1"
@@ -188,7 +179,7 @@ type TransferItemDraft = {
                               [ngModel]="line.quantity"
                               (ngModelChange)="onLineQuantityChange($index, $event)"
                               [name]="'lineQty_' + $index"
-                              class="w-full px-2 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-center font-bold text-white text-xs focus:outline-none focus:border-[#76b900]"
+                              class="w-full h-8 px-2 bg-surface border border-line rounded text-center font-bold text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                             />
                           </div>
                         </div>
@@ -196,11 +187,14 @@ type TransferItemDraft = {
                         <button
                           type="button"
                           (click)="removeLine($index)"
-                          class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-[#272f3d] rounded transition-colors"
+                          appButton
+                          variant="danger"
+                          size="sm"
+                          class="h-8 w-8 p-0"
                           title="Xóa dòng này"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2.25 2.25 0 0116.138 21H7.862a2.25 2.25 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                         </button>
                       </div>
@@ -210,18 +204,22 @@ type TransferItemDraft = {
               </div>
             </div>
 
-            <div class="p-4 border-t border-[#272f3d] flex items-center justify-end gap-3 flex-shrink-0 bg-[#161b26]">
+            <div class="p-4 border-t border-line flex items-center justify-end gap-3 flex-shrink-0 bg-surface-alt">
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors"
+                appButton
+                variant="secondary"
+                size="sm"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting() || draftLines().length === 0"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:bg-slate-700 disabled:text-slate-500 text-black font-bold text-xs rounded transition-colors shadow-sm"
+                appButton
+                variant="primary"
+                size="sm"
               >
                 @if (isSubmitting()) {
                   Đang lập phiếu...
@@ -237,6 +235,7 @@ type TransferItemDraft = {
   `,
 })
 export class CreateTransferDialogComponent implements OnChanges {
+  protected readonly String = String;
   @Input() isOpen = false;
   @Output() saved = new EventEmitter<TransferDetail>();
   @Output() closed = new EventEmitter<void>();
@@ -252,6 +251,35 @@ export class CreateTransferDialogComponent implements OnChanges {
   readonly isLoadingSkus = signal<boolean>(false);
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly sourceBranchOptions = computed<SelectOption[]>(() =>
+    this.branches().map((b) => ({
+      value: String(b.id),
+      label: `${b.code} - ${b.name}`,
+    })),
+  );
+
+  readonly destBranchOptions = computed<SelectOption[]>(() =>
+    this.branches().map((b) => ({
+      value: String(b.id),
+      label: `${b.code} - ${b.name}`,
+    })),
+  );
+
+  readonly skuOptions = computed<SelectOption[]>(() =>
+    this.eligibleSkus().map((item) => ({
+      value: String(item.skuId),
+      label: `${item.skuCode} - ${item.productName} (Khả dụng: ${item.availableQuantity})`,
+    })),
+  );
+
+  readonly sourceBranchFilterId = computed(() =>
+    this.sourceBranchId() ? String(this.sourceBranchId()) : '',
+  );
+
+  readonly destBranchFilterId = computed(() =>
+    this.destinationBranchId() ? String(this.destinationBranchId()) : '',
+  );
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
@@ -278,6 +306,20 @@ export class CreateTransferDialogComponent implements OnChanges {
     } else if (list.length === 1) {
       this.sourceBranchId.set(list[0].id);
       await this.loadSkusForSourceBranch(list[0].id);
+    }
+  }
+
+  onSourceBranchSelect(val: string): void {
+    const id = Number(val);
+    if (!isNaN(id) && id > 0) {
+      void this.onSourceBranchChange(id);
+    }
+  }
+
+  onDestBranchSelect(val: string): void {
+    const id = Number(val);
+    if (!isNaN(id) && id > 0) {
+      this.destinationBranchId.set(id);
     }
   }
 

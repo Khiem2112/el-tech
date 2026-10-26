@@ -8,6 +8,9 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
+import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
   AdminPurchaseOrderService,
   PurchaseOrderListItem,
@@ -17,29 +20,27 @@ import {
 @Component({
   selector: 'app-admin-purchase-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, BadgeDirective, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
-        <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
-            SCR-20
-          </span>
-          <div>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
-              Đơn Mua Hàng (PO)
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Theo dõi chuỗi cung ứng linh kiện phần cứng từ nhà cung cấp về các kho chi nhánh (PUR-001, PUR-002)
-            </p>
-          </div>
+    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Đơn Mua Hàng (PO)
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Theo dõi chuỗi cung ứng linh kiện phần cứng từ nhà cung cấp về các kho chi nhánh
+          </p>
         </div>
 
         <div class="flex items-center gap-3">
           <a
             routerLink="/admin/procurement/purchase-orders/new"
-            class="px-3.5 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5 uppercase tracking-wide"
+            appButton
+            variant="primary"
+            size="sm"
+            class="uppercase tracking-wide shadow-sm inline-flex items-center gap-1.5"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -49,165 +50,167 @@ import {
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-        <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+      <div class="bg-surface border border-line rounded-lg p-4 flex flex-col md:flex-row md:items-end justify-between gap-4 shadow-card">
+        <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
-            <input
-              type="text"
-              [ngModel]="poService.searchQuery()"
-              (ngModelChange)="onSearchChange($event)"
-              placeholder="Tìm theo mã PO, nhà cung cấp, mã NCC..."
-              class="w-full pl-9 pr-4 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
-            />
-            <svg
-              class="w-4 h-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <label for="po-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <div class="relative">
+              <input
+                id="po-search"
+                type="text"
+                [ngModel]="poService.searchQuery()"
+                (ngModelChange)="onSearchChange($event)"
+                placeholder="Tìm theo mã PO, nhà cung cấp, mã NCC..."
+                class="w-full h-9 pl-9 pr-4 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              />
+              <svg
+                class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2">
-            <label for="po-status-filter" class="text-xs text-slate-400 font-medium whitespace-nowrap">Trạng thái:</label>
-            <select
-              id="po-status-filter"
-              [ngModel]="poService.statusFilter()"
-              (ngModelChange)="onStatusFilterChange($event)"
-              class="px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-slate-200 focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả trạng thái</option>
-              <option value="DRAFT">Bản thảo</option>
-              <option value="CONFIRMED">Đã xác nhận</option>
-              <option value="RECEIVED">Đã nhập kho</option>
-              <option value="CLOSED">Đóng PO</option>
-              <option value="CANCELLED">Đã hủy</option>
-            </select>
+          <div class="w-full sm:w-56">
+            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Trạng thái</span>
+            <app-select
+              [options]="statusOptions"
+              [value]="poService.statusFilter()"
+              (valueChange)="onStatusFilterChange($event)"
+              size="md"
+            />
           </div>
         </div>
 
-        <div class="text-xs text-slate-400 text-right">
-          Tổng số: <strong class="text-white">{{ visibleOrders().length }}</strong> đơn mua hàng
+        <div class="text-xs text-muted text-right whitespace-nowrap">
+          Tổng số: <strong class="text-foreground">{{ visibleOrders().length }}</strong> đơn mua hàng
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
         @if (poService.isLoading()) {
-          <div class="p-8 text-center text-slate-400 space-y-3">
-            <div class="inline-block w-8 h-8 border-2 border-t-[#76b900] border-r-transparent border-b-[#76b900] border-l-transparent rounded-full animate-spin"></div>
+          <div class="p-8 text-center text-muted space-y-3">
+            <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
             <p class="text-xs">Đang tải danh sách đơn mua hàng PO...</p>
           </div>
         } @else if (visibleOrders().length === 0) {
-          <div class="p-12 text-center text-slate-400 space-y-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-[#090d16] border border-[#272f3d] flex items-center justify-center text-slate-500">
+          <div class="p-12 text-center text-muted space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 class="text-sm font-semibold text-slate-300">Không tìm thấy đơn mua hàng nào</h3>
-            <p class="text-xs text-slate-500 max-w-sm mx-auto">
+            <h3 class="text-sm font-semibold text-foreground">Không tìm thấy đơn mua hàng nào</h3>
+            <p class="text-xs text-muted max-w-sm mx-auto">
               Không có đơn PO nào khớp với từ khóa tìm kiếm hoặc bộ lọc trạng thái được chọn.
             </p>
             <button
               type="button"
               (click)="clearFilters()"
-              class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-xs text-slate-300 transition-colors"
+              appButton
+              variant="secondary"
+              size="sm"
             >
               Xóa bộ lọc
             </button>
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left min-w-[1000px] border-collapse">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th class="py-3 px-4">Mã PO</th>
-                  <th class="py-3 px-4">Nhà Cung Cấp</th>
-                  <th class="py-3 px-4">Kho Nhận</th>
-                  <th class="py-3 px-4 text-center">Số Dòng</th>
-                  <th class="py-3 px-4 text-right">Tổng Tiền</th>
-                  <th class="py-3 px-4">Ngày Tạo</th>
-                  <th class="py-3 px-4 text-center">Trạng Thái</th>
-                  <th class="py-3 px-4 text-right">Thao Tác</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Mã PO</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Kho Nhận</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Số Dòng</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Tổng Tiền</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Ngày Tạo</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#272f3d]">
+              <tbody class="divide-y divide-line text-xs text-foreground">
                 @for (po of visibleOrders(); track po.id) {
-                  <tr class="hover:bg-[#1f2736] transition-colors">
-                    <td class="py-3 px-4 font-mono font-bold">
+                  <tr class="hover:bg-surface-alt/70 transition-colors">
+                    <td class="py-3 px-4 font-mono font-bold whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/procurement/purchase-orders', po.id]"
-                        class="text-[#76b900] hover:underline inline-flex items-center gap-1.5"
+                        class="text-primary-strong hover:underline inline-flex items-center gap-1.5"
                       >
                         {{ po.code }}
                       </a>
                       @if (po.supersedesCode) {
-                        <div class="text-[10px] text-amber-400 font-mono mt-0.5">
+                        <div class="text-[10px] text-warning font-mono mt-0.5 whitespace-nowrap">
                           Thay thế: {{ po.supersedesCode }}
                         </div>
                       }
                       @if (po.supersededByCode) {
-                        <div class="text-[10px] text-rose-400 font-mono mt-0.5">
+                        <div class="text-[10px] text-danger font-mono mt-0.5 whitespace-nowrap">
                           Bị thay thế: {{ po.supersededByCode }}
                         </div>
                       }
                     </td>
-                    <td class="py-3 px-4">
-                      <div class="font-bold text-white">{{ po.supplierName }}</div>
-                      <div class="text-slate-400 text-[11px] font-mono">{{ po.supplierCode }}</div>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                      <div class="font-bold text-foreground">{{ po.supplierName }}</div>
+                      <div class="text-muted text-[11px] font-mono">{{ po.supplierCode }}</div>
                     </td>
-                    <td class="py-3 px-4">
-                      <div class="text-slate-200">{{ po.receivingBranchName }}</div>
-                      <div class="text-slate-400 text-[11px] font-mono">{{ po.receivingBranchCode }}</div>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                      <div class="font-medium text-foreground">{{ po.receivingBranchName }}</div>
+                      <div class="text-muted text-[11px] font-mono">{{ po.receivingBranchCode }}</div>
                     </td>
-                    <td class="py-3 px-4 text-center tabular-nums text-slate-300">
+                    <td class="py-3 px-4 text-center tabular-nums text-foreground whitespace-nowrap">
                       {{ po.lineCount }} dòng ({{ po.totalQuantity }} chiếc)
                     </td>
-                    <td class="py-3 px-4 text-right font-black tabular-nums text-white font-mono">
-                      {{ formatCurrency(po.totalAmount) }} ₫
+                    <td class="py-3 px-4 text-right font-black tabular-nums text-foreground font-mono whitespace-nowrap">
+                      {{ formatCurrency(po.totalAmount) }} đ
                     </td>
-                    <td class="py-3 px-4 text-slate-400 tabular-nums text-xs">
+                    <td class="py-3 px-4 text-muted tabular-nums text-xs whitespace-nowrap">
                       {{ formatDate(po.createdAt) }}
                     </td>
                     <td class="py-3 px-4 text-center whitespace-nowrap">
                       @switch (po.status) {
                         @case ('DRAFT') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-950/60 text-amber-300 border border-amber-800">
+                          <span appBadge variant="muted" class="whitespace-nowrap uppercase">
                             Bản thảo
                           </span>
                         }
                         @case ('CONFIRMED') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-950/60 text-blue-300 border border-blue-800">
+                          <span appBadge variant="info" class="whitespace-nowrap uppercase">
                             Đã xác nhận
                           </span>
                         }
                         @case ('RECEIVED') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800">
+                          <span appBadge variant="success" class="whitespace-nowrap uppercase">
                             Đã nhập kho
                           </span>
                         }
                         @case ('CLOSED') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                          <span appBadge variant="outline" class="whitespace-nowrap uppercase">
                             Đóng PO
                           </span>
                         }
                         @case ('CANCELLED') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-950/60 text-rose-300 border border-rose-800">
+                          <span appBadge variant="danger" class="whitespace-nowrap uppercase">
                             Đã hủy
                           </span>
                         }
                       }
                     </td>
-                    <td class="py-3 px-4 text-right whitespace-nowrap">
-                      <div class="inline-flex items-center gap-1.5">
+                    <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
+                      <div class="inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <a
                           [routerLink]="['/admin/procurement/purchase-orders', po.id]"
-                          class="p-1.5 bg-[#090d16] hover:bg-[#272f3d] text-slate-300 hover:text-white rounded border border-[#272f3d] transition-colors"
+                          appButton
+                          variant="secondary"
+                          size="sm"
+                          class="h-8 w-8 p-0"
                           [title]="po.status === 'CONFIRMED' ? 'Đối soát nhập kho' : 'Xem chi tiết'"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                             <polyline points="14 2 14 8 20 8" />
                             <line x1="16" y1="13" x2="8" y2="13" />
@@ -235,6 +238,15 @@ export class AdminPurchaseOrdersPageComponent implements OnInit {
     return this.poService.purchaseOrders();
   });
 
+  readonly statusOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'DRAFT', label: 'Bản thảo' },
+    { value: 'CONFIRMED', label: 'Đã xác nhận' },
+    { value: 'RECEIVED', label: 'Đã nhập kho' },
+    { value: 'CLOSED', label: 'Đóng PO' },
+    { value: 'CANCELLED', label: 'Đã hủy' },
+  ];
+
   ngOnInit(): void {
     const searchParam = this.route.snapshot.queryParams['search'];
     if (searchParam) {
@@ -248,9 +260,10 @@ export class AdminPurchaseOrdersPageComponent implements OnInit {
     void this.poService.loadPurchaseOrders({ search: term });
   }
 
-  onStatusFilterChange(status: PurchaseOrderStatus | 'ALL'): void {
-    this.poService.statusFilter.set(status);
-    void this.poService.loadPurchaseOrders({ status });
+  onStatusFilterChange(status: string): void {
+    const typedStatus = status as PurchaseOrderStatus | 'ALL';
+    this.poService.statusFilter.set(typedStatus);
+    void this.poService.loadPurchaseOrders({ status: typedStatus });
   }
 
   clearFilters(): void {

@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
 import {
   AdminTransferService,
   DispatchTransferPayload,
@@ -32,37 +33,32 @@ type SkuSerialSelection = {
 @Component({
   selector: 'app-dispatch-transfer-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ButtonDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen && transfer) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           (click)="onCancel()"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-xl max-h-[92vh] flex flex-col z-10 text-xs text-slate-200"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-xl max-h-[92vh] flex flex-col z-10 text-xs text-foreground"
         >
-          <div class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-[#76b900] font-mono text-[10px] font-bold">
-                  MOD-25
-                </span>
-                <h3 class="font-bold text-white uppercase text-sm tracking-wide">
-                  Xuất Kho Điều Chuyển (Dispatch)
-                </h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Phiếu: <strong class="text-white font-mono">{{ transfer.code }}</strong> - Xuất từ {{ transfer.sourceBranchName }} đi {{ transfer.destinationBranchName }}
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+                Xuất Kho Điều Chuyển
+              </h3>
+              <p class="text-xs text-muted mt-0.5">
+                Phiếu: <strong class="text-foreground font-mono">{{ transfer.code }}</strong> - Xuất từ {{ transfer.sourceBranchName }} đi {{ transfer.destinationBranchName }}
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface text-muted hover:text-foreground transition-colors border border-transparent hover:border-line"
               title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -73,30 +69,30 @@ type SkuSerialSelection = {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-blue-950/30 border border-blue-800/60 rounded text-blue-200 text-xs leading-relaxed">
+              <div class="p-3 bg-sky-50 border border-sky-200 rounded text-sky-800 text-xs leading-relaxed">
                 Giảm tồn kho thực tế tại kho xuất, ghi nhận nhật ký TRANSFER_OUT, chuyển sê-ri sang trạng thái đang vận chuyển (IN_TRANSIT) và cập nhật phiếu sang Đang chuyển.
               </div>
 
               @if (errorMessage()) {
-                <div class="p-3 bg-rose-950/40 border border-rose-800/80 rounded text-rose-300 text-xs">
+                <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
                 </div>
               }
 
               <div class="space-y-4">
                 @for (item of serialGroups(); track item.skuId) {
-                  <div class="p-3.5 bg-[#090d16] border border-[#272f3d] rounded space-y-2.5">
+                  <div class="p-3.5 bg-surface-alt border border-line rounded space-y-2.5">
                     <div class="flex items-center justify-between">
                       <div>
-                        <div class="font-bold text-white">{{ item.productName }}</div>
-                        <div class="text-[11px] font-mono text-slate-400">SKU: {{ item.skuCode }} - Số lượng xuất: {{ item.quantity }} chiếc</div>
+                        <div class="font-bold text-foreground">{{ item.productName }}</div>
+                        <div class="text-[11px] font-mono text-muted">SKU: {{ item.skuCode }} - Số lượng xuất: {{ item.quantity }} chiếc</div>
                       </div>
                       @if (item.serialRequired) {
-                        <span class="px-2 py-0.5 rounded bg-amber-950/40 border border-amber-800/60 text-amber-300 font-mono text-[10px]">
+                        <span class="px-2 py-0.5 rounded bg-warning/15 border border-warning/30 text-warning font-mono text-[10px] font-bold">
                           Cần {{ item.quantity }} Sê-ri (Đã chọn: {{ item.selectedSerials.length }})
                         </span>
                       } @else {
-                        <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 text-[10px]">
+                        <span class="px-2 py-0.5 rounded bg-surface border border-line text-muted text-[10px]">
                           Không quản lý sê-ri
                         </span>
                       }
@@ -104,26 +100,26 @@ type SkuSerialSelection = {
 
                     @if (item.serialRequired) {
                       @if (item.isLoadingSerials) {
-                        <div class="text-slate-400 italic py-1">Đang nạp danh sách mã sê-ri khả dụng tại kho...</div>
+                        <div class="text-muted italic py-1">Đang nạp danh sách mã sê-ri khả dụng tại kho...</div>
                       } @else if (item.availableSerials.length === 0) {
-                        <div class="p-2.5 bg-rose-950/30 border border-rose-900 rounded text-rose-300 text-xs">
+                        <div class="p-2.5 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                           Cảnh báo: Không tìm thấy sê-ri nào ở trạng thái khả dụng tại kho xuất.
                         </div>
                       } @else {
                         <div class="space-y-1.5 pt-1">
-                          <label class="block text-slate-400 text-[11px] font-semibold uppercase">
+                          <label class="block text-muted text-[11px] font-semibold uppercase">
                             Chọn danh sách sê-ri xuất kho:
                           </label>
-                          <div class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto p-2 bg-[#161b26] border border-[#272f3d] rounded">
+                          <div class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto p-2 bg-surface border border-line rounded">
                             @for (serial of item.availableSerials; track serial) {
-                              <label class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-[#090d16] text-slate-300">
+                              <label class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-surface-alt text-foreground">
                                 <input
                                   type="checkbox"
                                   [checked]="item.selectedSerials.includes(serial)"
                                   (change)="toggleSerial(item.skuId, serial)"
-                                  class="accent-[#76b900] rounded"
+                                  class="accent-primary rounded"
                                 />
-                                <span class="font-mono text-[11px] font-bold text-white">{{ serial }}</span>
+                                <span class="font-mono text-[11px] font-bold text-foreground">{{ serial }}</span>
                               </label>
                             }
                           </div>
@@ -135,18 +131,22 @@ type SkuSerialSelection = {
               </div>
             </div>
 
-            <div class="p-4 border-t border-[#272f3d] flex items-center justify-end gap-3 flex-shrink-0 bg-[#161b26]">
+            <div class="p-4 border-t border-line flex items-center justify-end gap-3 flex-shrink-0 bg-surface-alt">
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors"
+                appButton
+                variant="secondary"
+                size="sm"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting() || !isReadyToDispatch()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:bg-slate-700 disabled:text-slate-500 text-black font-bold text-xs rounded transition-colors shadow-sm"
+                appButton
+                variant="primary"
+                size="sm"
               >
                 @if (isSubmitting()) {
                   Đang xuất kho...
@@ -200,27 +200,37 @@ export class DispatchTransferDialogComponent implements OnChanges {
 
     this.serialGroups.set(groups);
 
-    for (const group of groups) {
-      if (group.serialRequired) {
+    for (const grp of groups) {
+      if (grp.serialRequired) {
         try {
-          const serials = await this.transferService.loadAvailableSerials(this.transfer.id, group.skuId);
-          const autoSelected = serials.slice(0, group.quantity);
+          const serials = await this.transferService.loadAvailableSerials(
+            this.transfer.id,
+            grp.skuId,
+          );
           this.serialGroups.update((current) =>
-            current.map((g) => {
-              if (g.skuId !== group.skuId) {
-                return g;
-              }
-              return {
-                ...g,
-                availableSerials: serials,
-                selectedSerials: autoSelected,
-                isLoadingSerials: false,
-              };
-            }),
+            current.map((item) =>
+              item.skuId === grp.skuId
+                ? {
+                    ...item,
+                    availableSerials: serials,
+                    selectedSerials: serials.slice(0, item.quantity),
+                    isLoadingSerials: false,
+                  }
+                : item,
+            ),
           );
         } catch {
           this.serialGroups.update((current) =>
-            current.map((g) => (g.skuId === group.skuId ? { ...g, isLoadingSerials: false } : g)),
+            current.map((item) =>
+              item.skuId === grp.skuId
+                ? {
+                    ...item,
+                    availableSerials: [],
+                    selectedSerials: [],
+                    isLoadingSerials: false,
+                  }
+                : item,
+            ),
           );
         }
       }
@@ -233,7 +243,6 @@ export class DispatchTransferDialogComponent implements OnChanges {
         if (g.skuId !== skuId) {
           return g;
         }
-
         const exists = g.selectedSerials.includes(serial);
         let updated: string[];
         if (exists) {
@@ -244,32 +253,26 @@ export class DispatchTransferDialogComponent implements OnChanges {
           }
           updated = [...g.selectedSerials, serial];
         }
-
-        return {
-          ...g,
-          selectedSerials: updated,
-        };
+        return { ...g, selectedSerials: updated };
       }),
     );
   }
 
   isReadyToDispatch(): boolean {
     const groups = this.serialGroups();
-    for (const g of groups) {
-      if (g.serialRequired && g.selectedSerials.length !== g.quantity) {
-        return false;
-      }
+    if (!groups.length) {
+      return false;
     }
-    return true;
+    return groups.every((g) => {
+      if (!g.serialRequired) {
+        return true;
+      }
+      return g.selectedSerials.length === g.quantity;
+    });
   }
 
   async onSubmit(): Promise<void> {
-    if (!this.transfer) {
-      return;
-    }
-
-    if (!this.isReadyToDispatch()) {
-      this.errorMessage.set('Vui lòng chọn đủ số lượng sê-ri yêu cầu cho từng dòng linh kiện');
+    if (!this.transfer || !this.isReadyToDispatch()) {
       return;
     }
 
@@ -287,7 +290,7 @@ export class DispatchTransferDialogComponent implements OnChanges {
       const updated = await this.transferService.dispatchTransfer(this.transfer.id, payload);
       this.dispatched.emit(updated);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Lỗi khi xuất kho điều chuyển';
+      const msg = err instanceof Error ? err.message : 'Xuất kho thất bại';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

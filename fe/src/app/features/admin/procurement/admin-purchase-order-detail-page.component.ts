@@ -263,7 +263,7 @@ type ToastMessage = {
                 [routerLink]="['/admin/inventory/ledger']"
                 [queryParams]="{ search: po.code }"
                 class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
-                title="Nhấp để xem chứng từ nhập kho trong sổ kho bất biến SCR-16"
+                title="Nhấp để xem chứng từ nhập kho trong sổ kho bất biến"
               >
                 <div class="font-bold text-xs font-mono text-emerald-400 truncate group-hover:scale-105 transition-transform">
                   {{ po.receiptMove.code }}
@@ -275,7 +275,7 @@ type ToastMessage = {
                 type="button"
                 (click)="openValidateReceiptModal()"
                 class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block w-full"
-                title="Nhấp để mở giao diện quét mã và đối soát nhập kho MOD-30"
+                title="Nhấp để mở giao diện quét mã và đối soát nhập kho"
               >
                 <div class="font-bold text-xs font-mono text-amber-400 truncate group-hover:scale-105 transition-transform">
                   Chờ Nhập Kho
@@ -293,7 +293,7 @@ type ToastMessage = {
               [routerLink]="['/admin/inventory/serials']"
               [queryParams]="{ search: po.code }"
               class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
-              title="Nhấp để xem danh sách sê-ri linh kiện đã nạp từ đơn PO này SCR-17"
+              title="Nhấp để xem danh sách sê-ri linh kiện đã nạp từ đơn PO này"
             >
               <div class="font-bold text-white text-xs font-mono group-hover:scale-105 transition-transform">
                 {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}

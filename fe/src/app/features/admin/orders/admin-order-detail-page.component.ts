@@ -173,7 +173,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
               [routerLink]="['/admin/inventory/ledger']"
               [queryParams]="{ search: ord.code }"
               class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
-              title="Nhấp để xem các chứng từ và bút toán xuất giữ trong sổ kho bất biến SCR-16"
+              title="Nhấp để xem các chứng từ và bút toán xuất giữ trong sổ kho bất biến"
             >
               <div class="font-mono font-bold text-amber-400 group-hover:scale-105 transition-transform">
                 {{ ord.stockMoves.length }} phiếu

@@ -9,6 +9,9 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
+import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { CancelTransferDialogComponent } from './components/cancel-transfer-dialog.component';
 import { CreateTransferDialogComponent } from './components/create-transfer-dialog.component';
 import { DispatchTransferDialogComponent } from './components/dispatch-transfer-dialog.component';
@@ -27,6 +30,9 @@ import {
     CommonModule,
     FormsModule,
     RouterModule,
+    BadgeDirective,
+    ButtonDirective,
+    SelectComponent,
     CreateTransferDialogComponent,
     DispatchTransferDialogComponent,
     ReceiveTransferDialogComponent,
@@ -34,28 +40,26 @@ import {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
-        <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
-            SCR-18
-          </span>
-          <div>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
-              Điều Chuyển Kho Nội Bộ
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Quy trình chuẩn hóa 3 bước giữa các chi nhánh: Chờ xuất -> Đang chuyển -> Đã nhận đủ (TRF-001 đến TRF-006, INV-003)
-            </p>
-          </div>
+    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Điều Chuyển Kho Nội Bộ
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Quy trình chuẩn hóa 3 bước giữa các chi nhánh: Chờ xuất -> Đang chuyển -> Đã nhận đủ
+          </p>
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap">
           <a
             routerLink="/admin/inventory/balances"
-            class="px-3 py-1.5 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded transition-colors inline-flex items-center gap-1.5 uppercase tracking-wide"
+            appButton
+            variant="secondary"
+            size="sm"
+            class="uppercase tracking-wide"
           >
-            <svg class="w-3.5 h-3.5 text-[#76b900]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             <span>Tồn Kho Chi Nhánh</span>
@@ -63,9 +67,12 @@ import {
 
           <a
             routerLink="/admin/inventory/ledger"
-            class="px-3 py-1.5 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded transition-colors inline-flex items-center gap-1.5 uppercase tracking-wide"
+            appButton
+            variant="secondary"
+            size="sm"
+            class="uppercase tracking-wide"
           >
-            <svg class="w-3.5 h-3.5 text-[#76b900]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
             <span>Sổ Kho</span>
@@ -73,9 +80,12 @@ import {
 
           <a
             routerLink="/admin/inventory/serials"
-            class="px-3 py-1.5 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs rounded transition-colors inline-flex items-center gap-1.5 uppercase tracking-wide"
+            appButton
+            variant="secondary"
+            size="sm"
+            class="uppercase tracking-wide"
           >
-            <svg class="w-3.5 h-3.5 text-[#76b900]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 11h.01M7 15h.01M11 7h.01M11 11h.01M11 15h.01M15 7h.01M15 11h.01M15 15h.01M19 7h.01M19 11h.01M19 15h.01" />
             </svg>
             <span>Tra Cứu Sê-ri</span>
@@ -84,7 +94,10 @@ import {
           <button
             type="button"
             (click)="isCreateDialogOpen.set(true)"
-            class="px-3.5 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-black font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5 uppercase tracking-wide"
+            appButton
+            variant="primary"
+            size="sm"
+            class="uppercase tracking-wide"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -95,99 +108,90 @@ import {
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Lệnh điều chuyển</div>
-          <div class="text-lg font-bold font-mono text-white mt-1">{{ summary().totalTransfers }}</div>
+        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
+          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Lệnh điều chuyển</div>
+          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().totalTransfers }}</div>
         </div>
 
-        <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Đang vận chuyển</div>
-          <div class="text-lg font-bold font-mono text-amber-400 mt-1">{{ summary().inTransitUnits }} chiếc</div>
+        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
+          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đang vận chuyển</div>
+          <div class="text-lg font-bold font-mono text-warning mt-1">{{ summary().inTransitUnits }} chiếc</div>
         </div>
 
-        <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Kho chi nhánh</div>
-          <div class="text-lg font-bold font-mono text-white mt-1">{{ summary().connectedBranchesCount }} kho</div>
+        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
+          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Kho chi nhánh</div>
+          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().connectedBranchesCount }} kho</div>
         </div>
 
-        <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Tỉ lệ nhận đủ</div>
-          <div class="text-lg font-bold font-mono text-[#76b900] mt-1">{{ summary().fullReceiptRate }}</div>
+        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
+          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tỉ lệ nhận đủ</div>
+          <div class="text-lg font-bold font-mono text-primary-strong mt-1">{{ summary().fullReceiptRate }}</div>
         </div>
       </div>
 
       @if (toastMessage()) {
-        <div class="p-3 bg-[#161b26] border border-[#76b900] text-[#76b900] rounded text-xs flex items-center justify-between shadow-md">
-          <span>{{ toastMessage() }}</span>
-          <button type="button" (click)="toastMessage.set(null)" class="text-slate-400 hover:text-white font-bold ml-2">Đóng</button>
+        <div class="p-3 bg-surface border border-primary text-foreground rounded text-xs flex items-center justify-between shadow-card">
+          <span class="font-medium">{{ toastMessage() }}</span>
+          <button type="button" (click)="toastMessage.set(null)" class="text-muted hover:text-foreground font-bold ml-2">Đóng</button>
         </div>
       }
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-3.5 space-y-3 shadow-sm">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
+      <div class="bg-surface border border-line rounded-lg p-3.5 space-y-3 shadow-card">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 items-end">
           <div>
-            <label for="filter-search" class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Tìm kiếm</label>
+            <label for="filter-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <input
               id="filter-search"
               type="text"
               [ngModel]="searchFilter()"
               (ngModelChange)="searchFilter.set($event); onFilterChange()"
               placeholder="Mã phiếu, SKU, tên linh kiện..."
-              class="w-full px-2.5 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+              class="w-full h-9 px-2.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
             />
           </div>
 
           <div>
-            <label for="filter-status" class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Trạng thái</label>
-            <select
-              id="filter-status"
-              [ngModel]="statusFilter()"
-              (ngModelChange)="statusFilter.set($event); onFilterChange()"
-              class="w-full px-2.5 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả trạng thái</option>
-              <option value="REQUESTED">Chờ xuất (REQUESTED)</option>
-              <option value="IN_TRANSIT">Đang chuyển (IN_TRANSIT)</option>
-              <option value="RECEIVED">Đã nhận đủ (RECEIVED)</option>
-              <option value="CANCELLED">Đã hủy (CANCELLED)</option>
-            </select>
+            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Trạng thái</span>
+            <app-select
+              [options]="statusOptions"
+              [value]="statusFilter()"
+              (valueChange)="statusFilter.set($event); onFilterChange()"
+              size="md"
+            />
           </div>
 
           <div>
-            <label for="filter-src" class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Kho xuất</label>
-            <select
-              id="filter-src"
-              [ngModel]="sourceBranchFilter()"
-              (ngModelChange)="sourceBranchFilter.set($event); onFilterChange()"
-              class="w-full px-2.5 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-            >
-              <option [ngValue]="null">Tất cả kho xuất</option>
-              @for (b of branches(); track b.id) {
-                <option [ngValue]="b.id">{{ b.code }} - {{ b.name }}</option>
-              }
-            </select>
+            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Kho xuất</span>
+            <app-select
+              [options]="sourceBranchOptions()"
+              [value]="sourceBranchFilterId()"
+              (valueChange)="sourceBranchFilterId.set($event); onFilterChange()"
+              [searchable]="true"
+              searchPlaceholder="Tìm kho xuất..."
+              size="md"
+            />
           </div>
 
           <div>
-            <label for="filter-dst" class="block text-[11px] font-semibold text-slate-400 uppercase mb-1">Kho nhận</label>
-            <select
-              id="filter-dst"
-              [ngModel]="destinationBranchFilter()"
-              (ngModelChange)="destinationBranchFilter.set($event); onFilterChange()"
-              class="w-full px-2.5 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-            >
-              <option [ngValue]="null">Tất cả kho nhận</option>
-              @for (b of branches(); track b.id) {
-                <option [ngValue]="b.id">{{ b.code }} - {{ b.name }}</option>
-              }
-            </select>
+            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Kho nhận</span>
+            <app-select
+              [options]="destinationBranchOptions()"
+              [value]="destinationBranchFilterId()"
+              (valueChange)="destinationBranchFilterId.set($event); onFilterChange()"
+              [searchable]="true"
+              searchPlaceholder="Tìm kho nhận..."
+              size="md"
+            />
           </div>
 
-          <div class="flex items-end">
+          <div>
             <button
               type="button"
               (click)="resetFilters()"
-              class="w-full px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors"
+              appButton
+              variant="secondary"
+              size="md"
+              class="w-full text-xs font-semibold"
             >
               Đặt lại bộ lọc
             </button>
@@ -195,113 +199,116 @@ import {
         </div>
       </div>
 
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left">
-            <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+          <table class="w-full text-left min-w-[1000px] border-collapse">
+            <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
               <tr>
                 <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
-                <th class="py-2.5 px-4">Mã phiếu</th>
+                <th class="py-2.5 px-4 whitespace-nowrap">Mã phiếu</th>
                 <th class="py-2.5 px-4">Linh kiện & Ghi chú</th>
-                <th class="py-2.5 px-4">Kho xuất</th>
-                <th class="py-2.5 px-4">Kho nhận</th>
-                <th class="py-2.5 px-4">Số lượng</th>
-                <th class="py-2.5 px-4">Thời gian</th>
-                <th class="py-2.5 px-4 text-center">Trạng thái</th>
-                <th class="py-2.5 px-4 text-right">Thao tác</th>
+                <th class="py-2.5 px-4 whitespace-nowrap">Kho xuất</th>
+                <th class="py-2.5 px-4 whitespace-nowrap">Kho nhận</th>
+                <th class="py-2.5 px-4 whitespace-nowrap text-right">Số lượng</th>
+                <th class="py-2.5 px-4 whitespace-nowrap">Thời gian</th>
+                <th class="py-2.5 px-4 text-center whitespace-nowrap">Trạng thái</th>
+                <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#272f3d]">
+            <tbody class="divide-y divide-line text-foreground text-xs">
               @if (isLoading()) {
                 <tr>
-                  <td colspan="9" class="py-8 text-center text-slate-400 italic">
+                  <td colspan="9" class="py-8 text-center text-muted italic">
                     Đang tải danh sách phiếu điều chuyển kho...
                   </td>
                 </tr>
               } @else if (transfers().length === 0) {
                 <tr>
-                  <td colspan="9" class="py-8 text-center text-slate-400">
+                  <td colspan="9" class="py-8 text-center text-muted">
                     Không tìm thấy phiếu điều chuyển nào phù hợp với bộ lọc.
                   </td>
                 </tr>
               } @else {
                 @for (item of transfers(); track item.id) {
-                  <tr class="hover:bg-[#090d16]/60 transition-colors">
+                  <tr class="hover:bg-surface-alt/70 transition-colors">
                     <td class="py-3 px-4 text-center">
-                      <div class="w-9 h-9 rounded border border-[#272f3d] bg-[#090d16] overflow-hidden flex items-center justify-center mx-auto">
+                      <div class="w-9 h-9 rounded border border-line bg-surface-alt overflow-hidden flex items-center justify-center mx-auto">
                         @if (item.primaryProductImage) {
                           <img [src]="item.primaryProductImage" [alt]="item.primaryProductName" class="w-full h-full object-contain p-0.5" />
                         } @else {
-                          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                           </svg>
                         }
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-bold text-white text-xs">
+                    <td class="py-3 px-4 font-mono font-bold text-foreground text-xs whitespace-nowrap">
                       {{ item.code }}
                     </td>
 
                     <td class="py-3 px-4 max-w-xs">
-                      <div class="font-bold text-white truncate" [title]="item.primaryProductName">
+                      <div class="font-bold text-foreground truncate" [title]="item.primaryProductName">
                         {{ item.primaryProductName }}
                       </div>
-                      <div class="text-[11px] text-slate-400 truncate" [title]="item.reason || 'Điều chuyển nội bộ'">
+                      <div class="text-[11px] text-muted truncate" [title]="item.reason || 'Điều chuyển nội bộ'">
                         {{ item.reason || 'Điều chuyển nội bộ' }}
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-medium text-slate-300">
-                      <div>{{ item.sourceBranchCode }}</div>
-                      <div class="text-[10px] text-slate-500 truncate">{{ item.sourceBranchName }}</div>
+                    <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap">
+                      <div class="font-semibold">{{ item.sourceBranchCode }}</div>
+                      <div class="text-[10px] text-muted truncate">{{ item.sourceBranchName }}</div>
                     </td>
 
-                    <td class="py-3 px-4 font-medium text-slate-300">
-                      <div>{{ item.destinationBranchCode }}</div>
-                      <div class="text-[10px] text-slate-500 truncate">{{ item.destinationBranchName }}</div>
+                    <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap">
+                      <div class="font-semibold">{{ item.destinationBranchCode }}</div>
+                      <div class="text-[10px] text-muted truncate">{{ item.destinationBranchName }}</div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-medium text-white tabular-nums">
+                    <td class="py-3 px-4 font-mono font-medium text-foreground whitespace-nowrap tabular-nums text-right">
                       {{ item.totalQuantity }} chiếc
-                      <span class="text-[10px] text-slate-400 block font-sans">({{ item.lineCount }} SKU)</span>
+                      <span class="text-[10px] text-muted block font-sans">({{ item.lineCount }} SKU)</span>
                     </td>
 
-                    <td class="py-3 px-4 text-slate-400 text-xs tabular-nums">
+                    <td class="py-3 px-4 text-muted text-xs tabular-nums whitespace-nowrap">
                       {{ item.createdAt | date:'dd/MM/yyyy HH:mm' }}
                     </td>
 
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       @switch (item.displayStatus) {
                         @case ('REQUESTED') {
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-950/40 text-sky-300 border border-sky-800/60 uppercase">
+                          <span appBadge variant="info" class="whitespace-nowrap uppercase">
                             Chờ xuất
                           </span>
                         }
                         @case ('IN_TRANSIT') {
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950/40 text-amber-300 border border-amber-800/60 uppercase">
+                          <span appBadge variant="warning" class="whitespace-nowrap uppercase">
                             Đang chuyển
                           </span>
                         }
                         @case ('RECEIVED') {
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950/40 text-[#76b900] border border-emerald-800/60 uppercase">
+                          <span appBadge variant="success" class="whitespace-nowrap uppercase">
                             Đã nhận đủ
                           </span>
                         }
                         @case ('CANCELLED') {
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-950/40 text-rose-300 border border-rose-800/60 uppercase">
+                          <span appBadge variant="danger" class="whitespace-nowrap uppercase">
                             Đã hủy
                           </span>
                         }
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right">
-                      <div class="flex items-center justify-end gap-1.5">
+                    <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
+                      <div class="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
                         <button
                           type="button"
                           (click)="openDetail(item)"
-                          class="p-1 rounded bg-[#090d16] hover:bg-[#272f3d] text-slate-300 border border-[#272f3d] transition-colors"
+                          appButton
+                          variant="secondary"
+                          size="sm"
+                          class="h-8 w-8 p-0"
                           title="Xem chi tiết các dòng linh kiện"
                         >
                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -314,7 +321,10 @@ import {
                           <button
                             type="button"
                             (click)="openDispatch(item)"
-                            class="px-2.5 py-1 rounded bg-[#76b900] hover:bg-[#5a8d00] text-black font-bold text-xs transition-colors shadow-sm inline-flex items-center gap-1"
+                            appButton
+                            variant="primary"
+                            size="sm"
+                            class="whitespace-nowrap shrink-0"
                             title="Xác nhận xuất kho"
                           >
                             <span>Xuất kho</span>
@@ -323,7 +333,10 @@ import {
                           <button
                             type="button"
                             (click)="openCancel(item)"
-                            class="p-1 rounded bg-rose-950/30 hover:bg-rose-900/50 text-rose-400 border border-rose-900 transition-colors"
+                            appButton
+                            variant="danger"
+                            size="sm"
+                            class="h-8 w-8 p-0"
                             title="Hủy phiếu"
                           >
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -334,13 +347,16 @@ import {
                           <button
                             type="button"
                             (click)="openReceive(item)"
-                            class="px-2.5 py-1 rounded bg-[#76b900] hover:bg-[#5a8d00] text-black font-bold text-xs transition-colors shadow-sm inline-flex items-center gap-1"
+                            appButton
+                            variant="primary"
+                            size="sm"
+                            class="whitespace-nowrap shrink-0"
                             title="Xác nhận nhập kho tại kho đích"
                           >
                             <span>Nhận hàng</span>
                           </button>
                         } @else {
-                          <span class="text-slate-500 text-[11px] font-semibold italic">Đã chốt sổ</span>
+                          <span class="text-muted text-[11px] font-semibold italic">Đã chốt sổ</span>
                         }
                       </div>
                     </td>
@@ -352,7 +368,7 @@ import {
         </div>
 
         @if (total() > limit()) {
-          <div class="p-3 bg-[#090d16] border-t border-[#272f3d] flex items-center justify-between text-xs text-slate-400">
+          <div class="p-3 bg-surface-alt border-t border-line flex items-center justify-between text-xs text-muted">
             <div>
               Hiển thị {{ (page() - 1) * limit() + 1 }} - {{ Math.min(page() * limit(), total()) }} trên tổng {{ total() }} phiếu
             </div>
@@ -361,16 +377,20 @@ import {
                 type="button"
                 [disabled]="page() <= 1"
                 (click)="goToPage(page() - 1)"
-                class="px-2.5 py-1 bg-[#161b26] border border-[#272f3d] rounded text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#272f3d]"
+                appButton
+                variant="outline"
+                size="sm"
               >
                 Trước
               </button>
-              <span class="font-mono text-white">Trang {{ page() }} / {{ totalPages() }}</span>
+              <span class="font-mono text-foreground font-semibold">Trang {{ page() }} / {{ totalPages() }}</span>
               <button
                 type="button"
                 [disabled]="page() >= totalPages()"
                 (click)="goToPage(page() + 1)"
-                class="px-2.5 py-1 bg-[#161b26] border border-[#272f3d] rounded text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#272f3d]"
+                appButton
+                variant="outline"
+                size="sm"
               >
                 Sau
               </button>
@@ -383,66 +403,66 @@ import {
       @if (selectedDetail(); as detail) {
         <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
             (click)="selectedDetail.set(null)"
           ></div>
 
-          <div class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-xs text-slate-200">
-            <div class="p-4 border-b border-[#272f3d] flex items-center justify-between">
+          <div class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-xs text-foreground">
+            <div class="p-4 border-b border-line flex items-center justify-between">
               <div>
-                <h3 class="font-bold text-white text-sm uppercase">Chi Tiết Phiếu Điều Chuyển {{ detail.code }}</h3>
-                <p class="text-xs text-slate-400">Tạo lúc: {{ detail.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
+                <h3 class="font-bold text-foreground text-sm uppercase">Chi Tiết Phiếu Điều Chuyển {{ detail.code }}</h3>
+                <p class="text-xs text-muted">Tạo lúc: {{ detail.createdAt | date:'dd/MM/yyyy HH:mm' }}</p>
               </div>
               <button
                 type="button"
                 (click)="selectedDetail.set(null)"
-                class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white"
+                class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
               </button>
             </div>
 
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="grid grid-cols-2 gap-3 p-3 bg-[#090d16] border border-[#272f3d] rounded">
+              <div class="grid grid-cols-2 gap-3 p-3 bg-surface-alt border border-line rounded">
                 <div>
-                  <span class="text-slate-400 text-[11px] uppercase block">Kho xuất hàng</span>
-                  <span class="font-bold text-white text-xs">{{ detail.sourceBranchCode }} - {{ detail.sourceBranchName }}</span>
+                  <span class="text-muted text-[11px] uppercase block font-semibold">Kho xuất hàng</span>
+                  <span class="font-bold text-foreground text-xs">{{ detail.sourceBranchCode }} - {{ detail.sourceBranchName }}</span>
                 </div>
                 <div>
-                  <span class="text-slate-400 text-[11px] uppercase block">Kho nhận hàng</span>
-                  <span class="font-bold text-white text-xs">{{ detail.destinationBranchCode }} - {{ detail.destinationBranchName }}</span>
+                  <span class="text-muted text-[11px] uppercase block font-semibold">Kho nhận hàng</span>
+                  <span class="font-bold text-foreground text-xs">{{ detail.destinationBranchCode }} - {{ detail.destinationBranchName }}</span>
                 </div>
                 <div>
-                  <span class="text-slate-400 text-[11px] uppercase block">Người xuất kho</span>
-                  <span class="text-slate-200">{{ detail.dispatchedByName || 'Chưa xuất kho' }}</span>
+                  <span class="text-muted text-[11px] uppercase block font-semibold">Người xuất kho</span>
+                  <span class="text-foreground">{{ detail.dispatchedByName || 'Chưa xuất kho' }}</span>
                 </div>
                 <div>
-                  <span class="text-slate-400 text-[11px] uppercase block">Người nhận hàng</span>
-                  <span class="text-slate-200">{{ detail.validatedByName || 'Chưa nhận hàng' }}</span>
+                  <span class="text-muted text-[11px] uppercase block font-semibold">Người nhận hàng</span>
+                  <span class="text-foreground">{{ detail.validatedByName || 'Chưa nhận hàng' }}</span>
                 </div>
               </div>
 
               <div>
-                <div class="font-bold text-white uppercase text-[11px] mb-2">Danh sách linh kiện điều chuyển:</div>
+                <div class="font-bold text-foreground uppercase text-[11px] mb-2">Danh sách linh kiện điều chuyển:</div>
                 <div class="space-y-2">
                   @for (line of detail.lines; track line.id) {
-                    <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded space-y-1.5">
+                    <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5">
                       <div class="flex items-center justify-between">
                         <div>
-                          <div class="font-bold text-white">{{ line.productName }}</div>
-                          <div class="text-[11px] font-mono text-slate-400">SKU: {{ line.skuCode }} - Đơn giá vốn: {{ line.unitCost }} ₫</div>
+                          <div class="font-bold text-foreground">{{ line.productName }}</div>
+                          <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }} - Đơn giá vốn: {{ line.unitCost }} đ</div>
                         </div>
-                        <div class="font-bold font-mono text-white text-sm">
+                        <div class="font-bold font-mono text-foreground text-sm">
                           {{ line.quantity }} chiếc
                         </div>
                       </div>
 
                       @if (line.serialRequired && line.serialNumbers.length > 0) {
-                        <div class="pt-1.5 border-t border-[#272f3d]">
-                          <span class="text-[10px] text-slate-400 uppercase font-semibold block mb-1">Mã sê-ri xuất kho:</span>
+                        <div class="pt-1.5 border-t border-line">
+                          <span class="text-[10px] text-muted uppercase font-semibold block mb-1">Mã sê-ri xuất kho:</span>
                           <div class="flex flex-wrap gap-1.5">
                             @for (sn of line.serialNumbers; track sn) {
-                              <span class="px-1.5 py-0.5 rounded bg-[#161b26] border border-[#272f3d] font-mono text-[10px] text-[#76b900] font-bold">
+                              <span class="px-1.5 py-0.5 rounded bg-surface border border-line font-mono text-[10px] text-primary-strong font-bold">
                                 {{ sn }}
                               </span>
                             }
@@ -455,11 +475,13 @@ import {
               </div>
             </div>
 
-            <div class="p-3 border-t border-[#272f3d] flex justify-end">
+            <div class="p-3 border-t border-line flex justify-end">
               <button
                 type="button"
                 (click)="selectedDetail.set(null)"
-                class="px-4 py-1.5 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold rounded"
+                appButton
+                variant="secondary"
+                size="sm"
               >
                 Đóng
               </button>
@@ -513,8 +535,32 @@ export class AdminTransfersPageComponent implements OnInit {
 
   readonly searchFilter = signal<string>('');
   readonly statusFilter = signal<string>('ALL');
-  readonly sourceBranchFilter = signal<number | null>(null);
-  readonly destinationBranchFilter = signal<number | null>(null);
+  readonly sourceBranchFilterId = signal<string>('');
+  readonly destinationBranchFilterId = signal<string>('');
+
+  readonly statusOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'REQUESTED', label: 'Chờ xuất' },
+    { value: 'IN_TRANSIT', label: 'Đang chuyển' },
+    { value: 'RECEIVED', label: 'Đã nhận đủ' },
+    { value: 'CANCELLED', label: 'Đã hủy' },
+  ];
+
+  readonly sourceBranchOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Tất cả kho xuất' },
+    ...this.branches().map((b) => ({
+      value: String(b.id),
+      label: `${b.code} - ${b.name}`,
+    })),
+  ]);
+
+  readonly destinationBranchOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Tất cả kho nhận' },
+    ...this.branches().map((b) => ({
+      value: String(b.id),
+      label: `${b.code} - ${b.name}`,
+    })),
+  ]);
 
   readonly isCreateDialogOpen = signal<boolean>(false);
   readonly isDispatchDialogOpen = signal<boolean>(false);
@@ -549,13 +595,15 @@ export class AdminTransfersPageComponent implements OnInit {
   }
 
   async fetchTransfers(): Promise<void> {
+    const srcVal = this.sourceBranchFilterId();
+    const dstVal = this.destinationBranchFilterId();
     const params: TransferFilterParams = {
       page: this.page(),
       limit: this.limit(),
       search: this.searchFilter().trim() || undefined,
       status: this.statusFilter() !== 'ALL' ? this.statusFilter() : undefined,
-      sourceBranchId: this.sourceBranchFilter() ?? undefined,
-      destinationBranchId: this.destinationBranchFilter() ?? undefined,
+      sourceBranchId: srcVal ? parseInt(srcVal, 10) : undefined,
+      destinationBranchId: dstVal ? parseInt(dstVal, 10) : undefined,
     };
     await this.transferService.loadTransfers(params);
   }
@@ -568,8 +616,8 @@ export class AdminTransfersPageComponent implements OnInit {
   async resetFilters(): Promise<void> {
     this.searchFilter.set('');
     this.statusFilter.set('ALL');
-    this.sourceBranchFilter.set(null);
-    this.destinationBranchFilter.set(null);
+    this.sourceBranchFilterId.set('');
+    this.destinationBranchFilterId.set('');
     this.transferService.transfersPage.set(1);
     await this.fetchTransfers();
   }

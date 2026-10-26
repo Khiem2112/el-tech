@@ -5,11 +5,14 @@ import {
   EventEmitter,
   Input,
   Output,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import {
   AdminSerialService,
   SerialDetailResponse,
@@ -19,33 +22,30 @@ import {
 @Component({
   selector: 'app-serial-detail-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div
-          class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
           (click)="onClose()"
           tabindex="-1"
           aria-hidden="true"
         ></div>
 
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] shadow-2xl rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-sm text-slate-200 overflow-hidden"
+          class="relative bg-surface border border-line shadow-2xl rounded-xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-sm text-foreground overflow-hidden"
         >
-          <div class="h-16 px-6 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0 bg-[#090d16]">
+          <div class="h-16 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div class="flex items-center gap-3 min-w-0">
-              <span class="px-2 py-0.5 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold shrink-0">
-                MOD-23
-              </span>
               <div class="min-w-0">
-                <h2 class="font-bold text-white text-base truncate">
+                <h2 class="font-bold text-foreground text-base truncate">
                   Vòng Đời & Lịch Sử Di Chuyển Serial
                 </h2>
                 @if (detail; as d) {
-                  <p class="text-xs text-slate-400 font-mono truncate">
-                    SN: <strong class="text-white">{{ d.serialNumber }}</strong> | SKU: {{ d.sku }}
+                  <p class="text-xs text-muted font-mono truncate">
+                    SN: <strong class="text-foreground">{{ d.serialNumber }}</strong> | SKU: {{ d.sku }}
                   </p>
                 }
               </div>
@@ -54,8 +54,8 @@ import {
             <button
               type="button"
               (click)="onClose()"
-              class="p-2 rounded bg-[#161b26] hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
-              title="Dong"
+              class="p-2 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground transition-colors border border-line"
+              title="Đóng"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -65,239 +65,111 @@ import {
 
           <div class="p-6 overflow-y-auto space-y-6 flex-1">
             @if (isLoading) {
-              <div class="py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
-                <svg class="w-8 h-8 animate-spin text-[#76b900]" fill="none" viewBox="0 0 24 24">
+              <div class="py-12 flex flex-col items-center justify-center gap-3 text-muted">
+                <svg class="w-8 h-8 animate-spin text-primary" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                 </svg>
-                <span>Dang tai thong tin vong doi serial...</span>
+                <span>Đang tải thông tin vòng đời serial...</span>
               </div>
             } @else if (detail; as d) {
-              <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="p-4 bg-surface-alt border border-line rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="min-w-0 space-y-1">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-bold text-white text-base">{{ d.productTemplate.name }}</span>
+                    <span class="font-bold text-foreground text-base">{{ d.productTemplate.name }}</span>
                     <span class="text-xs px-2 py-0.5 rounded font-bold uppercase" [ngClass]="getStatusBadgeClass(d.status)">
                       {{ getStatusLabel(d.status) }}
                     </span>
                   </div>
-                  <div class="text-xs text-slate-400 font-mono flex items-center gap-3 flex-wrap">
-                    <span>Thuong hieu: <strong class="text-slate-300">{{ d.productTemplate.brandName }}</strong></span>
-                    <span>Nhom: <strong class="text-slate-300">{{ d.productTemplate.categoryName }}</strong></span>
-                    <span>Gia niem yet: <strong class="text-[#76b900]">{{ formatCurrency(d.sellingPrice) }}</strong></span>
+                  <div class="text-xs text-muted font-mono flex items-center gap-3 flex-wrap">
+                    <span>Thương hiệu: <strong class="text-foreground">{{ d.productTemplate.brandName }}</strong></span>
+                    <span>Nhóm: <strong class="text-foreground">{{ d.productTemplate.categoryName }}</strong></span>
+                    <span>Giá niêm yết: <strong class="text-primary-strong">{{ formatCurrency(d.sellingPrice) }}</strong></span>
                   </div>
                 </div>
 
-                <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-[#272f3d]">
-                  <span class="text-[11px] uppercase tracking-wider text-slate-400 block font-semibold">Kho hien tai</span>
-                  <span class="font-bold text-white text-sm">
-                    {{ d.currentBranch?.name ?? 'Chua phan bo chi nhanh' }}
+                <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
+                  <span class="text-[11px] uppercase tracking-wider text-muted block font-semibold">Kho hiện tại</span>
+                  <span class="font-bold text-foreground text-sm">
+                    {{ d.currentBranch?.name ?? 'Chưa phân bổ chi nhánh' }}
                   </span>
                   @if (d.currentBranch) {
-                    <span class="text-xs text-slate-400 font-mono block">({{ d.currentBranch.code }})</span>
+                    <span class="text-xs text-muted font-mono block">({{ d.currentBranch.code }})</span>
                   }
                 </div>
-              </div>
-
-              <div class="p-3 bg-emerald-950/20 border border-emerald-900/40 rounded-lg text-emerald-300 text-xs">
-                So Serial linh kien duoc quan ly bat bien theo tung lan chuyen trang thai kho. Quy tac INV-014 dam bao moi serial vat ly chi ton tai o duy nhat mot chi nhanh tai mot thoi diem.
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded-lg space-y-2">
-                  <div class="flex items-center justify-between border-b border-[#272f3d] pb-2">
-                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Chinh sach bao hanh</span>
-                    <span class="text-[11px] px-2 py-0.5 rounded font-mono font-bold" [ngClass]="d.warranty.isExpired ? 'bg-rose-950/60 text-rose-300 border border-rose-800' : 'bg-emerald-950/60 text-emerald-300 border border-emerald-800'">
-                      {{ d.warranty.isExpired ? 'Het han bao hanh' : 'Chinh hang con han' }}
-                    </span>
-                  </div>
-                  <div class="space-y-1.5 text-xs text-slate-300">
-                    <div class="flex justify-between">
-                      <span class="text-slate-400">Thoi han tieu chuan:</span>
-                      <strong class="font-bold text-white">{{ d.warranty.durationMonths }} Thang</strong>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-slate-400">Trung tam bao hanh:</span>
-                      <strong class="font-bold text-white">{{ d.warranty.serviceProvider }}</strong>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-slate-400">Bat dau bao hanh:</span>
-                      <span class="font-mono text-slate-200">{{ formatDate(d.warranty.startDate) }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-slate-400">Du kien het han:</span>
-                      <span class="font-mono text-emerald-400 font-bold">{{ formatDate(d.warranty.endDate) }}</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-slate-400">So lan tiep nhan BH/Loi:</span>
-                      <strong class="font-bold" [ngClass]="d.warranty.warrantyClaimCount > 0 ? 'text-amber-400' : 'text-slate-300'">
-                        {{ d.warranty.warrantyClaimCount }} lan
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="p-4 bg-[#090d16] border border-[#272f3d] rounded-lg space-y-2">
-                  <div class="flex items-center justify-between border-b border-[#272f3d] pb-2">
-                    <span class="text-xs font-bold text-slate-300 uppercase tracking-wider">Nguon goc nhap kho</span>
-                    <span class="text-[11px] text-slate-400 font-mono">Dau ky PO</span>
-                  </div>
-                  @if (d.origin; as orig) {
-                    <div class="space-y-1.5 text-xs text-slate-300">
-                      <div class="flex justify-between">
-                        <span class="text-slate-400">Chung tu kho:</span>
-                        <span class="font-mono text-[#76b900] font-bold">{{ orig.stockMoveCode }}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-slate-400">Don mua PO:</span>
-                        <span class="font-mono text-white font-bold">{{ orig.purchaseOrderCode ?? 'Nhap truc tiep' }}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-slate-400">Nha cung cap:</span>
-                        <strong class="text-white">{{ orig.supplierName ?? 'Khong xac dinh' }}</strong>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-slate-400">Thoi gian nhan:</span>
-                        <span class="font-mono text-slate-300">{{ formatDate(orig.receivedAt) }}</span>
-                      </div>
-                    </div>
-                  } @else {
-                    <p class="text-xs text-slate-500 py-3 text-center">Khong co chung tu nhap goc</p>
-                  }
-                </div>
-              </div>
-
-              <div class="space-y-3">
-                <div class="flex items-center justify-between border-b border-[#272f3d] pb-2">
-                  <span class="text-xs font-bold text-white uppercase tracking-wider">
-                    Lich Su Di Chuyen & Nhat Ky Bien Dong ({{ d.movements.length }})
-                  </span>
-                  <span class="text-[11px] text-slate-400 font-mono">Theo thu tu thoi gian</span>
-                </div>
-
-                @if (d.movements.length === 0) {
-                  <div class="p-6 bg-[#090d16] border border-[#272f3d] rounded-lg text-center text-xs text-slate-500">
-                    Chua ghi nhan nhat ky di chuyen cho serial nay
-                  </div>
-                } @else {
-                  <div class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#272f3d]">
-                    @for (mov of d.movements; track mov.id) {
-                      <div class="relative group">
-                        <span
-                          class="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 border-[#161b26] transition-transform group-hover:scale-120"
-                          [ngClass]="getMovementDotClass(mov.resultingStatus)"
-                        ></span>
-
-                        <div class="bg-[#090d16] border border-[#272f3d] hover:border-slate-600 rounded-lg p-3 space-y-1.5 transition-colors">
-                          <div class="flex items-center justify-between gap-2 flex-wrap">
-                            <span class="font-bold text-white text-xs">
-                              {{ mov.summaryText }}
-                            </span>
-                            <span class="text-[11px] px-2 py-0.5 rounded font-bold uppercase" [ngClass]="getStatusBadgeClass(mov.resultingStatus)">
-                              {{ getStatusLabel(mov.resultingStatus) }}
-                            </span>
-                          </div>
-
-                          <div class="text-xs text-slate-400 flex items-center gap-3 flex-wrap">
-                            <span class="font-mono text-slate-300">{{ formatDateTime(mov.occurredAt) }}</span>
-                            @if (mov.stockMoveCode) {
-                              <span>Phieu: <strong class="text-[#76b900] font-mono">{{ mov.stockMoveCode }}</strong></span>
-                            }
-                            @if (mov.actorName) {
-                              <span>Nguoi thuc hien: <strong class="text-slate-200">{{ mov.actorName }}</strong></span>
-                            }
-                          </div>
-
-                          <div class="text-[11px] text-slate-400 font-mono flex items-center gap-2 flex-wrap pt-0.5">
-                            @if (mov.fromBranchName) {
-                              <span>Tu: <strong class="text-slate-300">{{ mov.fromBranchName }}</strong> ({{ mov.fromBranchCode }})</span>
-                            }
-                            @if (mov.toBranchName) {
-                              <span>Den: <strong class="text-slate-300">{{ mov.toBranchName }}</strong> ({{ mov.toBranchCode }})</span>
-                            }
-                            @if (mov.reason) {
-                              <span class="text-slate-300 italic">Ghi chu: {{ mov.reason }}</span>
-                            }
-                          </div>
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
               </div>
 
               @if (isAdjustingStatus()) {
-                <div class="p-4 bg-[#090d16] border border-amber-800/60 rounded-lg space-y-3">
-                  <div class="flex items-center justify-between border-b border-[#272f3d] pb-2">
-                    <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Dieu chinh trang thai serial</span>
+                <div class="p-4 bg-surface-alt border border-warning/50 rounded-lg space-y-3">
+                  <div class="flex items-center justify-between border-b border-line pb-2">
+                    <span class="text-xs font-bold text-warning uppercase tracking-wider">Điều chỉnh trạng thái serial</span>
                     <button
                       type="button"
                       (click)="isAdjustingStatus.set(false)"
-                      class="text-xs text-slate-400 hover:text-white"
+                      class="text-xs text-muted hover:text-foreground"
                     >
-                      Huy
+                      Hủy
                     </button>
                   </div>
 
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div>
-                      <label class="block text-slate-400 mb-1 font-semibold">Trang thai moi</label>
-                      <select
-                        [(ngModel)]="newStatus"
-                        class="w-full bg-[#161b26] border border-[#272f3d] rounded px-3 py-2 text-white focus:outline-none focus:border-[#76b900]"
-                      >
-                        <option value="AVAILABLE">AVAILABLE - San sang trong kho</option>
-                        <option value="RESERVED">RESERVED - Da khoa don hang</option>
-                        <option value="IN_TRANSIT">IN_TRANSIT - Dang dieu chuyen</option>
-                        <option value="ISSUED">ISSUED - Da ban giao / xuat ban</option>
-                        <option value="QUARANTINED">QUARANTINED - Cach ly / Bao hanh loi</option>
-                        <option value="RETURNED_TO_SUPPLIER">RETURNED_TO_SUPPLIER - Xuat tra NCC</option>
-                      </select>
+                      <span class="block text-muted mb-1 font-semibold">Trạng thái mới</span>
+                      <app-select
+                        [options]="statusAdjustmentOptions"
+                        [value]="newStatus"
+                        (valueChange)="newStatus = $event"
+                        size="md"
+                      />
                     </div>
 
                     <div>
-                      <label class="block text-slate-400 mb-1 font-semibold">Chi nhanh phan bo</label>
-                      <select
-                        [(ngModel)]="selectedBranchId"
-                        class="w-full bg-[#161b26] border border-[#272f3d] rounded px-3 py-2 text-white focus:outline-none focus:border-[#76b900]"
-                      >
-                        <option [ngValue]="null">Giu nguyen chi nhanh</option>
-                        @for (b of branches; track b.id) {
-                          <option [ngValue]="b.id">{{ b.name }} ({{ b.code }})</option>
-                        }
-                      </select>
+                      <span class="block text-muted mb-1 font-semibold">Chi nhánh phân bổ</span>
+                      <app-select
+                        [options]="branchOptions()"
+                        [value]="selectedBranchFilterId()"
+                        (valueChange)="onBranchChange($event)"
+                        [searchable]="true"
+                        searchPlaceholder="Tìm chi nhánh..."
+                        size="md"
+                      />
                     </div>
                   </div>
 
                   <div>
-                    <label class="block text-slate-400 mb-1 font-semibold">Ly do dieu chinh</label>
+                    <label for="adjust-reason" class="block text-muted mb-1 font-semibold">Lý do điều chỉnh</label>
                     <input
+                      id="adjust-reason"
                       type="text"
                       [(ngModel)]="adjustmentReason"
-                      placeholder="Nhap ly do can thiep trang thai serial..."
-                      class="w-full bg-[#161b26] border border-[#272f3d] rounded px-3 py-2 text-white text-xs focus:outline-none focus:border-[#76b900]"
+                      placeholder="Nhập lý do can thiệp trạng thái serial..."
+                      class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </div>
 
                   @if (adjustmentError()) {
-                    <p class="text-xs text-rose-400">{{ adjustmentError() }}</p>
+                    <p class="text-xs text-danger font-semibold">{{ adjustmentError() }}</p>
                   }
 
                   <div class="flex justify-end gap-2 pt-2">
                     <button
                       type="button"
                       (click)="isAdjustingStatus.set(false)"
-                      class="px-3 py-1.5 rounded bg-[#161b26] hover:bg-[#272f3d] text-slate-300 text-xs font-semibold"
+                      appButton
+                      variant="secondary"
+                      size="sm"
                     >
-                      Dong
+                      Đóng
                     </button>
                     <button
                       type="button"
                       [disabled]="isSubmittingAdjustment()"
                       (click)="saveStatusAdjustment(d.id)"
-                      class="px-4 py-1.5 rounded bg-[#76b900] hover:bg-[#5a8d00] text-black font-bold text-xs disabled:opacity-50"
+                      appButton
+                      variant="primary"
+                      size="sm"
                     >
-                      {{ isSubmittingAdjustment() ? 'Dang luu...' : 'Xac nhan cap nhat' }}
+                      {{ isSubmittingAdjustment() ? 'Đang lưu...' : 'Xác nhận cập nhật' }}
                     </button>
                   </div>
                 </div>
@@ -305,18 +177,21 @@ import {
             }
           </div>
 
-          <div class="h-14 px-6 border-t border-[#272f3d] flex items-center justify-between flex-shrink-0 bg-[#090d16]">
+          <div class="h-14 px-6 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
               @if (detail && !isAdjustingStatus()) {
                 <button
                   type="button"
                   (click)="openAdjustStatus()"
-                  class="px-3 py-1.5 rounded bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-slate-200 text-xs font-semibold flex items-center gap-1.5"
+                  appButton
+                  variant="secondary"
+                  size="sm"
+                  class="flex items-center gap-1.5"
                 >
-                  <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>Dieu Chinh Trang Thai</span>
+                  <span>Điều Chỉnh Trạng Thái</span>
                 </button>
               }
             </div>
@@ -324,9 +199,12 @@ import {
             <button
               type="button"
               (click)="onClose()"
-              class="px-5 py-2 rounded bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-white font-semibold text-xs uppercase tracking-wide"
+              appButton
+              variant="outline"
+              size="sm"
+              class="uppercase tracking-wide"
             >
-              Dong
+              Đóng
             </button>
           </div>
         </div>
@@ -348,10 +226,28 @@ export class SerialDetailDialogComponent {
   readonly isAdjustingStatus = signal<boolean>(false);
   readonly isSubmittingAdjustment = signal<boolean>(false);
   readonly adjustmentError = signal<string | null>(null);
+  readonly selectedBranchFilterId = signal<string>('');
 
   newStatus: string = 'AVAILABLE';
   selectedBranchId: number | null = null;
   adjustmentReason: string = '';
+
+  readonly statusAdjustmentOptions: SelectOption[] = [
+    { value: 'AVAILABLE', label: 'Trong kho (Khả dụng)' },
+    { value: 'RESERVED', label: 'Đã gán xuất kho' },
+    { value: 'IN_TRANSIT', label: 'Đang điều chuyển' },
+    { value: 'ISSUED', label: 'Đã xuất bán' },
+    { value: 'QUARANTINED', label: 'Cách ly lỗi' },
+    { value: 'RETURNED_TO_SUPPLIER', label: 'Xuất trả nhà cung cấp' },
+  ];
+
+  readonly branchOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Giữ nguyên chi nhánh' },
+    ...this.branches.map((b) => ({
+      value: String(b.id),
+      label: `${b.name} (${b.code})`,
+    })),
+  ]);
 
   onClose(): void {
     this.isAdjustingStatus.set(false);
@@ -362,10 +258,16 @@ export class SerialDetailDialogComponent {
     if (this.detail) {
       this.newStatus = this.detail.status;
       this.selectedBranchId = this.detail.currentBranch?.id ?? null;
+      this.selectedBranchFilterId.set(this.selectedBranchId ? String(this.selectedBranchId) : '');
       this.adjustmentReason = '';
       this.adjustmentError.set(null);
       this.isAdjustingStatus.set(true);
     }
+  }
+
+  onBranchChange(val: string): void {
+    this.selectedBranchFilterId.set(val);
+    this.selectedBranchId = val ? Number(val) : null;
   }
 
   async saveStatusAdjustment(serialId: string): Promise<void> {
@@ -382,7 +284,7 @@ export class SerialDetailDialogComponent {
       this.isAdjustingStatus.set(false);
       this.updated.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi cap nhat trang thai';
+      const msg = err instanceof Error ? err.message : 'Lỗi khi cập nhật trạng thái';
       this.adjustmentError.set(msg);
     } finally {
       this.isSubmittingAdjustment.set(false);
@@ -392,81 +294,46 @@ export class SerialDetailDialogComponent {
   formatCurrency(value: string | number): string {
     const num = Number(value);
     if (isNaN(num)) {
-      return '0 d';
+      return '0 đ';
     }
-    return new Intl.NumberFormat('vi-VN').format(num) + ' d';
-  }
-
-  formatDate(isoDate: string | null): string {
-    if (!isoDate) {
-      return '-';
-    }
-    const d = new Date(isoDate);
-    return d.toLocaleDateString('vi-VN');
-  }
-
-  formatDateTime(isoDate: string | null): string {
-    if (!isoDate) {
-      return '-';
-    }
-    const d = new Date(isoDate);
-    return `${d.toLocaleDateString('vi-VN')} ${d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+    return new Intl.NumberFormat('vi-VN').format(num) + ' đ';
   }
 
   getStatusBadgeClass(status: string): string {
     switch (status) {
       case 'AVAILABLE':
-        return 'bg-emerald-950/80 text-emerald-300 border border-emerald-800';
+        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
       case 'RESERVED':
-        return 'bg-amber-950/80 text-amber-300 border border-amber-800';
+        return 'bg-amber-50 text-amber-700 border border-amber-200';
       case 'IN_TRANSIT':
-        return 'bg-blue-950/80 text-blue-300 border border-blue-800';
+        return 'bg-sky-50 text-sky-700 border border-sky-200';
       case 'ISSUED':
-        return 'bg-purple-950/80 text-purple-300 border border-purple-800';
+        return 'bg-purple-50 text-purple-700 border border-purple-200';
       case 'QUARANTINED':
-        return 'bg-rose-950/80 text-rose-300 border border-rose-800';
+        return 'bg-rose-50 text-rose-700 border border-rose-200';
       case 'RETURNED_TO_SUPPLIER':
-        return 'bg-slate-800 text-slate-300 border border-slate-700';
+        return 'bg-surface-alt text-muted border border-line';
       default:
-        return 'bg-slate-800 text-slate-300 border border-slate-700';
+        return 'bg-surface-alt text-muted border border-line';
     }
   }
 
   getStatusLabel(status: string): string {
     switch (status) {
       case 'AVAILABLE':
-        return 'Trong kho';
+        return 'Trong kho (Khả dụng)';
       case 'RESERVED':
-        return 'Da dat truoc';
+        return 'Đã gán xuất kho';
       case 'IN_TRANSIT':
-        return 'Dang chuyen';
+        return 'Đang chuyển';
       case 'ISSUED':
-        return 'Da xuat ban';
+        return 'Đã xuất bán';
       case 'QUARANTINED':
-        return 'Cach ly loi';
+        return 'Cách ly lỗi';
       case 'RETURNED_TO_SUPPLIER':
-        return 'Tra nha cung cap';
+        return 'Trả nhà cung cấp';
       default:
         return status;
-    }
-  }
-
-  getMovementDotClass(status: string): string {
-    switch (status) {
-      case 'AVAILABLE':
-        return 'bg-emerald-500';
-      case 'RESERVED':
-        return 'bg-amber-500';
-      case 'IN_TRANSIT':
-        return 'bg-blue-500';
-      case 'ISSUED':
-        return 'bg-purple-500';
-      case 'QUARANTINED':
-        return 'bg-rose-500';
-      case 'RETURNED_TO_SUPPLIER':
-        return 'bg-slate-400';
-      default:
-        return 'bg-slate-500';
     }
   }
 }
