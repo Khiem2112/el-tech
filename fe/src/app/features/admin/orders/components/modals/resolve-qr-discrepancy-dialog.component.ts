@@ -23,54 +23,57 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-slate-200 max-h-[90vh] flex flex-col">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+        <div data-modal-id="MOD-20" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-rose-400 uppercase text-sm tracking-wide">
-                Đối Soát Giao Dịch Lệch VietQR (MOD-20)
+              <h3 class="font-bold text-rose-600 dark:text-rose-400 uppercase text-sm tracking-wide">
+                Đối Soát Giao Dịch Lệch VietQR
               </h3>
-              <p class="text-xs text-slate-400">
-                Tuân thủ nghiêm ngặt quyết định FQ36-A: Tuyệt đối không chấp nhận nộp thêm tiền mặt
+              <p class="text-xs text-muted-foreground">
+                Tuân thủ quy định: Tuyệt đối không chấp nhận nộp thêm tiền mặt đối với đơn thanh toán trực tuyến
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-[#090d16] hover:bg-[#272f3d] text-slate-400 hover:text-white border border-[#272f3d] text-xs"
+              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-300 text-xs leading-relaxed space-y-1">
-            <div class="font-bold uppercase tracking-wider text-[11px]">Quy tắc đối soát FQ36-A & PAY-017:</div>
+          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-800 dark:text-amber-300 text-xs leading-relaxed space-y-1">
+            <div class="font-bold uppercase tracking-wider text-xs">Quy tắc đối soát thanh toán trực tuyến:</div>
             <div>- Hệ thống không hỗ trợ thu tiền mặt bổ sung cho đơn đặt online và không cho phép chuyển bù nhiều lần.</div>
             <div>- "Khớp thủ công" chỉ hợp lệ khi tài khoản ngân hàng đã thực nhận đủ 100% nhưng sai cú pháp mã tham chiếu.</div>
             <div>- Trường hợp chuyển thiếu tiền hoặc hết hạn 24 giờ đối soát: Bắt buộc hủy đơn và hoàn trả 100% số tiền thực nhận sang hàng đợi REFUND_PENDING.</div>
           </div>
 
           @if (isLoadingDetail()) {
-            <div class="p-6 text-center bg-[#090d16] border border-[#272f3d] rounded text-slate-400">
+            <div class="p-6 text-center bg-surface-alt border border-line rounded text-muted-foreground">
               Đang tải dữ liệu giao dịch webhook và tài khoản ngân hàng...
             </div>
           } @else if (discrepancy(); as d) {
-            <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded space-y-2">
+            <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
               <div class="flex justify-between items-center">
-                <span class="text-slate-400">Số tiền đơn hàng yêu cầu:</span>
-                <strong class="font-mono text-white text-sm">{{ formatCurrency(d.expectedAmount) }}</strong>
+                <span class="text-muted-foreground">Số tiền đơn hàng yêu cầu:</span>
+                <strong class="font-mono text-foreground text-sm">{{ formatCurrency(d.expectedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-slate-400">Số tiền thực nhận từ ngân hàng:</span>
-                <strong class="font-mono text-rose-400 text-sm">{{ formatCurrency(d.receivedAmount) }}</strong>
+                <span class="text-muted-foreground">Số tiền thực nhận từ ngân hàng:</span>
+                <strong class="font-mono text-rose-600 dark:text-rose-400 text-sm">{{ formatCurrency(d.receivedAmount) }}</strong>
               </div>
-              <div class="flex justify-between items-center pt-1 border-t border-[#272f3d]">
-                <span class="text-slate-400">Chênh lệch phát hiện:</span>
+              <div class="flex justify-between items-center pt-1 border-t border-line">
+                <span class="text-muted-foreground">Chênh lệch phát hiện:</span>
                 <strong
                   class="font-mono font-bold"
-                  [class.text-rose-400]="d.isUnderpaid"
-                  [class.text-emerald-400]="d.isExactMatch"
-                  [class.text-amber-400]="d.isOverpaid"
+                  [class.text-rose-600]="d.isUnderpaid"
+                  [class.dark:text-rose-400]="d.isUnderpaid"
+                  [class.text-emerald-600]="d.isExactMatch"
+                  [class.dark:text-emerald-400]="d.isExactMatch"
+                  [class.text-amber-600]="d.isOverpaid"
+                  [class.dark:text-amber-400]="d.isOverpaid"
                 >
                   {{ formatCurrency(d.differenceAmount) }}
                   @if (d.isUnderpaid) { (Chuyển thiếu tiền) }
@@ -79,22 +82,23 @@ import {
                 </strong>
               </div>
               @if (d.providerReference) {
-                <div class="text-[11px] text-slate-400">
-                  Mã tham chiếu: <span class="font-mono text-slate-300">{{ d.providerReference }}</span>
+                <div class="text-xs text-muted-foreground">
+                  Mã tham chiếu: <span class="font-mono text-foreground">{{ d.providerReference }}</span>
                   @if (d.providerTransactionId) {
-                    | Mã GD NH: <span class="font-mono text-slate-300">{{ d.providerTransactionId }}</span>
+                    | Mã GD NH: <span class="font-mono text-foreground">{{ d.providerTransactionId }}</span>
                   }
                 </div>
               }
             </div>
 
             <div class="space-y-2">
-              <label class="block font-semibold text-slate-400 text-xs">Chọn phương án giải quyết:</label>
+              <label class="block font-semibold text-muted-foreground text-xs uppercase">Chọn phương án giải quyết:</label>
               <div class="space-y-2">
                 <label
                   class="flex items-start gap-2.5 p-3 rounded border transition-colors"
-                  [class.bg-[#090d16]]="d.isExactMatch"
-                  [class.border-[#76b900]]="selectedResolution === 'MANUAL_MATCH'"
+                  [class.bg-surface-alt]="d.isExactMatch"
+                  [class.border-primary]="selectedResolution === 'MANUAL_MATCH'"
+                  [class.border-line]="selectedResolution !== 'MANUAL_MATCH'"
                   [class.cursor-pointer]="d.isExactMatch"
                   [class.opacity-50]="!d.isExactMatch"
                   [class.cursor-not-allowed]="!d.isExactMatch"
@@ -105,17 +109,17 @@ import {
                     value="MANUAL_MATCH"
                     [(ngModel)]="selectedResolution"
                     [disabled]="!d.isExactMatch"
-                    class="mt-0.5 text-[#76b900]"
+                    class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-bold text-white">
+                    <div class="font-bold text-foreground">
                       Khớp thủ công (Xác nhận đơn CONFIRMED)
                     </div>
-                    <div class="text-[11px] text-slate-400 mt-0.5">
+                    <div class="text-xs text-muted-foreground mt-0.5">
                       Chỉ cho phép khi ngân hàng đã thực nhận đủ 100% tiền đơn. Bỏ qua lỗi cú pháp nội dung chuyển khoản.
                     </div>
                     @if (!d.isExactMatch) {
-                      <div class="text-[10px] text-rose-400 mt-1 font-semibold">
+                      <div class="text-xs text-rose-600 dark:text-rose-400 mt-1 font-semibold">
                         Vô hiệu hóa vì giao dịch thực tế bị lệch so với giá trị đơn hàng.
                       </div>
                     }
@@ -123,8 +127,9 @@ import {
                 </label>
 
                 <label
-                  class="flex items-start gap-2.5 p-3 rounded border transition-colors bg-[#090d16] cursor-pointer"
+                  class="flex items-start gap-2.5 p-3 rounded border transition-colors bg-surface-alt cursor-pointer"
                   [class.border-rose-500]="selectedResolution === 'CANCEL_REFUND'"
+                  [class.border-line]="selectedResolution !== 'CANCEL_REFUND'"
                 >
                   <input
                     type="radio"
@@ -134,10 +139,10 @@ import {
                     class="mt-0.5 text-rose-500"
                   />
                   <div>
-                    <div class="font-bold text-rose-400">
+                    <div class="font-bold text-rose-600 dark:text-rose-400">
                       Hủy đơn & Hoàn trả 100% số tiền thực nhận (REFUND_PENDING)
                     </div>
-                    <div class="text-[11px] text-slate-400 mt-0.5">
+                    <div class="text-xs text-muted-foreground mt-0.5">
                       Hủy đơn hàng {{ order().code }}, giải phóng tồn kho giữ chỗ và chuyển {{ formatCurrency(d.receivedAmount) }} vào hàng đợi hoàn tiền thủ công.
                     </div>
                   </div>
@@ -147,29 +152,29 @@ import {
           }
 
           <div class="space-y-1">
-            <label class="block font-semibold text-slate-400 text-xs">
+            <label class="block font-semibold text-muted-foreground text-xs uppercase">
               Ghi chú đối soát kiểm toán (Bắt buộc):
             </label>
             <textarea
               rows="3"
               [(ngModel)]="note"
               placeholder="Nhập mã giao dịch ngân hàng khớp lệnh hoặc lý do hủy hoàn tiền đối soát..."
-              class="w-full px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
             ></textarea>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-300 text-xs">
+            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
               {{ errorMessage() }}
             </div>
           }
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
             <button
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-xs text-slate-300 cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
             >
               Hủy Bỏ
             </button>
@@ -263,6 +268,6 @@ export class ResolveQrDiscrepancyDialogComponent {
 
   formatCurrency(value: string | number): string {
     const num = Number(value || 0);
-    return num.toLocaleString('vi-VN') + ' ₫';
+    return num.toLocaleString('vi-VN') + ' đ';
   }
 }

@@ -10,6 +10,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
+  SelectComponent,
+  SelectOption,
+} from '../../../../../components/atoms/select/select.component';
+import {
   AdminOrderDetail,
   AdminOrderDetailService,
 } from '../../services/admin-order-detail.service';
@@ -17,25 +21,25 @@ import {
 @Component({
   selector: 'app-resolve-hold-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-slate-200 max-h-[90vh] flex flex-col">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+        <div data-modal-id="MOD-18" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-purple-400 uppercase text-sm tracking-wide">
-                {{ isCurrentlyOnHold() ? 'Xử Lý Ngoại Lệ Đơn Tạm Giữ (MOD-18)' : 'Tạm Giữ Đơn Hàng (MOD-18)' }}
+              <h3 class="font-bold text-purple-600 dark:text-purple-400 uppercase text-sm tracking-wide">
+                {{ isCurrentlyOnHold() ? 'Xử Lý Ngoại Lệ Đơn Tạm Giữ' : 'Tạm Giữ Đơn Hàng' }}
               </h3>
-              <p class="text-xs text-slate-400">
+              <p class="text-xs text-muted-foreground">
                 {{ isCurrentlyOnHold() ? 'Giải quyết ngoại lệ và điều phối chu trình tiếp theo' : 'Chuyển đơn sang trạng thái tạm giữ ngoại lệ ON_HOLD' }}
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-[#090d16] hover:bg-[#272f3d] text-slate-400 hover:text-white border border-[#272f3d] text-xs"
+              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
               title="Đóng hộp thoại"
             >
               Đóng
@@ -43,8 +47,8 @@ import {
           </div>
 
           @if (isCurrentlyOnHold()) {
-            <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded text-purple-300 text-xs leading-relaxed space-y-1">
-              <div>Đơn hàng đang bị tạm giữ với lý do: <strong class="text-white font-mono">{{ order().holdReason }}</strong></div>
+            <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded text-purple-800 dark:text-purple-300 text-xs leading-relaxed space-y-1">
+              <div>Đơn hàng đang bị tạm giữ với lý do: <strong class="text-foreground font-mono">{{ order().holdReason }}</strong></div>
               <div>
                 @switch (order().holdReason) {
                   @case ('PAYMENT_REVIEW') {
@@ -64,91 +68,89 @@ import {
             </div>
 
             <div class="space-y-2">
-              <label class="block font-semibold text-slate-400 text-xs">Phương án xử lý:</label>
+              <label class="block font-semibold text-muted-foreground text-xs">Phương án xử lý:</label>
               <div class="space-y-1.5">
-                <label class="flex items-start gap-2 p-2.5 bg-[#090d16] border border-[#272f3d] rounded cursor-pointer hover:border-[#76b900]">
+                <label class="flex items-start gap-2 p-2.5 bg-surface-alt border border-line rounded cursor-pointer hover:border-primary">
                   <input
                     type="radio"
                     name="resolveAction"
                     value="CONFIRM_RESUME"
                     [(ngModel)]="selectedAction"
-                    class="mt-0.5 text-[#76b900]"
+                    class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-bold text-white">Tiếp tục xử lý đơn hàng (CONFIRMED)</div>
-                    <div class="text-[11px] text-slate-400">Đã thỏa thuận phương án thành công hoặc đối soát xong, tiếp tục quy trình chuẩn.</div>
+                    <div class="font-bold text-foreground">Tiếp tục xử lý đơn hàng (CONFIRMED)</div>
+                    <div class="text-xs text-muted-foreground">Đã thỏa thuận phương án thành công hoặc đối soát xong, tiếp tục quy trình chuẩn.</div>
                   </div>
                 </label>
 
                 @if (order().holdReason === 'PICKUP_EXPIRED') {
-                  <label class="flex items-start gap-2 p-2.5 bg-[#090d16] border border-[#272f3d] rounded cursor-pointer hover:border-[#76b900]">
+                  <label class="flex items-start gap-2 p-2.5 bg-surface-alt border border-line rounded cursor-pointer hover:border-primary">
                     <input
                       type="radio"
                       name="resolveAction"
                       value="EXTEND_PICKUP"
                       [(ngModel)]="selectedAction"
-                      class="mt-0.5 text-[#76b900]"
+                      class="mt-0.5 text-primary"
                     />
                     <div>
-                      <div class="font-bold text-white">Gia hạn thời gian nhận hàng tại showroom</div>
-                      <div class="text-[11px] text-slate-400">Khách đã phản hồi hẹn lại ngày tới nhận, tiếp tục giữ hàng tại quầy.</div>
+                      <div class="font-bold text-foreground">Gia hạn thời gian nhận hàng tại showroom</div>
+                      <div class="text-xs text-muted-foreground">Khách đã phản hồi hẹn lại ngày tới nhận, tiếp tục giữ hàng tại quầy.</div>
                     </div>
                   </label>
                 }
 
-                <label class="flex items-start gap-2 p-2.5 bg-[#090d16] border border-rose-500/30 rounded cursor-pointer hover:border-rose-400">
+                <label class="flex items-start gap-2 p-2.5 bg-surface-alt border border-rose-500/30 rounded cursor-pointer hover:border-rose-400">
                   <input
                     type="radio"
                     name="resolveAction"
                     value="CANCEL_REFUND"
                     [(ngModel)]="selectedAction"
-                    class="mt-0.5 text-rose-400"
+                    class="mt-0.5 text-rose-500"
                   />
                   <div>
-                    <div class="font-bold text-rose-300">Hủy đơn & Hoàn tiền</div>
-                    <div class="text-[11px] text-slate-400">Hủy đơn hàng, giải phóng số lượng giữ chỗ và tạo lệnh hoàn tiền nếu khách đã thanh toán.</div>
+                    <div class="font-bold text-rose-600 dark:text-rose-400">Hủy đơn & Hoàn tiền</div>
+                    <div class="text-xs text-muted-foreground">Hủy đơn hàng, giải phóng số lượng giữ chỗ và tạo lệnh hoàn tiền nếu khách đã thanh toán.</div>
                   </div>
                 </label>
               </div>
             </div>
           } @else {
             <div class="space-y-2">
-              <label class="block font-semibold text-slate-400 text-xs">Chọn nguyên nhân tạm giữ:</label>
-              <select
-                [(ngModel)]="selectedHoldReason"
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-              >
-                <option value="PAYMENT_REVIEW">PAYMENT_REVIEW - Đối soát thanh toán / VietQR nghi vấn</option>
-                <option value="PAID_BUT_OUT_OF_STOCK">PAID_BUT_OUT_OF_STOCK - Trả tiền trễ dẫn đến hết hàng</option>
-                <option value="PICKUP_EXPIRED">PICKUP_EXPIRED - Đơn nhận tại showroom quá hạn 14 ngày</option>
-              </select>
+              <label class="block font-semibold text-muted-foreground text-xs">Chọn nguyên nhân tạm giữ:</label>
+              <app-select
+                [options]="holdReasonOptions"
+                [value]="selectedHoldReason"
+                (valueChange)="onHoldReasonChange($event)"
+                placeholder="Chọn nguyên nhân tạm giữ"
+              />
             </div>
           }
 
           <div class="space-y-1">
-            <label class="block font-semibold text-slate-400 text-xs">
+            <label class="block font-semibold text-muted-foreground text-xs">
               {{ isCurrentlyOnHold() ? 'Phương án giải quyết chi tiết:' : 'Ghi chú lý do tạm giữ:' }}
             </label>
             <textarea
               rows="3"
               [(ngModel)]="note"
               [placeholder]="isCurrentlyOnHold() ? 'Ghi nhận chi tiết thỏa thuận với khách hàng...' : 'Nhập chi tiết lý do phát sinh tạm giữ...'"
-              class="w-full px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-purple-500"
             ></textarea>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-300 text-xs">
+            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
               {{ errorMessage() }}
             </div>
           }
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
             <button
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded font-semibold text-xs text-slate-300 cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
             >
               Hủy Bỏ
             </button>
@@ -178,6 +180,12 @@ export class ResolveHoldDialogComponent {
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
+  readonly holdReasonOptions: SelectOption[] = [
+    { value: 'PAYMENT_REVIEW', label: 'PAYMENT_REVIEW - Đối soát thanh toán / VietQR nghi vấn' },
+    { value: 'PAID_BUT_OUT_OF_STOCK', label: 'PAID_BUT_OUT_OF_STOCK - Trả tiền trễ dẫn đến hết hàng' },
+    { value: 'PICKUP_EXPIRED', label: 'PICKUP_EXPIRED - Đơn nhận tại showroom quá hạn 14 ngày' },
+  ];
+
   selectedAction: 'CONFIRM_RESUME' | 'CANCEL_REFUND' | 'EXTEND_PICKUP' = 'CONFIRM_RESUME';
   selectedHoldReason: 'PAYMENT_REVIEW' | 'PAID_BUT_OUT_OF_STOCK' | 'PICKUP_EXPIRED' = 'PAYMENT_REVIEW';
   note = '';
@@ -185,6 +193,12 @@ export class ResolveHoldDialogComponent {
   readonly isCurrentlyOnHold = computed<boolean>(() => {
     return this.order().status === 'ON_HOLD';
   });
+
+  onHoldReasonChange(val: string): void {
+    if (val === 'PAYMENT_REVIEW' || val === 'PAID_BUT_OUT_OF_STOCK' || val === 'PICKUP_EXPIRED') {
+      this.selectedHoldReason = val;
+    }
+  }
 
   onClose(): void {
     if (this.isSubmitting()) {

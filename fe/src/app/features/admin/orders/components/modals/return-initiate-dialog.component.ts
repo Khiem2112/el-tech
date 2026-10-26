@@ -22,64 +22,64 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-md p-5 sm:p-6 space-y-4 text-xs text-slate-200 flex flex-col">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+        <div data-modal-id="MOD-14" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md p-5 sm:p-6 space-y-4 text-xs text-foreground flex flex-col">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-white uppercase text-sm tracking-wide">
-                Chuyển Hàng Hoàn Về Kho Chi Nhánh (MOD-14)
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+                Chuyển Hàng Hoàn Về Kho Chi Nhánh
               </h3>
-              <p class="text-xs text-slate-400">
+              <p class="text-xs text-muted-foreground">
                 Quy trình: Giao thất bại sang Đang chuyển hoàn
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-[#090d16] hover:bg-[#272f3d] text-slate-400 hover:text-white border border-[#272f3d] text-xs"
+              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-300 text-xs leading-relaxed">
-            Ghi nhận kiện hàng đang trên đường vận chuyển ngược về kho chi nhánh do khách từ chối nhận hoặc vượt quá số lần giao lại cho phép (ORD-025). Đơn hàng sẽ chuyển sang trạng thái Đang Chuyển Hoàn (RETURNING).
+          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-700 dark:text-amber-300 text-xs leading-relaxed">
+            Ghi nhận kiện hàng đang trên đường vận chuyển ngược về kho chi nhánh do khách từ chối nhận hoặc vượt quá số lần giao lại cho phép. Đơn hàng sẽ chuyển sang trạng thái Đang Chuyển Hoàn.
           </div>
 
-          <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded space-y-1">
-            <div class="text-slate-400">Kho chi nhánh đích nhận hàng hoàn:</div>
-            <div class="text-white font-semibold">
+          <div class="p-3 bg-surface-alt border border-line rounded space-y-1">
+            <div class="text-muted-foreground">Kho chi nhánh đích nhận hàng hoàn:</div>
+            <div class="text-foreground font-semibold">
               {{ order().fulfillmentBranch.name }} ({{ order().fulfillmentBranch.code }})
             </div>
-            <div class="text-[11px] text-slate-400">
+            <div class="text-xs text-muted-foreground">
               Địa chỉ: {{ order().fulfillmentBranch.address }}
             </div>
           </div>
 
           <div>
-            <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+            <label class="block font-semibold text-muted-foreground text-xs uppercase mb-1">
               Ghi chú chuyển hoàn (Mã vận đơn khứ hồi, lý do gửi trả)
             </label>
             <textarea
               [(ngModel)]="note"
               rows="2"
               placeholder="Shipper xác nhận chuyển kiện hàng quay trở lại kho..."
-              class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-amber-400 resize-none"
+              class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-amber-500 resize-none"
             ></textarea>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2.5 bg-rose-500/20 border border-rose-500/40 rounded text-rose-300 text-xs">
+            <div class="p-2.5 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
               {{ errorMessage() }}
             </div>
           }
 
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
             <button
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 font-semibold text-xs rounded transition-colors disabled:opacity-50"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line text-foreground font-semibold text-xs rounded transition-colors disabled:opacity-50"
             >
               Hủy Bỏ
             </button>

@@ -60,36 +60,35 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
-      <div class="h-9 bg-[#161b26] border border-[#272f3d] rounded px-4 flex items-center justify-between text-xs">
-        <nav class="flex items-center gap-1.5 text-slate-400">
+    <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-foreground">
+      <div class="h-9 bg-surface border border-line rounded px-4 flex items-center justify-between text-xs shadow-card">
+        <nav class="flex items-center gap-1.5 text-muted">
           <a
             routerLink="/admin/orders"
-            class="hover:text-[#76b900] transition-colors"
+            class="hover:text-primary transition-colors font-medium"
           >
             Đơn Hàng
           </a>
           <span>/</span>
-          <span class="font-mono font-bold text-white">
+          <span class="font-mono font-bold text-foreground">
             {{ detailService.order()?.code || orderId() }}
           </span>
           @if (detailService.order(); as ord) {
             <span>/</span>
-            <span class="text-slate-300">
+            <span class="text-muted">
               Chi Nhánh: {{ ord.fulfillmentBranch.code }} ({{ ord.fulfillmentBranch.name }})
             </span>
           }
         </nav>
-        <span class="text-[11px] text-[#76b900] font-mono font-bold">SCR-10</span>
       </div>
 
       @if (actionToastMessage()) {
-        <div class="p-3 bg-blue-500/15 border border-blue-500/30 rounded text-blue-300 text-xs flex items-center justify-between">
-          <span>{{ actionToastMessage() }}</span>
+        <div class="p-3 bg-primary/10 border border-primary/30 rounded text-foreground text-xs flex items-center justify-between shadow-card">
+          <span class="font-medium">{{ actionToastMessage() }}</span>
           <button
             type="button"
             (click)="actionToastMessage.set(null)"
-            class="text-slate-400 hover:text-white text-xs px-2"
+            class="text-muted hover:text-foreground text-xs px-2 font-bold cursor-pointer"
           >
             Đóng
           </button>
@@ -97,25 +96,25 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
       }
 
       @if (detailService.isLoading()) {
-        <div class="p-12 text-center bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-[#76b900] font-bold text-sm">Đang tải dữ liệu chi tiết đơn hàng...</div>
-          <p class="text-xs text-slate-400 mt-1">Đang kết xuất thông tin khách hàng, linh kiện và sổ kiểm toán</p>
+        <div class="p-12 text-center bg-surface border border-line rounded-lg shadow-card">
+          <div class="text-primary font-bold text-sm">Đang tải dữ liệu chi tiết đơn hàng...</div>
+          <p class="text-xs text-muted mt-1">Đang kết xuất thông tin khách hàng, linh kiện và sổ kiểm toán</p>
         </div>
       } @else if (detailService.error()) {
-        <div class="p-8 text-center bg-[#161b26] border border-rose-500/30 rounded-lg space-y-3">
-          <div class="text-rose-400 font-bold text-sm">Không thể truy xuất đơn hàng</div>
-          <p class="text-xs text-slate-400">{{ detailService.error() }}</p>
+        <div class="p-8 text-center bg-surface border border-rose-500/30 rounded-lg space-y-3 shadow-card">
+          <div class="text-rose-600 dark:text-rose-400 font-bold text-sm">Không thể truy xuất đơn hàng</div>
+          <p class="text-xs text-muted">{{ detailService.error() }}</p>
           <div class="flex items-center justify-center gap-2 pt-2">
             <button
               type="button"
               (click)="loadOrder()"
-              class="px-4 py-2 bg-[#76b900] text-[#090d16] font-bold text-xs rounded hover:bg-[#5a8d00]"
+              class="px-4 py-2 bg-primary text-primary-foreground font-bold text-xs rounded hover:opacity-90 transition-opacity"
             >
               Thử lại
             </button>
             <a
               routerLink="/admin/orders"
-              class="px-4 py-2 bg-[#090d16] border border-[#272f3d] text-white font-semibold text-xs rounded hover:bg-[#272f3d]"
+              class="px-4 py-2 bg-surface-alt border border-line text-foreground font-semibold text-xs rounded hover:bg-surface transition-colors"
             >
               Quay về danh sách
             </a>
@@ -130,10 +129,10 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           (refreshRequested)="loadOrder()"
         />
 
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-4 sm:p-5 flex items-center justify-between flex-wrap gap-4 shadow-sm">
+        <div class="bg-surface border border-line rounded-lg p-4 sm:p-5 flex items-center justify-between flex-wrap gap-4 shadow-card">
           <div>
             <div class="flex items-center gap-2.5 flex-wrap">
-              <h1 class="text-xl font-black text-white font-mono tracking-tight">
+              <h1 class="text-xl font-bold text-foreground font-mono tracking-tight">
                 ĐƠN HÀNG #{{ ord.code }}
               </h1>
               <span class="px-2.5 py-0.5 rounded text-xs font-bold" [class]="statusBadgeClass(ord.status)">
@@ -141,78 +140,82 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
               </span>
               <span
                 class="px-2.5 py-0.5 rounded text-xs font-bold font-mono"
-                [class.bg-purple-500/20]="ord.hasAssembly"
-                [class.text-purple-300]="ord.hasAssembly"
+                [class.bg-purple-50]="ord.hasAssembly"
+                [class.text-purple-700]="ord.hasAssembly"
+                [class.dark:bg-purple-950/60]="ord.hasAssembly"
+                [class.dark:text-purple-300]="ord.hasAssembly"
                 [class.border]="ord.hasAssembly"
-                [class.border-purple-500/40]="ord.hasAssembly"
-                [class.bg-slate-700]="!ord.hasAssembly"
-                [class.text-slate-300]="!ord.hasAssembly"
+                [class.border-purple-200]="ord.hasAssembly"
+                [class.dark:border-purple-800/40]="ord.hasAssembly"
+                [class.bg-surface-alt]="!ord.hasAssembly"
+                [class.text-muted]="!ord.hasAssembly"
+                [class.border-line]="!ord.hasAssembly"
               >
                 {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
               </span>
             </div>
-            <div class="text-xs text-slate-400 mt-1">
-              Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-white">{{ ord.fulfillmentBranch.name }}</strong>
+            <div class="text-xs text-muted mt-1">
+              Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground">{{ ord.fulfillmentBranch.name }}</strong>
             </div>
           </div>
 
-          <!-- Smart Buttons Block (Odoo Style) -->
+          <!-- Smart Buttons Block -->
           <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
             <a
               [routerLink]="['/admin/customers', ord.customer.id]"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
-              title="Nhấp để xem hồ sơ chi tiết khách hàng SCR-27"
+              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
+              title="Nhấp để xem hồ sơ chi tiết khách hàng"
             >
-              <div class="font-mono font-bold text-[#76b900] truncate group-hover:scale-105 transition-transform">
+              <div class="font-mono font-bold text-primary truncate group-hover:scale-105 transition-transform">
                 {{ ord.customer.name }}
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Khách Hàng</div>
+              <div class="text-xs text-muted uppercase tracking-wider">Khách Hàng</div>
             </a>
 
             <a
               [routerLink]="['/admin/inventory/ledger']"
               [queryParams]="{ search: ord.code }"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
               title="Nhấp để xem các chứng từ và bút toán xuất giữ trong sổ kho bất biến"
             >
-              <div class="font-mono font-bold text-amber-400 group-hover:scale-105 transition-transform">
+              <div class="font-mono font-bold text-amber-600 dark:text-amber-400 group-hover:scale-105 transition-transform">
                 {{ ord.stockMoves.length }} phiếu
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phiếu Xuất/Giữ Kho</div>
+              <div class="text-xs text-muted uppercase tracking-wider">Phiếu Xuất/Giữ Kho</div>
             </a>
 
             <a
               href="#section-finance"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
               title="Nhấp để xem chi tiết chứng từ thanh toán và quyết toán"
             >
-              <div class="font-mono font-bold text-emerald-400 group-hover:scale-105 transition-transform">
+              <div class="font-mono font-bold text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform">
                 {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn tiền' : 'Cọc 10%')) : 'Chưa thu' }}
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Thanh Toán</div>
+              <div class="text-xs text-muted uppercase tracking-wider">Thanh Toán</div>
             </a>
 
             <a
               href="#section-timeline"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
+              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
               title="Nhấp để xem các phụ lục đơn hàng và lịch sử thay đổi"
             >
-              <div class="font-mono font-bold text-slate-200 group-hover:scale-105 transition-transform">
+              <div class="font-mono font-bold text-foreground group-hover:scale-105 transition-transform">
                 {{ ord.amendments.length }} phụ lục
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Phụ Lục Đơn</div>
+              <div class="text-xs text-muted uppercase tracking-wider">Phụ Lục Đơn</div>
             </a>
 
             <a
               [routerLink]="['/admin/settings/notification-outbox']"
               [queryParams]="{ search: ord.code }"
-              class="p-2 bg-[#090d16] hover:bg-[#1f2736] border border-[#272f3d] rounded text-center transition-colors cursor-pointer group block"
-              title="Nhấp để xem nhật ký thông báo email/SMS đã phát cho đơn này SCR-30"
+              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
+              title="Nhấp để xem nhật ký thông báo email/SMS đã phát cho đơn này"
             >
-              <div class="font-mono font-bold text-[#76b900] group-hover:scale-105 transition-transform">
+              <div class="font-mono font-bold text-primary group-hover:scale-105 transition-transform">
                 {{ ord.statusHistories.length }} sự kiện
               </div>
-              <div class="text-[10px] text-slate-400 uppercase tracking-wider">Nhật Ký Outbox</div>
+              <div class="text-xs text-muted uppercase tracking-wider">Nhật Ký Outbox</div>
             </a>
           </div>
         </div>

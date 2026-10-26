@@ -15,45 +15,45 @@ type FlowStep = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-[#161b26] border border-[#272f3d] rounded-lg p-3 sm:p-4 space-y-3">
+    <div class="bg-surface border border-line rounded-lg p-3 sm:p-4 space-y-3 shadow-card text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-slate-400 font-semibold uppercase text-[11px] tracking-wider">
+          <span class="text-muted font-semibold uppercase text-xs tracking-wider">
             Phân loại vận hành:
           </span>
-          <div class="inline-flex items-center rounded-full bg-[#090d16] p-0.5 border border-[#272f3d] text-[11px]">
+          <div class="inline-flex items-center rounded-full bg-surface-alt p-0.5 border border-line text-xs">
             <span
               class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-[#76b900]]="order().fulfillmentMethod === 'DELIVERY'"
-              [class.text-[#090d16]]="order().fulfillmentMethod === 'DELIVERY'"
-              [class.text-slate-400]="order().fulfillmentMethod !== 'DELIVERY'"
+              [class.bg-primary]="order().fulfillmentMethod === 'DELIVERY'"
+              [class.text-primary-foreground]="order().fulfillmentMethod === 'DELIVERY'"
+              [class.text-muted]="order().fulfillmentMethod !== 'DELIVERY'"
             >
               Giao Tận Nơi
             </span>
             <span
               class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-[#76b900]]="order().fulfillmentMethod === 'PICKUP'"
-              [class.text-[#090d16]]="order().fulfillmentMethod === 'PICKUP'"
-              [class.text-slate-400]="order().fulfillmentMethod !== 'PICKUP'"
+              [class.bg-primary]="order().fulfillmentMethod === 'PICKUP'"
+              [class.text-primary-foreground]="order().fulfillmentMethod === 'PICKUP'"
+              [class.text-muted]="order().fulfillmentMethod !== 'PICKUP'"
             >
               Nhận Tại Shop
             </span>
           </div>
 
-          <div class="inline-flex items-center rounded-full bg-[#090d16] p-0.5 border border-[#272f3d] text-[11px]">
+          <div class="inline-flex items-center rounded-full bg-surface-alt p-0.5 border border-line text-xs">
             <span
               class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
               [class.bg-purple-600]="order().hasAssembly"
               [class.text-white]="order().hasAssembly"
-              [class.text-slate-400]="!order().hasAssembly"
+              [class.text-muted]="!order().hasAssembly"
             >
               Có Lắp Ráp PC
             </span>
             <span
               class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-slate-700]="!order().hasAssembly"
-              [class.text-slate-200]="!order().hasAssembly"
-              [class.text-slate-400]="order().hasAssembly"
+              [class.bg-surface]="!order().hasAssembly"
+              [class.text-foreground]="!order().hasAssembly"
+              [class.text-muted]="order().hasAssembly"
             >
               Linh Kiện Rời
             </span>
@@ -73,24 +73,24 @@ type FlowStep = {
           @for (step of activeFlowSteps(); track step.key; let idx = $index; let last = $last) {
             <div
               class="flex-1 px-3 py-2 rounded text-xs font-semibold text-center border transition-all select-none"
-              [class.bg-[#76b900]]="isStepActive(step)"
-              [class.text-[#090d16]]="isStepActive(step)"
-              [class.border-[#76b900]]="isStepActive(step)"
+              [class.bg-primary]="isStepActive(step)"
+              [class.text-primary-foreground]="isStepActive(step)"
+              [class.border-primary]="isStepActive(step)"
               [class.font-bold]="isStepActive(step)"
-              [class.bg-[#76b900]/15]="isStepCompleted(step)"
-              [class.text-[#76b900]]="isStepCompleted(step)"
-              [class.border-[#76b900]/40]="isStepCompleted(step)"
-              [class.bg-[#090d16]]="isStepPending(step)"
-              [class.text-slate-400]="isStepPending(step)"
-              [class.border-[#272f3d]]="isStepPending(step)"
+              [class.bg-primary/10]="isStepCompleted(step)"
+              [class.text-primary]="isStepCompleted(step)"
+              [class.border-primary/30]="isStepCompleted(step)"
+              [class.bg-surface-alt]="isStepPending(step)"
+              [class.text-muted]="isStepPending(step)"
+              [class.border-line]="isStepPending(step)"
             >
-              <div class="text-[10px] uppercase tracking-wider text-slate-400" [class.text-[#090d16]/70]="isStepActive(step)">
+              <div class="text-xs uppercase tracking-wider text-muted" [class.text-primary-foreground]="isStepActive(step)">
                 Chặng {{ idx + 1 }}
               </div>
               <div class="mt-0.5 truncate">{{ step.label }}</div>
             </div>
             @if (!last) {
-              <div class="text-slate-600 font-bold px-0.5">&gt;</div>
+              <div class="text-muted font-bold px-0.5">&gt;</div>
             }
           }
         </div>
