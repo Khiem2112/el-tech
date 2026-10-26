@@ -153,11 +153,27 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
           variant="secondary"
           size="lg"
           class="w-full"
+          [disabled]="isRequestingOtp() || !code.trim() || !identifier.trim()"
           (click)="request()"
         >
-          <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
-          <span>Gửi mã xác thực OTP tra cứu</span>
+          @if (isRequestingOtp()) {
+            <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+            <span>Đang gửi mã xác thực OTP...</span>
+          } @else {
+            <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
+            <span>Gửi mã xác thực OTP tra cứu</span>
+          }
         </button>
+
+        @if (requestError()) {
+          <div class="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger flex items-start gap-2 animate-in fade-in">
+            <lucide-icon name="AlertTriangle" class="size-4 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
+            <div class="flex-1 space-y-1">
+              <span class="font-bold block">Không tìm thấy đơn hàng</span>
+              <p class="text-foreground/80 text-[11px] leading-relaxed">{{ requestError() }}</p>
+            </div>
+          </div>
+        }
 
         <!-- OTP Input Step -->
         @if (verificationId()) {
@@ -177,18 +193,91 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                 appButton
                 variant="primary"
                 size="md"
+                [disabled]="isVerifyingOtp() || !otp.trim()"
                 (click)="verify()"
               >
-                <span>Xem chi tiết đơn</span>
-                <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
+                @if (isVerifyingOtp()) {
+                  <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                  <span>Đang xác thực...</span>
+                } @else {
+                  <span>Xem chi tiết đơn</span>
+                  <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
+                }
               </button>
             </div>
+            @if (verifyError()) {
+              <p class="text-xs text-danger font-medium pt-1">{{ verifyError() }}</p>
+            }
           </div>
         }
       </div>
 
+      <!-- SKELETON LOADING STATE -->
+      @if (isVerifyingOtp()) {
+        <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm animate-pulse space-y-4" aria-busy="true">
+          <!-- Header Bar Skeleton -->
+          <div class="bg-surface-dark p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-line">
+            <div class="space-y-2">
+              <div class="h-5 w-48 bg-line-dark rounded"></div>
+              <div class="h-6 w-64 bg-line-dark rounded"></div>
+            </div>
+            <div class="flex gap-2">
+              <div class="h-7 w-28 bg-line-dark rounded-full"></div>
+              <div class="h-7 w-32 bg-line-dark rounded-full"></div>
+            </div>
+          </div>
+
+          <!-- Stepper Skeleton -->
+          <div class="p-5 bg-surface-alt border-b border-line">
+            <div class="grid grid-cols-5 gap-2">
+              @for (step of [1, 2, 3, 4, 5]; track step) {
+                <div class="flex flex-col items-center space-y-2">
+                  <div class="size-8 rounded-full bg-line"></div>
+                  <div class="h-3 w-16 bg-line rounded"></div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Cards Skeleton -->
+          <div class="p-5 sm:p-6 space-y-6">
+            <div class="grid sm:grid-cols-3 gap-3">
+              <div class="h-16 bg-surface-alt rounded-xl border border-line"></div>
+              <div class="h-16 bg-surface-alt rounded-xl border border-line"></div>
+              <div class="h-16 bg-surface-alt rounded-xl border border-line"></div>
+            </div>
+
+            <div class="h-28 bg-surface-alt rounded-xl border border-line"></div>
+
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="h-24 bg-surface-alt rounded-lg border border-line"></div>
+              <div class="h-24 bg-surface-alt rounded-lg border border-line"></div>
+            </div>
+
+            <!-- Lines Skeleton -->
+            <div class="space-y-3">
+              <div class="h-4 w-40 bg-line rounded"></div>
+              <div class="rounded-lg border border-line divide-y divide-border bg-surface">
+                @for (row of [1, 2]; track row) {
+                  <div class="p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 flex-1">
+                      <div class="size-14 rounded-md bg-surface-alt shrink-0"></div>
+                      <div class="space-y-2 flex-1">
+                        <div class="h-3 w-48 bg-line rounded"></div>
+                        <div class="h-2.5 w-24 bg-line rounded"></div>
+                      </div>
+                    </div>
+                    <div class="h-4 w-20 bg-line rounded"></div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
       <!-- Detailed Order View When Retrieved -->
-      @if (order(); as item) {
+      @if (!isVerifyingOtp() && order(); as item) {
         <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm">
           
           <!-- Header Bar with Status Badges -->
@@ -573,9 +662,15 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                             appButton
                             variant="primary"
                             size="sm"
+                            [disabled]="isSubmittingReview() || reviewText.trim().length < 10"
                             (click)="submitReview(line)"
                           >
-                            Gửi đánh giá
+                            @if (isSubmittingReview()) {
+                              <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                              <span>Đang gửi...</span>
+                            } @else {
+                              <span>Gửi đánh giá</span>
+                            }
                           </button>
                           <button
                             type="button"
@@ -619,6 +714,45 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
         </div>
       }
 
+      <!-- Empty Guide State (When No Order Selected/Retrieved) -->
+      @if (!isVerifyingOtp() && !order()) {
+        <div class="max-w-2xl mx-auto rounded-xl border border-line bg-surface p-8 text-center space-y-4 shadow-xs">
+          <div class="size-12 rounded-full bg-surface-alt border border-line flex items-center justify-center mx-auto text-primary">
+            <lucide-icon name="Package" class="size-6" aria-hidden="true"></lucide-icon>
+          </div>
+          <div class="space-y-1.5">
+            <h3 class="text-base font-bold text-foreground">Chưa có đơn hàng nào được chọn tra cứu</h3>
+            <p class="text-xs text-muted max-w-md mx-auto leading-relaxed">
+              Nhập mã đơn hàng và số điện thoại hoặc email liên kết để nhận mã xác thực OTP, kiểm tra tiến độ đóng gói, kết quả stress-test và mã thanh toán VietQR.
+            </p>
+          </div>
+
+          <div class="grid sm:grid-cols-3 gap-3 pt-3 border-t border-line text-left">
+            <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
+              <span class="text-[11px] font-bold text-foreground flex items-center gap-1.5">
+                <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                Tiến độ 5 giai đoạn
+              </span>
+              <p class="text-[10px] text-muted leading-relaxed">Cập nhật trực tiếp từ kho và bàn test bench</p>
+            </div>
+            <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
+              <span class="text-[11px] font-bold text-foreground flex items-center gap-1.5">
+                <lucide-icon name="Cpu" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                Kết quả Stress Test
+              </span>
+              <p class="text-[10px] text-muted leading-relaxed">Xem nhiệt độ Furmark và Cinebench xuất xưởng</p>
+            </div>
+            <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
+              <span class="text-[11px] font-bold text-foreground flex items-center gap-1.5">
+                <lucide-icon name="QrCode" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                Thanh toán VietQR
+              </span>
+              <p class="text-[10px] text-muted leading-relaxed">Mã QR chính xác theo nội dung đơn hàng</p>
+            </div>
+          </div>
+        </div>
+      }
+
       <!-- Order Cancel Modal Dialog -->
       @if (showCancelModal() && order(); as curOrder) {
         <app-order-cancel-modal
@@ -656,6 +790,11 @@ export class OrderLookupPageComponent implements OnInit {
   protected readonly order = signal<Order | null>(null);
   protected readonly showCancelModal = signal(false);
   protected readonly reviewingLineId = signal<string | null>(null);
+  protected readonly isRequestingOtp = signal(false);
+  protected readonly isVerifyingOtp = signal(false);
+  protected readonly isSubmittingReview = signal(false);
+  protected readonly requestError = signal<string | null>(null);
+  protected readonly verifyError = signal<string | null>(null);
 
   ngOnInit(): void {
     const user = this.auth.currentUser();
@@ -695,17 +834,54 @@ export class OrderLookupPageComponent implements OnInit {
   });
 
   protected async request(): Promise<void> {
-    const response = await this.api.post<Otp>('/orders/lookup/request', { code: this.code.trim(), identifier: this.identifier.trim() });
-    if (response.success) this.verificationId.set(response.data.verificationId);
+    if (this.isRequestingOtp() || !this.code.trim() || !this.identifier.trim()) return;
+    this.isRequestingOtp.set(true);
+    this.requestError.set(null);
+    try {
+      const response = await this.api.post<Otp>('/orders/lookup/request', {
+        code: this.code.trim(),
+        identifier: this.identifier.trim(),
+      });
+      if (response.success) {
+        this.verificationId.set(response.data.verificationId);
+      } else {
+        this.requestError.set(
+          !response.success && response.error?.messageKey
+            ? response.error.messageKey
+            : 'Không tìm thấy đơn hàng với thông tin đã cung cấp. Vui lòng kiểm tra lại mã đơn và số điện thoại hoặc email.',
+        );
+      }
+    } catch {
+      this.requestError.set('Lỗi kết nối máy chủ. Vui lòng thử lại sau.');
+    } finally {
+      this.isRequestingOtp.set(false);
+    }
   }
 
   protected async verify(): Promise<void> {
     const verificationId = this.verificationId();
-    if (!verificationId) return;
-    const response = await this.api.post<{ verificationId: string; sessionToken: string; order: Order }>('/orders/lookup/verify', { verificationId, code: this.otp.trim() });
-    if (response.success) {
-      this.sessionToken.set(response.data.sessionToken || response.data.verificationId);
-      this.order.set(response.data.order);
+    if (!verificationId || this.isVerifyingOtp() || !this.otp.trim()) return;
+    this.isVerifyingOtp.set(true);
+    this.verifyError.set(null);
+    try {
+      const response = await this.api.post<{ verificationId: string; sessionToken: string; order: Order }>('/orders/lookup/verify', {
+        verificationId,
+        code: this.otp.trim(),
+      });
+      if (response.success) {
+        this.sessionToken.set(response.data.sessionToken || response.data.verificationId);
+        this.order.set(response.data.order);
+      } else {
+        this.verifyError.set(
+          !response.success && response.error?.messageKey
+            ? response.error.messageKey
+            : 'Mã OTP không chính xác hoặc đã hết hạn.',
+        );
+      }
+    } catch {
+      this.verifyError.set('Lỗi kết nối khi xác thực OTP. Vui lòng thử lại.');
+    } finally {
+      this.isVerifyingOtp.set(false);
     }
   }
 
@@ -746,17 +922,22 @@ export class OrderLookupPageComponent implements OnInit {
 
   protected async submitReview(line: OrderLine): Promise<void> {
     const verificationId = this.verificationId();
-    if (!verificationId || this.reviewText.trim().length < 10) return;
-    const response = await this.api.post<{ id: string }>('/reviews', {
-      verificationId,
-      orderLineId: line.id,
-      rating: this.reviewRating,
-      text: this.reviewText.trim(),
-    });
-    if (response.success) {
-      line.canReview = false;
-      this.reviewingLineId.set(null);
-      await this.refreshOrder();
+    if (!verificationId || this.reviewText.trim().length < 10 || this.isSubmittingReview()) return;
+    this.isSubmittingReview.set(true);
+    try {
+      const response = await this.api.post<{ id: string }>('/reviews', {
+        verificationId,
+        orderLineId: line.id,
+        rating: this.reviewRating,
+        text: this.reviewText.trim(),
+      });
+      if (response.success) {
+        line.canReview = false;
+        this.reviewingLineId.set(null);
+        await this.refreshOrder();
+      }
+    } finally {
+      this.isSubmittingReview.set(false);
     }
   }
 }

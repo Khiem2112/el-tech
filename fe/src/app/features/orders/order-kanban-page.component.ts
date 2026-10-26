@@ -143,15 +143,28 @@ type KanbanOrder = {
             size="sm"
             class="w-full"
             title="Làm mới bảng"
-            (click)="resetFilters()"
+            [disabled]="isLoading()"
+            (click)="refreshData()"
           >
-            <lucide-icon name="RefreshCw" class="size-3.5" aria-hidden="true"></lucide-icon>
+            <lucide-icon [name]="isLoading() ? 'loader-2' : 'RefreshCw'" class="size-3.5" [class.animate-spin]="isLoading()" aria-hidden="true"></lucide-icon>
           </button>
         </div>
       </div>
 
-      <!-- KANBAN VIEW -->
-      @if (viewMode() === 'kanban') {
+      <!-- SKELETON LOADING STATE -->
+      @if (isLoading()) {
+        <div class="w-full overflow-x-auto pb-6" aria-busy="true">
+          <div class="min-w-[1240px] grid grid-cols-5 gap-4 items-start">
+            @for (col of [1, 2, 3, 4, 5]; track col) {
+              <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px] animate-pulse space-y-3">
+                <div class="h-7 bg-line rounded-lg"></div>
+                <div class="h-44 bg-surface rounded-xl border border-line"></div>
+                <div class="h-44 bg-surface rounded-xl border border-line"></div>
+              </div>
+            }
+          </div>
+        </div>
+      } @else if (viewMode() === 'kanban') {
         <div class="w-full overflow-x-auto pb-6">
           <div class="min-w-[1240px] grid grid-cols-5 gap-4 items-start">
             <!-- Stage 1: Chờ TT & Xác nhận -->
@@ -165,9 +178,15 @@ type KanbanOrder = {
                   {{ pendingOrders().length }} đơn
                 </span>
               </div>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 flex-1">
                 @for (item of pendingOrders(); track item.id) {
                   <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+                } @empty {
+                  <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
+                    <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
+                    <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
+                    <p class="text-[10px] text-muted">Chưa có đơn chờ xác nhận</p>
+                  </div>
                 }
               </div>
             </div>
@@ -183,9 +202,15 @@ type KanbanOrder = {
                   {{ preparingOrders().length }} đơn
                 </span>
               </div>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 flex-1">
                 @for (item of preparingOrders(); track item.id) {
                   <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+                } @empty {
+                  <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
+                    <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
+                    <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
+                    <p class="text-[10px] text-muted">Chưa có đơn đang soạn linh kiện</p>
+                  </div>
                 }
               </div>
             </div>
@@ -201,9 +226,15 @@ type KanbanOrder = {
                   {{ assemblingOrders().length }} đơn
                 </span>
               </div>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 flex-1">
                 @for (item of assemblingOrders(); track item.id) {
                   <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+                } @empty {
+                  <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
+                    <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
+                    <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
+                    <p class="text-[10px] text-muted">Chưa có đơn đang stress test</p>
+                  </div>
                 }
               </div>
             </div>
@@ -219,9 +250,15 @@ type KanbanOrder = {
                   {{ readyOrders().length }} đơn
                 </span>
               </div>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 flex-1">
                 @for (item of readyOrders(); track item.id) {
                   <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+                } @empty {
+                  <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
+                    <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
+                    <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
+                    <p class="text-[10px] text-muted">Chưa có đơn sẵn sàng tại Hub</p>
+                  </div>
                 }
               </div>
             </div>
@@ -237,9 +274,15 @@ type KanbanOrder = {
                   {{ completedOrders().length }} đơn
                 </span>
               </div>
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 flex-1">
                 @for (item of completedOrders(); track item.id) {
                   <ng-container *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"></ng-container>
+                } @empty {
+                  <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
+                    <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
+                    <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
+                    <p class="text-[10px] text-muted">Chưa có đơn hoàn tất trong phiên</p>
+                  </div>
                 }
               </div>
             </div>
@@ -282,6 +325,22 @@ type KanbanOrder = {
                   <lucide-icon name="ChevronRight" class="size-3.5" aria-hidden="true"></lucide-icon>
                 </a>
               </div>
+            </div>
+          } @empty {
+            <div class="p-12 text-center space-y-3">
+              <div class="size-12 rounded-full bg-surface-alt border border-line flex items-center justify-center mx-auto text-muted">
+                <lucide-icon name="Package" class="size-6" aria-hidden="true"></lucide-icon>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-foreground">Không tìm thấy đơn hàng phù hợp</h3>
+                <p class="text-xs text-muted max-w-sm mx-auto leading-relaxed">
+                  Không có đơn hàng nào khớp với bộ lọc tìm kiếm hiện tại. Vui lòng thử tìm từ khóa khác hoặc làm mới bộ lọc.
+                </p>
+              </div>
+              <button type="button" appButton variant="outline" size="sm" (click)="resetFilters()">
+                <lucide-icon name="RefreshCw" class="size-3.5" aria-hidden="true"></lucide-icon>
+                <span>Đặt lại bộ lọc</span>
+              </button>
             </div>
           }
         </div>
@@ -461,6 +520,7 @@ export class OrderKanbanPageComponent implements OnInit {
     { value: 'delivery', label: 'Giao tận nơi (Hỏa tốc 2H)' },
   ];
 
+  protected readonly isLoading = signal(false);
   private readonly orders = signal<KanbanOrder[]>([]);
 
   async ngOnInit(): Promise<void> {
@@ -468,6 +528,7 @@ export class OrderKanbanPageComponent implements OnInit {
   }
 
   private async loadKanbanOrders(): Promise<void> {
+    this.isLoading.set(true);
     try {
       const res = await this.api.get<KanbanOrder[]>('/orders/kanban');
       if (res.success) {
@@ -475,6 +536,8 @@ export class OrderKanbanPageComponent implements OnInit {
       }
     } catch (error) {
       console.error('Failed to load kanban orders from backend API', error);
+    } finally {
+      this.isLoading.set(false);
     }
   }
 
@@ -511,5 +574,10 @@ export class OrderKanbanPageComponent implements OnInit {
     this.searchQuery = '';
     this.selectedType.set('all');
     this.selectedBranch.set('all');
+  }
+
+  protected async refreshData(): Promise<void> {
+    this.resetFilters();
+    await this.loadKanbanOrders();
   }
 }

@@ -210,8 +210,13 @@ export type CancelOrderPayload = {
             [disabled]="!canSubmit()"
             (click)="handleConfirmCancel()"
           >
-            <lucide-icon name="RotateCcw" class="size-4" aria-hidden="true"></lucide-icon>
-            <span>Xác nhận hủy đơn & Yêu cầu hoàn tiền</span>
+            @if (isSubmitting()) {
+              <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+              <span>Đang xử lý hủy đơn...</span>
+            } @else {
+              <lucide-icon name="RotateCcw" class="size-4" aria-hidden="true"></lucide-icon>
+              <span>Xác nhận hủy đơn & Yêu cầu hoàn tiền</span>
+            }
           </button>
         </div>
       </div>

@@ -206,7 +206,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 [disabled]="isSubmitting() || !canSubmit()"
               >
                 @if (isSubmitting()) {
-                  <lucide-icon name="RefreshCw" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                  <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
                   <span>Đang xử lý...</span>
                 } @else {
                   <span>{{ authMode() === 'login' ? 'Đăng nhập vào EL-TECH' : 'Tạo tài khoản EL-TECH' }}</span>

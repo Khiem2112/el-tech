@@ -615,7 +615,7 @@ type SubmitResult = {
               [disabled]="submitting() || !name.trim() || !phone.trim() || !email.trim() || (fulfillment === 'DELIVERY' && (!province.trim() || !district.trim() || !streetAddress.trim()))"
               (click)="submit()"
             >
-              <lucide-icon [name]="submitting() ? 'RefreshCw' : 'ShieldCheck'" class="size-4" [class.animate-spin]="submitting()" aria-hidden="true"></lucide-icon>
+              <lucide-icon [name]="submitting() ? 'loader-2' : 'ShieldCheck'" class="size-4" [class.animate-spin]="submitting()" aria-hidden="true"></lucide-icon>
               <span>{{ submitting() ? 'Đang tạo đơn hàng...' : 'Đặt hàng ngay' }}</span>
             </button>
 

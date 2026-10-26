@@ -705,7 +705,7 @@ type StatusBadgeConfig = {
                     <!-- Loading / Error / Empty / List States -->
                     @if (isLoadingOrders()) {
                       <div class="py-12 flex flex-col items-center justify-center gap-3 text-muted">
-                        <lucide-icon name="RefreshCw" class="size-6 animate-spin text-primary" aria-hidden="true"></lucide-icon>
+                        <lucide-icon name="loader-2" class="size-6 animate-spin text-primary" aria-hidden="true"></lucide-icon>
                         <span class="text-xs">Đang tải danh sách đơn hàng của bạn...</span>
                       </div>
                     } @else if (ordersError()) {

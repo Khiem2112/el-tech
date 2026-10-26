@@ -148,6 +148,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 class="min-w-[140px]"
               >
                 @if (isSubmitting()) {
+                  <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
                   <span>Đang mã hóa...</span>
                 } @else if (isSubmittedState()) {
                   <span>Đã gửi thành công!</span>

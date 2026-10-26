@@ -13,6 +13,15 @@ type FaqItem = {
   isOpen: boolean;
 };
 
+type RmaTicket = {
+  code: string;
+  orderId: string;
+  category: string;
+  status: string;
+  createdAt: string;
+  note: string;
+};
+
 @Component({
   selector: 'app-refund-page',
   imports: [FormsModule, RouterLink, ButtonDirective, BadgeDirective, InputDirective, AppIconModule, SelectComponent],
@@ -225,140 +234,243 @@ type FaqItem = {
                   <span class="size-2 rounded-full bg-primary animate-pulse"></span>
                   <span class="text-[10px] uppercase font-bold text-primary tracking-wider">HỆ THỐNG RMA TRỰC TUYẾN</span>
                 </div>
-                <h2 class="text-lg font-black text-foreground tracking-tight">Gửi Yêu Cầu Hỗ Trợ / Đổi Trả / Khiếu Nại</h2>
+                <h2 class="text-lg font-black text-foreground tracking-tight">Xử Lý Đổi Trả & Khiếu Nại Phần Cứng</h2>
                 <p class="text-xs text-muted">
                   Kỹ thuật viên EL-TECH sẽ tiếp nhận mã ticket và liên hệ giải quyết trong vòng <strong class="text-primary font-bold">2 giờ làm việc</strong>.
                 </p>
               </div>
 
-              <!-- Ticket Creation Form -->
-              <form class="space-y-3.5" (ngSubmit)="submitTicket()">
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1" for="ticketOrderId">
-                    Mã Đơn Hàng <span class="text-danger">*</span>
-                  </label>
-                  <input
-                    id="ticketOrderId"
-                    appInput
-                    class="w-full text-xs font-bold uppercase"
-                    [(ngModel)]="orderId"
-                    name="orderId"
-                    placeholder="VD: ELT-91024"
-                    required
-                  >
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1" for="ticketPhone">
-                    Số Điện Thoại Đặt Hàng <span class="text-danger">*</span>
-                  </label>
-                  <input
-                    id="ticketPhone"
-                    appInput
-                    class="w-full text-xs"
-                    [(ngModel)]="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="VD: 0988 123 456"
-                    required
-                  >
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1" for="ticketSerial">
-                    Mã Serial Number (S/N) linh kiện (tùy chọn)
-                  </label>
-                  <input
-                    id="ticketSerial"
-                    appInput
-                    class="w-full text-xs font-mono"
-                    [(ngModel)]="serialNumber"
-                    name="serialNumber"
-                    placeholder="VD: SN-ASUS-99120"
-                  >
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1" for="ticketCategory">
-                    Phân Loại Khiếu Nại / Yêu Cầu <span class="text-danger">*</span>
-                  </label>
-                  <app-select
-                    [options]="categoryOptions"
-                    [value]="category"
-                    (valueChange)="category = $event"
-                    size="sm"
-                    ariaLabel="Phân Loại Khiếu Nại / Yêu Cầu"
-                  />
-                </div>
-
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1" for="ticketDescription">
-                    Mô Tả Tình Trạng Kỹ Thuật <span class="text-danger">*</span>
-                  </label>
-                  <textarea
-                    id="ticketDescription"
-                    appInput
-                    class="w-full text-xs resize-none"
-                    rows="3"
-                    [(ngModel)]="description"
-                    name="description"
-                    placeholder="Vui lòng nêu rõ triệu chứng: VD: GPU không lên tín hiệu DisplayPort, quạt không quay, hoặc mã lỗi màn hình xanh..."
-                    required
-                  ></textarea>
-                </div>
-
-                <!-- Media Upload Drag & Drop Area -->
-                <div>
-                  <label class="block text-xs font-bold text-foreground mb-1">
-                    Ảnh / Video Tem Serial & Hiện Trạng
-                  </label>
-                  <div
-                    class="p-4 rounded-lg bg-surface-alt border-2 border-dashed border-line hover:border-primary/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative"
-                  >
-                    <input
-                      type="file"
-                      class="absolute inset-0 opacity-0 cursor-pointer"
-                      accept="image/*,video/*"
-                      multiple
-                      (change)="onFileSelected($event)"
-                    >
-                    <lucide-icon name="Camera" class="size-6 text-primary mb-1" aria-hidden="true"></lucide-icon>
-                    <span class="text-xs font-bold text-foreground">
-                      {{ uploadedFiles().length > 0 ? uploadedFiles().join(', ') : 'Chọn hoặc kéo thả hình ảnh/video vào đây' }}
-                    </span>
-                    <span class="text-[10px] text-muted mt-0.5">Hỗ trợ PNG, JPG, MP4 dung lượng tối đa 25MB</span>
-                  </div>
-                </div>
-
-                <!-- Submit CTA -->
+              <!-- Tab Switcher -->
+              <div class="flex items-center gap-1 bg-surface-alt p-1 rounded-lg border border-line text-xs font-bold">
                 <button
-                  type="submit"
-                  appButton
-                  variant="primary"
-                  size="md"
-                  class="w-full"
-                  [disabled]="isSubmitting() || !canSubmit()"
+                  type="button"
+                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center"
+                  [class.bg-surface]="activeTab() === 'create'"
+                  [class.shadow-xs]="activeTab() === 'create'"
+                  [class.text-foreground]="activeTab() === 'create'"
+                  [class.text-muted]="activeTab() !== 'create'"
+                  (click)="activeTab.set('create')"
                 >
-                  @if (isSubmitting()) {
-                    <lucide-icon name="RefreshCw" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
-                    <span>Đang gửi yêu cầu...</span>
-                  } @else {
-                    <lucide-icon name="FileText" class="size-4" aria-hidden="true"></lucide-icon>
-                    <span>Tạo Ticket Hỗ Trợ Kỹ Thuật</span>
-                  }
+                  Tạo Ticket Mới
                 </button>
-              </form>
+                <button
+                  type="button"
+                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center"
+                  [class.bg-surface]="activeTab() === 'lookup'"
+                  [class.shadow-xs]="activeTab() === 'lookup'"
+                  [class.text-foreground]="activeTab() === 'lookup'"
+                  [class.text-muted]="activeTab() !== 'lookup'"
+                  (click)="activeTab.set('lookup')"
+                >
+                  Tra Cứu Lịch Sử RMA
+                </button>
+              </div>
 
-              <!-- Ticket Success Confirmation Banner -->
-              @if (createdTicketCode()) {
-                <div class="p-4 rounded-lg bg-primary/10 border border-primary/30 space-y-1.5 animate-in fade-in">
-                  <div class="flex items-center gap-2 text-xs font-bold text-primary">
-                    <lucide-icon name="Check" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
-                    <span>Ticket tiếp nhận thành công! Mã số: #{{ createdTicketCode() }}</span>
+              <!-- Ticket Creation Form Tab -->
+              @if (activeTab() === 'create') {
+                <form class="space-y-3.5" (ngSubmit)="submitTicket()">
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="ticketOrderId">
+                      Mã Đơn Hàng <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      id="ticketOrderId"
+                      appInput
+                      class="w-full text-xs font-bold uppercase"
+                      [(ngModel)]="orderId"
+                      name="orderId"
+                      placeholder="VD: ELT-91024"
+                      required
+                    >
                   </div>
-                  <p class="text-xs text-muted leading-relaxed">
-                    Đội ngũ Kỹ thuật viên EL-TECH sẽ gọi lại đến số điện thoại của bạn trong vòng tối đa 2 giờ làm việc để xác nhận hướng xử lý đổi trả.
-                  </p>
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="ticketPhone">
+                      Số Điện Thoại Đặt Hàng <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      id="ticketPhone"
+                      appInput
+                      class="w-full text-xs"
+                      [(ngModel)]="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="VD: 0988 123 456"
+                      required
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="ticketSerial">
+                      Mã Serial Number (S/N) linh kiện (tùy chọn)
+                    </label>
+                    <input
+                      id="ticketSerial"
+                      appInput
+                      class="w-full text-xs font-mono"
+                      [(ngModel)]="serialNumber"
+                      name="serialNumber"
+                      placeholder="VD: SN-ASUS-99120"
+                    >
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="ticketCategory">
+                      Phân Loại Khiếu Nại / Yêu Cầu <span class="text-danger">*</span>
+                    </label>
+                    <app-select
+                      [options]="categoryOptions"
+                      [value]="category"
+                      (valueChange)="category = $event"
+                      size="sm"
+                      ariaLabel="Phân Loại Khiếu Nại / Yêu Cầu"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="ticketDescription">
+                      Mô Tả Tình Trạng Kỹ Thuật <span class="text-danger">*</span>
+                    </label>
+                    <textarea
+                      id="ticketDescription"
+                      appInput
+                      class="w-full text-xs resize-none"
+                      rows="3"
+                      [(ngModel)]="description"
+                      name="description"
+                      placeholder="Vui lòng nêu rõ triệu chứng: VD: GPU không lên tín hiệu DisplayPort, quạt không quay, hoặc mã lỗi màn hình xanh..."
+                      required
+                    ></textarea>
+                  </div>
+
+                  <!-- Media Upload Drag & Drop Area -->
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1">
+                      Ảnh / Video Tem Serial & Hiện Trạng
+                    </label>
+                    <div
+                      class="p-4 rounded-lg bg-surface-alt border-2 border-dashed border-line hover:border-primary/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer relative"
+                    >
+                      <input
+                        type="file"
+                        class="absolute inset-0 opacity-0 cursor-pointer"
+                        accept="image/*,video/*"
+                        multiple
+                        (change)="onFileSelected($event)"
+                      >
+                      <lucide-icon name="Camera" class="size-6 text-primary mb-1" aria-hidden="true"></lucide-icon>
+                      <span class="text-xs font-bold text-foreground">
+                        {{ uploadedFiles().length > 0 ? uploadedFiles().join(', ') : 'Chọn hoặc kéo thả hình ảnh/video vào đây' }}
+                      </span>
+                      <span class="text-[10px] text-muted mt-0.5">Hỗ trợ PNG, JPG, MP4 dung lượng tối đa 25MB</span>
+                    </div>
+                  </div>
+
+                  <!-- Submit CTA -->
+                  <button
+                    type="submit"
+                    appButton
+                    variant="primary"
+                    size="md"
+                    class="w-full"
+                    [disabled]="isSubmitting() || !canSubmit()"
+                  >
+                    @if (isSubmitting()) {
+                      <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                      <span>Đang gửi yêu cầu...</span>
+                    } @else {
+                      <lucide-icon name="FileText" class="size-4" aria-hidden="true"></lucide-icon>
+                      <span>Tạo Ticket Hỗ Trợ Kỹ Thuật</span>
+                    }
+                  </button>
+                </form>
+
+                <!-- Ticket Success Confirmation Banner -->
+                @if (createdTicketCode()) {
+                  <div class="p-4 rounded-lg bg-primary/10 border border-primary/30 space-y-1.5 animate-in fade-in">
+                    <div class="flex items-center gap-2 text-xs font-bold text-primary">
+                      <lucide-icon name="Check" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                      <span>Ticket tiếp nhận thành công! Mã số: #{{ createdTicketCode() }}</span>
+                    </div>
+                    <p class="text-xs text-muted leading-relaxed">
+                      Đội ngũ Kỹ thuật viên EL-TECH sẽ gọi lại đến số điện thoại của bạn trong vòng tối đa 2 giờ làm việc để xác nhận hướng xử lý đổi trả.
+                    </p>
+                  </div>
+                }
+              } @else {
+                <!-- RMA History Lookup Tab -->
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="rmaLookupInput">Số điện thoại hoặc Mã Ticket RMA</label>
+                    <div class="flex gap-2">
+                      <input
+                        id="rmaLookupInput"
+                        appInput
+                        class="flex-1 text-xs"
+                        [(ngModel)]="lookupQuery"
+                        placeholder="VD: 0988 123 456 hoặc TK-8412"
+                        (keyup.enter)="lookupRmaHistory()"
+                      >
+                      <button
+                        type="button"
+                        appButton
+                        variant="primary"
+                        size="md"
+                        [disabled]="isLoadingRmaHistory() || !lookupQuery.trim()"
+                        (click)="lookupRmaHistory()"
+                      >
+                        @if (isLoadingRmaHistory()) {
+                          <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                          <span>Đang tìm...</span>
+                        } @else {
+                          <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
+                          <span>Tra cứu</span>
+                        }
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Loading Feedback Skeleton -->
+                  @if (isLoadingRmaHistory()) {
+                    <div class="space-y-3 p-4 rounded-lg bg-surface-alt border border-line animate-pulse" aria-busy="true">
+                      <div class="flex justify-between items-center">
+                        <div class="h-4 w-28 bg-line rounded"></div>
+                        <div class="h-4 w-20 bg-line rounded-full"></div>
+                      </div>
+                      <div class="h-3 w-48 bg-line rounded"></div>
+                      <div class="h-8 bg-line rounded"></div>
+                    </div>
+                  }
+
+                  <!-- Search Results -->
+                  @if (!isLoadingRmaHistory() && rmaHistorySearched()) {
+                    @if (rmaTickets().length > 0) {
+                      <div class="space-y-3">
+                        @for (ticket of rmaTickets(); track ticket.code) {
+                          <div class="p-4 rounded-lg bg-surface-alt border border-line space-y-2">
+                            <div class="flex items-center justify-between">
+                              <span class="font-mono text-xs font-bold text-primary">#{{ ticket.code }}</span>
+                              <span appBadge variant="primary" class="text-[10px]">{{ ticket.status }}</span>
+                            </div>
+                            <p class="text-xs font-bold text-foreground">{{ ticket.category }}</p>
+                            <p class="text-[11px] text-muted">{{ ticket.note }}</p>
+                            <div class="pt-2 border-t border-line flex items-center justify-between text-[10px] text-muted">
+                              <span>Mã đơn: <strong class="text-foreground">{{ ticket.orderId }}</strong></span>
+                              <span>Ngày tiếp nhận: {{ ticket.createdAt }}</span>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    } @else {
+                      <div class="p-6 text-center rounded-lg bg-surface-alt border border-dashed border-line space-y-2">
+                        <lucide-icon name="Package" class="size-6 text-muted mx-auto" aria-hidden="true"></lucide-icon>
+                        <p class="text-xs font-bold text-foreground">Không tìm thấy ticket RMA</p>
+                        <p class="text-[11px] text-muted max-w-xs mx-auto leading-relaxed">
+                          Chưa có yêu cầu đổi trả hoặc khiếu nại nào được tìm thấy với thông tin vừa nhập.
+                        </p>
+                      </div>
+                    }
+                  }
                 </div>
               }
 
@@ -573,6 +685,12 @@ export class RefundPageComponent {
   protected readonly isSubmitting = signal(false);
   protected readonly createdTicketCode = signal<string | null>(null);
 
+  protected readonly activeTab = signal<'create' | 'lookup'>('create');
+  protected lookupQuery = '';
+  protected readonly isLoadingRmaHistory = signal(false);
+  protected readonly rmaHistorySearched = signal(false);
+  protected readonly rmaTickets = signal<RmaTicket[]>([]);
+
   protected readonly faqs = signal<FaqItem[]>([
     {
       question: 'Thời gian hoàn tiền thực tế mất bao lâu sau khi đơn hàng hủy thành công?',
@@ -628,6 +746,31 @@ export class RefundPageComponent {
       this.serialNumber = '';
       this.description = '';
       this.uploadedFiles.set([]);
+    }, 600);
+  }
+
+  protected lookupRmaHistory(): void {
+    const q = this.lookupQuery.trim();
+    if (!q || this.isLoadingRmaHistory()) return;
+    this.isLoadingRmaHistory.set(true);
+    this.rmaHistorySearched.set(true);
+
+    setTimeout(() => {
+      this.isLoadingRmaHistory.set(false);
+      if (q === '0988123456' || q === '0912345678' || q.startsWith('TK-') || q.startsWith('ELT-')) {
+        this.rmaTickets.set([
+          {
+            code: q.startsWith('TK-') ? q : 'TK-8412',
+            orderId: 'ELT-91024',
+            category: 'Lỗi kỹ thuật phần cứng (NSX)',
+            status: 'ĐANG XỬ LÝ KIỂM ĐỊNH',
+            createdAt: '24/10/2026',
+            note: 'Chuyên viên kỹ thuật đang kiểm định lỗi quạt tản nhiệt GPU tại Hub TP.HCM.',
+          },
+        ]);
+      } else {
+        this.rmaTickets.set([]);
+      }
     }, 600);
   }
 
