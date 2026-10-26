@@ -5,6 +5,7 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 
 export type CancelOrderPayload = {
   reason: string;
@@ -18,7 +19,7 @@ export type CancelOrderPayload = {
 
 @Component({
   selector: 'app-order-cancel-modal',
-  imports: [FormsModule, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
+  imports: [FormsModule, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -110,21 +111,14 @@ export type CancelOrderPayload = {
               <label class="font-bold text-foreground block" for="cancelReason">
                 Lý do hủy đơn hàng <span class="text-danger">*</span>
               </label>
-              <select
-                id="cancelReason"
-                appInput
-                class="w-full text-xs"
-                [ngModel]="selectedReason()"
-                (ngModelChange)="selectedReason.set($event)"
-                name="cancelReason"
-                required
-              >
-                <option value="" disabled selected>Chọn lý do phù hợp...</option>
-                <option value="hardware_change">Thay đổi nhu cầu cấu hình linh kiện PC</option>
-                <option value="shipping_address">Muốn đổi phương thức nhận hàng hoặc địa chỉ</option>
-                <option value="lead_time">Thời gian lắp ráp và bàn giao chưa phù hợp</option>
-                <option value="other">Lý do cá nhân khác</option>
-              </select>
+              <app-select
+                [options]="cancelReasonOptions"
+                [value]="selectedReason()"
+                (valueChange)="selectedReason.set($event)"
+                placeholder="Chọn lý do phù hợp..."
+                size="sm"
+                ariaLabel="Lý do hủy đơn hàng"
+              />
             </div>
 
             <div class="space-y-1.5">
@@ -232,6 +226,13 @@ export class OrderCancelModalComponent {
 
   readonly cancelled = output<CancelOrderPayload>();
   readonly closed = output<void>();
+
+  protected readonly cancelReasonOptions: readonly SelectOption[] = [
+    { value: 'hardware_change', label: 'Thay đổi nhu cầu cấu hình linh kiện PC' },
+    { value: 'shipping_address', label: 'Muốn đổi phương thức nhận hàng hoặc địa chỉ' },
+    { value: 'lead_time', label: 'Thời gian lắp ráp và bàn giao chưa phù hợp' },
+    { value: 'other', label: 'Lý do cá nhân khác' },
+  ];
 
   protected readonly selectedReason = signal('');
   protected readonly detailNote = signal('');

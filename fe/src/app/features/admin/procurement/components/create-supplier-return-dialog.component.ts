@@ -12,6 +12,8 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import {
   AdminSupplierReturnService,
   CreateSupplierReturnPayload,
@@ -22,7 +24,7 @@ import {
 @Component({
   selector: 'app-create-supplier-return-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AppIconModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen) {
@@ -54,10 +56,9 @@ import {
               (click)="onCancel()"
               class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
               title="Đóng"
+              aria-label="Đóng hộp thoại"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
@@ -84,19 +85,13 @@ import {
                     Không có phiếu nhập kho nào khả dụng hoặc toàn bộ đã được xuất trả tối đa.
                   </div>
                 } @else {
-                  <select
-                    id="receipt-select"
-                    [ngModel]="selectedReceiptId()"
-                    (ngModelChange)="onReceiptChange($event)"
-                    name="receiptId"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    @for (receipt of eligibleReceipts(); track receipt.inboundMoveId) {
-                      <option [value]="receipt.inboundMoveId">
-                        {{ receipt.purchaseOrderCode }} ({{ receipt.supplierName }} - Kho {{ receipt.receivingBranchName }})
-                      </option>
-                    }
-                  </select>
+                  <app-select
+                    [options]="receiptOptions()"
+                    [value]="selectedReceiptId() ? selectedReceiptId()!.toString() : ''"
+                    (valueChange)="onReceiptChange($event)"
+                    size="sm"
+                    ariaLabel="Chọn phiếu nhập kho gốc"
+                  />
                 }
               </div>
 
@@ -114,40 +109,31 @@ import {
                     />
                   </div>
                   <div>
-                    <label for="return-source-select" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
                       Nguồn Xuất Trả
                     </label>
-                    <select
-                      id="return-source-select"
-                      [ngModel]="returnSource()"
-                      (ngModelChange)="onReturnSourceChange($event)"
-                      name="returnSource"
-                      class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                    >
-                      <option value="quarantineDamaged">Kho cách ly hàng lỗi (QuarantineDamaged)</option>
-                      <option value="onHand">Kho tồn thực tế khả dụng (OnHand)</option>
-                    </select>
+                    <app-select
+                      [options]="returnSourceOptions"
+                      [value]="returnSource()"
+                      (valueChange)="onReturnSourceChange($event)"
+                      size="sm"
+                      ariaLabel="Nguồn Xuất Trả"
+                    />
                   </div>
                 </div>
 
                 @if (currentReceipt()!.skus.length > 1) {
                   <div>
-                    <label for="sku-select" class="block font-semibold text-slate-400 text-xs uppercase mb-1">
+                    <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
                       Chọn Linh Kiện Cần Xuất Trả
                     </label>
-                    <select
-                      id="sku-select"
-                      [ngModel]="selectedSkuId()"
-                      (ngModelChange)="onSkuChange($event)"
-                      name="skuId"
-                      class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-                    >
-                      @for (sku of currentReceipt()!.skus; track sku.skuId) {
-                        <option [value]="sku.skuId">
-                          {{ sku.skuCode }} - {{ sku.skuName }} (Còn được trả: {{ sku.maxReturnableQuantity }})
-                        </option>
-                      }
-                    </select>
+                    <app-select
+                      [options]="skuOptions()"
+                      [value]="selectedSkuId() ? selectedSkuId()!.toString() : ''"
+                      (valueChange)="onSkuChange($event)"
+                      size="sm"
+                      ariaLabel="Chọn Linh Kiện Cần Xuất Trả"
+                    />
                   </div>
                 }
 
@@ -322,6 +308,27 @@ export class CreateSupplierReturnDialogComponent implements OnChanges {
   readonly selectedSerials = signal<string[]>([]);
   readonly returnReason = signal<string>('');
 
+  readonly receiptOptions = computed<SelectOption[]>(() =>
+    this.eligibleReceipts().map((receipt) => ({
+      value: receipt.inboundMoveId,
+      label: `${receipt.purchaseOrderCode} (${receipt.supplierName} - Kho ${receipt.receivingBranchName})`,
+    }))
+  );
+
+  readonly returnSourceOptions: readonly SelectOption[] = [
+    { value: 'quarantineDamaged', label: 'Kho cách ly hàng lỗi (QuarantineDamaged)' },
+    { value: 'onHand', label: 'Kho tồn thực tế khả dụng (OnHand)' },
+  ];
+
+  readonly skuOptions = computed<SelectOption[]>(() => {
+    const r = this.currentReceipt();
+    if (!r) return [];
+    return r.skus.map((sku) => ({
+      value: sku.skuId.toString(),
+      label: `${sku.skuCode} - ${sku.skuName} (Còn được trả: ${sku.maxReturnableQuantity})`,
+    }));
+  });
+
   readonly currentReceipt = computed<EligibleReceipt | null>(() => {
     const receipts = this.eligibleReceipts();
     const id = this.selectedReceiptId();
@@ -449,8 +456,8 @@ export class CreateSupplierReturnDialogComponent implements OnChanges {
     this.returnQuantity.set(1);
   }
 
-  onReturnSourceChange(source: 'quarantineDamaged' | 'onHand'): void {
-    this.returnSource.set(source);
+  onReturnSourceChange(source: string): void {
+    this.returnSource.set(source as 'quarantineDamaged' | 'onHand');
     this.selectedSerials.set([]);
   }
 

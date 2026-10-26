@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { LowStockAlertCardComponent } from './components/low-stock-alert-card.component';
 import { OrderStatusDistributionComponent } from './components/order-status-distribution.component';
 import { UrgentQueuesGridComponent } from './components/urgent-queues-grid.component';
@@ -15,6 +16,7 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
     UrgentQueuesGridComponent,
     OrderStatusDistributionComponent,
     LowStockAlertCardComponent,
+    SelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -36,20 +38,15 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
 
         <div class="flex items-center gap-3 flex-wrap">
           <div class="flex items-center gap-2 text-xs">
-            <label for="branch-selector" class="text-slate-400 font-medium">Chi nhánh:</label>
-            <select
-              id="branch-selector"
+            <span class="text-slate-400 font-medium whitespace-nowrap">Chi nhánh:</span>
+            <app-select
+              [options]="branchOptions()"
               [value]="selectedBranchValue()"
-              (change)="onBranchChange($event)"
-              class="px-3 py-1.5 bg-[#161b26] border border-[#272f3d] rounded font-semibold text-xs text-white focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Toàn hệ thống</option>
-              @for (branch of dashboardService.branches(); track branch.id) {
-                <option [value]="branch.id">
-                  {{ branch.code }}: {{ branch.name }}
-                </option>
-              }
-            </select>
+              (valueChange)="onBranchSelect($event)"
+              size="sm"
+              class="w-60"
+              ariaLabel="Lọc theo chi nhánh"
+            />
           </div>
 
           <button
@@ -141,6 +138,14 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
 export class AdminDashboardPageComponent implements OnInit {
   readonly dashboardService = inject(AdminDashboardService);
 
+  readonly branchOptions = computed<SelectOption[]>(() => [
+    { value: 'ALL', label: 'Toàn hệ thống' },
+    ...this.dashboardService.branches().map((branch) => ({
+      value: branch.id.toString(),
+      label: `${branch.code}: ${branch.name}`,
+    })),
+  ]);
+
   async ngOnInit(): Promise<void> {
     await Promise.all([
       this.dashboardService.loadBranches(),
@@ -153,9 +158,7 @@ export class AdminDashboardPageComponent implements OnInit {
     return id !== null ? id.toString() : 'ALL';
   }
 
-  onBranchChange(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const value = target.value;
+  onBranchSelect(value: string): void {
     const branchId = value === 'ALL' ? null : Number(value);
     void this.dashboardService.setSelectedBranch(branchId);
   }

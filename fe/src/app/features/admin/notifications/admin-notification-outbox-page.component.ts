@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { NotificationDetailDialogComponent } from './components/notification-detail-dialog.component';
 import {
   AdminNotificationItem,
@@ -23,7 +25,7 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-notification-outbox-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent],
+  imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent, AppIconModule, SelectComponent],
   template: `
     <div class="flex flex-col h-full bg-[#090d16] text-white overflow-hidden text-sm">
       <header class="h-14 bg-[#161b26] border-b border-[#272f3d] flex items-center justify-between px-6 flex-shrink-0">
@@ -62,34 +64,26 @@ type ToastNotification = {
             <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
               Kênh thông báo
             </label>
-            <select
-              [(ngModel)]="selectedChannel"
-              (change)="onFilterChange()"
-              class="w-full px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả kênh (In-app, Email, SMS)</option>
-              <option value="IN_APP">Thông báo trong ứng dụng</option>
-              <option value="EMAIL">Thư điện tử (Email)</option>
-              <option value="SMS">Tin nhắn SMS</option>
-            </select>
+            <app-select
+              [options]="channelOptions"
+              [value]="selectedChannel"
+              (valueChange)="onChannelSelect($event)"
+              size="sm"
+              ariaLabel="Kênh thông báo"
+            />
           </div>
 
           <div>
             <label class="block font-semibold text-slate-400 text-xs uppercase mb-1">
               Loại sự kiện
             </label>
-            <select
-              [(ngModel)]="selectedEventType"
-              (change)="onFilterChange()"
-              class="w-full px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả sự kiện</option>
-              <option value="ORDER_PLACED">Tiếp nhận đặt hàng</option>
-              <option value="ORDER_CONFIRMED">Xác nhận đơn hàng</option>
-              <option value="ORDER_SHIPPED">Đã xuất kho giao hàng</option>
-              <option value="ORDER_READY_FOR_PICKUP">Sẵn sàng nhận tại showroom</option>
-              <option value="ORDER_CANCELLED">Hủy đơn hàng</option>
-            </select>
+            <app-select
+              [options]="eventTypeOptions"
+              [value]="selectedEventType"
+              (valueChange)="onEventTypeSelect($event)"
+              size="sm"
+              ariaLabel="Loại sự kiện"
+            />
           </div>
 
           <div>
@@ -97,21 +91,19 @@ type ToastNotification = {
               Trạng thái gửi
             </label>
             <div class="flex items-center gap-2">
-              <select
-                [(ngModel)]="selectedStatus"
-                (change)="onFilterChange()"
-                class="flex-1 px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white text-xs focus:outline-none focus:border-[#76b900]"
-              >
-                <option value="ALL">Tất cả trạng thái</option>
-                <option value="SENT">Gửi thành công</option>
-                <option value="PENDING">Đang chờ gửi</option>
-                <option value="FAILED">Thất bại / Lỗi gửi</option>
-              </select>
+              <app-select
+                [options]="statusOptions"
+                [value]="selectedStatus"
+                (valueChange)="onStatusSelect($event)"
+                size="sm"
+                class="flex-1"
+                ariaLabel="Trạng thái gửi"
+              />
 
               <button
                 type="button"
                 (click)="onSearch()"
-                class="px-3 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors"
+                class="px-3 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors shrink-0"
               >
                 Lọc
               </button>
@@ -222,11 +214,9 @@ type ToastNotification = {
                           (click)="openDetailDialog(item)"
                           class="inline-flex items-center justify-center p-1.5 rounded-md hover:bg-[#272f3d] text-[#76b900] hover:text-[#88d400] transition-colors"
                           title="Xem chi tiết & Thử lại"
+                          aria-label="Xem chi tiết nội dung thông báo"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
+                          <lucide-icon name="eye" class="size-4" aria-hidden="true"></lucide-icon>
                         </button>
                       </td>
                     </tr>
@@ -286,8 +276,9 @@ type ToastNotification = {
               type="button"
               (click)="removeToast(toast.id)"
               class="text-slate-400 hover:text-white"
+              aria-label="Đóng thông báo"
             >
-              x
+              <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
         }
@@ -299,6 +290,29 @@ type ToastNotification = {
 export class AdminNotificationOutboxPageComponent implements OnInit {
   readonly notificationService = inject(AdminNotificationService);
   private readonly route = inject(ActivatedRoute);
+
+  readonly channelOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả kênh (In-app, Email, SMS)' },
+    { value: 'IN_APP', label: 'Thông báo trong ứng dụng' },
+    { value: 'EMAIL', label: 'Thư điện tử (Email)' },
+    { value: 'SMS', label: 'Tin nhắn SMS' },
+  ];
+
+  readonly eventTypeOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả sự kiện' },
+    { value: 'ORDER_PLACED', label: 'Tiếp nhận đặt hàng' },
+    { value: 'ORDER_CONFIRMED', label: 'Xác nhận đơn hàng' },
+    { value: 'ORDER_SHIPPED', label: 'Đã xuất kho giao hàng' },
+    { value: 'ORDER_READY_FOR_PICKUP', label: 'Sẵn sàng nhận tại showroom' },
+    { value: 'ORDER_CANCELLED', label: 'Hủy đơn hàng' },
+  ];
+
+  readonly statusOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'SENT', label: 'Gửi thành công' },
+    { value: 'PENDING', label: 'Đang chờ gửi' },
+    { value: 'FAILED', label: 'Thất bại / Lỗi gửi' },
+  ];
 
   searchQuery = '';
   selectedChannel: 'ALL' | 'IN_APP' | 'EMAIL' | 'SMS' = 'ALL';
@@ -324,6 +338,21 @@ export class AdminNotificationOutboxPageComponent implements OnInit {
       status: this.selectedStatus,
       search: this.searchQuery,
     });
+  }
+
+  onChannelSelect(val: string): void {
+    this.selectedChannel = val as 'ALL' | 'IN_APP' | 'EMAIL' | 'SMS';
+    void this.onFilterChange();
+  }
+
+  onEventTypeSelect(val: string): void {
+    this.selectedEventType = val;
+    void this.onFilterChange();
+  }
+
+  onStatusSelect(val: string): void {
+    this.selectedStatus = val as 'ALL' | 'SENT' | 'PENDING' | 'FAILED';
+    void this.onFilterChange();
   }
 
   async onFilterChange(): Promise<void> {

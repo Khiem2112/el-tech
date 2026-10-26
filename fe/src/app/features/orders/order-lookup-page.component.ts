@@ -11,6 +11,7 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 import { CancelOrderPayload, OrderCancelModalComponent } from './order-cancel-modal.component';
 
 type OrderLine = {
@@ -70,6 +71,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
     BadgeDirective,
     InputDirective,
     AppIconModule,
+    SelectComponent,
     OrderCancelModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -548,14 +550,15 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                       <div class="mt-3 rounded-lg bg-surface-alt p-3.5 text-xs border border-line space-y-2.5">
                         <p class="font-bold text-foreground">Đánh giá linh kiện</p>
                         <div class="flex items-center gap-2">
-                          <span>Số sao:</span>
-                          <select appInput class="text-xs" [(ngModel)]="reviewRating">
-                            <option [ngValue]="5">5 sao - Rất tốt</option>
-                            <option [ngValue]="4">4 sao - Tốt</option>
-                            <option [ngValue]="3">3 sao - Bình thường</option>
-                            <option [ngValue]="2">2 sao - Chưa ưng ý</option>
-                            <option [ngValue]="1">1 sao - Kém</option>
-                          </select>
+                          <span class="text-xs font-medium">Số sao:</span>
+                          <app-select
+                            [options]="ratingOptions"
+                            [value]="reviewRating.toString()"
+                            (valueChange)="reviewRating = +$event"
+                            size="sm"
+                            class="w-48"
+                            ariaLabel="Số sao đánh giá"
+                          />
                         </div>
                         <textarea
                           appInput
@@ -639,6 +642,14 @@ export class OrderLookupPageComponent implements OnInit {
   protected identifier = '';
   protected otp = '';
   protected reviewText = '';
+  protected readonly ratingOptions: readonly SelectOption[] = [
+    { value: '5', label: '5 sao - Rất tốt' },
+    { value: '4', label: '4 sao - Tốt' },
+    { value: '3', label: '3 sao - Bình thường' },
+    { value: '2', label: '2 sao - Chưa ưng ý' },
+    { value: '1', label: '1 sao - Kém' },
+  ];
+
   protected reviewRating = 5;
   protected readonly verificationId = signal<string | null>(null);
   protected readonly sessionToken = signal<string | null>(null);

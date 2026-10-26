@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SelectComponent, SelectOption } from '../../../../../components/atoms/select/select.component';
 import {
   AdminOrderDetail,
   AdminOrderDetailService,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-delivery-failed-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen()) {
@@ -51,26 +52,13 @@ import {
               <label class="block font-semibold text-muted text-xs uppercase mb-1">
                 Lý do giao hàng thất bại
               </label>
-              <select
-                [(ngModel)]="selectedReason"
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary cursor-pointer"
-              >
-                <option value="Khách hàng không bắt máy sau 3 cuộc gọi">
-                  Khách hàng không bắt máy sau 3 cuộc gọi
-                </option>
-                <option value="Sai thông tin địa chỉ hoặc số điện thoại người nhận">
-                  Sai thông tin địa chỉ hoặc số điện thoại người nhận
-                </option>
-                <option value="Khách hàng từ chối nhận hàng tại thời điểm giao">
-                  Khách hàng từ chối nhận hàng tại thời điểm giao
-                </option>
-                <option value="Khách bận, xin hẹn lại ngày giao khác">
-                  Khách bận, xin hẹn lại ngày giao khác
-                </option>
-                <option value="CUSTOM">
-                  Lý do khác (nhập mô tả bên dưới)
-                </option>
-              </select>
+              <app-select
+                [options]="reasonOptions"
+                [value]="selectedReason"
+                (valueChange)="selectedReason = $event"
+                size="sm"
+                ariaLabel="Lý do giao hàng thất bại"
+              />
             </div>
 
             @if (selectedReason === 'CUSTOM') {
@@ -141,6 +129,14 @@ export class DeliveryFailedDialogComponent {
 
   readonly closed = output<void>();
   readonly confirmed = output<void>();
+
+  readonly reasonOptions: readonly SelectOption[] = [
+    { value: 'Khách hàng không bắt máy sau 3 cuộc gọi', label: 'Khách hàng không bắt máy sau 3 cuộc gọi' },
+    { value: 'Sai thông tin địa chỉ hoặc số điện thoại người nhận', label: 'Sai thông tin địa chỉ hoặc số điện thoại người nhận' },
+    { value: 'Khách hàng từ chối nhận hàng tại thời điểm giao', label: 'Khách hàng từ chối nhận hàng tại thời điểm giao' },
+    { value: 'Khách bận, xin hẹn lại ngày giao khác', label: 'Khách bận, xin hẹn lại ngày giao khác' },
+    { value: 'CUSTOM', label: 'Lý do khác (nhập mô tả bên dưới)' },
+  ];
 
   selectedReason = 'Khách hàng không bắt máy sau 3 cuộc gọi';
   customReason = '';

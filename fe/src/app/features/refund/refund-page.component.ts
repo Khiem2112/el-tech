@@ -5,6 +5,7 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 
 type FaqItem = {
   question: string;
@@ -14,7 +15,7 @@ type FaqItem = {
 
 @Component({
   selector: 'app-refund-page',
-  imports: [FormsModule, RouterLink, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
+  imports: [FormsModule, RouterLink, ButtonDirective, BadgeDirective, InputDirective, AppIconModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full bg-canvas min-h-screen">
@@ -281,19 +282,13 @@ type FaqItem = {
                   <label class="block text-xs font-bold text-foreground mb-1" for="ticketCategory">
                     Phân Loại Khiếu Nại / Yêu Cầu <span class="text-danger">*</span>
                   </label>
-                  <select
-                    id="ticketCategory"
-                    appInput
-                    class="w-full text-xs"
-                    [(ngModel)]="category"
-                    name="category"
-                  >
-                    <option value="hardware-fault">Lỗi kỹ thuật phần cứng (NSX)</option>
-                    <option value="spec-mismatch">Sai thông số / linh kiện không khớp</option>
-                    <option value="order-cancel-refund">Yêu cầu hoàn tiền đơn hủy (PENDING/CONFIRMED)</option>
-                    <option value="serial-support">Hỗ trợ tra cứu bảo hành theo Serial / S/N</option>
-                    <option value="shipping-damage">Hàng cấn móp trong quá trình vận chuyển</option>
-                  </select>
+                  <app-select
+                    [options]="categoryOptions"
+                    [value]="category"
+                    (valueChange)="category = $event"
+                    size="sm"
+                    ariaLabel="Phân Loại Khiếu Nại / Yêu Cầu"
+                  />
                 </div>
 
                 <div>
@@ -564,6 +559,14 @@ export class RefundPageComponent {
   protected orderId = '';
   protected phone = '';
   protected serialNumber = '';
+  protected readonly categoryOptions: readonly SelectOption[] = [
+    { value: 'hardware-fault', label: 'Lỗi kỹ thuật phần cứng (NSX)' },
+    { value: 'spec-mismatch', label: 'Sai thông số / linh kiện không khớp' },
+    { value: 'order-cancel-refund', label: 'Yêu cầu hoàn tiền đơn hủy (PENDING/CONFIRMED)' },
+    { value: 'serial-support', label: 'Hỗ trợ tra cứu bảo hành theo Serial / S/N' },
+    { value: 'shipping-damage', label: 'Hàng cấn móp trong quá trình vận chuyển' },
+  ];
+
   protected category = 'hardware-fault';
   protected description = '';
   protected readonly uploadedFiles = signal<string[]>([]);

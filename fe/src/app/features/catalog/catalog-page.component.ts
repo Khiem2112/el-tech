@@ -733,15 +733,14 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       <!-- Mobile Brand Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Thương hiệu</label>
-        <select
-          [(ngModel)]="tempBrand"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả thương hiệu</option>
-          @for (item of brands(); track item.id) {
-            <option [value]="item.slug">{{ item.name }}</option>
-          }
-        </select>
+        <app-select
+          [options]="mobileBrandOptions()"
+          [value]="tempBrand"
+          (valueChange)="tempBrand = $event"
+          placeholder="Tất cả thương hiệu"
+          size="sm"
+          ariaLabel="Thương hiệu"
+        />
       </div>
 
       <!-- Mobile Category Specification Filters -->
@@ -772,43 +771,40 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       <!-- Mobile Branch Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Chi nhánh sẵn hàng</label>
-        <select
-          [(ngModel)]="tempBranch"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả showroom</option>
-          <option value="hn">Hà Nội (45 Thái Hà)</option>
-          <option value="hcm">TP.HCM (280 Ba Tháng Hai)</option>
-          <option value="dn">Đà Nẵng (112 Hàm Nghi)</option>
-        </select>
+        <app-select
+          [options]="mobileBranchOptions"
+          [value]="tempBranch"
+          (valueChange)="tempBranch = $event"
+          placeholder="Tất cả showroom"
+          size="sm"
+          ariaLabel="Chi nhánh sẵn hàng"
+        />
       </div>
 
       <!-- Mobile Stock Status Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Tình trạng kho hàng</label>
-        <select
-          [(ngModel)]="tempStockStatus"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả tình trạng</option>
-          <option value="in_stock">Sẵn hàng ngay</option>
-          <option value="pre_order">Đặt trước (Pre-order)</option>
-        </select>
+        <app-select
+          [options]="mobileStockStatusOptions"
+          [value]="tempStockStatus"
+          (valueChange)="tempStockStatus = $event"
+          placeholder="Tất cả tình trạng"
+          size="sm"
+          ariaLabel="Tình trạng kho hàng"
+        />
       </div>
 
       <!-- Mobile Price Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Khoảng giá</label>
-        <select
-          [(ngModel)]="tempPricePreset"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả mức giá</option>
-          <option value="under-5m">Dưới 5 triệu</option>
-          <option value="5m-15m">5 - 15 triệu</option>
-          <option value="15m-30m">15 - 30 triệu</option>
-          <option value="over-30m">Trên 30 triệu</option>
-        </select>
+        <app-select
+          [options]="mobilePricePresetOptions"
+          [value]="tempPricePreset"
+          (valueChange)="tempPricePreset = $event"
+          placeholder="Tất cả mức giá"
+          size="sm"
+          ariaLabel="Khoảng giá"
+        />
       </div>
 
       <div class="mt-auto pt-4 border-t border-line space-y-2">
@@ -911,6 +907,35 @@ export class CatalogPageComponent {
       label: c.name,
     })),
   ]);
+
+  protected readonly mobileBrandOptions = computed<readonly SelectOption[]>(() => [
+    { value: '', label: 'Tất cả thương hiệu' },
+    ...this.brands().map((b) => ({
+      value: b.slug,
+      label: b.name,
+    })),
+  ]);
+
+  protected readonly mobileBranchOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả showroom' },
+    { value: 'hn', label: 'Hà Nội (45 Thái Hà)' },
+    { value: 'hcm', label: 'TP.HCM (280 Ba Tháng Hai)' },
+    { value: 'dn', label: 'Đà Nẵng (112 Hàm Nghi)' },
+  ];
+
+  protected readonly mobileStockStatusOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả tình trạng' },
+    { value: 'in_stock', label: 'Sẵn hàng ngay' },
+    { value: 'pre_order', label: 'Đặt trước (Pre-order)' },
+  ];
+
+  protected readonly mobilePricePresetOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả mức giá' },
+    { value: 'under-5m', label: 'Dưới 5 triệu' },
+    { value: '5m-15m', label: '5 - 15 triệu' },
+    { value: '15m-30m', label: '15 - 30 triệu' },
+    { value: 'over-30m', label: 'Trên 30 triệu' },
+  ];
 
   protected readonly filteredProducts = computed(() => {
     let list = this.products();

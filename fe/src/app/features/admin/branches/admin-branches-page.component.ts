@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BranchFormDialogComponent } from './components/branch-form-dialog.component';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
   AdminBranch,
   AdminBranchService,
@@ -28,7 +30,7 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-branches-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, BranchFormDialogComponent],
+  imports: [CommonModule, FormsModule, BranchFormDialogComponent, AppIconModule, SelectComponent],
   template: `
     <div class="p-4 lg:p-6 space-y-4 max-w-7xl mx-auto text-sm text-slate-200">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
@@ -52,9 +54,7 @@ type ToastNotification = {
             (click)="openCreateModal()"
             class="px-3.5 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5 uppercase tracking-wide"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
             <span>Thêm chi nhánh</span>
           </button>
         </div>
@@ -70,29 +70,23 @@ type ToastNotification = {
               placeholder="Tìm kiếm theo mã, tên hoặc địa chỉ..."
               class="w-full pl-9 pr-4 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
             />
-            <svg
-              class="w-4 h-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <lucide-icon
+              name="search"
+              class="size-4 text-slate-500 absolute left-3 top-2.5 pointer-events-none"
+              aria-hidden="true"
+            ></lucide-icon>
           </div>
 
           <div class="flex items-center gap-2">
-            <label for="status-filter" class="text-xs text-slate-400 font-medium whitespace-nowrap">Trạng thái:</label>
-            <select
-              id="status-filter"
-              [ngModel]="branchService.statusFilter()"
-              (ngModelChange)="onStatusFilterChange($event)"
-              class="px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-slate-200 focus:outline-none focus:border-[#76b900]"
-            >
-              <option value="ALL">Tất cả chi nhánh</option>
-              <option value="ACTIVE">Đang hoạt động</option>
-              <option value="INACTIVE">Tạm dừng hoạt động</option>
-            </select>
+            <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Trạng thái:</span>
+            <app-select
+              [options]="statusOptions"
+              [value]="branchService.statusFilter()"
+              (valueChange)="onStatusFilterChange($event)"
+              size="sm"
+              class="w-48"
+              ariaLabel="Lọc theo trạng thái chi nhánh"
+            />
           </div>
         </div>
 
@@ -188,9 +182,7 @@ type ToastNotification = {
                           title="Chỉnh sửa thông tin chi nhánh"
                           aria-label="Chỉnh sửa chi nhánh"
                         >
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
+                          <lucide-icon name="square-pen" class="size-3.5" aria-hidden="true"></lucide-icon>
                         </button>
 
                         <button
@@ -201,9 +193,7 @@ type ToastNotification = {
                           [title]="item.isActive ? 'Tạm dừng chi nhánh' : 'Kích hoạt lại chi nhánh'"
                           [attr.aria-label]="item.isActive ? 'Tạm dừng chi nhánh' : 'Kích hoạt lại chi nhánh'"
                         >
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                          </svg>
+                          <lucide-icon [name]="item.isActive ? 'ban' : 'check'" class="size-3.5" aria-hidden="true"></lucide-icon>
                         </button>
                       </div>
                     </td>
@@ -260,9 +250,7 @@ type ToastNotification = {
         <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 text-white">
           <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+              <lucide-icon name="alert-triangle" class="size-5" aria-hidden="true"></lucide-icon>
             </div>
             <div>
               <h3 class="font-bold text-white text-base">
@@ -316,9 +304,7 @@ type ToastNotification = {
             class="text-slate-400 hover:text-white"
             aria-label="Đóng thông báo"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>
           </button>
         </div>
       }
@@ -328,6 +314,12 @@ type ToastNotification = {
 })
 export class AdminBranchesPageComponent implements OnInit {
   readonly branchService = inject(AdminBranchService);
+
+  readonly statusOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả chi nhánh' },
+    { value: 'ACTIVE', label: 'Đang hoạt động' },
+    { value: 'INACTIVE', label: 'Tạm dừng hoạt động' },
+  ];
 
   readonly isFormModalOpen = signal<boolean>(false);
   readonly selectedBranch = signal<AdminBranch | null>(null);
@@ -350,8 +342,8 @@ export class AdminBranchesPageComponent implements OnInit {
     void this.branchService.loadBranches({ search: term, page: 1 });
   }
 
-  onStatusFilterChange(filter: 'ALL' | 'ACTIVE' | 'INACTIVE'): void {
-    this.branchService.setStatusFilter(filter);
+  onStatusFilterChange(filter: string): void {
+    this.branchService.setStatusFilter(filter as 'ALL' | 'ACTIVE' | 'INACTIVE');
     void this.branchService.loadBranches({ page: 1 });
   }
 

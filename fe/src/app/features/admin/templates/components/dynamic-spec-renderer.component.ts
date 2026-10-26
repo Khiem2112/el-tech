@@ -6,12 +6,13 @@ import {
   model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import { SpecAttribute } from '../../categories/services/admin-category.service';
 
 @Component({
   selector: 'app-dynamic-spec-renderer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectComponent],
   template: `
     <div class="space-y-4">
       @if (schema().length === 0) {
@@ -66,17 +67,14 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
                 }
 
                 @case ('select') {
-                  <select
+                  <app-select
+                    [options]="getSelectOptions(attr)"
+                    [value]="getSelectValue(attr.key)"
+                    (valueChange)="onSelectOptionChange(attr.key, $event)"
                     [disabled]="readonly()"
-                    [value]="getSpecValue(attr.key)"
-                    (change)="onSelectChange(attr.key, $event)"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm"
-                  >
-                    <option value="">-- Chọn {{ attr.label }} --</option>
-                    @for (opt of attr.options; track opt) {
-                      <option [value]="opt">{{ opt }}</option>
-                    }
-                  </select>
+                    size="sm"
+                    [ariaLabel]="attr.label"
+                  />
                 }
 
                 @case ('boolean') {
@@ -133,10 +131,21 @@ export class DynamicSpecRendererComponent {
     this.specValues.set(current);
   }
 
-  onSelectChange(key: string, event: Event): void {
-    const selectEl = event.target as HTMLSelectElement;
+  getSelectOptions(attr: SpecAttribute): readonly SelectOption[] {
+    return [
+      { value: '', label: `-- Chọn ${attr.label} --` },
+      ...(attr.options || []).map((opt) => ({ value: opt, label: opt })),
+    ];
+  }
+
+  getSelectValue(key: string): string {
+    const val = this.getSpecValue(key);
+    return val !== null && val !== undefined ? String(val) : '';
+  }
+
+  onSelectOptionChange(key: string, value: string): void {
     const current = { ...(this.specValues() ?? {}) };
-    current[key] = selectEl.value;
+    current[key] = value;
     this.specValues.set(current);
   }
 

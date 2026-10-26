@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppIconModule, ButtonDirective } from '../../components/atoms';
+import { AppIconModule, ButtonDirective, SelectComponent, SelectOption } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { handleProductImageError } from '../../core/constants/product.constants';
 import { CartService } from '../../services/cart.service';
@@ -30,7 +30,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 
 @Component({
   selector: 'app-custom-build-page',
-  imports: [VndPipe, AppIconModule, ButtonDirective, ComponentSwapModalComponent],
+  imports: [VndPipe, AppIconModule, ButtonDirective, SelectComponent, ComponentSwapModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">
@@ -310,16 +310,13 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <label for="branch-selector" class="block text-[11px] font-bold text-foreground uppercase tracking-wider">
                   Chi nhánh lắp ráp / nhận máy
                 </label>
-                <select
-                  id="branch-selector"
+                <app-select
+                  [options]="branchOptions"
                   [value]="selectedBranch()"
-                  (change)="onBranchChange($event)"
-                  class="w-full h-9 px-3 rounded-lg bg-surface-alt border border-line text-foreground text-xs font-semibold focus:border-primary focus:outline-none"
-                >
-                  <option value="hcm">TP.HCM - 280 Ba Tháng Hai, Quận 10</option>
-                  <option value="hanoi">Hà Nội - 45 Thái Hà, Đống Đa</option>
-                  <option value="danang">Đà Nẵng - 112 Hàm Nghi, Thanh Khê</option>
-                </select>
+                  (valueChange)="onBranchSelect($event)"
+                  size="sm"
+                  ariaLabel="Chi nhánh lắp ráp / nhận máy"
+                />
 
                 <!-- Stock readiness badge -->
                 <div class="p-2.5 rounded-lg bg-surface-alt border border-line flex items-center gap-2 text-xs">
@@ -495,9 +492,14 @@ export class CustomBuildPageComponent implements OnInit {
     return true;
   });
 
-  protected onBranchChange(event: Event): void {
-    const val = (event.target as HTMLSelectElement).value as 'hcm' | 'hanoi' | 'danang';
-    this.selectedBranch.set(val);
+  protected readonly branchOptions: readonly SelectOption[] = [
+    { value: 'hcm', label: 'TP.HCM - 280 Ba Tháng Hai, Quận 10' },
+    { value: 'hanoi', label: 'Hà Nội - 45 Thái Hà, Đống Đa' },
+    { value: 'danang', label: 'Đà Nẵng - 112 Hàm Nghi, Thanh Khê' },
+  ];
+
+  protected onBranchSelect(value: string): void {
+    this.selectedBranch.set(value as 'hcm' | 'hanoi' | 'danang');
   }
 
   protected readonly activePresetLabel = computed<string>(() => {

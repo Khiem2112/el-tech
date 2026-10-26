@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { ReviewDetailDialogComponent } from './components/review-detail-dialog.component';
 import {
   AdminReviewItem,
@@ -23,7 +25,7 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-reviews-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ReviewDetailDialogComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ReviewDetailDialogComponent, AppIconModule, SelectComponent],
   template: `
     <div class="flex flex-col h-full bg-[#090d16] text-white overflow-hidden text-sm">
       <header class="h-14 bg-[#161b26] border-b border-[#272f3d] flex items-center justify-between px-6 flex-shrink-0">
@@ -61,28 +63,23 @@ type ToastNotification = {
                 />
               </div>
 
-              <select
-                [(ngModel)]="selectedRating"
-                (change)="onFilterChange()"
-                class="px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white focus:outline-none focus:border-[#76b900] text-xs"
-              >
-                <option value="">Tất cả số sao (1-5)</option>
-                <option value="5">5 sao</option>
-                <option value="4">4 sao</option>
-                <option value="3">3 sao</option>
-                <option value="2">2 sao</option>
-                <option value="1">1 sao</option>
-              </select>
+              <app-select
+                [options]="ratingOptions"
+                [value]="selectedRating"
+                (valueChange)="selectedRating = $event; onFilterChange()"
+                size="sm"
+                class="w-44"
+                ariaLabel="Lọc theo số sao đánh giá"
+              />
 
-              <select
-                [(ngModel)]="selectedVisibility"
-                (change)="onFilterChange()"
-                class="px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-white focus:outline-none focus:border-[#76b900] text-xs"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value="true">Đang hiển thị</option>
-                <option value="false">Đã bị ẩn</option>
-              </select>
+              <app-select
+                [options]="visibilityOptions"
+                [value]="selectedVisibility"
+                (valueChange)="onVisibilitySelect($event)"
+                size="sm"
+                class="w-40"
+                ariaLabel="Lọc theo trạng thái hiển thị"
+              />
 
               <button
                 type="button"
@@ -173,14 +170,9 @@ type ToastNotification = {
                           (click)="openDetailDialog(rev)"
                           class="inline-flex items-center justify-center p-1.5 rounded-md hover:bg-[#272f3d] text-[#76b900] hover:text-[#88d400] transition-colors"
                           title="Chi tiết & Kiểm duyệt"
+                          aria-label="Xem chi tiết và kiểm duyệt nhận xét đánh giá"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                            <line x1="16" y1="13" x2="8" y2="13" />
-                            <line x1="16" y1="17" x2="8" y2="17" />
-                            <line x1="10" y1="9" x2="8" y2="9" />
-                          </svg>
+                          <lucide-icon name="file-text" class="size-4" aria-hidden="true"></lucide-icon>
                         </button>
                       </td>
                     </tr>
@@ -254,9 +246,29 @@ export class AdminReviewsPageComponent implements OnInit {
   readonly reviewService = inject(AdminReviewService);
   private readonly route = inject(ActivatedRoute);
 
+  readonly ratingOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả số sao (1-5)' },
+    { value: '5', label: '5 sao' },
+    { value: '4', label: '4 sao' },
+    { value: '3', label: '3 sao' },
+    { value: '2', label: '2 sao' },
+    { value: '1', label: '1 sao' },
+  ];
+
+  readonly visibilityOptions: readonly SelectOption[] = [
+    { value: 'all', label: 'Tất cả trạng thái' },
+    { value: 'true', label: 'Đang hiển thị' },
+    { value: 'false', label: 'Đã bị ẩn' },
+  ];
+
   searchQuery = '';
   selectedRating = '';
   selectedVisibility: 'all' | 'true' | 'false' = 'all';
+
+  onVisibilitySelect(val: string): void {
+    this.selectedVisibility = val as 'all' | 'true' | 'false';
+    void this.onFilterChange();
+  }
 
   readonly selectedReview = signal<AdminReviewItem | null>(null);
   readonly toasts = signal<readonly ToastNotification[]>([]);

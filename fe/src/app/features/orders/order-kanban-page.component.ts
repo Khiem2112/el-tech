@@ -8,6 +8,7 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 
 type KanbanOrderType = 'pc' | 'parts' | 'workstation';
 type KanbanBranch = 'hcm' | 'hn' | 'delivery';
@@ -42,7 +43,7 @@ type KanbanOrder = {
 
 @Component({
   selector: 'app-order-kanban-page',
-  imports: [NgTemplateOutlet, FormsModule, RouterLink, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
+  imports: [NgTemplateOutlet, FormsModule, RouterLink, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
@@ -113,30 +114,24 @@ type KanbanOrder = {
 
         <!-- Type Select -->
         <div class="lg:col-span-3">
-          <select
-            appInput
-            class="w-full text-xs font-medium"
-            [(ngModel)]="selectedType"
-          >
-            <option value="all">Tất cả loại đơn</option>
-            <option value="pc">PC Custom Build</option>
-            <option value="parts">Linh kiện rời</option>
-            <option value="workstation">Workstation & AI Server</option>
-          </select>
+          <app-select
+            [options]="typeOptions"
+            [value]="selectedType()"
+            (valueChange)="selectedType.set($event)"
+            size="sm"
+            ariaLabel="Loại đơn hàng"
+          />
         </div>
 
         <!-- Branch Select -->
         <div class="lg:col-span-3">
-          <select
-            appInput
-            class="w-full text-xs font-medium"
-            [(ngModel)]="selectedBranch"
-          >
-            <option value="all">Tất cả chi nhánh & Hub</option>
-            <option value="hcm">Hub TP.HCM (280 3/2, Q.10)</option>
-            <option value="hn">Hub Hà Nội (45 Thái Hà)</option>
-            <option value="delivery">Giao tận nơi (Hỏa tốc 2H)</option>
-          </select>
+          <app-select
+            [options]="branchOptions"
+            [value]="selectedBranch()"
+            (valueChange)="selectedBranch.set($event)"
+            size="sm"
+            ariaLabel="Chi nhánh & Hub"
+          />
         </div>
 
         <!-- Refresh Button -->
@@ -449,8 +444,22 @@ export class OrderKanbanPageComponent implements OnInit {
 
   protected readonly viewMode = signal<'kanban' | 'list'>('kanban');
   protected searchQuery = '';
-  protected selectedType = 'all';
-  protected selectedBranch = 'all';
+  protected readonly selectedType = signal('all');
+  protected readonly selectedBranch = signal('all');
+
+  protected readonly typeOptions: readonly SelectOption[] = [
+    { value: 'all', label: 'Tất cả loại đơn' },
+    { value: 'pc', label: 'PC Custom Build' },
+    { value: 'parts', label: 'Linh kiện rời' },
+    { value: 'workstation', label: 'Workstation & AI Server' },
+  ];
+
+  protected readonly branchOptions: readonly SelectOption[] = [
+    { value: 'all', label: 'Tất cả chi nhánh & Hub' },
+    { value: 'hcm', label: 'Hub TP.HCM (280 3/2, Q.10)' },
+    { value: 'hn', label: 'Hub Hà Nội (45 Thái Hà)' },
+    { value: 'delivery', label: 'Giao tận nơi (Hỏa tốc 2H)' },
+  ];
 
   private readonly orders = signal<KanbanOrder[]>([]);
 
@@ -471,8 +480,8 @@ export class OrderKanbanPageComponent implements OnInit {
 
   protected readonly filteredOrders = computed(() => {
     const q = this.searchQuery.trim().toLowerCase();
-    const type = this.selectedType;
-    const branch = this.selectedBranch;
+    const type = this.selectedType();
+    const branch = this.selectedBranch();
 
     return this.orders().filter((order) => {
       if (q && !order.code.toLowerCase().includes(q) && !order.title.toLowerCase().includes(q)) {
@@ -500,7 +509,7 @@ export class OrderKanbanPageComponent implements OnInit {
 
   protected resetFilters(): void {
     this.searchQuery = '';
-    this.selectedType = 'all';
-    this.selectedBranch = 'all';
+    this.selectedType.set('all');
+    this.selectedBranch.set('all');
   }
 }

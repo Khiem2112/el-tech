@@ -10,6 +10,8 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { handleProductImageError } from '../../../core/constants/product.constants';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { ConfirmPODialogComponent } from './components/confirm-po-dialog.component';
 import { ShortShipmentDialogComponent } from './components/short-shipment-dialog.component';
 import { ValidatePOReceiptDialogComponent } from './components/validate-po-receipt-dialog.component';
@@ -52,6 +54,8 @@ type ToastMessage = {
     ConfirmPODialogComponent,
     ValidatePOReceiptDialogComponent,
     ShortShipmentDialogComponent,
+    AppIconModule,
+    SelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -351,15 +355,14 @@ type ToastMessage = {
             <div>
               <label class="block text-slate-400 font-semibold uppercase mb-1">Nhà Cung Cấp</label>
               @if (isNew() || order()?.status === 'DRAFT') {
-                <select
-                  [(ngModel)]="selectedSupplierId"
-                  class="w-full px-2.5 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900]"
-                >
-                  <option [ngValue]="null" disabled>Chọn nhà cung cấp...</option>
-                  @for (s of suppliers(); track s.id) {
-                    <option [ngValue]="s.id">{{ s.name }} ({{ s.code }})</option>
-                  }
-                </select>
+                <app-select
+                  [options]="supplierOptions()"
+                  [value]="selectedSupplierId ? selectedSupplierId.toString() : ''"
+                  (valueChange)="selectedSupplierId = $event ? Number($event) : null"
+                  placeholder="Chọn nhà cung cấp..."
+                  size="sm"
+                  ariaLabel="Nhà Cung Cấp"
+                />
               } @else {
                 <div class="font-bold text-white text-sm pt-1">{{ order()?.supplier?.name }}</div>
                 <div class="text-slate-400 text-xs font-mono mt-0.5">{{ order()?.supplier?.code }}</div>
@@ -369,15 +372,14 @@ type ToastMessage = {
             <div>
               <label class="block text-slate-400 font-semibold uppercase mb-1">Kho Nhận Hàng</label>
               @if (isNew() || order()?.status === 'DRAFT') {
-                <select
-                  [(ngModel)]="selectedBranchId"
-                  class="w-full px-2.5 py-2 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900]"
-                >
-                  <option [ngValue]="null" disabled>Chọn chi nhánh nhận hàng...</option>
-                  @for (b of branches(); track b.id) {
-                    <option [ngValue]="b.id">{{ b.name }} ({{ b.code }})</option>
-                  }
-                </select>
+                <app-select
+                  [options]="branchOptions()"
+                  [value]="selectedBranchId ? selectedBranchId.toString() : ''"
+                  (valueChange)="selectedBranchId = $event ? Number($event) : null"
+                  placeholder="Chọn chi nhánh nhận hàng..."
+                  size="sm"
+                  ariaLabel="Kho Nhận Hàng"
+                />
               } @else {
                 <div class="font-bold text-white text-sm pt-1">{{ order()?.receivingBranch?.name }}</div>
                 <div class="text-slate-400 text-xs font-mono mt-0.5">{{ order()?.receivingBranch?.code }}</div>
@@ -428,15 +430,11 @@ type ToastMessage = {
                   placeholder="+ Thêm SKU linh kiện vào PO..."
                   class="w-full pl-8 pr-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
                 />
-                <svg
-                  class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5 pointer-events-none"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
+                <lucide-icon
+                  name="plus"
+                  class="size-3.5 text-slate-500 absolute left-2.5 top-2.5 pointer-events-none"
+                  aria-hidden="true"
+                ></lucide-icon>
 
                 @if (searchedVariants().length > 0) {
                   <div class="absolute left-0 right-0 mt-1 bg-[#090d16] border border-[#272f3d] rounded-lg shadow-xl z-30 max-h-56 overflow-y-auto">
@@ -561,10 +559,9 @@ type ToastMessage = {
                             (click)="removeLine(line.skuId)"
                             class="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors"
                             title="Xóa dòng"
+                            aria-label="Xóa dòng sản phẩm khỏi đơn mua hàng"
                           >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            <lucide-icon name="trash-2" class="size-4" aria-hidden="true"></lucide-icon>
                           </button>
                         </td>
                       }
@@ -633,6 +630,22 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
 
   readonly suppliers = signal<SimpleOption[]>([]);
   readonly branches = signal<SimpleOption[]>([]);
+
+  readonly supplierOptions = computed<SelectOption[]>(() =>
+    this.suppliers().map((s) => ({
+      value: s.id.toString(),
+      label: `${s.name} (${s.code})`,
+    }))
+  );
+
+  readonly branchOptions = computed<SelectOption[]>(() =>
+    this.branches().map((b) => ({
+      value: b.id.toString(),
+      label: `${b.name} (${b.code})`,
+    }))
+  );
+
+  protected readonly Number = Number;
 
   selectedSupplierId: number | null = null;
   selectedBranchId: number | null = null;

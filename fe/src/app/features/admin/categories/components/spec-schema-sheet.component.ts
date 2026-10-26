@@ -12,10 +12,13 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import {
   AdminCategory,
   AdminCategoryService,
   SpecAttribute,
+  SpecAttributeType,
 } from '../services/admin-category.service';
 
 type EditableAttribute = SpecAttribute & {
@@ -26,7 +29,7 @@ type EditableAttribute = SpecAttribute & {
 @Component({
   selector: 'app-spec-schema-sheet',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective],
+  imports: [CommonModule, FormsModule, ButtonDirective, AppIconModule, SelectComponent],
   template: `
     @if (isOpen() && category()) {
       <div
@@ -56,16 +59,12 @@ type EditableAttribute = SpecAttribute & {
               title="Đóng bảng trượt"
               aria-label="Đóng bảng trượt"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
           <div class="p-4 bg-amber-50 border-b border-amber-200 text-amber-800 text-xs flex items-start gap-2.5">
-            <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            <lucide-icon name="alert-triangle" class="size-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
             <div>
               <strong class="font-semibold">Lưu ý ràng buộc:</strong>
               Không cho phép xóa hoặc đổi kiểu dữ liệu đối với các trường thông số kỹ thuật đã có mẫu sản phẩm sử dụng (hiện có {{ hasProducts() ? category()?.productTemplateCount : 0 }} mẫu). Chỉ cho phép đánh dấu ngưng kích hoạt hoặc bổ sung thuộc tính mới.
@@ -94,9 +93,7 @@ type EditableAttribute = SpecAttribute & {
                 (click)="addNewAttribute()"
                 class="inline-flex items-center gap-1.5"
               >
-                <svg class="w-3.5 h-3.5 text-primary-strong" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
+                <lucide-icon name="plus" class="size-3.5 text-primary-strong" aria-hidden="true"></lucide-icon>
                 <span>Thêm Thuộc Tính</span>
               </button>
             </div>
@@ -140,9 +137,7 @@ type EditableAttribute = SpecAttribute & {
                           title="Xóa thuộc tính này"
                           aria-label="Xóa thuộc tính này"
                         >
-                          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
+                          <lucide-icon name="trash-2" class="size-4" aria-hidden="true"></lucide-icon>
                         </button>
                       }
                     </div>
@@ -178,16 +173,14 @@ type EditableAttribute = SpecAttribute & {
                       <label class="block font-semibold text-muted text-xs uppercase mb-1">
                         Kiểu dữ liệu <span class="text-rose-500">*</span>
                       </label>
-                      <select
-                        [(ngModel)]="attr.type"
+                      <app-select
+                        [options]="specTypeOptions"
+                        [value]="attr.type"
+                        (valueChange)="onAttributeTypeChange(attr, $event)"
                         [disabled]="isAttributeLocked(attr)"
-                        class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-foreground disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:border-primary text-xs"
-                      >
-                        <option value="text">Văn bản (Text / String)</option>
-                        <option value="number">Số lượng / Giá trị số (Number)</option>
-                        <option value="boolean">Đúng / Sai (Boolean)</option>
-                        <option value="select">Danh sách lựa chọn (Select / Enum)</option>
-                      </select>
+                        size="sm"
+                        ariaLabel="Kiểu dữ liệu"
+                      />
                     </div>
 
                     <div>
@@ -301,6 +294,17 @@ type EditableAttribute = SpecAttribute & {
 })
 export class SpecSchemaSheetComponent {
   private readonly categoryService = inject(AdminCategoryService);
+
+  readonly specTypeOptions: readonly SelectOption[] = [
+    { value: 'text', label: 'Văn bản (Text / String)' },
+    { value: 'number', label: 'Số lượng / Giá trị số (Number)' },
+    { value: 'boolean', label: 'Đúng / Sai (Boolean)' },
+    { value: 'select', label: 'Danh sách lựa chọn (Select / Enum)' },
+  ];
+
+  onAttributeTypeChange(attr: EditableAttribute, type: string): void {
+    attr.type = type as SpecAttributeType;
+  }
 
   readonly isOpen = input<boolean>(false);
   readonly category = input<AdminCategory | null>(null);
