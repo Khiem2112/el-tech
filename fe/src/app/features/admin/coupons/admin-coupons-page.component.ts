@@ -209,25 +209,25 @@ type ToastNotification = {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-bold tabular-nums whitespace-nowrap text-foreground">
+                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap text-foreground">
                       @if (coupon.discountType === 'PERCENTAGE') {
-                        <span>{{ coupon.discountValue }}%</span>
+                        <span class="tabular">{{ coupon.discountValue }}%</span>
                         @if (coupon.maximumDiscount) {
-                          <div class="text-xs text-muted font-normal">
+                          <div class="text-xs text-muted font-normal tabular">
                             Tối đa: {{ coupon.maximumDiscount | number:'1.0-0' }} ₫
                           </div>
                         }
                       } @else {
-                        <span>{{ coupon.discountValue | number:'1.0-0' }} ₫</span>
+                        <span class="tabular">{{ coupon.discountValue | number:'1.0-0' }} ₫</span>
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right tabular-nums whitespace-nowrap text-foreground font-semibold">
+                    <td class="py-3 px-4 text-right tabular tabular-nums whitespace-nowrap text-foreground font-semibold">
                       {{ coupon.minimumSubtotal > 0 ? (coupon.minimumSubtotal | number:'1.0-0') + ' ₫' : 'Không yêu cầu' }}
                     </td>
 
-                    <td class="py-3 px-4 text-center tabular-nums whitespace-nowrap">
-                      <div class="font-bold text-foreground">
+                    <td class="py-3 px-4 text-center tabular tabular-nums whitespace-nowrap">
+                      <div class="font-bold text-foreground tabular">
                         {{ coupon.stats.usedCount }} / {{ coupon.globalQuota ? (coupon.globalQuota | number:'1.0-0') : 'Không giới hạn' }}
                       </div>
                       <div class="text-xs text-muted mt-0.5">
@@ -235,7 +235,7 @@ type ToastNotification = {
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 text-muted tabular-nums whitespace-nowrap text-xs">
+                    <td class="py-3 px-4 text-muted tabular tabular-nums whitespace-nowrap text-xs">
                       <div>{{ coupon.effectiveFrom | date:'dd/MM/yyyy' }}</div>
                       <div class="text-muted">đến {{ coupon.effectiveTo | date:'dd/MM/yyyy' }}</div>
                     </td>
@@ -325,8 +325,8 @@ type ToastNotification = {
         @if (!isLoading() && total() > 0) {
           <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-xs text-muted">
             <div>
-              Hiển thị trang <strong class="text-foreground">{{ page() }}</strong> / <strong class="text-foreground">{{ totalPages() }}</strong>
-              (Tổng cộng: <strong class="text-foreground tabular-nums">{{ total() }}</strong> mã)
+              Hiển thị trang <strong class="text-foreground tabular">{{ page() }}</strong> / <strong class="text-foreground tabular">{{ totalPages() }}</strong>
+              (Tổng cộng: <strong class="text-foreground tabular tabular-nums">{{ total() }}</strong> mã)
             </div>
 
             <div class="flex items-center gap-1.5">

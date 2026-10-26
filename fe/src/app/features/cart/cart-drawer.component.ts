@@ -55,10 +55,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 @if (amountLeftForFreeShipping() === 0) {
                   <span>Bạn đã đạt điều kiện MIỄN PHÍ VẬN CHUYỂN!</span>
                 } @else {
-                  <span>Mua thêm {{ amountLeftForFreeShipping() | vnd }} để được MIỄN PHÍ VẬN CHUYỂN</span>
+                  <span>Mua thêm <strong class="tabular font-bold">{{ amountLeftForFreeShipping() | vnd }}</strong> để được MIỄN PHÍ VẬN CHUYỂN</span>
                 }
               </span>
-              <span class="text-primary-strong font-mono font-bold">{{ freeShippingPercent() }}%</span>
+              <span class="text-primary-strong font-mono font-bold tabular">{{ freeShippingPercent() }}%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-line-strong overflow-hidden mt-0.5">
               <div
@@ -244,7 +244,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                             </span>
                             <div class="min-w-0">
                               <p class="text-xs font-bold text-foreground truncate">{{ hw.name }}</p>
-                              <p class="text-[10px] text-muted truncate">SKU: {{ hw.sku }} • Số lượng: {{ hw.quantity }}</p>
+                              <p class="text-[10px] text-muted truncate">SKU: <span class="font-mono tabular">{{ hw.sku }}</span> • Số lượng: <span class="tabular font-semibold">{{ hw.quantity }}</span></p>
                             </div>
                           </div>
                           <div class="text-right shrink-0">
@@ -362,7 +362,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             <!-- Price Breakdown -->
             <div class="space-y-1.5 text-xs">
               <div class="flex items-center justify-between text-muted">
-                <span>Tạm tính linh kiện ({{ cart.itemCount() }} món):</span>
+                <span>Tạm tính linh kiện (<strong class="tabular font-medium text-foreground">{{ cart.itemCount() }}</strong> món):</span>
                 <span class="text-foreground font-medium tabular">{{ cart.subtotal() | vnd }}</span>
               </div>
               <div class="flex items-center justify-between text-muted">

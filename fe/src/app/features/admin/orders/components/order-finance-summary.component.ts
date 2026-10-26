@@ -70,63 +70,63 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           <div class="space-y-1.5 pt-1 text-xs">
             <div class="flex items-center justify-between">
               <span class="text-muted">Tạm tính tiền hàng:</span>
-              <span class="font-bold text-foreground font-mono tabular-nums">
+              <span class="font-bold text-foreground font-mono tabular tabular-nums">
                 {{ formatVnd(order().subtotal) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-muted">Giảm giá trực tiếp từ sản phẩm:</span>
-              <span class="font-semibold text-muted font-mono tabular-nums">
+              <span class="font-semibold text-muted font-mono tabular tabular-nums">
                 - {{ formatVnd(order().productDiscount) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-muted">Giảm giá Coupon đơn hàng:</span>
-              <span class="font-bold text-rose-600 dark:text-rose-400 font-mono tabular-nums">
+              <span class="font-bold text-rose-600 dark:text-rose-400 font-mono tabular tabular-nums">
                 - {{ formatVnd(order().couponDiscount) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-muted">Phí dịch vụ lắp ráp máy tính:</span>
-              <span class="font-bold text-foreground font-mono tabular-nums">
+              <span class="font-bold text-foreground font-mono tabular tabular-nums">
                 {{ totalAssemblyFee() > 0 ? formatVnd(totalAssemblyFee()) : '0 ₫ (Miễn phí theo gói PC)' }}
               </span>
             </div>
 
             <div class="flex items-center justify-between">
               <span class="text-muted">Phí vận chuyển giao hàng:</span>
-              <span class="font-bold font-mono tabular-nums" [class.text-primary]="Number(order().shippingFee) === 0" [class.text-foreground]="Number(order().shippingFee) > 0">
+              <span class="font-bold font-mono tabular tabular-nums" [class.text-primary]="Number(order().shippingFee) === 0" [class.text-foreground]="Number(order().shippingFee) > 0">
                 {{ Number(order().shippingFee) === 0 ? '0 ₫ (Miễn phí giao hàng)' : formatVnd(order().shippingFee) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between text-muted text-xs">
               <span>Thuế VAT (đã bao gồm trong giá niêm yết):</span>
-              <span class="font-mono tabular-nums">
+              <span class="font-mono tabular tabular-nums">
                 {{ formatVnd(order().taxAmount) }}
               </span>
             </div>
 
             <div class="border-t border-line pt-2 flex items-center justify-between">
               <span class="font-bold text-foreground text-sm uppercase">Tổng Tiền Thanh Toán:</span>
-              <span class="font-black text-primary text-base font-mono tabular-nums">
+              <span class="font-black text-primary text-base font-mono tabular tabular-nums">
                 {{ formatVnd(order().grandTotal) }}
               </span>
             </div>
 
             <div class="flex items-center justify-between pt-1 border-t border-dashed border-line">
               <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Đã thanh toán (Cọc 10% / VietQR):</span>
-              <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
+              <span class="font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular tabular-nums">
                 - {{ order().payment ? formatVnd(order().payment?.totalReceived) : '0 ₫' }}
               </span>
             </div>
 
             <div class="flex items-center justify-between bg-rose-500/10 p-2 rounded border border-rose-500/25 mt-1">
               <span class="font-bold text-rose-700 dark:text-rose-300 uppercase text-xs">Tiền Mặt COD Còn Phải Thu:</span>
-              <span class="font-bold text-rose-600 dark:text-rose-400 text-sm font-mono tabular-nums">
+              <span class="font-bold text-rose-600 dark:text-rose-400 text-sm font-mono tabular tabular-nums">
                 {{ order().payment ? formatVnd(order().payment?.codRemaining) : formatVnd(order().grandTotal) }}
               </span>
             </div>

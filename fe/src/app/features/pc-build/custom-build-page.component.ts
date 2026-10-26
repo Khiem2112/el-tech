@@ -358,7 +358,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   </div>
                   <div class="text-right">
                     <div class="text-xl sm:text-2xl font-black text-primary tabular">{{ totalHardwarePrice() | vnd }}</div>
-                    <div class="text-[10px] text-primary font-bold">Tiết kiệm trọn gói 1.800.000 đ</div>
+                    <div class="text-[10px] text-primary font-bold tabular">Tiết kiệm trọn gói 1.800.000 đ</div>
                   </div>
                 </div>
               </div>

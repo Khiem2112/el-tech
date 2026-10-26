@@ -273,12 +273,12 @@ import {
                       <div class="text-[10px] text-muted truncate">{{ item.destinationBranchName }}</div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-medium text-foreground whitespace-nowrap tabular-nums text-right">
+                    <td class="py-3 px-4 font-mono font-medium text-foreground whitespace-nowrap tabular tabular-nums text-right">
                       {{ item.totalQuantity }} chiếc
                       <span class="text-[10px] text-muted block font-sans">({{ item.lineCount }} SKU)</span>
                     </td>
 
-                    <td class="py-3 px-4 text-muted text-xs tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-muted text-xs tabular tabular-nums whitespace-nowrap">
                       {{ item.createdAt | date:'dd/MM/yyyy HH:mm' }}
                     </td>
 
@@ -457,9 +457,9 @@ import {
                       <div class="flex items-center justify-between">
                         <div>
                           <div class="font-bold text-foreground">{{ line.productName }}</div>
-                          <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }} - Đơn giá vốn: {{ line.unitCost }} đ</div>
+                          <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }} - Đơn giá vốn: <span class="tabular font-mono">{{ line.unitCost }} đ</span></div>
                         </div>
-                        <div class="font-bold font-mono text-foreground text-sm">
+                        <div class="font-bold font-mono text-foreground text-sm tabular">
                           {{ line.quantity }} chiếc
                         </div>
                       </div>

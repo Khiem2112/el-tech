@@ -184,7 +184,7 @@ import {
               <tbody class="divide-y divide-line text-xs text-foreground">
                 @for (entry of inventoryService.ledgerEntries(); track entry.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors">
-                    <td class="py-3 px-4 font-mono text-muted tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 font-mono text-muted tabular tabular-nums whitespace-nowrap">
                       {{ formatDate(entry.occurredAt) }}
                     </td>
 
@@ -209,7 +209,7 @@ import {
                       </span>
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaOnHand > 0) {
                         <span class="text-emerald-600 font-bold">+{{ entry.deltaOnHand }}</span>
                       } @else if (entry.deltaOnHand < 0) {
@@ -219,7 +219,7 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaReserved > 0) {
                         <span class="text-amber-600 font-bold">+{{ entry.deltaReserved }}</span>
                       } @else if (entry.deltaReserved < 0) {
@@ -229,7 +229,7 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaQuarantine > 0) {
                         <span class="text-rose-600 font-bold">+{{ entry.deltaQuarantine }}</span>
                       } @else if (entry.deltaQuarantine < 0) {
@@ -239,7 +239,7 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono text-muted tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono text-muted tabular tabular-nums whitespace-nowrap">
                       Thực: <strong class="text-foreground">{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-amber-600">{{ entry.reservedAfter }}</strong>
                     </td>
 

@@ -81,7 +81,7 @@ export type CancelOrderPayload = {
                   Chính sách hoàn tiền 100% (ORD-014)
                 </span>
                 <p class="text-muted leading-relaxed">
-                  Số tiền đã thanh toán hoặc tiền cọc sẽ được hoàn trả 100% (<strong class="text-foreground">{{ totalAmount() | vnd }}</strong>)
+                  Số tiền đã thanh toán hoặc tiền cọc sẽ được hoàn trả 100% (<strong class="text-foreground tabular">{{ totalAmount() | vnd }}</strong>)
                   vào tài khoản gốc trong vòng 24 giờ làm việc theo quy trình đối soát không thu phí giao dịch.
                 </p>
               </div>

@@ -239,7 +239,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để lọc danh sách biến thể SKU của mẫu sản phẩm này"
             >
-              <div class="text-base font-bold text-primary tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-primary tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.skuCount ?? tpl.variants.length }}
               </div>
               <div class="text-xs text-muted font-medium">Biến thể SKU</div>
@@ -251,7 +251,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để kiểm tra tồn kho thực tế tại các chi nhánh"
             >
-              <div class="text-base font-bold text-foreground tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-foreground tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalOnHand ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Tồn thực tế</div>
@@ -263,7 +263,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               [title]="getAvailableBranchTooltip()"
             >
-              <div class="text-base font-bold text-emerald-600 tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-emerald-600 tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalAvailable ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Khả dụng</div>
@@ -275,7 +275,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để tra cứu toàn bộ biến động nhập xuất trong sổ kho bất biến"
             >
-              <div class="text-base font-bold text-muted tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-muted tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.stockMoveCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Biến động kho</div>
@@ -287,7 +287,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để xem lịch sử các đơn mua hàng PO chứa sản phẩm này"
             >
-              <div class="text-base font-bold text-muted tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-muted tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.poCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Lịch sử mua PO</div>
@@ -299,7 +299,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để xem các đơn hàng khách hàng đã đặt có chứa sản phẩm này"
             >
-              <div class="text-base font-bold text-emerald-600 tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-emerald-600 tabular tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.orderCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Lịch sử bán hàng</div>
@@ -572,7 +572,7 @@ type ToastNotification = {
                         <td class="py-3 px-4 font-medium text-foreground">
                           {{ v.variationLabel || 'Mặc định' }}
                         </td>
-                        <td class="py-3 px-4 text-right font-bold font-mono tabular-nums text-foreground whitespace-nowrap">
+                        <td class="py-3 px-4 text-right font-bold font-mono tabular tabular-nums text-foreground whitespace-nowrap">
                           {{ formatCurrency(v.sellingPrice) }}
                         </td>
                         <td class="py-3 px-4 text-center whitespace-nowrap">
@@ -586,7 +586,7 @@ type ToastNotification = {
                             </span>
                           }
                         </td>
-                        <td class="py-3 px-4 text-right tabular-nums font-bold whitespace-nowrap" [class.text-emerald-600]="v.totalAvailable > 0" [class.text-destructive]="v.totalAvailable <= 0">
+                        <td class="py-3 px-4 text-right tabular tabular-nums font-bold whitespace-nowrap" [class.text-emerald-600]="v.totalAvailable > 0" [class.text-destructive]="v.totalAvailable <= 0">
                           {{ v.totalAvailable }} chiếc
                         </td>
                         <td class="py-3 px-4 text-center whitespace-nowrap">

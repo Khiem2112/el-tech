@@ -529,7 +529,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                           @if (line.pcBuildName) {
                             <p class="text-[10px] text-primary font-semibold">BOM CẤU HÌNH: {{ line.pcBuildName }} ({{ line.pcBuildType }})</p>
                           }
-                          <p class="text-[11px] text-muted">SL: {{ line.quantity }} · Đơn giá: {{ line.unitPrice | vnd }}</p>
+                          <p class="text-[11px] text-muted">SL: <span class="tabular font-medium">{{ line.quantity }}</span> · Đơn giá: <span class="tabular font-medium">{{ line.unitPrice | vnd }}</span></p>
                         </div>
                       </div>
                       <span class="font-bold text-xs text-foreground shrink-0 tabular">{{ line.netAmount | vnd }}</span>
@@ -595,7 +595,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
 
               <!-- Price breakdown summary -->
               <div class="mt-3 flex justify-between text-xs text-muted px-2">
-                <span>Tạm tính: {{ item.subtotal | vnd }} · Phí giao hàng: {{ item.shippingFee | vnd }}</span>
+                <span>Tạm tính: <span class="tabular font-medium">{{ item.subtotal | vnd }}</span> · Phí giao hàng: <span class="tabular font-medium">{{ item.shippingFee | vnd }}</span></span>
                 <span class="font-black text-foreground text-sm tabular">Tổng cộng: {{ item.grandTotal | vnd }}</span>
               </div>
             </div>

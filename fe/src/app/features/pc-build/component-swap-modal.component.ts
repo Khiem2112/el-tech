@@ -454,9 +454,9 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                           <div class="text-xs font-bold text-foreground tabular">{{ item.price | vnd }}</div>
                           @if (getPriceDifference(item.price); as diff) {
                             @if (diff > 0) {
-                              <div class="text-[11px] font-bold text-warning font-mono">+{{ diff | vnd }}</div>
+                              <div class="text-[11px] font-bold text-warning font-mono tabular">+{{ diff | vnd }}</div>
                             } @else if (diff < 0) {
-                              <div class="text-[11px] font-bold text-primary font-mono">-{{ (-diff) | vnd }}</div>
+                              <div class="text-[11px] font-bold text-primary font-mono tabular">-{{ (-diff) | vnd }}</div>
                             } @else {
                               <div class="text-[10px] text-muted">Bằng giá (0 đ)</div>
                             }

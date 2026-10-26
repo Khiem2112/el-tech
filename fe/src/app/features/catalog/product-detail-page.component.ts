@@ -162,7 +162,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <div class="bg-surface-alt p-4 rounded-lg border border-line space-y-1.5">
                 <div class="flex items-baseline gap-3 flex-wrap">
                   <span class="text-2xl sm:text-3xl font-black text-foreground tabular">{{ variant.sellingPrice | vnd }}</span>
-                  <span class="text-xs text-muted">Mã SKU: {{ variant.sku }}</span>
+                  <span class="text-xs text-muted">Mã SKU: <span class="font-mono tabular">{{ variant.sku }}</span></span>
                 </div>
                 <p class="text-xs text-muted">Giá đã bao gồm thuế VAT. Tồn kho và giá bán sẽ được xác nhận lại khi bạn tạo báo giá ở bước checkout.</p>
               </div>
@@ -202,7 +202,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                     (click)="selected.set(variant)"
                   >
                     <div>{{ variant.variationLabel ?? variant.sku }}</div>
-                    <div class="text-[11px] opacity-80 mt-0.5">{{ variant.sellingPrice | vnd }}</div>
+                    <div class="text-[11px] opacity-80 mt-0.5 tabular">{{ variant.sellingPrice | vnd }}</div>
                   </button>
                 }
               </div>
@@ -224,7 +224,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   >
                     <lucide-icon name="Minus" class="size-3.5" aria-hidden="true"></lucide-icon>
                   </button>
-                  <span class="px-3 py-1 text-xs font-bold text-foreground min-w-[2.5rem] text-center">{{ quantity() }}</span>
+                  <span class="px-3 py-1 text-xs font-bold text-foreground min-w-[2.5rem] text-center tabular">{{ quantity() }}</span>
                   <button
                     type="button"
                     appButton
@@ -383,7 +383,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                       @for (row of formattedSpecs(); track row.label) {
                         <tr class="hover:bg-surface-alt/50 transition-colors">
                           <td class="px-4 py-2.5 font-semibold text-muted w-1/3">{{ row.label }}</td>
-                          <td class="px-4 py-2.5 font-bold text-foreground">{{ row.value }}</td>
+                          <td class="px-4 py-2.5 font-bold text-foreground tabular">{{ row.value }}</td>
                         </tr>
                       }
                     </tbody>

@@ -407,7 +407,7 @@ type SubmitResult = {
                           <span class="px-1.5 py-0.2 rounded bg-primary text-primary-foreground text-[10px] font-bold uppercase">
                             Bộ PC Hoàn Chỉnh
                           </span>
-                          <span class="text-[10px] font-mono text-muted">SL: {{ build.quantity }}</span>
+                          <span class="text-[10px] font-mono text-muted tabular">SL: {{ build.quantity }}</span>
                         </div>
                         <h4 class="text-xs font-bold text-foreground mt-1 truncate">{{ build.buildName }}</h4>
                         <span class="text-[10px] text-muted block">Bao gồm {{ build.componentCount }} linh kiện chính hãng</span>
@@ -462,7 +462,7 @@ type SubmitResult = {
                   <div class="flex items-center justify-between gap-2 p-2.5 bg-surface-alt rounded-lg border border-line">
                     <div class="flex-1 min-w-0">
                       <h4 class="text-xs font-semibold text-foreground truncate">{{ item.name }}</h4>
-                      <span class="text-[10px] text-muted">Số lượng: {{ item.quantity }}</span>
+                      <span class="text-[10px] text-muted">Số lượng: <strong class="tabular font-medium text-foreground">{{ item.quantity }}</strong></span>
                     </div>
                     <div class="text-right shrink-0">
                       <span class="text-xs font-bold text-foreground tabular">{{ item.lineTotal | vnd }}</span>
@@ -489,7 +489,7 @@ type SubmitResult = {
 
                 <div class="flex justify-between text-muted">
                   <span>Phí vận chuyển:</span>
-                  <span class="font-semibold text-primary">
+                  <span class="font-semibold text-primary tabular">
                     {{ fulfillment === 'PICKUP' ? 'Miễn phí tại showroom' : (quoteResult()?.shippingFee ? ((quoteResult()?.shippingFee ?? '0') | vnd) : 'Miễn phí toàn quốc') }}
                   </span>
                 </div>

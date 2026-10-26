@@ -380,7 +380,7 @@ type OrderGroup = {
                         }
                       </td>
 
-                      <td class="py-3 px-4 text-right font-bold tabular-nums text-foreground whitespace-nowrap">
+                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
                         {{ formatCurrency(order.grandTotal) }}
                       </td>
 
@@ -445,7 +445,7 @@ type OrderGroup = {
               >
                 Trước
               </button>
-              <span class="px-2 font-mono text-muted">
+              <span class="px-2 font-mono text-muted tabular tabular-nums">
                 {{ orderService.page() }} / {{ orderService.totalPages() }}
               </span>
               <button

@@ -402,7 +402,7 @@ type ToastMessage = {
 
             <div>
               <label class="block text-slate-400 font-semibold uppercase mb-1">Tổng Giá Trị Đơn PO</label>
-              <div class="font-black text-[#76b900] text-base pt-1 tabular-nums font-mono">
+              <div class="font-black text-[#76b900] text-base pt-1 tabular tabular-nums font-mono">
                 {{ formatCurrency(calculatedTotalAmount()) }} ₫
               </div>
               <div class="text-slate-400 text-[10px] mt-0.5">Đã bao gồm đơn giá thỏa thuận VAT</div>
@@ -448,7 +448,7 @@ type ToastMessage = {
                           <div class="text-[11px] text-slate-400 truncate">{{ v.productTemplate.name }}</div>
                         </div>
                         <div class="text-right flex-shrink-0">
-                          <span class="text-[#76b900] text-xs font-mono font-bold">
+                          <span class="text-[#76b900] text-xs font-mono font-bold tabular">
                             {{ formatCurrency(v.sellingPrice) }} ₫
                           </span>
                           @if (v.serialRequired) {
@@ -529,7 +529,7 @@ type ToastMessage = {
                             class="w-20 px-2 py-1 bg-[#090d16] border border-[#272f3d] rounded text-center font-bold text-white text-xs focus:outline-none focus:border-[#76b900]"
                           />
                         } @else {
-                          <span class="font-black text-white tabular-nums text-sm">
+                          <span class="font-black text-white tabular tabular-nums text-sm">
                             {{ line.quantity }} chiếc
                           </span>
                         }
@@ -541,15 +541,15 @@ type ToastMessage = {
                             min="0"
                             [ngModel]="line.agreedUnitCost"
                             (ngModelChange)="onLineCostChange(line.skuId, $event)"
-                            class="w-32 px-2 py-1 bg-[#090d16] border border-[#272f3d] rounded text-right font-mono font-bold text-white text-xs focus:outline-none focus:border-[#76b900]"
+                            class="w-32 px-2 py-1 bg-[#090d16] border border-[#272f3d] rounded text-right font-mono font-bold text-white text-xs focus:outline-none focus:border-[#76b900] tabular"
                           />
                         } @else {
-                          <span class="font-mono text-slate-300 tabular-nums">
+                          <span class="font-mono text-slate-300 tabular tabular-nums">
                             {{ formatCurrency(line.agreedUnitCost) }} ₫
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right font-black tabular-nums font-mono text-[#76b900] text-sm">
+                      <td class="py-2.5 px-4 text-right font-black tabular tabular-nums font-mono text-[#76b900] text-sm">
                         {{ formatCurrency(line.lineTotal) }} ₫
                       </td>
                       @if (isNew() || order()?.status === 'DRAFT') {
@@ -557,7 +557,7 @@ type ToastMessage = {
                           <button
                             type="button"
                             (click)="removeLine(line.skuId)"
-                            class="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors"
+                            class="p-1 rounded text-muted hover:text-danger hover:bg-danger/10 transition-colors"
                             title="Xóa dòng"
                             aria-label="Xóa dòng sản phẩm khỏi đơn mua hàng"
                           >
@@ -602,7 +602,7 @@ type ToastMessage = {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
           @for (toast of toasts(); track toast.id) {
             <div
-              class="px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold text-white pointer-events-auto border transition-all animate-bounce-short"
+              class="px-4 py-2.5 rounded-lg shadow-xl text-xs font-semibold text-white pointer-events-auto border transition-all duration-200 ease-out"
               [class.bg-emerald-800]="toast.type === 'success'"
               [class.border-emerald-600]="toast.type === 'success'"
               [class.bg-rose-900]="toast.type === 'error'"

@@ -155,13 +155,13 @@ import {
                       <div class="text-slate-200">{{ item.sourceBranchName ?? 'N/A' }}</div>
                       <div class="text-slate-400 text-[11px] font-mono">{{ item.sourceBranchCode ?? 'N/A' }}</div>
                     </td>
-                    <td class="py-3 px-4 text-center tabular-nums text-slate-200 font-bold">
+                    <td class="py-3 px-4 text-center tabular tabular-nums text-slate-200 font-bold">
                       {{ item.totalQuantity }} chiếc
                       <div class="text-[10px] font-normal text-slate-400">
                         {{ formatReturnSources(item.returnSources) }}
                       </div>
                     </td>
-                    <td class="py-3 px-4 text-slate-400 tabular-nums text-xs">
+                    <td class="py-3 px-4 text-slate-400 tabular tabular-nums text-xs">
                       {{ formatDate(item.validatedAt || item.createdAt) }}
                     </td>
                     <td class="py-3 px-4 text-center whitespace-nowrap">
@@ -293,14 +293,14 @@ import {
                               }
                             </div>
                           </td>
-                          <td class="py-2.5 px-3 text-center font-bold text-white tabular-nums">
+                          <td class="py-2.5 px-3 text-center font-bold text-white tabular tabular-nums">
                             {{ line.quantity }} chiếc
                           </td>
                           <td class="py-2.5 px-3">
                             @if (line.serialMovements && line.serialMovements.length > 0) {
                               <div class="flex flex-wrap gap-1">
                                 @for (sm of line.serialMovements; track sm.id) {
-                                  <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] font-mono text-[10px] text-[#76b900]">
+                                  <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] font-mono text-[10px] text-[#76b900] tabular">
                                     {{ sm.serialUnit.serialNumber }}
                                   </span>
                                 }
@@ -309,7 +309,7 @@ import {
                               <span class="text-slate-500 text-[11px]">Không yêu cầu serial</span>
                             }
                           </td>
-                          <td class="py-2.5 px-3 text-right tabular-nums">
+                          <td class="py-2.5 px-3 text-right tabular tabular-nums">
                             @for (entry of line.ledgerEntries; track $index) {
                               @if (entry.deltaQuarantine < 0) {
                                 <div class="text-amber-400 font-bold">

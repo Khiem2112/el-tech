@@ -60,32 +60,32 @@ import {
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tổng cặp SKU-Kho</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().totalQuants }}</div>
+          <div class="text-lg font-bold font-mono text-foreground mt-1 tabular">{{ summary().totalQuants }}</div>
         </div>
 
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tồn thực tế</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().totalOnHand }}</div>
+          <div class="text-lg font-bold font-mono text-foreground mt-1 tabular">{{ summary().totalOnHand }}</div>
         </div>
 
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đang giữ đơn</div>
-          <div class="text-lg font-bold font-mono text-warning mt-1">{{ summary().totalReserved }}</div>
+          <div class="text-lg font-bold font-mono text-warning mt-1 tabular">{{ summary().totalReserved }}</div>
         </div>
 
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Cách ly lỗi</div>
-          <div class="text-lg font-bold font-mono text-danger mt-1">{{ summary().totalQuarantine }}</div>
+          <div class="text-lg font-bold font-mono text-danger mt-1 tabular">{{ summary().totalQuarantine }}</div>
         </div>
 
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Khả dụng bán</div>
-          <div class="text-lg font-bold font-mono text-primary-strong mt-1">{{ summary().totalAvailable }}</div>
+          <div class="text-lg font-bold font-mono text-primary-strong mt-1 tabular">{{ summary().totalAvailable }}</div>
         </div>
 
         <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
           <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Giá trị tồn kho</div>
-          <div class="text-xs font-bold font-mono text-foreground mt-2 truncate" [title]="summary().totalInventoryValue + ' đ'">
+          <div class="text-xs font-bold font-mono text-foreground mt-2 truncate tabular" [title]="summary().totalInventoryValue + ' đ'">
             {{ summary().totalInventoryValue }} đ
           </div>
         </div>
@@ -236,29 +236,29 @@ import {
                       <div class="text-[11px] font-mono text-muted">{{ item.branchCode }}</div>
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold text-foreground tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-bold text-foreground tabular tabular-nums whitespace-nowrap">
                       {{ item.onHand }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-semibold text-warning tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-semibold text-warning tabular tabular-nums whitespace-nowrap">
                       {{ item.reserved }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-semibold text-danger tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-semibold text-danger tabular tabular-nums whitespace-nowrap">
                       {{ item.quarantineDamaged }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-black tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono font-black tabular tabular-nums whitespace-nowrap">
                       <span [class]="getAvailableBadgeClass(item.available)">
                         {{ item.available }}
                       </span>
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono text-muted tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono text-muted tabular tabular-nums whitespace-nowrap">
                       {{ formatCurrency(item.weightedAverageCost) }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono text-foreground font-semibold tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-mono text-foreground font-semibold tabular tabular-nums whitespace-nowrap">
                       {{ formatCurrency(item.sellingPrice) }}
                     </td>
 

@@ -48,7 +48,7 @@ type ToastNotification = {
         <div class="flex items-center gap-3">
           <div class="px-3 py-1.5 bg-surface border border-line rounded text-xs flex items-center gap-2">
             <span class="text-muted">Tổng số:</span>
-            <strong class="text-primary font-bold tabular-nums">{{ total() }}</strong>
+            <strong class="text-primary font-bold tabular tabular-nums">{{ total() }}</strong>
             <span class="text-muted">SKU</span>
           </div>
 
@@ -75,7 +75,7 @@ type ToastNotification = {
             <span class="w-2 h-2 rounded-full bg-primary"></span>
             <span class="font-bold text-foreground uppercase tracking-wide">Bộ Lọc Tra Cứu</span>
             <span class="text-muted">
-              | Đang hiển thị <strong class="text-primary tabular-nums">{{ variants().length }}</strong> / {{ total() }} SKU
+              | Đang hiển thị <strong class="text-primary tabular tabular-nums">{{ variants().length }}</strong> / <span class="tabular">{{ total() }}</span> SKU
             </span>
           </div>
 
@@ -304,7 +304,7 @@ type ToastNotification = {
                       {{ item.variationLabel || 'Biến thể mặc định' }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-bold font-mono tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold font-mono tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatPrice(item.sellingPrice) }}
                     </td>
 
@@ -397,9 +397,9 @@ type ToastNotification = {
 
           <div class="p-4 border-t border-line flex items-center justify-between flex-wrap gap-3 text-xs text-muted">
             <div>
-              Hiển thị <strong class="text-foreground tabular-nums">{{ pageStartIndex() }}</strong> -
-              <strong class="text-foreground tabular-nums">{{ pageEndIndex() }}</strong> trong tổng số
-              <strong class="text-primary tabular-nums">{{ total() }}</strong> biến thể SKU
+              Hiển thị <strong class="text-foreground tabular tabular-nums">{{ pageStartIndex() }}</strong> -
+              <strong class="text-foreground tabular tabular-nums">{{ pageEndIndex() }}</strong> trong tổng số
+              <strong class="text-primary tabular tabular-nums">{{ total() }}</strong> biến thể SKU
             </div>
 
             <div class="flex items-center gap-2">

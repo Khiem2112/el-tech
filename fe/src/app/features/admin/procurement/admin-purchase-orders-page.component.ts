@@ -162,13 +162,13 @@ import {
                       <div class="font-medium text-foreground">{{ po.receivingBranchName }}</div>
                       <div class="text-muted text-[11px] font-mono">{{ po.receivingBranchCode }}</div>
                     </td>
-                    <td class="py-3 px-4 text-center tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-3 px-4 text-center tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ po.lineCount }} dòng ({{ po.totalQuantity }} chiếc)
                     </td>
-                    <td class="py-3 px-4 text-right font-black tabular-nums text-foreground font-mono whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-black tabular tabular-nums text-foreground font-mono whitespace-nowrap">
                       {{ formatCurrency(po.totalAmount) }} đ
                     </td>
-                    <td class="py-3 px-4 text-muted tabular-nums text-xs whitespace-nowrap">
+                    <td class="py-3 px-4 text-muted tabular tabular-nums text-xs whitespace-nowrap">
                       {{ formatDate(po.createdAt) }}
                     </td>
                     <td class="py-3 px-4 text-center whitespace-nowrap">

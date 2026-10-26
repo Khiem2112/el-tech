@@ -27,8 +27,8 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                   </span>
                 </div>
                 <div class="text-xs text-muted mt-0.5 flex items-center gap-3">
-                  <span>Ước tính công suất: <strong class="text-primary font-mono">{{ pcGroup.totalWattage > 0 ? pcGroup.totalWattage + 'W TDP' : 'Tiêu chuẩn' }}</strong></span>
-                  <span>Phí dịch vụ lắp ráp: <strong class="text-emerald-600 dark:text-emerald-400 font-mono">{{ formatVnd(pcGroup.assemblyFee) }}</strong></span>
+                  <span>Ước tính công suất: <strong class="text-primary font-mono tabular">{{ pcGroup.totalWattage > 0 ? pcGroup.totalWattage + 'W TDP' : 'Tiêu chuẩn' }}</strong></span>
+                  <span>Phí dịch vụ lắp ráp: <strong class="text-emerald-600 dark:text-emerald-400 font-mono tabular">{{ formatVnd(pcGroup.assemblyFee) }}</strong></span>
                 </div>
               </div>
             </div>
@@ -80,25 +80,25 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                       <div class="font-bold text-foreground">{{ item.nameSnapshot }}</div>
                       <div class="font-mono text-muted text-xs">SKU: {{ item.skuSnapshot || 'N/A' }}</div>
                     </td>
-                    <td class="py-2.5 px-3 text-center font-mono font-bold text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center font-mono font-bold text-foreground whitespace-nowrap tabular">
                       {{ item.quantity }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.unitPrice) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-muted whitespace-nowrap">
                       - {{ formatVnd(item.productDiscount) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-rose-600 dark:text-rose-400 font-semibold whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-rose-600 dark:text-rose-400 font-semibold whitespace-nowrap">
                       - {{ formatVnd(item.couponDiscount) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono font-bold tabular-nums text-primary whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono font-bold tabular tabular-nums text-primary whitespace-nowrap">
                       {{ formatVnd(item.netAmount) }}
                     </td>
                     <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       @if (item.availableStock !== null) {
                         <span
-                          class="px-2 py-0.5 rounded text-xs font-mono font-semibold"
+                          class="px-2 py-0.5 rounded text-xs font-mono font-semibold tabular"
                           [class.text-emerald-600]="item.availableStock >= item.quantity"
                           [class.dark:text-emerald-400]="item.availableStock >= item.quantity"
                           [class.text-rose-600]="item.availableStock < item.quantity"
@@ -174,25 +174,25 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                       <div class="font-bold text-foreground">{{ item.nameSnapshot }}</div>
                       <div class="font-mono text-muted text-xs">SKU: {{ item.skuSnapshot || 'N/A' }}</div>
                     </td>
-                    <td class="py-2.5 px-3 text-center font-mono font-bold text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center font-mono font-bold text-foreground whitespace-nowrap tabular">
                       {{ item.quantity }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.unitPrice) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-muted whitespace-nowrap">
                       - {{ formatVnd(item.productDiscount) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono tabular-nums text-rose-600 dark:text-rose-400 font-semibold whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono tabular tabular-nums text-rose-600 dark:text-rose-400 font-semibold whitespace-nowrap">
                       - {{ formatVnd(item.couponDiscount) }}
                     </td>
-                    <td class="py-2.5 px-3 text-right font-mono font-bold tabular-nums text-primary whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-mono font-bold tabular tabular-nums text-primary whitespace-nowrap">
                       {{ formatVnd(item.netAmount) }}
                     </td>
                     <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       @if (item.availableStock !== null) {
                         <span
-                          class="px-2 py-0.5 rounded text-xs font-mono font-semibold"
+                          class="px-2 py-0.5 rounded text-xs font-mono font-semibold tabular"
                           [class.text-emerald-600]="item.availableStock >= item.quantity"
                           [class.dark:text-emerald-400]="item.availableStock >= item.quantity"
                           [class.text-rose-600]="item.availableStock < item.quantity"

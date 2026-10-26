@@ -548,9 +548,9 @@ type StatusBadgeConfig = {
                               <div class="min-w-0">
                                 <p class="font-bold text-foreground truncate">{{ line.name }}</p>
                                 <p class="text-[11px] text-muted mt-0.5">
-                                  Số lượng: <strong class="text-foreground">{{ line.quantity }}</strong>
+                                  Số lượng: <strong class="text-foreground tabular">{{ line.quantity }}</strong>
                                   <span class="mx-1.5">·</span>
-                                  Đơn giá: <strong class="text-foreground">{{ parseAmount(line.unitPrice) | vnd }}</strong>
+                                  Đơn giá: <strong class="text-foreground tabular">{{ parseAmount(line.unitPrice) | vnd }}</strong>
                                 </p>
                               </div>
                             </div>

@@ -75,10 +75,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   @if (amountLeftForFreeShipping() === 0) {
                     <span>Đơn hàng đạt điều kiện MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC!</span>
                   } @else {
-                    <span>Mua thêm {{ amountLeftForFreeShipping() | vnd }} để được MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
+                    <span>Mua thêm <strong class="tabular font-bold">{{ amountLeftForFreeShipping() | vnd }}</strong> để được MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
                   }
                 </span>
-                <span class="text-primary font-mono font-bold">{{ freeShippingPercent() }}%</span>
+                <span class="text-primary font-mono font-bold tabular">{{ freeShippingPercent() }}%</span>
               </div>
               <div class="w-full h-2 rounded-full bg-surface-alt border border-line overflow-hidden">
                 <div
@@ -157,7 +157,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       >
                         <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
                       </button>
-                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ build.quantity }}</span>
+                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center tabular">{{ build.quantity }}</span>
                       <button
                         type="button"
                         appButton
@@ -194,7 +194,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <span class="flex items-center gap-2">
                       <lucide-icon name="list" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                       <span>{{ isBuildExpanded(build.key) ? 'Thu gọn chi tiết linh kiện' : 'Xem chi tiết ' + build.componentCount + ' linh kiện trong bộ PC' }}</span>
-                      <span class="px-1.5 py-0.2 rounded-full bg-primary/10 text-primary border border-primary/20 font-mono text-[10px] font-bold">
+                      <span class="px-1.5 py-0.2 rounded-full bg-primary/10 text-primary border border-primary/20 font-mono text-[10px] font-bold tabular">
                         {{ build.componentCount }} món
                       </span>
                     </span>
@@ -220,7 +220,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
                           <span class="font-mono text-muted tabular">{{ hw.unitPrice | vnd }}</span>
-                          <span class="text-muted">x{{ hw.quantity }}</span>
+                          <span class="text-muted tabular">x{{ hw.quantity }}</span>
                           <span class="font-mono font-bold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
                           <a
                             [routerLink]="['/tu-lap-pc']"
@@ -261,7 +261,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       <div class="min-w-0 flex-1">
                         <span class="text-[10px] font-bold text-primary uppercase">LINH KIỆN ĐƠN LẺ</span>
                         <h3 class="font-bold text-xs sm:text-sm text-foreground mt-0.5 truncate">{{ item.name }}</h3>
-                        <p class="text-xs text-muted mt-0.5">Mã SKU: {{ item.sku }} · Đơn giá: {{ item.unitPrice | vnd }}</p>
+                        <p class="text-xs text-muted mt-0.5">Mã SKU: <span class="font-mono tabular">{{ item.sku }}</span> · Đơn giá: <span class="tabular font-semibold text-foreground">{{ item.unitPrice | vnd }}</span></p>
                         <span appBadge variant="success" size="sm" class="mt-1">Sẵn sàng giao</span>
                       </div>
                     </div>
@@ -279,7 +279,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         >
                           <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
                         </button>
-                        <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ item.quantity }}</span>
+                        <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center tabular">{{ item.quantity }}</span>
                         <button
                           type="button"
                           appButton

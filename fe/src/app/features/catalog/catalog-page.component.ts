@@ -495,7 +495,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 <!-- Core Specs Mono Pills -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   @for (spec of getCoreSpecPills(product); track spec) {
-                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted tabular">
                       {{ spec }}
                     </span>
                   }
@@ -587,7 +587,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   <!-- Core Specs Mono Pills -->
                   <div class="flex flex-wrap gap-1 mt-1.5">
                     @for (spec of getCoreSpecPills(product); track spec) {
-                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted tabular">
                         {{ spec }}
                       </span>
                     }
@@ -647,9 +647,9 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       @if (totalPages() > 1) {
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
           <div class="text-xs text-muted">
-            Hiển thị <span class="font-bold text-foreground">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
-            <span class="font-bold text-foreground">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
-            trong tổng số <span class="font-bold text-foreground">{{ filteredProducts().length }}</span> linh kiện
+            Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
+            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
+            trong tổng số <span class="font-bold text-foreground tabular">{{ filteredProducts().length }}</span> linh kiện
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -669,7 +669,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 <button
                   type="button"
                   (click)="setPage(page)"
-                  class="min-w-8 h-8 px-2 rounded-md border text-xs font-bold transition-colors cursor-pointer"
+                  class="min-w-8 h-8 px-2 rounded-md border text-xs font-bold transition-colors cursor-pointer tabular"
                   [class.border-primary]="currentPage() === page"
                   [class.bg-primary]="currentPage() === page"
                   [class.text-primary-foreground]="currentPage() === page"
