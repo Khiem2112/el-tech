@@ -15,6 +15,7 @@ type SubmitOrderInput = {
   readonly deliveryAreaCode?: string;
   readonly paymentMethod: 'QR' | 'COD';
   readonly deliveryAddress?: string;
+  readonly couponCode?: string;
   readonly idempotencyKey: string;
 };
 
@@ -82,7 +83,6 @@ export const orderService = {
       const subtotal = cart.items.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
       const feeConfig = input.fulfillmentMethod === 'DELIVERY' ? await tx.deliveryFeeConfig.findFirst({ where: { isActive: true, effectiveFrom: { lte: new Date() }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: new Date() } }] }, orderBy: { effectiveFrom: 'desc' } }) : null;
       const shippingFee = feeConfig && subtotal.lessThan(feeConfig.freeShippingThreshold) ? feeConfig.fixedFee : new Prisma.Decimal(0);
-      const grandTotal = subtotal.add(shippingFee);
 
       const normalizedEmail = input.receiverEmail.trim().toLowerCase();
       const normalizedPhone = input.receiverPhone.trim();
@@ -99,6 +99,89 @@ export const orderService = {
           throw new DomainError('CUSTOMER_IDENTITY_AMBIGUOUS', { ruleId: 'CUS-004', messageKey: 'error.customerIdentityAmbiguous', status: 409 });
         }
       }
+
+      let couponDiscount = new Prisma.Decimal(0);
+      let appliedCoupon: { id: string; code: string } | null = null;
+
+      if (input.couponCode && input.couponCode.trim()) {
+        const trimmedCode = input.couponCode.trim();
+        const now = new Date();
+        const coupon = await tx.coupon.findFirst({
+          where: {
+            code: { equals: trimmedCode, mode: 'insensitive' },
+            isActive: true,
+          },
+          include: {
+            redemptions: {
+              where: {
+                status: { in: ['RESERVED', 'CONSUMED'] },
+              },
+            },
+          },
+        });
+
+        if (!coupon) {
+          throw new DomainError('COUPON_NOT_FOUND', {
+            messageKey: 'error.couponNotFound',
+            status: 404,
+            details: { message: 'Ma giam gia khong ton tai hoac da bi vo hieu hoa' },
+          });
+        }
+
+        if (coupon.effectiveFrom > now || coupon.effectiveTo < now) {
+          throw new DomainError('COUPON_EXPIRED', {
+            messageKey: 'error.couponExpired',
+            status: 400,
+            details: { message: 'Ma giam gia chua co hieu luc hoac da het han su dung' },
+          });
+        }
+
+        if (subtotal.lessThan(coupon.minimumSubtotal)) {
+          throw new DomainError('COUPON_MINIMUM_SUBTOTAL_NOT_MET', {
+            messageKey: 'error.couponMinimumSubtotalNotMet',
+            status: 400,
+            details: {
+              minimumSubtotal: coupon.minimumSubtotal.toFixed(0),
+              currentSubtotal: subtotal.toFixed(0),
+              message: `Don hang chua dat gia tri toi thieu ${Number(coupon.minimumSubtotal).toLocaleString('vi-VN')} VND`,
+            },
+          });
+        }
+
+        if (coupon.globalQuota !== null && coupon.redemptions.length >= coupon.globalQuota) {
+          throw new DomainError('COUPON_QUOTA_EXCEEDED', {
+            messageKey: 'error.couponQuotaExceeded',
+            status: 400,
+            details: { message: 'Ma giam gia da het luot su dung toan he thong' },
+          });
+        }
+
+        if (coupon.perCustomerQuota !== null) {
+          const customerUsedCount = coupon.redemptions.filter(
+            (r) => r.customerId === customerId,
+          ).length;
+          if (customerUsedCount >= coupon.perCustomerQuota) {
+            throw new DomainError('COUPON_CUSTOMER_QUOTA_EXCEEDED', {
+              messageKey: 'error.couponCustomerQuotaExceeded',
+              status: 400,
+              details: { message: 'Ban da dung het so luot cho phep cua ma giam gia nay' },
+            });
+          }
+        }
+
+        if (coupon.discountType === 'PERCENTAGE') {
+          const percentDiscount = subtotal.mul(coupon.discountValue).div(100).toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
+          couponDiscount = coupon.maximumDiscount !== null
+            ? Prisma.Decimal.min(percentDiscount, coupon.maximumDiscount)
+            : percentDiscount;
+        } else {
+          couponDiscount = Prisma.Decimal.min(coupon.discountValue, subtotal);
+        }
+
+        appliedCoupon = { id: coupon.id, code: coupon.code };
+      }
+
+      const grandTotal = Prisma.Decimal.max(new Prisma.Decimal(0), subtotal.sub(couponDiscount).add(shippingFee));
 
       const hasCustomBuild = cart.items.some((item) => item.pcBuildType === 'CUSTOM');
       const isCodWithDeposit = input.paymentMethod === 'COD' && hasCustomBuild;
@@ -131,6 +214,7 @@ export const orderService = {
           paymentMethod: input.paymentMethod,
           status,
           subtotal,
+          couponDiscount,
           shippingFee,
           grandTotal,
           receiverName: input.receiverName,
@@ -140,7 +224,12 @@ export const orderService = {
           receiverPhoneVerifiedAt: phoneVerifiedAt,
           deliveryAddressSnapshot: input.fulfillmentMethod === 'DELIVERY' ? { address: input.deliveryAddress } : Prisma.DbNull,
           branchSnapshot: { id: branch.id, name: branch.name, address: branch.address },
-          pricingSnapshot: { subtotal: asVnd(subtotal), shippingFee: asVnd(shippingFee), grandTotal: asVnd(grandTotal) },
+          pricingSnapshot: {
+            subtotal: asVnd(subtotal),
+            couponDiscount: asVnd(couponDiscount),
+            shippingFee: asVnd(shippingFee),
+            grandTotal: asVnd(grandTotal),
+          },
           lines: {
             create: cart.items.map((item, sortOrder) => ({
               skuId: item.skuId ?? undefined,
@@ -195,6 +284,17 @@ export const orderService = {
         await tx.paymentCharge.create({ data: { paymentId: payment.id, idempotencyKey: input.idempotencyKey, chargeType: 'CUSTOM_BUILD_DEPOSIT', providerReference: paymentReference, expectedAmount: depositRequired, expiresAt: new Date(Date.now() + 30 * 60_000) } });
       }
 
+      if (appliedCoupon) {
+        await tx.couponRedemption.create({
+          data: {
+            couponId: appliedCoupon.id,
+            customerId,
+            orderId: order.id,
+            status: 'RESERVED',
+          },
+        });
+      }
+
       await tx.orderStatusHistory.create({ data: { orderId: order.id, previousStatus: status, nextStatus: status, reason: 'ORDER_SUBMITTED', actorType: ActorType.CUSTOMER, idempotencyKey: `status:${order.id}` } });
       await tx.cart.update({ where: { id: cart.id }, data: { isActive: false } });
       return { code: order.code, status: order.status, paymentState: payment.state, paymentReference, expectedAmount: expectedChargeAmount ? asVnd(expectedChargeAmount) : undefined };
@@ -234,6 +334,7 @@ export const orderService = {
         include: {
           payment: true,
           lines: true,
+          couponRedemption: true,
           stockMoves: { where: { status: 'RESERVED' }, include: { lines: true } },
         },
       });
@@ -318,6 +419,13 @@ export const orderService = {
         });
       }
 
+      if (order.couponRedemption && order.couponRedemption.status === 'RESERVED') {
+        await tx.couponRedemption.update({
+          where: { id: order.couponRedemption.id },
+          data: { status: 'RELEASED' },
+        });
+      }
+
       const cancelledAt = new Date();
       await tx.order.update({
         where: { id: order.id },
@@ -360,9 +468,17 @@ export const orderService = {
         include: {
           payment: { include: { charges: { where: { status: 'PENDING' } } } },
           stockMoves: { where: { status: 'RESERVED' }, include: { lines: true } },
+          couponRedemption: true,
         },
       });
       if (freshOrder.status !== 'PENDING_PAYMENT') return;
+
+      if (freshOrder.couponRedemption && freshOrder.couponRedemption.status === 'RESERVED') {
+        await tx.couponRedemption.update({
+          where: { id: freshOrder.couponRedemption.id },
+          data: { status: 'RELEASED' },
+        });
+      }
 
       for (const move of freshOrder.stockMoves) {
         if (!move.sourceBranchId) continue;

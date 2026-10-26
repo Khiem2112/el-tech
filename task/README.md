@@ -230,7 +230,7 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-66 | ISS-003, ISS-004, ISS-011 (Kẹt đổi Pickup sang Delivery, sửa đơn bất biến, Webhook kéo tụt CONFIRMED) | backend | P0 | Complete |
 | TASK-67 | ISS-007, ISS-016, ISS-017 (WAC số lẻ VND, khớp QR thiếu tiền, tính sai cọc Custom PC trả trước) | backend | P1 | Complete |
 | TASK-68 | ISS-010, ISS-014, ISS-015 (Che giấu tồn âm Math.max, cập nhật sê-ri bỏ qua phiếu kho, thiếu luồng cách ly) | backend | P1 | Complete |
-| TASK-69 | ISS-012, ISS-018 (Bỏ quên Coupon ở Checkout, không thu hồi lượt dùng khi đơn hết hạn 30 phút) | backend | P0 | Pending |
+| TASK-69 | ISS-012, ISS-018 (Bỏ quên Coupon ở Checkout, không thu hồi lượt dùng khi đơn hết hạn 30 phút) | backend | P0 | Complete |
 | TASK-70 | ISS-006, ISS-008, ISS-009 (Xung đột phạm vi Supplier Return, sáp nhập tài khoản User, trùng biểu phí tương lai) | backend, docs | P2 | Pending |
 | TASK-71 | Nhóm 1, 2, 5, 6 (Shell/Header/Sidebar/Breadcrumb nền sáng, cỡ chữ, xóa SCR-xx, xóa Hệ Thống Trực Tuyến) | frontend | P0 | Complete |
 | TASK-72 | Nhóm 1, 2, 3, 4, 5, 6 (Bảng kho vỡ layout ngắt dòng, app-select, whitespace-nowrap, xóa TRF-001) | frontend | P1 | Pending |

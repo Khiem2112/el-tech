@@ -19,6 +19,7 @@ const submitSchema = z.object({
   deliveryAreaCode: z.string().trim().min(1).max(40).optional(),
   paymentMethod: z.enum(['QR', 'COD']),
   deliveryAddress: z.string().trim().min(10).max(500).optional(),
+  couponCode: z.string().trim().optional(),
 });
 
 const cancelSchema = z.object({
