@@ -52,7 +52,9 @@ adminCustomerRouter.post('/:id/merge', async (request, response, next): Promise<
     const { id } = request.params;
     const input = parseBody(mergeCustomerSchema, request.body);
     const correlationId = response.locals.correlationId as string;
-    const result = await adminCustomerService.mergeCustomerProfiles(id, input);
+    const adminUser = response.locals.adminUser as { id: string } | undefined;
+    const adminId = adminUser?.id;
+    const result = await adminCustomerService.mergeCustomerProfiles(id, input, adminId);
     response.json(success(result, correlationId));
   } catch (error: unknown) {
     next(error);

@@ -167,6 +167,7 @@ export type AdminCustomerMergeResult = {
   readonly reviewsMoved: number;
   readonly notificationsMoved: number;
   readonly reason: string;
+  readonly adminId?: string | null;
   readonly mergedAt: string;
 };
 

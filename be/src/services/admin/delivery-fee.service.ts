@@ -62,8 +62,13 @@ function mapToDto(config: DeliveryFeeConfig, creatorName = 'Admin Hệ Thống')
 
 export const adminDeliveryFeeService = {
   async ensureDefaultConfig(): Promise<DeliveryFeeConfig> {
+    const now = new Date();
     const existing = await prisma.deliveryFeeConfig.findFirst({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        effectiveFrom: { lte: now },
+        OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+      },
       orderBy: { effectiveFrom: 'desc' },
     });
     if (existing) {
@@ -73,7 +78,12 @@ export const adminDeliveryFeeService = {
     const count = await prisma.deliveryFeeConfig.count();
     if (count > 0) {
       const latest = await prisma.deliveryFeeConfig.findFirst({
-        orderBy: { createdAt: 'desc' },
+        where: {
+          isActive: true,
+          effectiveFrom: { lte: now },
+          OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+        },
+        orderBy: { effectiveFrom: 'desc' },
       });
       if (latest) {
         return latest;
@@ -107,7 +117,11 @@ export const adminDeliveryFeeService = {
     }
 
     const fallback = await prisma.deliveryFeeConfig.findFirst({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        effectiveFrom: { lte: now },
+        OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+      },
       orderBy: { effectiveFrom: 'desc' },
     });
 
@@ -117,14 +131,35 @@ export const adminDeliveryFeeService = {
   async getDeliveryFeeConfigs(query?: QueryDeliveryFeeInput): Promise<DeliveryFeeListResult> {
     await this.ensureDefaultConfig();
     const activeConfig = await this.getActiveConfig();
+    const now = new Date();
 
     const page = query?.page ?? 1;
     const limit = query?.limit ?? 20;
     const skip = (page - 1) * limit;
+    const status = query?.status ?? 'ALL';
+
+    let where: Prisma.DeliveryFeeConfigWhereInput = {};
+    if (status === 'ACTIVE') {
+      where = {
+        isActive: true,
+        effectiveFrom: { lte: now },
+        OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+      };
+    } else if (status === 'UPCOMING') {
+      where = {
+        isActive: true,
+        effectiveFrom: { gt: now },
+      };
+    } else if (status === 'EXPIRED') {
+      where = {
+        OR: [{ isActive: false }, { effectiveTo: { lte: now } }],
+      };
+    }
 
     const [total, records] = await Promise.all([
-      prisma.deliveryFeeConfig.count(),
+      prisma.deliveryFeeConfig.count({ where }),
       prisma.deliveryFeeConfig.findMany({
+        where,
         skip,
         take: limit,
         orderBy: { effectiveFrom: 'desc' },
@@ -158,6 +193,17 @@ export const adminDeliveryFeeService = {
           where: { isActive: true },
           data: {
             isActive: false,
+            effectiveTo: effectiveFromDate,
+          },
+        });
+      } else {
+        await tx.deliveryFeeConfig.updateMany({
+          where: {
+            isActive: true,
+            effectiveFrom: { lt: effectiveFromDate },
+            OR: [{ effectiveTo: null }, { effectiveTo: { gt: effectiveFromDate } }],
+          },
+          data: {
             effectiveTo: effectiveFromDate,
           },
         });

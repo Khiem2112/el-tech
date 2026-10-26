@@ -432,8 +432,13 @@ export class OrderExceptionService {
       });
     }
 
+    const now = new Date();
     const activeFeeConfig = await prisma.deliveryFeeConfig.findFirst({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        effectiveFrom: { lte: now },
+        OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+      },
       orderBy: { effectiveFrom: 'desc' },
     });
 

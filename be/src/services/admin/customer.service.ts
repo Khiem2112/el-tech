@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { NotificationChannel, Prisma } from '@prisma/client';
 import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
 import {
@@ -165,6 +165,7 @@ export type CustomerMergeResultDto = {
   readonly reviewsMoved: number;
   readonly notificationsMoved: number;
   readonly reason: string;
+  readonly adminId?: string | null;
   readonly mergedAt: string;
 };
 
@@ -528,6 +529,7 @@ export class AdminCustomerService {
       id: { not: targetCustomerId },
       mergedIntoCustomerId: null,
       isActive: true,
+      userId: null,
     };
 
     if (search && search.trim().length > 0) {
@@ -540,7 +542,6 @@ export class AdminCustomerService {
       where.OR = [
         { phone: targetCustomer.phone },
         { email: { equals: targetCustomer.email, mode: 'insensitive' } },
-        { userId: null },
       ];
     }
 
@@ -604,6 +605,7 @@ export class AdminCustomerService {
   async mergeCustomerProfiles(
     targetCustomerId: string,
     input: MergeCustomerInput,
+    adminId?: string,
   ): Promise<CustomerMergeResultDto> {
     const { sourceCustomerId, reason } = input;
 
@@ -630,6 +632,17 @@ export class AdminCustomerService {
       throw new DomainError('CUSTOMER_NOT_FOUND', {
         messageKey: 'SOURCE_CUSTOMER_NOT_FOUND',
         status: 404,
+      });
+    }
+
+    if (sourceCustomer.userId !== null) {
+      throw new DomainError('CANNOT_MERGE_REGISTERED_CUSTOMER', {
+        messageKey: 'CANNOT_MERGE_REGISTERED_CUSTOMER',
+        status: 400,
+        ruleId: 'CUS-003',
+        details: {
+          message: 'Khong the sap nhap ho so khach hang da dang ky tai khoan thanh vien. Chi cho phep sap nhap ho so khach vang lai.',
+        },
       });
     }
 
@@ -681,6 +694,40 @@ export class AdminCustomerService {
         },
       });
 
+      await tx.notification.create({
+        data: {
+          customerId: targetCustomerId,
+          deduplicationKey: `audit:customer-merge:${sourceCustomerId}:${Date.now()}`,
+          eventType: 'CUSTOMER_PROFILE_MERGED',
+          title: 'Ho so khach hang da duoc sap nhap',
+          body: `Ho so khach hang ${sourceCustomer.name} (${sourceCustomer.phone || sourceCustomer.email}) da duoc sap nhap vao ho so nay. Ly do: ${reason}.`,
+          channels: [NotificationChannel.IN_APP],
+          payload: {
+            action: 'CUSTOMER_MERGE',
+            ruleId: 'CUS-010',
+            actorId: adminId ?? 'SYSTEM',
+            sourceCustomerId,
+            targetCustomerId,
+            reason,
+            ordersMoved: orderUpdate.count,
+            couponsMoved: couponUpdate.count,
+            reviewsMoved: reviewUpdate.count,
+            notificationsMoved: notificationUpdate.count,
+            sourceProfileSnapshot: {
+              name: sourceCustomer.name,
+              email: sourceCustomer.email,
+              phone: sourceCustomer.phone,
+            },
+            targetProfileSnapshot: {
+              name: targetCustomer.name,
+              email: targetCustomer.email,
+              phone: targetCustomer.phone,
+            },
+            mergedAt: new Date().toISOString(),
+          },
+        },
+      });
+
       return {
         ordersMoved: orderUpdate.count,
         couponsMoved: couponUpdate.count,
@@ -697,6 +744,7 @@ export class AdminCustomerService {
       reviewsMoved: mergeResult.reviewsMoved,
       notificationsMoved: mergeResult.notificationsMoved,
       reason,
+      adminId: adminId ?? null,
       mergedAt: new Date().toISOString(),
     };
   }
