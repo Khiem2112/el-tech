@@ -308,7 +308,6 @@ export class OrderFulfillmentShippingService {
           where: { isActive: true },
         },
         lines: {
-          where: { lineType: SalesLineType.SKU, skuId: { not: null } },
           include: {
             sku: {
               include: {
@@ -346,6 +345,7 @@ export class OrderFulfillmentShippingService {
     const eligibleStatuses: OrderStatus[] = [
       OrderStatus.PREPARING_COMPONENTS,
       OrderStatus.ASSEMBLING,
+      OrderStatus.READY_FOR_PICKUP,
     ];
 
     if (!eligibleStatuses.includes(order.status)) {
@@ -356,7 +356,7 @@ export class OrderFulfillmentShippingService {
         details: {
           currentStatus: order.status,
           eligibleStatuses,
-          message: 'Don hang phai o trang thai PREPARING_COMPONENTS hoac ASSEMBLING de xuat kho giao hang',
+          message: 'Don hang phai o trang thai PREPARING_COMPONENTS, ASSEMBLING hoac READY_FOR_PICKUP de xuat kho giao hang',
         },
       });
     }
@@ -423,7 +423,7 @@ export class OrderFulfillmentShippingService {
 
     const aggregated = new Map<number, AggregatedItem>();
     for (const line of order.lines) {
-      if (line.skuId) {
+      if (line.skuId && line.lineType === SalesLineType.SKU) {
         const existing = aggregated.get(line.skuId);
         if (existing) {
           existing.quantity += line.quantity;

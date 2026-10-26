@@ -165,7 +165,6 @@ export class OrderClosingService {
           },
         },
         lines: {
-          where: { lineType: SalesLineType.SKU, skuId: { not: null } },
           include: {
             sku: {
               include: {
@@ -241,7 +240,7 @@ export class OrderClosingService {
       if (isPickupStandalone) {
         const aggregated = new Map<number, { skuId: number; quantity: number }>();
         for (const line of order.lines) {
-          if (line.skuId) {
+          if (line.skuId && line.lineType === SalesLineType.SKU) {
             const existing = aggregated.get(line.skuId);
             if (existing) {
               existing.quantity += line.quantity;
@@ -428,7 +427,13 @@ export class OrderClosingService {
           },
         },
         lines: {
-          where: { lineType: SalesLineType.SKU, skuId: { not: null } },
+          include: {
+            sku: {
+              include: {
+                productTemplate: true,
+              },
+            },
+          },
         },
         statusHistories: true,
         stockMoves: {
@@ -502,19 +507,151 @@ export class OrderClosingService {
       refundableAmount = totalReceived;
     }
 
+    const validatedIssueMove = order.stockMoves.find(
+      (m) => m.moveType === StockMoveType.ORDER_ISSUE && m.status === StockMoveStatus.VALIDATED,
+    );
+
     const unreserveStatuses: readonly OrderStatus[] = [
       OrderStatus.CONFIRMED,
       OrderStatus.PREPARING_COMPONENTS,
-      OrderStatus.READY_FOR_PICKUP,
       OrderStatus.ON_HOLD,
     ];
-    const hasStockToUnreserve = unreserveStatuses.includes(order.status);
+    const hasStockToUnreserve = unreserveStatuses.includes(order.status) && !validatedIssueMove;
 
     await prisma.$transaction(async (tx) => {
-      if (hasStockToUnreserve) {
+      if (validatedIssueMove) {
         const aggregated = new Map<number, { skuId: number; quantity: number }>();
         for (const line of order.lines) {
-          if (line.skuId) {
+          if (line.skuId && line.lineType === SalesLineType.SKU) {
+            const existing = aggregated.get(line.skuId);
+            if (existing) {
+              existing.quantity += line.quantity;
+            } else {
+              aggregated.set(line.skuId, { skuId: line.skuId, quantity: line.quantity });
+            }
+          }
+        }
+
+        const reversalCode = `REV-${order.code}-${Date.now().toString().slice(-4)}`;
+        const reversalStockMove = await tx.stockMove.create({
+          data: {
+            code: reversalCode,
+            destinationBranchId: order.fulfillmentBranchId,
+            orderId: order.id,
+            reversalOfMoveId: validatedIssueMove.id,
+            idempotencyKey: `cancel-reversal:${order.id}:${Date.now()}`,
+            moveType: StockMoveType.ORDER_REVERSAL,
+            status: StockMoveStatus.VALIDATED,
+            validatedAt: new Date(),
+            validatedById: adminId,
+            reason: `Nhap hoan kho khi huy don hang: ${input.reason}`,
+          },
+        });
+
+        const revLineMap = new Map<number, string>();
+
+        for (const [skuId, item] of aggregated.entries()) {
+          const quant = await tx.stockQuant.findFirst({
+            where: {
+              branchId: order.fulfillmentBranchId,
+              skuId,
+              isActive: true,
+            },
+          });
+
+          if (quant) {
+            await tx.stockQuant.updateMany({
+              where: { id: quant.id, version: quant.version },
+              data: {
+                onHand: { increment: item.quantity },
+                version: { increment: 1 },
+              },
+            });
+
+            const updatedQuant = await tx.stockQuant.findUniqueOrThrow({
+              where: { id: quant.id },
+            });
+
+            const origLine = validatedIssueMove.lines.find((l) => l.skuId === skuId);
+
+            const revMoveLine = await tx.stockMoveLine.create({
+              data: {
+                stockMoveId: reversalStockMove.id,
+                skuId,
+                originalMoveLineId: origLine?.id || null,
+                quantity: item.quantity,
+                unitCost: quant.weightedAverageCost,
+              },
+            });
+
+            revLineMap.set(skuId, revMoveLine.id);
+
+            await tx.stockLedgerEntry.create({
+              data: {
+                stockQuantId: quant.id,
+                stockMoveLineId: revMoveLine.id,
+                entryType: StockLedgerEntryType.REVERSAL,
+                deltaOnHand: item.quantity,
+                deltaReserved: 0,
+                deltaQuarantine: 0,
+                onHandAfter: updatedQuant.onHand,
+                reservedAfter: updatedQuant.reserved,
+                quarantineAfter: updatedQuant.quarantineDamaged,
+                actorType: ActorType.ADMIN,
+                actorId: adminId,
+              },
+            });
+          }
+        }
+
+        const origMoveLineIds = validatedIssueMove.lines.map((l) => l.id);
+        const issuedSerialMovements = await tx.serialMovement.findMany({
+          where: {
+            stockMoveLineId: { in: origMoveLineIds },
+            resultingStatus: SerialStatus.ISSUED,
+          },
+          include: {
+            serialUnit: true,
+          },
+        });
+
+        for (const mov of issuedSerialMovements) {
+          const revLineId = revLineMap.get(mov.serialUnit.skuId);
+          if (revLineId) {
+            await tx.serialUnit.update({
+              where: { id: mov.serialUnitId },
+              data: {
+                status: SerialStatus.AVAILABLE,
+                currentBranchId: order.fulfillmentBranchId,
+              },
+            });
+
+            await tx.serialMovement.create({
+              data: {
+                serialUnitId: mov.serialUnitId,
+                stockMoveLineId: revLineId,
+                fromBranchId: null,
+                toBranchId: order.fulfillmentBranchId,
+                resultingStatus: SerialStatus.AVAILABLE,
+              },
+            });
+          }
+        }
+
+        await tx.stockMove.updateMany({
+          where: {
+            orderId: order.id,
+            status: StockMoveStatus.RESERVED,
+          },
+          data: {
+            status: StockMoveStatus.CANCELLED,
+            reason: `Huy don hang: ${input.reason}`,
+          },
+        });
+      } else if (hasStockToUnreserve) {
+        const aggregated = new Map<number, { skuId: number; quantity: number }>();
+        for (const line of order.lines) {
+          if (line.skuId && line.lineType === SalesLineType.SKU) {
             const existing = aggregated.get(line.skuId);
             if (existing) {
               existing.quantity += line.quantity;

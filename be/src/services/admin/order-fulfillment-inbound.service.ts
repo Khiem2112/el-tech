@@ -4,7 +4,9 @@ import {
   NotificationChannel,
   OrderStatus,
   PaymentMethod,
+  SalesLineType,
   SerialStatus,
+  ServiceType,
   StockLedgerEntryType,
   StockMoveStatus,
   StockMoveType,
@@ -524,7 +526,6 @@ export class OrderFulfillmentInboundService {
       include: {
         fulfillmentBranch: true,
         lines: {
-          where: { lineType: 'SKU', skuId: { not: null } },
           include: {
             sku: {
               include: {
@@ -556,9 +557,24 @@ export class OrderFulfillmentInboundService {
       });
     }
 
+    const hasAssembly = order.lines.some(
+      (line) => line.serviceType === ServiceType.ASSEMBLY || line.lineType === SalesLineType.SERVICE || Boolean(line.pcBuildKey),
+    );
+
+    if (!hasAssembly) {
+      throw new DomainError('ASSEMBLY_NOT_REQUIRED', {
+        ruleId: 'ORD-008',
+        messageKey: 'error.assemblyNotRequired',
+        status: 400,
+        details: {
+          message: 'Don hang linh kien roi khong co yeu cau lap rap PC, khong the chuyen sang trang thai ASSEMBLING',
+        },
+      });
+    }
+
     const aggregated = new Map<number, AggregatedItem>();
     for (const line of order.lines) {
-      if (line.skuId) {
+      if (line.skuId && line.lineType === SalesLineType.SKU) {
         const existing = aggregated.get(line.skuId);
         if (existing) {
           existing.quantity += line.quantity;
