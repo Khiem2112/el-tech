@@ -188,17 +188,22 @@ export class PoReceiptService {
           },
         });
 
-        const currentOnHand = quant ? quant.onHand : 0;
-        const currentWac = quant ? Number(quant.weightedAverageCost) : 0;
+        const currentOnHandDecimal = new Prisma.Decimal(quant ? quant.onHand : 0);
+        const currentWacDecimal = quant ? quant.weightedAverageCost : new Prisma.Decimal(0);
         const incomingQty = poLine.quantity;
-        const incomingCost = Number(poLine.agreedUnitCost);
-        const newOnHand = currentOnHand + incomingQty;
+        const incomingQtyDecimal = new Prisma.Decimal(incomingQty);
+        const incomingCostDecimal = poLine.agreedUnitCost;
+        const newOnHand = (quant ? quant.onHand : 0) + incomingQty;
+        const newOnHandDecimal = new Prisma.Decimal(newOnHand);
 
-        let newWacNumber = incomingCost;
-        if (currentOnHand > 0 && newOnHand > 0) {
-          newWacNumber = (currentOnHand * currentWac + incomingQty * incomingCost) / newOnHand;
+        let roundedWac = incomingCostDecimal.toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
+        if (currentOnHandDecimal.gt(0) && newOnHandDecimal.gt(0)) {
+          roundedWac = currentOnHandDecimal
+            .mul(currentWacDecimal)
+            .add(incomingQtyDecimal.mul(incomingCostDecimal))
+            .div(newOnHandDecimal)
+            .toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
         }
-        const roundedWac = new Prisma.Decimal(newWacNumber.toFixed(2));
 
         const updatedQuant = quant
           ? await tx.stockQuant.update({

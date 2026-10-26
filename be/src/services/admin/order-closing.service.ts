@@ -121,7 +121,11 @@ export class OrderClosingService {
     const totalReceived = Number(order.payment?.totalReceived ?? 0);
     const depositRequired = Number(order.payment?.depositRequired ?? 0);
 
-    const isDepositForfeited = isCustomPc && hasPreparedComponents;
+    const isDepositForfeited =
+      isCustomPc &&
+      hasPreparedComponents &&
+      order.paymentMethod === PaymentMethod.COD &&
+      depositRequired > 0;
     let refundableAmount = 0;
 
     if (isDepositForfeited) {
@@ -496,9 +500,14 @@ export class OrderClosingService {
         (h) => h.nextStatus === OrderStatus.PREPARING_COMPONENTS || h.nextStatus === OrderStatus.ASSEMBLING,
       );
 
-    const isDepositForfeited = isCustomPc && hasPreparedComponents;
     const totalReceived = Number(order.payment?.totalReceived ?? 0);
     const depositRequired = Number(order.payment?.depositRequired ?? 0);
+
+    const isDepositForfeited =
+      isCustomPc &&
+      hasPreparedComponents &&
+      order.paymentMethod === PaymentMethod.COD &&
+      depositRequired > 0;
 
     let refundableAmount = 0;
     if (isDepositForfeited) {

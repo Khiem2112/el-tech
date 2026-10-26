@@ -901,21 +901,27 @@ export class AdminTransferService {
           });
         }
 
-        const currentOnHand = destQuant.onHand;
-        const currentCost = Number(destQuant.weightedAverageCost);
+        const currentOnHandDecimal = new Decimal(destQuant.onHand);
+        const currentCostDecimal = destQuant.weightedAverageCost;
         const incomingQty = line.quantity;
-        const incomingCost = Number(line.unitCost);
-        const newOnHand = currentOnHand + incomingQty;
+        const incomingQtyDecimal = new Decimal(incomingQty);
+        const incomingCostDecimal = line.unitCost;
+        const newOnHand = destQuant.onHand + incomingQty;
+        const newOnHandDecimal = new Decimal(newOnHand);
 
-        const newWac = newOnHand > 0
-          ? ((currentOnHand * currentCost) + (incomingQty * incomingCost)) / newOnHand
-          : incomingCost;
+        const newWac = newOnHandDecimal.gt(0)
+          ? currentOnHandDecimal
+              .mul(currentCostDecimal)
+              .add(incomingQtyDecimal.mul(incomingCostDecimal))
+              .div(newOnHandDecimal)
+              .toDecimalPlaces(0, Decimal.ROUND_HALF_UP)
+          : incomingCostDecimal.toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
 
         await tx.stockQuant.update({
           where: { id: destQuant.id },
           data: {
             onHand: newOnHand,
-            weightedAverageCost: new Decimal(newWac.toFixed(2)),
+            weightedAverageCost: newWac,
             version: { increment: 1 },
           },
         });

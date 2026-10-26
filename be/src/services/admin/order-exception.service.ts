@@ -618,6 +618,19 @@ export class OrderExceptionService {
       : Number(order.payment?.totalReceived ?? 0);
 
     if (input.resolutionType === 'MANUAL_MATCH') {
+      const expectedAmountNumber = Number(reviewCharge.expectedAmount);
+      if (actualReceived < expectedAmountNumber) {
+        throw new DomainError('PAY_DISCREPANCY_UNDERPAID', {
+          messageKey: 'error.payDiscrepancyUnderpaid',
+          status: 400,
+          details: {
+            expectedAmount: expectedAmountNumber,
+            actualReceived,
+            message: 'So tien thuc nhan nho hon so tien yeu cau. Theo quy dinh FQ36-A, khong the khop thu cong khi chuyen thieu tien.',
+          },
+        });
+      }
+
       await prisma.$transaction(async (tx) => {
         await tx.paymentCharge.update({
           where: { id: reviewCharge.id },
@@ -627,10 +640,15 @@ export class OrderExceptionService {
         });
 
         if (order.payment) {
+          const nextPaymentState =
+            reviewCharge.chargeType === PaymentChargeType.CUSTOM_BUILD_DEPOSIT
+              ? PaymentState.PARTIALLY_PAID
+              : PaymentState.PAID;
+
           await tx.payment.update({
             where: { id: order.payment.id },
             data: {
-              state: PaymentState.PAID,
+              state: nextPaymentState,
               totalReceived: reviewCharge.expectedAmount,
             },
           });
@@ -858,6 +876,11 @@ export class OrderExceptionService {
 
     const transferDate = input.transferredAt ? new Date(input.transferredAt) : new Date();
 
+    const totalReceivedNumber = Number(refund.payment.totalReceived ?? 0);
+    const refundAmountNumber = Number(refund.amount);
+    const isPartialRefund = refundAmountNumber < totalReceivedNumber;
+    const finalPaymentState = isPartialRefund ? PaymentState.PARTIALLY_PAID : PaymentState.REFUNDED;
+
     await prisma.$transaction(async (tx) => {
       await tx.refund.update({
         where: { id: refund.id },
@@ -872,7 +895,7 @@ export class OrderExceptionService {
       await tx.payment.update({
         where: { id: refund.paymentId },
         data: {
-          state: PaymentState.REFUNDED,
+          state: finalPaymentState,
           depositDisposition:
             refund.payment.depositDisposition === DepositDisposition.REFUND_PENDING
               ? DepositDisposition.REFUNDED
@@ -898,7 +921,9 @@ export class OrderExceptionService {
       orderId: refund.payment.order.id,
       orderCode: refund.payment.order.code,
       status: refund.payment.order.status,
-      message: 'Da xac nhan hoan tien thu cong thanh cong va cap nhat trang thai Payment sang REFUNDED',
+      message: isPartialRefund
+        ? 'Da xac nhan hoan tien mot phan thanh cong va giu trang thai Payment sang PARTIALLY_PAID'
+        : 'Da xac nhan hoan tien thu cong thanh cong va cap nhat trang thai Payment sang REFUNDED',
     };
   }
 }
