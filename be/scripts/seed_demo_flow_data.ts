@@ -135,12 +135,14 @@ async function seedDemoData(): Promise<void> {
       name: 'EL APEX · Ryzen 7 9800X3D / RTX 5070 Ti',
       slug: 'el-apex-ryzen-7-9800x3d-rtx-5070-ti',
       description: 'Cau hinh Flagship Gaming toi thuong voi AMD Ryzen 7 9800X3D va do hoa NVIDIA RTX the he moi, san sang cho trai nghiem 4K Ray Tracing.',
+      discountAmount: 1000000,
       components: [cpus[0], mainboards[0], rams[0], vgas[0], ssds[0], psus[0], cases[0], coolings[0]],
     },
     {
       name: 'EL TITAN · Core i7-14700K / RTX 5080 OC',
       slug: 'el-titan-core-i7-14700k-rtx-5080-oc',
       description: 'Cau hinh Workstation & Do hoa chuyen nghiep voi Intel Core i7-14700K 20 nhan 28 luong va GPU RTX 5080 hieu nang cao.',
+      discountAmount: 800000,
       components: [
         cpus[1] || cpus[0],
         mainboards[1] || mainboards[0],
@@ -156,6 +158,7 @@ async function seedDemoData(): Promise<void> {
       name: 'EL NOVA · Core i5-14600K / RTX 4070 SUPER',
       slug: 'el-nova-core-i5-14600k-rtx-4070-super',
       description: 'Cau hinh can bang hoan hao danh cho eSports va sang tao noi dung 2K voi hieu nang tren gia thanh toi uu nhat.',
+      discountAmount: 500000,
       components: [
         cpus[2] || cpus[0],
         mainboards[2] || mainboards[0],
@@ -176,6 +179,7 @@ async function seedDemoData(): Promise<void> {
       update: {
         name: config.name,
         description: config.description,
+        discountAmount: config.discountAmount,
         lifecycleState: ProductLifecycle.ACTIVE,
         isActive: true,
       },
@@ -183,6 +187,7 @@ async function seedDemoData(): Promise<void> {
         name: config.name,
         slug: config.slug,
         description: config.description,
+        discountAmount: config.discountAmount,
         lifecycleState: ProductLifecycle.ACTIVE,
         isActive: true,
       },

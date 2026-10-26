@@ -7,7 +7,6 @@ import {
   UpdatePcBundleInput,
 } from '../../validations/admin/pc-bundle.schema.js';
 
-const DISCOUNT_TAG_REGEX = /(?:^|\n)\[(?:GIAM|DISCOUNT):\s*(\d+)\]/i;
 
 export type AdminPcBundleComponentDto = {
   readonly id: string;
@@ -102,36 +101,7 @@ type BundleWithRelations = Prisma.PcBundleGetPayload<{
   };
 }>;
 
-function extractDiscountAndCleanDescription(description: string | null): {
-  cleanDescription: string | null;
-  discount: number;
-} {
-  if (!description) {
-    return { cleanDescription: null, discount: 0 };
-  }
-  const match = description.match(DISCOUNT_TAG_REGEX);
-  if (!match) {
-    return { cleanDescription: description, discount: 0 };
-  }
-  const discount = Number.parseInt(match[1], 10) || 0;
-  const cleanDescription = description.replace(DISCOUNT_TAG_REGEX, '').trim() || null;
-  return { cleanDescription, discount };
-}
 
-function packDescriptionWithDiscount(description: string | null | undefined, discount: number | undefined): string | null {
-  const baseDescription = description?.trim() ?? '';
-  const parsed = extractDiscountAndCleanDescription(baseDescription);
-  const effectiveDescription = parsed.cleanDescription ?? '';
-  const effectiveDiscount = discount !== undefined ? Math.max(0, Math.round(discount)) : parsed.discount;
-
-  if (effectiveDiscount > 0) {
-    if (effectiveDescription.length > 0) {
-      return `${effectiveDescription}\n[DISCOUNT: ${effectiveDiscount}]`;
-    }
-    return `[DISCOUNT: ${effectiveDiscount}]`;
-  }
-  return effectiveDescription.length > 0 ? effectiveDescription : null;
-}
 
 function computeBranchAvailabilityForBundle(
   bundleItems: readonly { skuId: number; quantity: number; sku: { sku: string } }[],
@@ -208,7 +178,7 @@ function formatBundleListItem(
     }[];
   }[],
 ): AdminPcBundleListItemDto {
-  const { cleanDescription, discount } = extractDiscountAndCleanDescription(bundle.description);
+  const discount = Number(bundle.discountAmount);
 
   let grossTotal = 0;
   let totalQuantity = 0;
@@ -238,7 +208,7 @@ function formatBundleListItem(
     id: bundle.id,
     name: bundle.name,
     slug: bundle.slug,
-    description: cleanDescription,
+    description: bundle.description,
     lifecycleState: bundle.lifecycleState,
     isActive: bundle.isActive,
     createdAt: bundle.createdAt,
@@ -267,7 +237,7 @@ function formatBundleDetail(
     }[];
   }[],
 ): AdminPcBundleDetailDto {
-  const { cleanDescription, discount } = extractDiscountAndCleanDescription(bundle.description);
+  const discount = Number(bundle.discountAmount);
 
   let grossTotal = 0;
   let totalQuantity = 0;
@@ -308,7 +278,7 @@ function formatBundleDetail(
     id: bundle.id,
     name: bundle.name,
     slug: bundle.slug,
-    description: cleanDescription,
+    description: bundle.description,
     rawDescription: bundle.description,
     lifecycleState: bundle.lifecycleState,
     isActive: bundle.isActive,
@@ -493,14 +463,13 @@ export const adminPcBundleService = {
       }
     }
 
-    const description = packDescriptionWithDiscount(input.description, input.discount);
-
     const createdBundle = await prisma.$transaction(async (tx) => {
       const bundle = await tx.pcBundle.create({
         data: {
           name: input.name,
           slug: input.slug,
-          description,
+          description: input.description ?? null,
+          discountAmount: new Prisma.Decimal(input.discount ?? 0),
           lifecycleState: input.lifecycleState ?? ProductLifecycle.DRAFT,
           isActive: input.isActive ?? true,
         },
@@ -585,19 +554,14 @@ export const adminPcBundleService = {
       }
     }
 
-    let description: string | null | undefined = undefined;
-    if (input.description !== undefined || input.discount !== undefined) {
-      const baseDesc = input.description !== undefined ? input.description : existing.description;
-      description = packDescriptionWithDiscount(baseDesc, input.discount);
-    }
-
     await prisma.$transaction(async (tx) => {
       await tx.pcBundle.update({
         where: { id },
         data: {
           ...(input.name !== undefined ? { name: input.name } : {}),
           ...(input.slug !== undefined ? { slug: input.slug } : {}),
-          ...(description !== undefined ? { description } : {}),
+          ...(input.description !== undefined ? { description: input.description } : {}),
+          ...(input.discount !== undefined ? { discountAmount: new Prisma.Decimal(input.discount) } : {}),
           ...(input.lifecycleState !== undefined ? { lifecycleState: input.lifecycleState } : {}),
           ...(input.isActive !== undefined ? { isActive: input.isActive } : {}),
         },
