@@ -100,6 +100,27 @@ export const paymentService = {
               },
             });
           }
+        } else if (charge.chargeType === 'AMENDMENT') {
+          await tx.payment.update({
+            where: { id: charge.paymentId },
+            data: { totalReceived: { increment: received } },
+          });
+          if (charge.orderAmendmentId) {
+            await tx.orderAmendment.update({
+              where: { id: charge.orderAmendmentId },
+              data: { status: 'PAID' },
+            });
+          }
+          await tx.orderStatusHistory.create({
+            data: {
+              orderId: charge.payment.orderId,
+              previousStatus: charge.payment.order.status,
+              nextStatus: charge.payment.order.status,
+              reason: 'AMENDMENT_FEE_PAID',
+              actorType: ActorType.PAYMENT_PROVIDER,
+              idempotencyKey: `payment:${input.providerTransactionId}`,
+            },
+          });
         } else {
           await tx.payment.update({ where: { id: charge.paymentId }, data: { state: 'PAID', totalReceived: { increment: received } } });
           await tx.order.update({ where: { id: charge.payment.orderId }, data: { status: 'CONFIRMED', confirmedAt: new Date() } });

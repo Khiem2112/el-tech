@@ -518,8 +518,6 @@ export class OrderExceptionService {
           deliveryAddressSnapshot: addressSnapshot,
           status: nextStatus,
           holdReason: null,
-          grandTotal: { increment: shippingFee },
-          shippingFee: { increment: shippingFee },
         },
       });
 
