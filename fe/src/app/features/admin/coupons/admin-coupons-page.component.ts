@@ -9,6 +9,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import {
+  SelectComponent,
+  SelectOption,
+} from '../../../components/atoms/select/select.component';
 import { CouponFormDialogComponent } from './components/coupon-form-dialog.component';
 import { CouponRedemptionSheetComponent } from './components/coupon-redemption-sheet.component';
 import {
@@ -29,23 +33,18 @@ type ToastNotification = {
     CommonModule,
     FormsModule,
     RouterLink,
+    SelectComponent,
     CouponFormDialogComponent,
     CouponRedemptionSheetComponent,
   ],
   template: `
-    <div class="space-y-6">
-      <!-- Header SCR-24 -->
-      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#272f3d] pb-4">
+    <div class="space-y-6 p-4 lg:p-6 max-w-7xl mx-auto text-sm text-foreground">
+      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
         <div>
-          <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold tracking-tight uppercase text-white">
-              Mã Giảm Giá Đơn Hàng
-            </h1>
-            <span class="text-xs text-slate-400 border-l border-[#272f3d] pl-3 font-mono">
-              SCR-24
-            </span>
-          </div>
-          <p class="text-xs text-slate-400 mt-1">
+          <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">
+            Mã Giảm Giá Đơn Hàng
+          </h1>
+          <p class="text-xs text-muted mt-1">
             Quản lý hạn mức sử dụng coupon cấp đơn hàng, quota phát hành và kiểm toán lịch sử đổi mã
           </p>
         </div>
@@ -54,7 +53,7 @@ type ToastNotification = {
           <button
             type="button"
             (click)="onOpenCreateDialog()"
-            class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm"
+            class="px-4 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -64,42 +63,34 @@ type ToastNotification = {
         </div>
       </header>
 
-      <!-- Navigation Tabs SCR-23, SCR-24, SCR-25 -->
-      <nav class="flex items-center gap-2 border-b border-[#272f3d] overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi">
+      <nav class="flex items-center gap-2 border-b border-line overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi">
         <a
           routerLink="/admin/promotions"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Khuyến mãi sản phẩm</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-23
-          </span>
+          <span>Chương Trình Khuyến Mãi</span>
         </a>
 
         <a
           routerLink="/admin/promotions/coupons"
-          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors border-[#76b900] text-[#76b900]"
+          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors border-primary text-primary"
         >
-          <span>Mã giảm giá (Coupon)</span>
-          <span class="px-2 py-0.5 rounded-full text-[11px] bg-emerald-500/20 text-emerald-400 font-bold tabular-nums">
+          <span>Mã Giảm Giá (Coupons)</span>
+          <span class="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold tabular-nums whitespace-nowrap">
             {{ stats().runningCount }} đang chạy
           </span>
         </a>
 
         <a
           routerLink="/admin/promotions/shipping-fee"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Biểu phí giao hàng & Freeship</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-25
-          </span>
+          <span>Biểu Phí Giao Hàng</span>
         </a>
       </nav>
 
-      <!-- Guideline Note Banner -->
-      <div class="p-3.5 bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm text-xs text-slate-300 flex items-start gap-2.5">
-        <svg class="w-4 h-4 text-[#76b900] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <div class="p-3.5 bg-primary/5 border border-primary/20 rounded-lg shadow-xs text-xs text-muted flex items-start gap-2.5">
+        <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <div class="leading-relaxed">
@@ -107,135 +98,122 @@ type ToastNotification = {
         </div>
       </div>
 
-      <!-- KPI Metric Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="p-3.5 bg-[#161b26] border border-[#272f3d] rounded-lg">
-          <div class="text-slate-400 text-[11px] uppercase font-semibold">Tổng mã coupon</div>
-          <div class="text-xl font-bold text-white tabular-nums mt-0.5">{{ stats().totalCount }}</div>
+        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+          <div class="text-muted text-xs uppercase font-semibold">Tổng mã coupon</div>
+          <div class="text-2xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
         </div>
-        <div class="p-3.5 bg-[#161b26] border border-emerald-500/30 rounded-lg">
-          <div class="text-emerald-400 text-[11px] uppercase font-semibold">Đang hoạt động</div>
-          <div class="text-xl font-bold text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
+        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+          <div class="text-emerald-700 dark:text-emerald-400 text-xs uppercase font-semibold">Đang hoạt động</div>
+          <div class="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
         </div>
-        <div class="p-3.5 bg-[#161b26] border border-sky-500/30 rounded-lg">
-          <div class="text-sky-400 text-[11px] uppercase font-semibold">Sắp diễn ra</div>
-          <div class="text-xl font-bold text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
+        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+          <div class="text-sky-700 dark:text-sky-400 text-xs uppercase font-semibold">Sắp diễn ra</div>
+          <div class="text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
         </div>
-        <div class="p-3.5 bg-[#161b26] border border-slate-700 rounded-lg">
-          <div class="text-slate-400 text-[11px] uppercase font-semibold">Hết hạn / Tạm dừng</div>
-          <div class="text-xl font-bold text-slate-300 tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
+        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+          <div class="text-muted text-xs uppercase font-semibold">Hết hạn / Tạm dừng</div>
+          <div class="text-2xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
         </div>
       </div>
 
-      <!-- Filters & Actions Bar -->
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#161b26] p-3.5 rounded-lg border border-[#272f3d]">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface p-3.5 rounded-lg border border-line shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-center gap-2.5">
-          <!-- Search Input -->
           <div class="relative w-full sm:w-72">
             <input
               type="text"
               [ngModel]="searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm mã hoặc tên chương trình..."
-              class="w-full pl-8 pr-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#76b900] transition-colors"
+              class="w-full pl-8 pr-3 py-1.5 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
             />
-            <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 text-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
 
-          <!-- Status Filter -->
-          <select
-            [ngModel]="statusFilter()"
-            (ngModelChange)="onStatusChange($event)"
-            class="w-full sm:w-auto px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900] transition-colors"
-          >
-            <option value="ALL">Tất cả trạng thái</option>
-            <option value="RUNNING">Đang hoạt động</option>
-            <option value="UPCOMING">Sắp diễn ra</option>
-            <option value="EXPIRED">Đã hết hạn</option>
-            <option value="INACTIVE">Đang tạm dừng</option>
-          </select>
+          <div class="w-full sm:w-48">
+            <app-select
+              [options]="statusOptions"
+              [value]="statusFilter()"
+              (valueChange)="onStatusChange($event)"
+              size="sm"
+            />
+          </div>
 
-          <!-- Discount Type Filter -->
-          <select
-            [ngModel]="discountTypeFilter()"
-            (ngModelChange)="onDiscountTypeChange($event)"
-            class="w-full sm:w-auto px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-xs text-white focus:outline-none focus:border-[#76b900] transition-colors"
-          >
-            <option value="ALL">Tất cả kiểu giảm</option>
-            <option value="PERCENTAGE">Theo phần trăm (%)</option>
-            <option value="FIXED_AMOUNT">Số tiền cố định (VNĐ)</option>
-          </select>
+          <div class="w-full sm:w-52">
+            <app-select
+              [options]="discountTypeOptions"
+              [value]="discountTypeFilter()"
+              (valueChange)="onDiscountTypeChange($event)"
+              size="sm"
+            />
+          </div>
         </div>
 
         <button
           type="button"
           (click)="onRefresh()"
-          class="px-3 py-1.5 bg-[#090d16] hover:bg-[#272f3d] text-slate-300 text-xs font-semibold rounded border border-[#272f3d] transition-colors inline-flex items-center gap-1.5 justify-center"
+          class="px-3 py-1.5 bg-surface-alt hover:bg-surface text-foreground text-xs font-semibold rounded border border-line transition-colors inline-flex items-center gap-1.5 justify-center cursor-pointer"
         >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
           <span>Làm mới</span>
         </button>
       </div>
 
-      <!-- Coupons Table SCR-24 -->
-      <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+          <table class="w-full text-left border-collapse text-xs min-w-[1000px]">
+            <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
-                <th class="py-3 px-4">Mã coupon</th>
+                <th class="py-3 px-4 whitespace-nowrap">Mã coupon</th>
                 <th class="py-3 px-4">Tên chương trình</th>
-                <th class="py-3 px-4 text-right">Mức giảm</th>
-                <th class="py-3 px-4 text-right">Đơn tối thiểu</th>
-                <th class="py-3 px-4 text-center">Tiến độ lượt dùng</th>
-                <th class="py-3 px-4">Hiệu lực</th>
-                <th class="py-3 px-4 text-center">Trạng thái</th>
-                <th class="py-3 px-4 text-right">Thao tác</th>
+                <th class="py-3 px-4 text-right whitespace-nowrap">Mức giảm</th>
+                <th class="py-3 px-4 text-right whitespace-nowrap">Đơn tối thiểu</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Tiến độ lượt dùng</th>
+                <th class="py-3 px-4 whitespace-nowrap">Hiệu lực</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Trạng thái</th>
+                <th class="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-[#272f3d] text-white">
+            <tbody class="divide-y divide-line text-foreground">
               @if (isLoading()) {
                 <tr>
-                  <td colspan="8" class="py-12 text-center text-slate-400">
-                    <span class="inline-block w-5 h-5 border-2 border-[#76b900] border-t-transparent rounded-full animate-spin align-middle mr-2"></span>
+                  <td colspan="8" class="py-12 text-center text-muted">
+                    <span class="inline-block w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin align-middle mr-2"></span>
                     <span>Đang tải danh sách mã giảm giá...</span>
                   </td>
                 </tr>
               } @else if (coupons().length === 0) {
                 <tr>
-                  <td colspan="8" class="py-12 text-center text-slate-400">
-                    <p class="font-semibold text-slate-300">Không tìm thấy mã giảm giá phù hợp</p>
-                    <p class="text-[11px] mt-1 text-slate-500">Hãy tạo mã giảm giá mới hoặc thử lại với bộ lọc khác</p>
+                  <td colspan="8" class="py-12 text-center text-muted">
+                    <p class="font-semibold text-foreground">Không tìm thấy mã giảm giá phù hợp</p>
+                    <p class="text-xs mt-1 text-muted">Hãy tạo mã giảm giá mới hoặc thử lại với bộ lọc khác</p>
                   </td>
                 </tr>
               } @else {
                 @for (coupon of coupons(); track coupon.id) {
-                  <tr class="hover:bg-[#1a2232] transition-colors">
-                    <!-- Code -->
-                    <td class="py-3 px-4 font-mono font-bold text-[#76b900] text-sm">
+                  <tr class="hover:bg-surface-alt/60 transition-colors">
+                    <td class="py-3 px-4 font-mono font-bold text-primary text-xs whitespace-nowrap">
                       {{ coupon.code }}
                     </td>
 
-                    <!-- Name -->
                     <td class="py-3 px-4">
-                      <div class="font-bold text-white text-xs">{{ coupon.name }}</div>
+                      <div class="font-bold text-foreground text-xs">{{ coupon.name }}</div>
                       @if (coupon.requiredPaymentMethod) {
-                        <div class="text-[10px] text-slate-400 mt-0.5">
+                        <div class="text-xs text-muted mt-0.5">
                           Phương thức: {{ coupon.requiredPaymentMethod === 'QR' ? 'VietQR' : 'COD' }}
                         </div>
                       }
                     </td>
 
-                    <!-- Discount Value -->
-                    <td class="py-3 px-4 text-right font-bold tabular-nums text-white">
+                    <td class="py-3 px-4 text-right font-bold tabular-nums whitespace-nowrap text-foreground">
                       @if (coupon.discountType === 'PERCENTAGE') {
                         <span>{{ coupon.discountValue }}%</span>
                         @if (coupon.maximumDiscount) {
-                          <div class="text-[10px] text-slate-400 font-normal">
+                          <div class="text-xs text-muted font-normal">
                             Tối đa: {{ coupon.maximumDiscount | number:'1.0-0' }} ₫
                           </div>
                         }
@@ -244,57 +222,51 @@ type ToastNotification = {
                       }
                     </td>
 
-                    <!-- Minimum Subtotal -->
-                    <td class="py-3 px-4 text-right tabular-nums text-slate-300 font-semibold">
+                    <td class="py-3 px-4 text-right tabular-nums whitespace-nowrap text-foreground font-semibold">
                       {{ coupon.minimumSubtotal > 0 ? (coupon.minimumSubtotal | number:'1.0-0') + ' ₫' : 'Không yêu cầu' }}
                     </td>
 
-                    <!-- Usage Quota Progress -->
-                    <td class="py-3 px-4 text-center tabular-nums">
-                      <div class="font-bold text-white">
+                    <td class="py-3 px-4 text-center tabular-nums whitespace-nowrap">
+                      <div class="font-bold text-foreground">
                         {{ coupon.stats.usedCount }} / {{ coupon.globalQuota ? (coupon.globalQuota | number:'1.0-0') : 'Không giới hạn' }}
                       </div>
-                      <div class="text-[10px] text-slate-400 mt-0.5">
+                      <div class="text-xs text-muted mt-0.5">
                         Đã chốt: {{ coupon.stats.consumedCount }} | Đang giữ: {{ coupon.stats.reservedCount }}
                       </div>
                     </td>
 
-                    <!-- Validity Period -->
-                    <td class="py-3 px-4 text-slate-300 tabular-nums text-[11px]">
+                    <td class="py-3 px-4 text-muted tabular-nums whitespace-nowrap text-xs">
                       <div>{{ coupon.effectiveFrom | date:'dd/MM/yyyy' }}</div>
-                      <div class="text-slate-400 text-[10px]">đến {{ coupon.effectiveTo | date:'dd/MM/yyyy' }}</div>
+                      <div class="text-muted">đến {{ coupon.effectiveTo | date:'dd/MM/yyyy' }}</div>
                     </td>
 
-                    <!-- Status Badge -->
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (!coupon.isActive) {
-                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-muted border border-line whitespace-nowrap">
                           Tạm dừng
                         </span>
                       } @else if (coupon.status === 'RUNNING') {
-                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
                           Đang chạy
                         </span>
                       } @else if (coupon.status === 'UPCOMING') {
-                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20 whitespace-nowrap">
                           Sắp diễn ra
                         </span>
                       } @else if (coupon.status === 'EXPIRED') {
-                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
                           Đã hết hạn
                         </span>
                       }
                     </td>
 
-                    <!-- Actions -->
-                    <td class="py-3 px-4 text-right">
+                    <td class="py-3 px-4 text-right whitespace-nowrap">
                       <div class="flex items-center justify-end gap-1.5">
-                        <!-- History Button MOD-35 -->
                         <button
                           type="button"
                           (click)="onOpenHistorySheet(coupon)"
-                          class="p-1.5 rounded hover:bg-[#272f3d] text-[#76b900] transition-colors"
-                          title="Xem lịch sử sử dụng (MOD-35)"
+                          class="p-1.5 rounded hover:bg-surface-alt text-primary transition-colors cursor-pointer"
+                          title="Xem lịch sử sử dụng"
                           aria-label="Xem lịch sử sử dụng"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -302,12 +274,11 @@ type ToastNotification = {
                           </svg>
                         </button>
 
-                        <!-- Edit Button MOD-34 -->
                         <button
                           type="button"
                           (click)="onOpenEditDialog(coupon)"
-                          class="p-1.5 rounded hover:bg-[#272f3d] text-slate-300 hover:text-white transition-colors"
-                          title="Chỉnh sửa mã giảm giá (MOD-34)"
+                          class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors cursor-pointer"
+                          title="Chỉnh sửa mã giảm giá"
                           aria-label="Chỉnh sửa mã giảm giá"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -315,11 +286,10 @@ type ToastNotification = {
                           </svg>
                         </button>
 
-                        <!-- Toggle Status Button -->
                         <button
                           type="button"
                           (click)="onToggleStatus(coupon)"
-                          class="p-1.5 rounded hover:bg-[#272f3d] text-slate-300 hover:text-white transition-colors"
+                          class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors cursor-pointer"
                           [title]="coupon.isActive ? 'Tạm dừng kích hoạt' : 'Kích hoạt lại'"
                           [aria-label]="coupon.isActive ? 'Tạm dừng kích hoạt' : 'Kích hoạt lại'"
                         >
@@ -332,11 +302,10 @@ type ToastNotification = {
                           </svg>
                         </button>
 
-                        <!-- Delete Button -->
                         <button
                           type="button"
                           (click)="onDelete(coupon)"
-                          class="p-1.5 rounded hover:bg-rose-500/20 text-rose-400 transition-colors"
+                          class="p-1.5 rounded hover:bg-rose-500/10 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
                           title="Xóa mã giảm giá"
                           aria-label="Xóa mã giảm giá"
                         >
@@ -353,12 +322,11 @@ type ToastNotification = {
           </table>
         </div>
 
-        <!-- Pagination Controls -->
         @if (!isLoading() && total() > 0) {
-          <footer class="p-3.5 bg-[#090d16] border-t border-[#272f3d] flex items-center justify-between text-xs text-slate-400">
+          <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-xs text-muted">
             <div>
-              Hiển thị trang <strong class="text-white">{{ page() }}</strong> / <strong class="text-white">{{ totalPages() }}</strong>
-              (Tổng cộng: <strong class="text-white">{{ total() }}</strong> mã)
+              Hiển thị trang <strong class="text-foreground">{{ page() }}</strong> / <strong class="text-foreground">{{ totalPages() }}</strong>
+              (Tổng cộng: <strong class="text-foreground tabular-nums">{{ total() }}</strong> mã)
             </div>
 
             <div class="flex items-center gap-1.5">
@@ -366,7 +334,7 @@ type ToastNotification = {
                 type="button"
                 (click)="onPageChange(page() - 1)"
                 [disabled]="page() <= 1"
-                class="px-2.5 py-1 bg-[#161b26] hover:bg-[#272f3d] disabled:opacity-40 text-slate-200 rounded border border-[#272f3d] transition-colors"
+                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
               >
                 Trước
               </button>
@@ -374,7 +342,7 @@ type ToastNotification = {
                 type="button"
                 (click)="onPageChange(page() + 1)"
                 [disabled]="page() >= totalPages()"
-                class="px-2.5 py-1 bg-[#161b26] hover:bg-[#272f3d] disabled:opacity-40 text-slate-200 rounded border border-[#272f3d] transition-colors"
+                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
               >
                 Sau
               </button>
@@ -383,7 +351,6 @@ type ToastNotification = {
         }
       </div>
 
-      <!-- MOD-34 Dialog Component -->
       <app-coupon-form-dialog
         [isOpen]="isDialogOpen()"
         [coupon]="editingCoupon()"
@@ -391,36 +358,37 @@ type ToastNotification = {
         (saveSuccess)="onSaveSuccess($event)"
       />
 
-      <!-- MOD-35 Sheet Component -->
       <app-coupon-redemption-sheet
         [isOpen]="isSheetOpen()"
         [coupon]="selectedCouponForHistory()"
         (closeSheet)="onCloseSheet()"
       />
 
-      <!-- Toasts Notification Strip -->
       @if (toasts().length > 0) {
-        <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm">
+        <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
           @for (toast of toasts(); track toast.id) {
             <div
-              class="px-4 py-3 rounded-lg shadow-lg text-xs font-semibold flex items-center justify-between border"
-              [class.bg-emerald-950]="toast.type === 'success'"
+              class="pointer-events-auto px-4 py-3 rounded-lg shadow-xl text-xs font-semibold flex items-center justify-between border bg-surface border-line"
               [class.border-emerald-500]="toast.type === 'success'"
-              [class.text-emerald-200]="toast.type === 'success'"
-              [class.bg-rose-950]="toast.type === 'error'"
+              [class.text-emerald-700]="toast.type === 'success'"
+              [class.dark:text-emerald-400]="toast.type === 'success'"
               [class.border-rose-500]="toast.type === 'error'"
-              [class.text-rose-200]="toast.type === 'error'"
-              [class.bg-slate-900]="toast.type === 'info'"
-              [class.border-slate-600]="toast.type === 'info'"
-              [class.text-slate-200]="toast.type === 'info'"
+              [class.text-rose-700]="toast.type === 'error'"
+              [class.dark:text-rose-400]="toast.type === 'error'"
+              [class.border-sky-500]="toast.type === 'info'"
+              [class.text-sky-700]="toast.type === 'info'"
+              [class.dark:text-sky-400]="toast.type === 'info'"
             >
               <span>{{ toast.message }}</span>
               <button
                 type="button"
                 (click)="dismissToast(toast.id)"
-                class="ml-3 text-slate-400 hover:text-white"
+                class="ml-3 text-muted hover:text-foreground cursor-pointer"
+                aria-label="Đóng thông báo"
               >
-                ✕
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
           }
@@ -452,6 +420,20 @@ export class AdminCouponsPageComponent implements OnInit {
   readonly statusFilter = computed(() => this.couponService.statusFilter());
   readonly discountTypeFilter = computed(() => this.couponService.discountTypeFilter());
 
+  readonly statusOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'RUNNING', label: 'Đang hoạt động' },
+    { value: 'UPCOMING', label: 'Sắp diễn ra' },
+    { value: 'EXPIRED', label: 'Đã hết hạn' },
+    { value: 'INACTIVE', label: 'Đang tạm dừng' },
+  ];
+
+  readonly discountTypeOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả kiểu giảm' },
+    { value: 'PERCENTAGE', label: 'Theo phần trăm (%)' },
+    { value: 'FIXED_AMOUNT', label: 'Số tiền cố định (VNĐ)' },
+  ];
+
   ngOnInit(): void {
     this.couponService.loadCoupons();
   }
@@ -461,14 +443,16 @@ export class AdminCouponsPageComponent implements OnInit {
     this.couponService.loadCoupons({ search: val, page: 1 });
   }
 
-  onStatusChange(val: 'ALL' | 'ACTIVE' | 'INACTIVE' | 'RUNNING' | 'UPCOMING' | 'EXPIRED'): void {
-    this.couponService.statusFilter.set(val);
-    this.couponService.loadCoupons({ status: val, page: 1 });
+  onStatusChange(val: string): void {
+    const validVal = val as 'ALL' | 'ACTIVE' | 'INACTIVE' | 'RUNNING' | 'UPCOMING' | 'EXPIRED';
+    this.couponService.statusFilter.set(validVal);
+    this.couponService.loadCoupons({ status: validVal, page: 1 });
   }
 
-  onDiscountTypeChange(val: 'ALL' | 'PERCENTAGE' | 'FIXED_AMOUNT'): void {
-    this.couponService.discountTypeFilter.set(val);
-    this.couponService.loadCoupons({ discountType: val, page: 1 });
+  onDiscountTypeChange(val: string): void {
+    const validVal = val as 'ALL' | 'PERCENTAGE' | 'FIXED_AMOUNT';
+    this.couponService.discountTypeFilter.set(validVal);
+    this.couponService.loadCoupons({ discountType: validVal, page: 1 });
   }
 
   onPageChange(nextPage: number): void {

@@ -17,6 +17,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { z } from 'zod';
+import {
+  SelectComponent,
+  SelectOption,
+} from '../../../../components/atoms/select/select.component';
 import { AdminCategoryService } from '../../categories/services/admin-category.service';
 import { AdminVariantService } from '../../variants/services/admin-variant.service';
 import {
@@ -109,32 +113,33 @@ function formatIsoToDateInput(isoString?: string): string {
 @Component({
   selector: 'app-coupon-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SelectComponent],
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="coupon-dialog-title"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col text-sm text-white"
+          data-modal-id="MOD-34"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <header class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <header class="p-5 border-b border-line flex items-center justify-between shrink-0 bg-surface">
             <div>
-              <h2 id="coupon-dialog-title" class="font-bold text-white uppercase text-base tracking-wide">
+              <h2 id="coupon-dialog-title" class="font-bold text-foreground uppercase text-base tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Mã Giảm Giá' : 'Thêm Mới Mã Giảm Giá' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Thiết lập mã coupon theo chiến dịch và kiểm soát lượt dùng (MOD-34)
+              <p class="text-xs text-muted mt-0.5">
+                Thiết lập mã coupon theo chiến dịch và kiểm soát lượt dùng
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded text-slate-400 hover:text-white hover:bg-[#272f3d] transition-colors"
+              class="p-1 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors cursor-pointer"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -146,7 +151,7 @@ function formatIsoToDateInput(isoString?: string): string {
 
           <div class="overflow-y-auto p-5 flex-1 space-y-4">
             @if (errorMessage()) {
-              <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+              <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs font-medium">
                 {{ errorMessage() }}
               </div>
             }
@@ -154,8 +159,8 @@ function formatIsoToDateInput(isoString?: string): string {
             <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate id="coupon-form">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="coupon-code" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Mã coupon <span class="text-rose-400">*</span>
+                  <label for="coupon-code" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Mã coupon <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="coupon-code"
@@ -163,60 +168,58 @@ function formatIsoToDateInput(isoString?: string): string {
                     formControlName="code"
                     (input)="onCodeInput($event)"
                     placeholder="VÍ DỤ: ELTECH1000K"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-mono font-bold text-white text-sm focus:outline-none focus:border-[#76b900] uppercase transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-mono font-bold text-foreground text-sm focus:outline-none focus:border-primary uppercase transition-colors"
                   />
                   @if (form.get('code')?.touched && form.get('code')?.errors) {
-                    <p class="text-rose-400 text-[11px] mt-1">Mã coupon từ 3-30 ký tự viết hoa không dấu</p>
+                    <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">Mã coupon từ 3-30 ký tự viết hoa không dấu</p>
                   }
                 </div>
 
                 <div>
-                  <label for="coupon-name" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Tên chương trình <span class="text-rose-400">*</span>
+                  <label for="coupon-name" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Tên chương trình <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="coupon-name"
                     type="text"
                     formControlName="name"
-                    placeholder="Ví dụ: Giảm 1.000.000₫ cho đơn PC Custom từ 50 Triệu"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    placeholder="Ví dụ: Tri Ân Khách Hàng Thân Thiết"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                   @if (form.get('name')?.touched && form.get('name')?.errors) {
-                    <p class="text-rose-400 text-[11px] mt-1">Tên chương trình tối thiểu 2 ký tự</p>
+                    <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">Tên chương trình tối thiểu 2 ký tự</p>
                   }
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label for="discount-type" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Kiểu giảm giá <span class="text-rose-400">*</span>
+                  <label class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Loại giảm giá <span class="text-rose-500">*</span>
                   </label>
-                  <select
-                    id="discount-type"
-                    formControlName="discountType"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
-                  >
-                    <option value="PERCENTAGE">Theo phần trăm (%)</option>
-                    <option value="FIXED_AMOUNT">Số tiền cố định (VNĐ)</option>
-                  </select>
+                  <app-select
+                    [options]="discountTypeOptions"
+                    [value]="form.get('discountType')?.value"
+                    (valueChange)="onDiscountTypeChange($event)"
+                    size="md"
+                  />
                 </div>
 
                 <div>
-                  <label for="discount-value" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Mức giảm {{ form.get('discountType')?.value === 'PERCENTAGE' ? '(%)' : '(VNĐ)' }} <span class="text-rose-400">*</span>
+                  <label for="discount-value" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Mức giảm {{ form.get('discountType')?.value === 'PERCENTAGE' ? '(%)' : '(VNĐ)' }} <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="discount-value"
                     type="number"
                     formControlName="discountValue"
                     [step]="form.get('discountType')?.value === 'PERCENTAGE' ? '1' : '1000'"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-bold text-white text-sm focus:outline-none focus:border-[#76b900] tabular-nums transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label for="max-discount" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                  <label for="max-discount" class="block font-semibold text-foreground text-xs uppercase mb-1">
                     Giảm tối đa (VNĐ)
                   </label>
                   <input
@@ -225,14 +228,14 @@ function formatIsoToDateInput(isoString?: string): string {
                     formControlName="maximumDiscount"
                     step="1000"
                     placeholder="Không giới hạn"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] tabular-nums transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums transition-colors"
                   />
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label for="min-subtotal" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                  <label for="min-subtotal" class="block font-semibold text-foreground text-xs uppercase mb-1">
                     Đơn tối thiểu (VNĐ)
                   </label>
                   <input
@@ -240,12 +243,12 @@ function formatIsoToDateInput(isoString?: string): string {
                     type="number"
                     formControlName="minimumSubtotal"
                     step="1000"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] tabular-nums transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label for="global-quota" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                  <label for="global-quota" class="block font-semibold text-foreground text-xs uppercase mb-1">
                     Hạn mức hệ thống (Lượt)
                   </label>
                   <input
@@ -253,12 +256,12 @@ function formatIsoToDateInput(isoString?: string): string {
                     type="number"
                     formControlName="globalQuota"
                     placeholder="Không giới hạn"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] tabular-nums transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label for="per-user-quota" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                  <label for="per-user-quota" class="block font-semibold text-foreground text-xs uppercase mb-1">
                     Hạn mức / Khách (Lượt)
                   </label>
                   <input
@@ -266,82 +269,81 @@ function formatIsoToDateInput(isoString?: string): string {
                     type="number"
                     formControlName="perCustomerQuota"
                     placeholder="Mặc định 1 lượt"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] tabular-nums transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums transition-colors"
                   />
                 </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label for="effective-from" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Hiệu lực từ ngày <span class="text-rose-400">*</span>
+                  <label for="effective-from" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Hiệu lực từ ngày <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="effective-from"
                     type="date"
                     formControlName="effectiveFrom"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label for="effective-to" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Hết hạn đến ngày <span class="text-rose-400">*</span>
+                  <label for="effective-to" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Hết hạn đến ngày <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="effective-to"
                     type="date"
                     formControlName="effectiveTo"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label for="payment-method" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
+                  <label class="block font-semibold text-foreground text-xs uppercase mb-1">
                     Phương thức thanh toán
                   </label>
-                  <select
-                    id="payment-method"
-                    formControlName="requiredPaymentMethod"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
-                  >
-                    <option value="ALL">Tất cả phương thức</option>
-                    <option value="QR">Chỉ qua VietQR</option>
-                    <option value="COD">Chỉ qua COD</option>
-                  </select>
+                  <app-select
+                    [options]="paymentMethodOptions"
+                    [value]="form.get('requiredPaymentMethod')?.value"
+                    (valueChange)="onPaymentMethodChange($event)"
+                    size="md"
+                  />
                 </div>
               </div>
 
-              <!-- Quy tac danh muc va SKU loai tru -->
-              <div class="space-y-3 p-4 bg-[#090d16] rounded-md border border-[#272f3d]">
+              <div class="space-y-3 p-4 bg-surface-alt rounded-md border border-line">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-slate-300 text-xs uppercase tracking-wider">
+                  <span class="font-semibold text-foreground text-xs uppercase tracking-wider">
                     Danh mục áp dụng / loại trừ (Tùy chọn)
                   </span>
-                  <span class="text-[11px] text-slate-400">Không bắt buộc nếu áp dụng cho toàn bộ đơn hàng</span>
+                  <span class="text-xs text-muted">Không bắt buộc nếu áp dụng cho toàn bộ đơn hàng</span>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-2">
-                  <select
-                    #categorySelect
-                    class="flex-1 px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded-md text-slate-200 text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    <option value="">-- Chọn danh mục --</option>
-                    @for (cat of availableCategories(); track cat.id) {
-                      <option [value]="cat.id">{{ cat.name }}</option>
-                    }
-                  </select>
-                  <select
-                    #categoryRuleSelect
-                    class="px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded-md text-slate-200 text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    <option value="EXCLUDE">Loại trừ</option>
-                    <option value="INCLUDE">Áp dụng</option>
-                  </select>
+                <div class="flex flex-col sm:flex-row gap-2 items-center">
+                  <div class="flex-1 w-full">
+                    <app-select
+                      [options]="categoryOptions()"
+                      [value]="selectedCatIdToAdd()"
+                      (valueChange)="selectedCatIdToAdd.set($event)"
+                      placeholder="-- Chọn danh mục --"
+                      size="sm"
+                      [searchable]="true"
+                    />
+                  </div>
+                  <div class="w-full sm:w-36">
+                    <app-select
+                      [options]="ruleTypeOptions"
+                      [value]="selectedCatRuleToAdd()"
+                      (valueChange)="selectedCatRuleToAdd.set($event)"
+                      size="sm"
+                    />
+                  </div>
                   <button
                     type="button"
-                    (click)="addCategoryRule(categorySelect.value, categoryRuleSelect.value); categorySelect.value = ''"
-                    class="px-3 py-2 bg-[#272f3d] hover:bg-[#323d4f] text-slate-200 text-xs font-semibold rounded-md transition-colors"
+                    (click)="handleAddCategoryRule()"
+                    [disabled]="!selectedCatIdToAdd()"
+                    class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground text-xs font-semibold rounded-md transition-colors cursor-pointer disabled:opacity-50"
                   >
                     Thêm danh mục
                   </button>
@@ -354,16 +356,18 @@ function formatIsoToDateInput(isoString?: string): string {
                         class="px-2.5 py-1 rounded-md text-xs inline-flex items-center gap-1.5 border"
                         [class.bg-rose-500/10]="rule.rule === 'EXCLUDE'"
                         [class.border-rose-500/30]="rule.rule === 'EXCLUDE'"
-                        [class.text-rose-300]="rule.rule === 'EXCLUDE'"
+                        [class.text-rose-700]="rule.rule === 'EXCLUDE'"
+                        [class.dark:text-rose-400]="rule.rule === 'EXCLUDE'"
                         [class.bg-emerald-500/10]="rule.rule === 'INCLUDE'"
                         [class.border-emerald-500/30]="rule.rule === 'INCLUDE'"
-                        [class.text-emerald-300]="rule.rule === 'INCLUDE'"
+                        [class.text-emerald-700]="rule.rule === 'INCLUDE'"
+                        [class.dark:text-emerald-400]="rule.rule === 'INCLUDE'"
                       >
                         <span>{{ rule.rule === 'EXCLUDE' ? 'Loại trừ' : 'Áp dụng' }}: <strong>{{ rule.name }}</strong></span>
                         <button
                           type="button"
                           (click)="removeCategoryRule(rule.id)"
-                          class="hover:text-white p-0.5"
+                          class="hover:text-foreground p-0.5 cursor-pointer"
                           title="Xóa quy tắc"
                           aria-label="Xóa quy tắc"
                         >
@@ -377,36 +381,38 @@ function formatIsoToDateInput(isoString?: string): string {
                 }
               </div>
 
-              <!-- SKU Rules -->
-              <div class="space-y-3 p-4 bg-[#090d16] rounded-md border border-[#272f3d]">
+              <div class="space-y-3 p-4 bg-surface-alt rounded-md border border-line">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-slate-300 text-xs uppercase tracking-wider">
+                  <span class="font-semibold text-foreground text-xs uppercase tracking-wider">
                     Biến thể SKU áp dụng / loại trừ (Tùy chọn)
                   </span>
-                  <span class="text-[11px] text-slate-400">Không bắt buộc nếu áp dụng cho toàn bộ sản phẩm</span>
+                  <span class="text-xs text-muted">Không bắt buộc nếu áp dụng cho toàn bộ sản phẩm</span>
                 </div>
 
-                <div class="flex flex-col sm:flex-row gap-2">
-                  <select
-                    #skuSelect
-                    class="flex-1 px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded-md text-slate-200 text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    <option value="">-- Chọn biến thể SKU --</option>
-                    @for (variant of availableVariants(); track variant.id) {
-                      <option [value]="variant.id">{{ variant.sku }} - {{ variant.productTemplate.name }}</option>
-                    }
-                  </select>
-                  <select
-                    #skuRuleSelect
-                    class="px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded-md text-slate-200 text-xs focus:outline-none focus:border-[#76b900]"
-                  >
-                    <option value="EXCLUDE">Loại trừ</option>
-                    <option value="INCLUDE">Áp dụng</option>
-                  </select>
+                <div class="flex flex-col sm:flex-row gap-2 items-center">
+                  <div class="flex-1 w-full">
+                    <app-select
+                      [options]="skuOptions()"
+                      [value]="selectedSkuIdToAdd()"
+                      (valueChange)="selectedSkuIdToAdd.set($event)"
+                      placeholder="-- Chọn biến thể SKU --"
+                      size="sm"
+                      [searchable]="true"
+                    />
+                  </div>
+                  <div class="w-full sm:w-36">
+                    <app-select
+                      [options]="ruleTypeOptions"
+                      [value]="selectedSkuRuleToAdd()"
+                      (valueChange)="selectedSkuRuleToAdd.set($event)"
+                      size="sm"
+                    />
+                  </div>
                   <button
                     type="button"
-                    (click)="addSkuRule(skuSelect.value, skuRuleSelect.value); skuSelect.value = ''"
-                    class="px-3 py-2 bg-[#272f3d] hover:bg-[#323d4f] text-slate-200 text-xs font-semibold rounded-md transition-colors"
+                    (click)="handleAddSkuRule()"
+                    [disabled]="!selectedSkuIdToAdd()"
+                    class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground text-xs font-semibold rounded-md transition-colors cursor-pointer disabled:opacity-50"
                   >
                     Thêm SKU
                   </button>
@@ -419,16 +425,18 @@ function formatIsoToDateInput(isoString?: string): string {
                         class="px-2.5 py-1 rounded-md text-xs inline-flex items-center gap-1.5 border"
                         [class.bg-rose-500/10]="rule.rule === 'EXCLUDE'"
                         [class.border-rose-500/30]="rule.rule === 'EXCLUDE'"
-                        [class.text-rose-300]="rule.rule === 'EXCLUDE'"
+                        [class.text-rose-700]="rule.rule === 'EXCLUDE'"
+                        [class.dark:text-rose-400]="rule.rule === 'EXCLUDE'"
                         [class.bg-emerald-500/10]="rule.rule === 'INCLUDE'"
                         [class.border-emerald-500/30]="rule.rule === 'INCLUDE'"
-                        [class.text-emerald-300]="rule.rule === 'INCLUDE'"
+                        [class.text-emerald-700]="rule.rule === 'INCLUDE'"
+                        [class.dark:text-emerald-400]="rule.rule === 'INCLUDE'"
                       >
-                        <span>{{ rule.rule === 'EXCLUDE' ? 'Loại trừ' : 'Áp dụng' }}: <strong>{{ rule.sku }}</strong></span>
+                        <span>{{ rule.rule === 'EXCLUDE' ? 'Loại trừ' : 'Áp dụng' }}: <strong class="font-mono">{{ rule.sku }}</strong></span>
                         <button
                           type="button"
                           (click)="removeSkuRule(rule.id)"
-                          class="hover:text-white p-0.5"
+                          class="hover:text-foreground p-0.5 cursor-pointer"
                           title="Xóa quy tắc SKU"
                           aria-label="Xóa quy tắc SKU"
                         >
@@ -442,27 +450,26 @@ function formatIsoToDateInput(isoString?: string): string {
                 }
               </div>
 
-              <!-- Active Status -->
               <div class="flex items-center gap-2 pt-1">
                 <input
                   id="coupon-active"
                   type="checkbox"
                   formControlName="isActive"
-                  class="w-4 h-4 rounded bg-[#090d16] border-[#272f3d] text-[#76b900] focus:ring-[#76b900] focus:ring-offset-0 focus:outline-none"
+                  class="w-4 h-4 rounded bg-surface border-line text-primary focus:ring-primary focus:ring-offset-0 focus:outline-none"
                 />
-                <label for="coupon-active" class="text-xs font-semibold text-slate-300 cursor-pointer">
+                <label for="coupon-active" class="text-xs font-semibold text-foreground cursor-pointer">
                   Kích hoạt mã giảm giá ngay sau khi lưu
                 </label>
               </div>
             </form>
           </div>
 
-          <footer class="p-4 border-t border-[#272f3d] flex items-center justify-end gap-3 flex-shrink-0 bg-[#090d16]">
+          <footer class="p-4 border-t border-line flex items-center justify-end gap-3 shrink-0 bg-surface">
             <button
               type="button"
               (click)="onClose()"
               [disabled]="isSaving()"
-              class="px-4 py-2 bg-[#161b26] hover:bg-[#272f3d] text-slate-300 font-semibold text-xs rounded-md transition-colors border border-[#272f3d]"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface text-foreground font-semibold text-xs rounded-md transition-colors border border-line cursor-pointer"
             >
               Hủy Bỏ
             </button>
@@ -470,10 +477,10 @@ function formatIsoToDateInput(isoString?: string): string {
               type="submit"
               form="coupon-form"
               [disabled]="isSaving()"
-              class="px-5 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:opacity-50 text-[#090d16] font-bold text-xs rounded-md shadow-sm transition-colors flex items-center gap-1.5"
+              class="px-5 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold text-xs rounded-md shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               @if (isSaving()) {
-                <span class="inline-block w-3.5 h-3.5 border-2 border-[#090d16] border-t-transparent rounded-full animate-spin"></span>
+                <span class="inline-block w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></span>
                 <span>Đang lưu...</span>
               } @else {
                 <span>{{ isEditMode() ? 'Cập Nhật Mã Giảm Giá' : 'Lưu Mã Giảm Giá' }}</span>
@@ -504,12 +511,47 @@ export class CouponFormDialogComponent {
   readonly selectedSkus = signal<SkuRuleItem[]>([]);
   readonly selectedCategories = signal<CategoryRuleItem[]>([]);
 
+  readonly selectedCatIdToAdd = signal<string>('');
+  readonly selectedCatRuleToAdd = signal<string>('EXCLUDE');
+  readonly selectedSkuIdToAdd = signal<string>('');
+  readonly selectedSkuRuleToAdd = signal<string>('EXCLUDE');
+
   readonly availableCategories = computed(() => this.categoryService.categories());
   readonly availableVariants = signal<
     { id: number; sku: string; variationLabel: string | null; productTemplate: { name: string } }[]
   >([]);
 
   readonly isEditMode = computed(() => Boolean(this.coupon()?.id));
+
+  readonly categoryOptions = computed<readonly SelectOption[]>(() =>
+    this.availableCategories().map((c) => ({
+      value: c.id.toString(),
+      label: c.name,
+    })),
+  );
+
+  readonly skuOptions = computed<readonly SelectOption[]>(() =>
+    this.availableVariants().map((v) => ({
+      value: v.id.toString(),
+      label: `${v.sku} - ${v.productTemplate.name}`,
+    })),
+  );
+
+  readonly discountTypeOptions: readonly SelectOption[] = [
+    { value: 'PERCENTAGE', label: 'Theo phần trăm (%)' },
+    { value: 'FIXED_AMOUNT', label: 'Số tiền cố định (VNĐ)' },
+  ];
+
+  readonly paymentMethodOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả phương thức' },
+    { value: 'QR', label: 'Chỉ qua VietQR' },
+    { value: 'COD', label: 'Chỉ qua COD' },
+  ];
+
+  readonly ruleTypeOptions: readonly SelectOption[] = [
+    { value: 'EXCLUDE', label: 'Loại trừ' },
+    { value: 'INCLUDE', label: 'Áp dụng' },
+  ];
 
   readonly form: FormGroup = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
@@ -559,6 +601,10 @@ export class CouponFormDialogComponent {
 
   private resetFormWithCoupon(item: AdminCoupon | null): void {
     this.errorMessage.set(null);
+    this.selectedCatIdToAdd.set('');
+    this.selectedCatRuleToAdd.set('EXCLUDE');
+    this.selectedSkuIdToAdd.set('');
+    this.selectedSkuRuleToAdd.set('EXCLUDE');
 
     if (item) {
       this.form.patchValue({
@@ -625,8 +671,17 @@ export class CouponFormDialogComponent {
     }
   }
 
-  addCategoryRule(categoryIdStr: string, ruleVal: string): void {
-    const catId = Number(categoryIdStr);
+  onDiscountTypeChange(val: string): void {
+    this.form.patchValue({ discountType: val });
+  }
+
+  onPaymentMethodChange(val: string): void {
+    this.form.patchValue({ requiredPaymentMethod: val });
+  }
+
+  handleAddCategoryRule(): void {
+    const catIdStr = this.selectedCatIdToAdd();
+    const catId = Number(catIdStr);
     if (!catId) return;
 
     const existing = this.selectedCategories().find((c) => c.id === catId);
@@ -635,18 +690,20 @@ export class CouponFormDialogComponent {
     const found = this.availableCategories().find((c) => c.id === catId);
     if (!found) return;
 
-    const rule: CouponTargetRule = ruleVal === 'INCLUDE' ? 'INCLUDE' : 'EXCLUDE';
+    const rule: CouponTargetRule = this.selectedCatRuleToAdd() === 'INCLUDE' ? 'INCLUDE' : 'EXCLUDE';
     this.selectedCategories.update((list) => [
       ...list,
       { id: catId, name: found.name, rule },
     ]);
+    this.selectedCatIdToAdd.set('');
   }
 
   removeCategoryRule(id: number): void {
     this.selectedCategories.update((list) => list.filter((item) => item.id !== id));
   }
 
-  addSkuRule(skuIdStr: string, ruleVal: string): void {
+  handleAddSkuRule(): void {
+    const skuIdStr = this.selectedSkuIdToAdd();
     const skuId = Number(skuIdStr);
     if (!skuId) return;
 
@@ -656,11 +713,12 @@ export class CouponFormDialogComponent {
     const found = this.availableVariants().find((v) => v.id === skuId);
     if (!found) return;
 
-    const rule: CouponTargetRule = ruleVal === 'INCLUDE' ? 'INCLUDE' : 'EXCLUDE';
+    const rule: CouponTargetRule = this.selectedSkuRuleToAdd() === 'INCLUDE' ? 'INCLUDE' : 'EXCLUDE';
     this.selectedSkus.update((list) => [
       ...list,
       { id: skuId, sku: found.sku, name: found.productTemplate.name, rule },
     ]);
+    this.selectedSkuIdToAdd.set('');
   }
 
   removeSkuRule(id: number): void {

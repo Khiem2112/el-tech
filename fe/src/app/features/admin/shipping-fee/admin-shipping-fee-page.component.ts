@@ -25,19 +25,13 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, RouterLink, DeliveryFeeFormDialogComponent],
   template: `
-    <div class="space-y-6 p-6">
-      <!-- Header SCR-25 -->
-      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#272f3d] pb-4">
+    <div class="space-y-6 p-4 lg:p-6 max-w-7xl mx-auto text-sm text-foreground">
+      <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
         <div>
-          <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold tracking-tight uppercase text-white">
-              Biểu Phí Giao Hàng
-            </h1>
-            <span class="text-xs text-slate-400 border-l border-[#272f3d] pl-3 font-mono">
-              SCR-25
-            </span>
-          </div>
-          <p class="text-xs text-slate-400 mt-1">
+          <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">
+            Biểu Phí Giao Hàng
+          </h1>
+          <p class="text-xs text-muted mt-1">
             Cấu hình mức phí giao hàng tiêu chuẩn và ngưỡng miễn phí vận chuyển toàn hệ thống
           </p>
         </div>
@@ -46,7 +40,7 @@ type ToastNotification = {
           <button
             type="button"
             (click)="onOpenCreateDialog()"
-            class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm"
+            class="px-4 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -56,117 +50,105 @@ type ToastNotification = {
         </div>
       </header>
 
-      <!-- Navigation Tabs SCR-23, SCR-24, SCR-25 -->
-      <nav class="flex items-center gap-2 border-b border-[#272f3d] overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi và biểu phí">
+      <nav class="flex items-center gap-2 border-b border-line overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi và biểu phí">
         <a
           routerLink="/admin/promotions"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Khuyến mãi sản phẩm</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-23
-          </span>
+          <span>Chương Trình Khuyến Mãi</span>
         </a>
 
         <a
           routerLink="/admin/promotions/coupons"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Mã giảm giá (Coupon)</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-24
-          </span>
+          <span>Mã Giảm Giá (Coupons)</span>
         </a>
 
         <a
           routerLink="/admin/promotions/shipping-fee"
-          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors border-[#76b900] text-[#76b900]"
+          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors border-primary text-primary"
         >
-          <span>Biểu phí giao hàng & Freeship</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#76b900]/40 px-1.5 py-0.5 rounded text-[#76b900] font-mono">
-            SCR-25
-          </span>
+          <span>Biểu Phí Giao Hàng</span>
         </a>
       </nav>
 
-      <!-- Summary Info Banner -->
-      <div class="p-4 bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm text-xs text-slate-300 flex items-start gap-3">
-        <div class="w-2 h-2 rounded-full bg-[#76b900] mt-1 flex-shrink-0"></div>
+      <div class="p-4 bg-primary/5 border border-primary/20 rounded-lg shadow-xs text-xs text-foreground flex items-start gap-3">
+        <div class="w-2 h-2 rounded-full bg-primary mt-1 shrink-0"></div>
         <div>
-          <strong class="text-white text-xs uppercase tracking-wider block mb-0.5">
+          <strong class="text-foreground text-xs uppercase tracking-wider block mb-0.5">
             Chính sách giao hàng toàn quốc
           </strong>
-          <p class="text-slate-400">
+          <p class="text-muted leading-relaxed">
             Áp dụng mức phí giao hàng cố định cho các đơn giao tận nơi. Các đơn hàng có tổng giá trị hàng ròng đạt hoặc vượt ngưỡng miễn phí sẽ được tự động miễn phí vận chuyển 100%.
           </p>
         </div>
       </div>
 
-      <!-- Active Delivery Fee Card -->
       <section aria-labelledby="active-fee-title" class="space-y-2">
-        <div class="bg-[#161b26] border border-[#76b900]/30 rounded-lg p-5 shadow-sm space-y-4">
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div class="flex items-center gap-2.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-[#76b900] ring-4 ring-[#76b900]/20"></span>
-              <h2 id="active-fee-title" class="text-xs font-bold uppercase tracking-wider text-white">
+              <span class="w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/20"></span>
+              <h2 id="active-fee-title" class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Biểu Phí Vận Chuyển Đang Áp Dụng
               </h2>
             </div>
-            <span class="px-2.5 py-1 rounded text-[11px] font-bold bg-[#76b900]/20 text-[#76b900] border border-[#76b900]/40 uppercase tracking-wide">
+            <span class="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/30 uppercase tracking-wide whitespace-nowrap">
               Đang Áp Dụng
             </span>
           </div>
 
           @if (shippingFeeService.isLoading() && !activeConfig()) {
-            <div class="py-8 text-center text-slate-400 text-xs">
-              <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-[#76b900] border-t-transparent mb-2"></div>
+            <div class="py-8 text-center text-muted text-xs">
+              <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent mb-2"></div>
               <p>Đang tải cấu hình biểu phí hiện hành...</p>
             </div>
           } @else if (activeConfig()) {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
               <div class="space-y-1">
-                <span class="text-slate-400 text-xs uppercase font-semibold block">
+                <span class="text-muted text-xs uppercase font-semibold block">
                   Phí giao hàng cố định toàn quốc
                 </span>
-                <div class="text-2xl font-black text-white tabular-nums tracking-tight">
+                <div class="text-2xl font-bold font-mono text-foreground tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.fixedFee) }}
                 </div>
-                <p class="text-[11px] text-slate-400">
+                <p class="text-xs text-muted">
                   Đồng giá cho mọi đơn giao tận nơi dưới ngưỡng miễn phí
                 </p>
               </div>
 
               <div class="space-y-1">
-                <span class="text-slate-400 text-xs uppercase font-semibold block">
+                <span class="text-muted text-xs uppercase font-semibold block">
                   Ngưỡng đơn hàng miễn phí giao hàng
                 </span>
-                <div class="text-2xl font-black text-[#76b900] tabular-nums tracking-tight">
+                <div class="text-2xl font-bold font-mono text-primary tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.freeShippingThreshold) }}
                 </div>
-                <p class="text-[11px] text-slate-400">
+                <p class="text-xs text-muted">
                   Đơn từ {{ formatVnd(activeConfig()?.freeShippingThreshold) }} trở lên tự động miễn phí ship 100%
                 </p>
               </div>
 
               <div class="space-y-1">
-                <span class="text-slate-400 text-xs uppercase font-semibold block">
+                <span class="text-muted text-xs uppercase font-semibold block">
                   Thời điểm bắt đầu hiệu lực
                 </span>
-                <div class="text-sm font-bold text-white tabular-nums mt-1 font-mono">
+                <div class="text-sm font-bold text-foreground tabular-nums mt-1 font-mono whitespace-nowrap">
                   {{ formatDateTime(activeConfig()?.effectiveFrom) }}
                 </div>
-                <p class="text-[11px] text-slate-400 mt-1">
-                  Người cập nhật: <span class="text-slate-300 font-semibold">{{ activeConfig()?.createdBy }}</span>
+                <p class="text-xs text-muted mt-1">
+                  Người cập nhật: <span class="text-foreground font-semibold">{{ activeConfig()?.createdBy }}</span>
                 </p>
               </div>
             </div>
           } @else {
-            <div class="py-6 text-center text-slate-400 text-xs">
+            <div class="py-6 text-center text-muted text-xs">
               <p>Chưa có cấu hình biểu phí đang hoạt động.</p>
               <button
                 type="button"
                 (click)="onOpenCreateDialog()"
-                class="mt-2 text-[#76b900] hover:underline font-semibold"
+                class="mt-2 text-primary hover:underline font-semibold cursor-pointer"
               >
                 Nhấn vào đây để thiết lập biểu phí mới
               </button>
@@ -175,14 +157,13 @@ type ToastNotification = {
         </div>
       </section>
 
-      <!-- History Table Section -->
-      <section aria-labelledby="history-table-title" class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-[#272f3d] flex items-center justify-between">
+      <section aria-labelledby="history-table-title" class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
+        <div class="p-4 border-b border-line flex items-center justify-between bg-surface">
           <div class="flex items-center gap-2">
-            <h2 id="history-table-title" class="text-xs font-bold uppercase tracking-wider text-white">
+            <h2 id="history-table-title" class="text-xs font-bold uppercase tracking-wider text-foreground">
               Lịch Sử Cấu Hình Biểu Phí Vận Chuyển
             </h2>
-            <span class="text-[11px] bg-[#090d16] border border-[#272f3d] text-slate-400 px-2 py-0.5 rounded font-mono font-semibold">
+            <span class="text-xs bg-surface-alt border border-line text-muted px-2 py-0.5 rounded font-mono font-semibold">
               {{ history().length }} phiên bản
             </span>
           </div>
@@ -191,7 +172,7 @@ type ToastNotification = {
             type="button"
             (click)="onRefresh()"
             [disabled]="shippingFeeService.isLoading()"
-            class="px-2.5 py-1 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 text-xs rounded transition-colors inline-flex items-center gap-1.5"
+            class="px-2.5 py-1 bg-surface-alt hover:bg-surface border border-line text-foreground text-xs rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
             title="Làm mới danh sách"
           >
             <svg
@@ -209,63 +190,63 @@ type ToastNotification = {
         </div>
 
         @if (shippingFeeService.isLoading() && history().length === 0) {
-          <div class="p-8 text-center text-slate-400 text-xs">
-            <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-[#76b900] border-t-transparent mb-2"></div>
+          <div class="p-8 text-center text-muted text-xs">
+            <div class="inline-block animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent mb-2"></div>
             <p>Đang tải lịch sử biểu phí...</p>
           </div>
         } @else if (history().length === 0) {
-          <div class="p-8 text-center text-slate-400 text-xs space-y-2">
+          <div class="p-8 text-center text-muted text-xs space-y-2">
             <p>Chưa có dữ liệu lịch sử cấu hình biểu phí.</p>
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left text-xs min-w-[1000px] border-collapse">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-3 px-4">Thời Điểm Hiệu Lực</th>
-                  <th class="py-3 px-4 text-right">Phí Giao Hàng Cố Định</th>
-                  <th class="py-3 px-4 text-right">Ngưỡng Miễn Phí</th>
-                  <th class="py-3 px-4">Người Cấu Hình</th>
-                  <th class="py-3 px-4 text-center">Trạng Thái</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Thời Điểm Hiệu Lực</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Phí Giao Hàng Cố Định</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Ngưỡng Miễn Phí</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Người Cấu Hình</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#272f3d]">
+              <tbody class="divide-y divide-line text-foreground">
                 @for (item of history(); track item.id) {
-                  <tr class="hover:bg-[#090d16]/50 transition-colors">
-                    <td class="py-3 px-4 tabular-nums font-mono">
-                      <div class="font-bold text-white">
+                  <tr class="hover:bg-surface-alt/60 transition-colors">
+                    <td class="py-3 px-4 tabular-nums font-mono whitespace-nowrap">
+                      <div class="font-bold text-foreground">
                         {{ formatDateTime(item.effectiveFrom) }}
                       </div>
                       @if (item.effectiveTo) {
-                        <div class="text-[10px] text-slate-400 mt-0.5">
+                        <div class="text-xs text-muted mt-0.5">
                           Đến {{ formatDateTime(item.effectiveTo) }}
                         </div>
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right tabular-nums font-bold text-white text-sm">
+                    <td class="py-3 px-4 text-right tabular-nums font-bold text-foreground text-sm whitespace-nowrap">
                       {{ formatVnd(item.fixedFee) }}
                     </td>
 
-                    <td class="py-3 px-4 text-right tabular-nums font-bold text-[#76b900] text-sm">
+                    <td class="py-3 px-4 text-right tabular-nums font-bold text-primary text-sm whitespace-nowrap">
                       {{ formatVnd(item.freeShippingThreshold) }}
                     </td>
 
-                    <td class="py-3 px-4 text-slate-300 font-medium">
+                    <td class="py-3 px-4 text-muted font-medium whitespace-nowrap">
                       {{ item.createdBy }}
                     </td>
 
-                    <td class="py-3 px-4 text-center">
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (item.status === 'ACTIVE') {
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-[#76b900]/20 text-[#76b900] border border-[#76b900]/40 uppercase tracking-wide">
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 uppercase tracking-wide whitespace-nowrap">
                           Đang Áp Dụng
                         </span>
                       } @else if (item.status === 'UPCOMING') {
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 uppercase tracking-wide">
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 uppercase tracking-wide whitespace-nowrap">
                           Sắp Áp Dụng
                         </span>
                       } @else {
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700/30 text-slate-400 border border-slate-700 uppercase tracking-wide">
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-surface-alt text-muted border border-line uppercase tracking-wide whitespace-nowrap">
                           Hết Hạn
                         </span>
                       }
@@ -278,27 +259,28 @@ type ToastNotification = {
         }
       </section>
 
-      <!-- Toast Container -->
       <div
         class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"
         aria-live="polite"
       >
         @for (toast of toasts(); track toast.id) {
           <div
-            class="pointer-events-auto p-3.5 rounded-lg shadow-xl text-xs font-semibold flex items-center justify-between gap-3 border transition-all"
-            [class.bg-[#161b26]]="true"
-            [class.border-[#76b900]]="toast.type === 'success'"
-            [class.text-[#76b900]]="toast.type === 'success'"
+            class="pointer-events-auto p-3.5 rounded-lg shadow-xl text-xs font-semibold flex items-center justify-between gap-3 border transition-all bg-surface border-line"
+            [class.border-emerald-500]="toast.type === 'success'"
+            [class.text-emerald-700]="toast.type === 'success'"
+            [class.dark:text-emerald-400]="toast.type === 'success'"
             [class.border-rose-500]="toast.type === 'error'"
-            [class.text-rose-400]="toast.type === 'error'"
+            [class.text-rose-700]="toast.type === 'error'"
+            [class.dark:text-rose-400]="toast.type === 'error'"
             [class.border-sky-500]="toast.type === 'info'"
-            [class.text-sky-300]="toast.type === 'info'"
+            [class.text-sky-700]="toast.type === 'info'"
+            [class.dark:text-sky-400]="toast.type === 'info'"
           >
             <span>{{ toast.message }}</span>
             <button
               type="button"
               (click)="removeToast(toast.id)"
-              class="text-slate-400 hover:text-white p-1"
+              class="text-muted hover:text-foreground p-1 cursor-pointer"
               aria-label="Đóng thông báo"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -309,7 +291,6 @@ type ToastNotification = {
         }
       </div>
 
-      <!-- MOD-36 Dialog Component -->
       <app-delivery-fee-form-dialog
         [isOpen]="isDialogOpen()"
         [currentConfig]="activeConfig()"

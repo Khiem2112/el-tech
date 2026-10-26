@@ -9,6 +9,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import {
+  SelectComponent,
+  SelectOption,
+} from '../../../components/atoms/select/select.component';
 import { PromotionFormDialogComponent } from './components/promotion-form-dialog.component';
 import {
   AdminProductPromotion,
@@ -24,28 +28,35 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-product-promotions-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, PromotionFormDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    SelectComponent,
+    PromotionFormDialogComponent,
+  ],
   template: `
-    <div class="p-4 lg:p-6 space-y-5 max-w-7xl mx-auto text-sm text-slate-200">
-      <!-- Toasts Notification Alert -->
+    <div class="p-4 lg:p-6 space-y-5 max-w-7xl mx-auto text-sm text-foreground">
       @if (toasts().length > 0) {
         <div class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none">
           @for (t of toasts(); track t.id) {
             <div
-              class="pointer-events-auto p-3.5 rounded-lg border shadow-xl flex items-center justify-between text-xs font-semibold"
-              [class.bg-[#161b26]]="true"
+              class="pointer-events-auto p-3.5 rounded-lg border shadow-xl flex items-center justify-between text-xs font-semibold bg-surface border-line"
               [class.border-emerald-500]="t.type === 'success'"
-              [class.text-emerald-400]="t.type === 'success'"
+              [class.text-emerald-700]="t.type === 'success'"
+              [class.dark:text-emerald-400]="t.type === 'success'"
               [class.border-rose-500]="t.type === 'error'"
-              [class.text-rose-400]="t.type === 'error'"
+              [class.text-rose-700]="t.type === 'error'"
+              [class.dark:text-rose-400]="t.type === 'error'"
               [class.border-sky-500]="t.type === 'info'"
-              [class.text-sky-400]="t.type === 'info'"
+              [class.text-sky-700]="t.type === 'info'"
+              [class.dark:text-sky-400]="t.type === 'info'"
             >
               <span>{{ t.message }}</span>
               <button
                 type="button"
                 (click)="removeToast(t.id)"
-                class="ml-3 text-slate-400 hover:text-white"
+                class="ml-3 text-muted hover:text-foreground"
                 aria-label="Đóng thông báo"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -57,27 +68,21 @@ type ToastNotification = {
         </div>
       }
 
-      <!-- Header Topbar SCR-23 -->
-      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#272f3d]">
-        <div class="flex items-center gap-3">
-          <span class="px-2.5 py-1 rounded bg-[#161b26] border border-[#272f3d] text-[#76b900] font-mono text-xs font-bold">
-            SCR-23
-          </span>
-          <div>
-            <h1 class="text-xl font-bold text-white tracking-tight uppercase">
-              Khuyến Mãi & Biểu Phí
-            </h1>
-            <p class="text-xs text-slate-400 mt-0.5">
-              Cấu hình giảm giá tự động theo danh mục hoặc danh sách SKU phần cứng (PRO-001, PRO-004)
-            </p>
-          </div>
+      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Chương Trình Khuyến Mãi
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Cấu hình giảm giá tự động theo danh mục hoặc danh sách SKU phần cứng
+          </p>
         </div>
 
         <div class="flex items-center gap-2">
           <button
             type="button"
             (click)="openCreateDialog()"
-            class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm"
+            class="px-4 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs rounded transition-colors inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -87,78 +92,68 @@ type ToastNotification = {
         </div>
       </header>
 
-      <!-- Navigation Tabs SCR-23, SCR-24, SCR-25 -->
-      <nav class="flex items-center gap-2 border-b border-[#272f3d] overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi">
+      <nav class="flex items-center gap-2 border-b border-line overflow-x-auto text-xs" aria-label="Phân hệ khuyến mãi">
         <button
           type="button"
           (click)="activeTab.set('promotions')"
-          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors"
-          [class.border-[#76b900]]="activeTab() === 'promotions'"
-          [class.text-[#76b900]]="activeTab() === 'promotions'"
+          class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors cursor-pointer"
+          [class.border-primary]="activeTab() === 'promotions'"
+          [class.text-primary]="activeTab() === 'promotions'"
           [class.border-transparent]="activeTab() !== 'promotions'"
-          [class.text-slate-400]="activeTab() !== 'promotions'"
+          [class.text-muted]="activeTab() !== 'promotions'"
         >
-          <span>Khuyến mãi sản phẩm</span>
-          <span class="px-2 py-0.5 rounded-full text-[11px] bg-emerald-500/20 text-emerald-400 font-bold tabular-nums">
+          <span>Chương Trình Khuyến Mãi</span>
+          <span class="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold tabular-nums whitespace-nowrap">
             {{ stats().runningCount }} đang chạy
           </span>
         </button>
 
         <a
           routerLink="/admin/promotions/coupons"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Mã giảm giá (Coupon)</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-24
-          </span>
+          <span>Mã Giảm Giá (Coupons)</span>
         </a>
 
         <a
           routerLink="/admin/promotions/shipping-fee"
-          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-slate-400 hover:text-white"
+          class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Biểu phí giao hàng & Freeship</span>
-          <span class="text-[10px] bg-[#161b26] border border-[#272f3d] px-1.5 py-0.5 rounded text-slate-400 font-mono">
-            SCR-25
-          </span>
+          <span>Biểu Phí Giao Hàng</span>
         </a>
       </nav>
 
       @if (activeTab() === 'promotions') {
-        <!-- Guideline Note Banner -->
-        <div class="p-3.5 bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm text-xs text-slate-300 flex items-start gap-2.5">
-          <svg class="w-4 h-4 text-[#76b900] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="p-3.5 bg-primary/5 border border-primary/20 rounded-lg shadow-xs text-xs text-foreground flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <div class="leading-relaxed">
+          <div class="leading-relaxed text-muted">
             Giảm giá trực tiếp theo sản phẩm hoặc danh mục phần cứng mà khách hàng không cần nhập mã. Khi bật
-            <strong class="text-white">Áp dụng độc quyền</strong>, hệ thống sẽ ngăn cộng dồn với mã coupon khi thanh toán đơn hàng.
+            <strong class="text-foreground">Áp dụng độc quyền</strong>, hệ thống sẽ ngăn cộng dồn với mã coupon khi thanh toán đơn hàng.
           </div>
         </div>
 
-        <!-- Metric KPI Cards -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-            <div class="text-slate-400 text-[11px] uppercase font-semibold">Tổng chương trình</div>
-            <div class="text-xl font-bold text-white tabular-nums mt-0.5">{{ stats().totalCount }}</div>
+          <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+            <div class="text-muted text-xs uppercase font-semibold">Tổng chương trình</div>
+            <div class="text-2xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
           </div>
-          <div class="p-3 bg-[#161b26] border border-emerald-500/30 rounded-lg">
-            <div class="text-emerald-400 text-[11px] uppercase font-semibold">Đang diễn ra</div>
-            <div class="text-xl font-bold text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
+          <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+            <div class="text-emerald-700 dark:text-emerald-400 text-xs uppercase font-semibold">Đang diễn ra</div>
+            <div class="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
           </div>
-          <div class="p-3 bg-[#161b26] border border-sky-500/30 rounded-lg">
-            <div class="text-sky-400 text-[11px] uppercase font-semibold">Sắp diễn ra</div>
-            <div class="text-xl font-bold text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
+          <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+            <div class="text-sky-700 dark:text-sky-400 text-xs uppercase font-semibold">Sắp diễn ra</div>
+            <div class="text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
           </div>
-          <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded-lg">
-            <div class="text-slate-400 text-[11px] uppercase font-semibold">Đã kết thúc</div>
-            <div class="text-xl font-bold text-slate-400 tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
+          <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+            <div class="text-muted text-xs uppercase font-semibold">Đã kết thúc</div>
+            <div class="text-2xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
           </div>
         </div>
 
-        <!-- Filter Controls Toolbar -->
-        <div class="p-3.5 bg-[#161b26] border border-[#272f3d] rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div class="flex flex-wrap items-center gap-2.5 flex-1">
             <div class="relative min-w-[240px] flex-1 max-w-sm">
               <input
@@ -166,10 +161,10 @@ type ToastNotification = {
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên chương trình..."
-                class="w-full pl-9 pr-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded-md text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#76b900] transition-colors"
+                class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded-md text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
               />
               <svg
-                class="w-4 h-4 text-slate-500 absolute left-2.5 top-2 pointer-events-none"
+                class="w-4 h-4 text-muted absolute left-2.5 top-2 pointer-events-none"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -179,38 +174,33 @@ type ToastNotification = {
               </svg>
             </div>
 
-            <div class="flex items-center gap-1.5">
-              <select
-                [ngModel]="statusFilter()"
-                (ngModelChange)="onStatusChange($event)"
-                class="px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded-md text-xs text-white focus:outline-none focus:border-[#76b900]"
-              >
-                <option value="ALL">Tất cả trạng thái</option>
-                <option value="RUNNING">Đang chạy</option>
-                <option value="UPCOMING">Sắp diễn ra</option>
-                <option value="EXPIRED">Đã kết thúc</option>
-                <option value="INACTIVE">Tạm dừng</option>
-              </select>
+            <div class="w-48">
+              <app-select
+                [options]="statusOptions"
+                [value]="statusFilter()"
+                (valueChange)="onStatusChange($event)"
+                size="sm"
+              />
+            </div>
 
-              <select
-                [ngModel]="scopeFilter()"
-                (ngModelChange)="onScopeChange($event)"
-                class="px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded-md text-xs text-white focus:outline-none focus:border-[#76b900]"
-              >
-                <option value="ALL">Tất cả phạm vi</option>
-                <option value="CATEGORY">Theo danh mục</option>
-                <option value="SKU">Theo biến thể SKU</option>
-              </select>
+            <div class="w-48">
+              <app-select
+                [options]="scopeOptions"
+                [value]="scopeFilter()"
+                (valueChange)="onScopeChange($event)"
+                size="sm"
+              />
             </div>
           </div>
 
-          <div class="flex items-center gap-2 text-xs text-slate-400">
-            <span>Tổng cộng: <strong class="text-white tabular-nums">{{ total() }}</strong></span>
+          <div class="flex items-center gap-2 text-xs text-muted">
+            <span class="whitespace-nowrap">Tổng cộng: <strong class="text-foreground tabular-nums">{{ total() }}</strong></span>
             <button
               type="button"
               (click)="refresh()"
-              class="p-1.5 rounded hover:bg-[#272f3d] text-slate-300 hover:text-white transition-colors"
+              class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground border border-line transition-colors cursor-pointer"
               title="Làm mới dữ liệu"
+              aria-label="Làm mới danh sách khuyến mãi"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -219,50 +209,49 @@ type ToastNotification = {
           </div>
         </div>
 
-        <!-- Promotions Table SCR-23 -->
-        <div class="bg-[#161b26] border border-[#272f3d] rounded-lg shadow-sm overflow-hidden">
+        <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-[#090d16] border-b border-[#272f3d] text-slate-400 font-semibold uppercase tracking-wider">
+            <table class="w-full text-left text-xs min-w-[1000px] border-collapse">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4">Tên chương trình</th>
-                  <th class="py-3 px-4">Kiểu giảm</th>
-                  <th class="py-3 px-4 text-right">Mức giảm</th>
-                  <th class="py-3 px-4 text-center">Độc quyền</th>
-                  <th class="py-3 px-4">Thời gian hiệu lực</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Kiểu giảm</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Mức giảm</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Độc quyền</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Thời gian hiệu lực</th>
                   <th class="py-3 px-4">Phạm vi áp dụng</th>
-                  <th class="py-3 px-4 text-center">Trạng thái</th>
-                  <th class="py-3 px-4 text-right">Thao tác</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng thái</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-[#272f3d]">
+              <tbody class="divide-y divide-line text-foreground">
                 @if (isLoading()) {
                   <tr>
-                    <td colspan="8" class="py-12 text-center text-slate-400">
+                    <td colspan="8" class="py-12 text-center text-muted">
                       <div class="flex flex-col items-center justify-center gap-2">
-                        <span class="w-6 h-6 border-2 border-[#76b900] border-t-transparent rounded-full animate-spin"></span>
+                        <span class="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
                         <span>Đang tải danh sách chương trình khuyến mãi...</span>
                       </div>
                     </td>
                   </tr>
                 } @else if (promotions().length === 0) {
                   <tr>
-                    <td colspan="8" class="py-12 text-center text-slate-400">
+                    <td colspan="8" class="py-12 text-center text-muted">
                       <div class="flex flex-col items-center justify-center gap-2">
-                        <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 text-muted" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                         </svg>
-                        <span class="font-semibold text-slate-300">Không tìm thấy chương trình khuyến mãi nào</span>
-                        <span class="text-xs text-slate-500">Thử thay đổi bộ lọc tìm kiếm hoặc thêm mới chương trình</span>
+                        <span class="font-semibold text-foreground">Không tìm thấy chương trình khuyến mãi nào</span>
+                        <span class="text-xs text-muted">Thử thay đổi bộ lọc tìm kiếm hoặc thêm mới chương trình</span>
                       </div>
                     </td>
                   </tr>
                 } @else {
                   @for (promo of promotions(); track promo.id) {
-                    <tr class="hover:bg-[#090d16]/50 transition-colors">
-                      <td class="py-3.5 px-4 font-bold text-white max-w-xs">
+                    <tr class="hover:bg-surface-alt/60 transition-colors">
+                      <td class="py-3.5 px-4 font-bold text-foreground max-w-xs">
                         <div class="line-clamp-1">{{ promo.name }}</div>
-                        <div class="text-[11px] text-slate-400 font-normal mt-0.5">
+                        <div class="text-xs text-muted font-normal mt-0.5">
                           @if (promo.scope === 'SKU') {
                             <span>Áp dụng cho {{ promo.skuTargets.length }} biến thể SKU</span>
                           } @else if (promo.scope === 'CATEGORY') {
@@ -273,11 +262,11 @@ type ToastNotification = {
                         </div>
                       </td>
 
-                      <td class="py-3.5 px-4 text-slate-300 font-medium">
+                      <td class="py-3.5 px-4 text-foreground font-medium whitespace-nowrap">
                         {{ promo.discountType === 'PERCENTAGE' ? 'Phần trăm (%)' : 'Số tiền cố định' }}
                       </td>
 
-                      <td class="py-3.5 px-4 text-right font-bold tabular-nums text-rose-400">
+                      <td class="py-3.5 px-4 text-right font-bold tabular-nums whitespace-nowrap text-rose-600 dark:text-rose-400">
                         @if (promo.discountType === 'PERCENTAGE') {
                           {{ promo.discountValue }} %
                         } @else {
@@ -285,26 +274,26 @@ type ToastNotification = {
                         }
                       </td>
 
-                      <td class="py-3.5 px-4 text-center">
+                      <td class="py-3.5 px-4 text-center whitespace-nowrap">
                         @if (promo.isExclusive) {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap">
                             ĐỘC QUYỀN
                           </span>
                         } @else {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800 text-slate-400 border border-slate-700">
+                          <span class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-muted border border-line whitespace-nowrap">
                             CỘNG DỒN
                           </span>
                         }
                       </td>
 
-                      <td class="py-3.5 px-4 text-slate-300 tabular-nums">
+                      <td class="py-3.5 px-4 text-muted tabular-nums whitespace-nowrap text-xs">
                         <div>{{ promo.effectiveFrom | date:'dd/MM/yyyy' }}</div>
-                        <div class="text-[11px] text-slate-500">đến {{ promo.effectiveTo | date:'dd/MM/yyyy' }}</div>
+                        <div class="text-muted">đến {{ promo.effectiveTo | date:'dd/MM/yyyy' }}</div>
                       </td>
 
-                      <td class="py-3.5 px-4 font-mono text-[11px] text-slate-300 max-w-[200px]">
+                      <td class="py-3.5 px-4 font-mono text-xs text-muted max-w-[200px]">
                         @if (promo.scope === 'CATEGORY') {
-                          <div class="truncate text-white font-sans" [title]="categoryNames(promo)">
+                          <div class="truncate text-foreground font-sans" [title]="categoryNames(promo)">
                             Danh mục: {{ categoryNames(promo) }}
                           </div>
                         } @else if (promo.scope === 'SKU') {
@@ -312,36 +301,36 @@ type ToastNotification = {
                             SKU: {{ skuCodes(promo) }}
                           </div>
                         } @else {
-                          <div class="text-slate-400">Kết hợp SKU & Danh mục</div>
+                          <div class="text-muted">Kết hợp SKU & Danh mục</div>
                         }
                       </td>
 
-                      <td class="py-3.5 px-4 text-center">
+                      <td class="py-3.5 px-4 text-center whitespace-nowrap">
                         @if (promo.status === 'RUNNING') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap">
                             ĐANG CHẠY
                           </span>
                         } @else if (promo.status === 'UPCOMING') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20 whitespace-nowrap">
                             SẮP DIỄN RA
                           </span>
                         } @else if (promo.status === 'EXPIRED') {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-800 text-slate-500 border border-slate-700">
+                          <span class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-muted border border-line whitespace-nowrap">
                             HẾT HẠN
                           </span>
                         } @else {
-                          <span class="px-2 py-0.5 rounded text-[11px] font-medium bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                          <span class="px-2 py-0.5 rounded text-xs font-medium bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 whitespace-nowrap">
                             TẠM DỪNG
                           </span>
                         }
                       </td>
 
-                      <td class="py-3.5 px-4 text-right">
+                      <td class="py-3.5 px-4 text-right whitespace-nowrap">
                         <div class="flex items-center justify-end gap-1.5">
                           <button
                             type="button"
                             (click)="onToggleStatus(promo)"
-                            class="p-1 rounded text-slate-400 hover:text-white hover:bg-[#272f3d] transition-colors"
+                            class="p-1.5 rounded text-muted hover:text-foreground hover:bg-surface-alt border border-transparent hover:border-line transition-colors cursor-pointer"
                             [title]="promo.isActive ? 'Tạm dừng chương trình' : 'Kích hoạt chương trình'"
                             aria-label="Chuyển đổi trạng thái kích hoạt"
                           >
@@ -353,7 +342,7 @@ type ToastNotification = {
                           <button
                             type="button"
                             (click)="openEditDialog(promo)"
-                            class="p-1 rounded text-slate-400 hover:text-[#76b900] hover:bg-[#272f3d] transition-colors"
+                            class="p-1.5 rounded text-muted hover:text-primary hover:bg-surface-alt border border-transparent hover:border-line transition-colors cursor-pointer"
                             title="Chỉnh sửa chương trình"
                             aria-label="Chỉnh sửa chương trình"
                           >
@@ -365,7 +354,7 @@ type ToastNotification = {
                           <button
                             type="button"
                             (click)="onDelete(promo)"
-                            class="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-[#272f3d] transition-colors"
+                            class="p-1.5 rounded text-muted hover:text-rose-600 hover:bg-surface-alt border border-transparent hover:border-line transition-colors cursor-pointer"
                             title="Xóa chương trình"
                             aria-label="Xóa chương trình"
                           >
@@ -382,11 +371,10 @@ type ToastNotification = {
             </table>
           </div>
 
-          <!-- Pagination Controls -->
           @if (!isLoading() && total() > 0) {
-            <footer class="p-3.5 bg-[#090d16] border-t border-[#272f3d] flex items-center justify-between text-xs text-slate-400">
+            <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-xs text-muted">
               <div>
-                Hiển thị trang <strong class="text-white">{{ page() }}</strong> / <strong class="text-white">{{ totalPages() }}</strong>
+                Hiển thị trang <strong class="text-foreground">{{ page() }}</strong> / <strong class="text-foreground">{{ totalPages() }}</strong>
               </div>
 
               <div class="flex items-center gap-1.5">
@@ -394,7 +382,7 @@ type ToastNotification = {
                   type="button"
                   (click)="onPageChange(page() - 1)"
                   [disabled]="page() <= 1"
-                  class="px-2.5 py-1 bg-[#161b26] hover:bg-[#272f3d] disabled:opacity-40 text-slate-200 rounded border border-[#272f3d] transition-colors"
+                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
                 >
                   Trước
                 </button>
@@ -402,7 +390,7 @@ type ToastNotification = {
                   type="button"
                   (click)="onPageChange(page() + 1)"
                   [disabled]="page() >= totalPages()"
-                  class="px-2.5 py-1 bg-[#161b26] hover:bg-[#272f3d] disabled:opacity-40 text-slate-200 rounded border border-[#272f3d] transition-colors"
+                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
                 >
                   Sau
                 </button>
@@ -410,23 +398,8 @@ type ToastNotification = {
             </footer>
           }
         </div>
-      } @else if (activeTab() === 'coupons') {
-        <div class="p-8 bg-[#161b26] border border-[#272f3d] rounded-lg text-center space-y-3">
-          <h2 class="text-base font-bold text-white uppercase">Màn Hình Quản Lý Mã Giảm Giá (Coupons)</h2>
-          <p class="text-xs text-slate-400 max-w-md mx-auto">
-            SCR-24: Cấu hình mã voucher giảm giá cấp đơn hàng, quota phát hành và giới hạn lượt dùng mỗi khách hàng.
-          </p>
-        </div>
-      } @else if (activeTab() === 'shipping') {
-        <div class="p-8 bg-[#161b26] border border-[#272f3d] rounded-lg text-center space-y-3">
-          <h2 class="text-base font-bold text-white uppercase">Màn Hình Biểu Phí Giao Hàng & Freeship</h2>
-          <p class="text-xs text-slate-400 max-w-md mx-auto">
-            SCR-25: Thiết lập mức phí giao hàng cố định toàn quốc và ngưỡng giá trị đơn hàng đạt điều kiện miễn phí vận chuyển.
-          </p>
-        </div>
       }
 
-      <!-- MOD-33 Dialog Component -->
       <app-promotion-form-dialog
         [isOpen]="isDialogOpen()"
         [promotion]="editingPromotion()"
@@ -457,6 +430,20 @@ export class AdminProductPromotionsPageComponent implements OnInit {
   readonly statusFilter = computed(() => this.promotionService.statusFilter());
   readonly scopeFilter = computed(() => this.promotionService.scopeFilter());
 
+  readonly statusOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả trạng thái' },
+    { value: 'RUNNING', label: 'Đang chạy' },
+    { value: 'UPCOMING', label: 'Sắp diễn ra' },
+    { value: 'EXPIRED', label: 'Đã kết thúc' },
+    { value: 'INACTIVE', label: 'Tạm dừng' },
+  ];
+
+  readonly scopeOptions: readonly SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả phạm vi' },
+    { value: 'CATEGORY', label: 'Theo danh mục' },
+    { value: 'SKU', label: 'Theo biến thể SKU' },
+  ];
+
   ngOnInit(): void {
     this.promotionService.loadPromotions();
   }
@@ -466,14 +453,16 @@ export class AdminProductPromotionsPageComponent implements OnInit {
     this.promotionService.loadPromotions({ search: val, page: 1 });
   }
 
-  onStatusChange(val: 'ALL' | 'RUNNING' | 'UPCOMING' | 'EXPIRED' | 'INACTIVE'): void {
-    this.promotionService.statusFilter.set(val);
-    this.promotionService.loadPromotions({ status: val, page: 1 });
+  onStatusChange(val: string): void {
+    const validVal = val as 'ALL' | 'RUNNING' | 'UPCOMING' | 'EXPIRED' | 'INACTIVE';
+    this.promotionService.statusFilter.set(validVal);
+    this.promotionService.loadPromotions({ status: validVal, page: 1 });
   }
 
-  onScopeChange(val: 'ALL' | 'SKU' | 'CATEGORY'): void {
-    this.promotionService.scopeFilter.set(val);
-    this.promotionService.loadPromotions({ scope: val, page: 1 });
+  onScopeChange(val: string): void {
+    const validVal = val as 'ALL' | 'SKU' | 'CATEGORY';
+    this.promotionService.scopeFilter.set(validVal);
+    this.promotionService.loadPromotions({ scope: validVal, page: 1 });
   }
 
   onPageChange(nextPage: number): void {

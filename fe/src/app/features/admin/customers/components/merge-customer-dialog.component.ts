@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   inject,
   input,
@@ -14,6 +15,10 @@ import {
   Validators,
 } from '@angular/forms';
 import {
+  SelectComponent,
+  SelectOption,
+} from '../../../../components/atoms/select/select.component';
+import {
   AdminCustomerDetail,
   AdminCustomerMergeCandidate,
   AdminCustomerMergeResult,
@@ -23,7 +28,7 @@ import {
 @Component({
   selector: 'app-merge-customer-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen() && targetCustomer(); as target) {
@@ -34,27 +39,23 @@ import {
         aria-labelledby="merge-modal-title"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-xs text-slate-200"
+          data-modal-id="MOD-37"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-xs text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <div class="flex items-center justify-between border-b border-[#272f3d] pb-3">
+          <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-[#090d16] border border-[#272f3d] text-[#76b900] font-mono text-[10px] font-bold">
-                  MOD-37
-                </span>
-                <h2 id="merge-modal-title" class="font-bold text-white uppercase text-sm">
-                  Gộp Hồ Sơ Khách Hàng
-                </h2>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">
-                Hồ sơ chính: <strong class="text-white">{{ target.name }}</strong> ({{ target.phone }})
+              <h2 id="merge-modal-title" class="font-bold text-foreground uppercase text-sm">
+                Gộp Hồ Sơ Khách Hàng
+              </h2>
+              <p class="text-xs text-muted mt-1">
+                Hồ sơ chính: <strong class="text-foreground">{{ target.name }}</strong> ({{ target.phone }})
               </p>
             </div>
             <button
               type="button"
               (click)="handleClose()"
-              class="p-1 rounded hover:bg-[#272f3d] text-slate-400 hover:text-white transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng hộp thoại"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,24 +64,30 @@ import {
             </button>
           </div>
 
-          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-200 text-xs">
+          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-800 dark:text-amber-300 text-xs">
             Toàn bộ các đơn hàng, lượt sử dụng coupon, đánh giá sản phẩm và thông báo của hồ sơ phụ sẽ được chuyển nhượng quyền sở hữu sang hồ sơ chính. Hồ sơ phụ sẽ bị vô hiệu hóa và đánh dấu liên kết.
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 bg-red-500/10 border border-red-500/30 rounded text-red-300 text-xs">
+            <div class="p-3 bg-red-500/10 border border-red-500/30 rounded text-red-700 dark:text-red-400 text-xs">
               {{ errorMessage() }}
+            </div>
+          }
+
+          @if (selectedCandidate()?.isRegistered) {
+            <div class="p-3 bg-red-500/10 border border-red-500/30 rounded text-red-700 dark:text-red-400 text-xs font-medium">
+              Không thể sáp nhập hồ sơ đã có tài khoản thành viên theo quy tắc CUS-003. Chỉ được phép gộp hồ sơ khách vãng lai (chưa có tài khoản đăng ký) vào hồ sơ khách hàng chính.
             </div>
           }
 
           <form [formGroup]="mergeForm" (ngSubmit)="submitMerge()" class="space-y-4">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label for="candidate-select" class="block font-semibold text-slate-300 uppercase text-[11px]">
+                <label for="candidate-select" class="block font-semibold text-foreground uppercase text-xs">
                   Chọn Hồ Sơ Phụ Cần Gộp Vào
                 </label>
                 @if (isLoadingCandidates()) {
-                  <span class="text-slate-400 text-[10px]">Đang tải danh sách gợi ý...</span>
+                  <span class="text-muted text-xs">Đang tải danh sách gợi ý...</span>
                 }
               </div>
 
@@ -91,68 +98,63 @@ import {
                     [value]="candidateSearchQuery()"
                     (input)="onCandidateSearchInput($event)"
                     placeholder="Tìm theo tên, SĐT hoặc email..."
-                    class="flex-1 px-3 py-1.5 bg-[#090d16] border border-[#272f3d] rounded text-slate-200 text-xs placeholder:text-slate-500 focus:outline-none focus:border-[#76b900]"
+                    class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
                   />
                   <button
                     type="button"
                     (click)="searchCandidates()"
-                    class="px-3 py-1.5 bg-[#272f3d] hover:bg-[#323d4e] text-slate-200 font-semibold rounded text-xs transition-colors"
+                    class="px-3 py-1.5 bg-surface-alt hover:bg-surface-elevated border border-line text-foreground font-semibold rounded text-xs transition-colors"
                   >
                     Tìm kiếm
                   </button>
                 </div>
 
-                <select
+                <app-select
                   id="candidate-select"
                   formControlName="sourceCustomerId"
-                  (change)="onCandidateSelected($event)"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-slate-200 focus:outline-none focus:border-[#76b900] text-xs font-medium"
-                >
-                  <option value="" disabled>-- Chọn hồ sơ trùng khớp hoặc khách vãng lai --</option>
-                  @for (candidate of candidates(); track candidate.id) {
-                    <option [value]="candidate.id">
-                      {{ candidate.name }} ({{ candidate.phone }} - {{ candidate.email }}) | {{ candidate.isRegistered ? 'Thành viên' : 'Khách vãng lai' }} | {{ candidate.orderCount }} đơn ({{ formatCurrency(candidate.totalSpent) }})
-                    </option>
-                  }
-                </select>
+                  [options]="candidateOptions()"
+                  (valueChange)="onCandidateSelectedValue($event)"
+                  size="sm"
+                  class="w-full"
+                />
               </div>
 
               @if (candidates().length === 0 && !isLoadingCandidates()) {
-                <p class="text-slate-400 text-[11px] mt-1 italic">
+                <p class="text-muted text-xs mt-1 italic">
                   Không tìm thấy hồ sơ phụ khả dụng trùng số điện thoại hoặc email. Hãy nhập từ khóa tìm kiếm ở trên.
                 </p>
               }
             </div>
 
             @if (selectedCandidate(); as source) {
-              <div class="p-3 bg-[#090d16] border border-[#272f3d] rounded-lg space-y-2 text-xs">
-                <div class="text-[11px] font-bold text-[#76b900] uppercase tracking-wider">
+              <div class="p-3 bg-surface-alt border border-line rounded-lg space-y-2 text-xs">
+                <div class="text-xs font-bold text-primary uppercase tracking-wider">
                   Bản So Sánh Chuyển Giao Dữ Liệu
                 </div>
-                <div class="grid grid-cols-2 gap-3 text-slate-300">
-                  <div class="p-2.5 rounded bg-[#161b26] border border-[#272f3d]/60">
-                    <span class="text-slate-500 block text-[10px] uppercase font-bold">Hồ sơ phụ (sẽ vô hiệu hóa)</span>
-                    <div class="font-bold text-white mt-1">{{ source.name }}</div>
-                    <div class="text-slate-400 font-mono text-[11px]">{{ source.phone }}</div>
-                    <div class="text-slate-400 text-[11px] truncate">{{ source.email }}</div>
-                    <div class="mt-2 text-[11px] pt-1.5 border-t border-[#272f3d]">
-                      Đơn hàng chuyển đi: <strong class="text-amber-400 tabular-nums">{{ source.orderCount }} đơn</strong>
+                <div class="grid grid-cols-2 gap-3 text-foreground">
+                  <div class="p-2.5 rounded bg-surface border border-line">
+                    <span class="text-muted block text-xs uppercase font-bold">Hồ sơ phụ (sẽ vô hiệu hóa)</span>
+                    <div class="font-bold text-foreground mt-1">{{ source.name }}</div>
+                    <div class="text-muted font-mono text-xs">{{ source.phone }}</div>
+                    <div class="text-muted text-xs truncate">{{ source.email }}</div>
+                    <div class="mt-2 text-xs pt-1.5 border-t border-line">
+                      Đơn hàng chuyển đi: <strong class="text-amber-600 whitespace-nowrap tabular-nums">{{ source.orderCount }} đơn</strong>
                     </div>
-                    <div class="text-[11px]">
-                      Giá trị tích lũy: <strong class="text-white tabular-nums">{{ formatCurrency(source.totalSpent) }}</strong>
+                    <div class="text-xs">
+                      Giá trị tích lũy: <strong class="text-foreground whitespace-nowrap tabular-nums">{{ formatCurrency(source.totalSpent) }}</strong>
                     </div>
                   </div>
 
-                  <div class="p-2.5 rounded bg-[#161b26] border border-[#76b900]/30">
-                    <span class="text-[#76b900] block text-[10px] uppercase font-bold">Hồ sơ chính (tiếp nhận)</span>
-                    <div class="font-bold text-white mt-1">{{ target.name }}</div>
-                    <div class="text-slate-400 font-mono text-[11px]">{{ target.phone }}</div>
-                    <div class="text-slate-400 text-[11px] truncate">{{ target.email }}</div>
-                    <div class="mt-2 text-[11px] pt-1.5 border-t border-[#272f3d]">
-                      Tổng đơn sau gộp: <strong class="text-[#76b900] tabular-nums">{{ target.stats.orderCount + source.orderCount }} đơn</strong>
+                  <div class="p-2.5 rounded bg-surface border border-primary/30">
+                    <span class="text-primary block text-xs uppercase font-bold">Hồ sơ chính (tiếp nhận)</span>
+                    <div class="font-bold text-foreground mt-1">{{ target.name }}</div>
+                    <div class="text-muted font-mono text-xs">{{ target.phone }}</div>
+                    <div class="text-muted text-xs truncate">{{ target.email }}</div>
+                    <div class="mt-2 text-xs pt-1.5 border-t border-line">
+                      Tổng đơn sau gộp: <strong class="text-primary whitespace-nowrap tabular-nums">{{ target.stats.orderCount + source.orderCount }} đơn</strong>
                     </div>
-                    <div class="text-[11px]">
-                      Tổng chi tiêu sau gộp: <strong class="text-[#76b900] tabular-nums">{{ formatCurrency(target.stats.totalSpent + source.totalSpent) }}</strong>
+                    <div class="text-xs">
+                      Tổng chi tiêu sau gộp: <strong class="text-primary whitespace-nowrap tabular-nums">{{ formatCurrency(target.stats.totalSpent + source.totalSpent) }}</strong>
                     </div>
                   </div>
                 </div>
@@ -160,36 +162,36 @@ import {
             }
 
             <div>
-              <label for="merge-reason" class="block font-semibold text-slate-300 uppercase text-[11px] mb-1">
-                Lý Do Gộp Hồ Sơ Bắt Buộc <span class="text-red-400">*</span>
+              <label for="merge-reason" class="block font-semibold text-foreground uppercase text-xs mb-1">
+                Lý Do Gộp Hồ Sơ Bắt Buộc <span class="text-red-500">*</span>
               </label>
               <textarea
                 id="merge-reason"
                 formControlName="reason"
                 rows="2"
                 placeholder="Ví dụ: Khách mua hàng vãng lai sau đó đăng ký tài khoản thành viên với cùng số điện thoại..."
-                class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded text-slate-200 text-xs focus:outline-none focus:border-[#76b900]"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
               ></textarea>
               @if (mergeForm.get('reason')?.touched && mergeForm.get('reason')?.errors?.['required']) {
-                <p class="text-red-400 text-[11px] mt-0.5">Vui lòng nhập lý do hợp nhất hồ sơ.</p>
+                <p class="text-red-500 text-xs mt-0.5">Vui lòng nhập lý do hợp nhất hồ sơ.</p>
               }
               @if (mergeForm.get('reason')?.touched && mergeForm.get('reason')?.errors?.['minlength']) {
-                <p class="text-red-400 text-[11px] mt-0.5">Lý do tối thiểu 3 ký tự.</p>
+                <p class="text-red-500 text-xs mt-0.5">Lý do tối thiểu 3 ký tự.</p>
               }
             </div>
 
-            <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#272f3d]">
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
               <button
                 type="button"
                 (click)="handleClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-[#090d16] hover:bg-[#272f3d] border border-[#272f3d] rounded text-slate-300 font-semibold text-xs transition-colors"
+                class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded text-foreground font-semibold text-xs transition-colors"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
-                [disabled]="mergeForm.invalid || isSubmitting()"
+                [disabled]="mergeForm.invalid || isSubmitting() || selectedCandidate()?.isRegistered"
                 class="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded text-xs transition-colors shadow-sm inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting()) {
@@ -221,6 +223,28 @@ export class MergeCustomerDialogComponent {
   readonly isLoadingCandidates = signal<boolean>(false);
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly candidateOptions = computed<readonly SelectOption[]>(() => {
+    const list = this.candidates();
+    if (list.length === 0) {
+      return [
+        {
+          value: '',
+          label: '-- Không có hồ sơ phụ phù hợp --',
+        },
+      ];
+    }
+    return [
+      {
+        value: '',
+        label: '-- Chọn hồ sơ trùng khớp hoặc khách vãng lai --',
+      },
+      ...list.map((c) => ({
+        value: c.id,
+        label: `${c.name} (${c.phone} - ${c.email}) | ${c.isRegistered ? 'Thành viên' : 'Khách vãng lai'} | ${c.orderCount} đơn (${this.formatCurrency(c.totalSpent)})`,
+      })),
+    ];
+  });
 
   readonly mergeForm = this.fb.group({
     sourceCustomerId: ['', [Validators.required]],
@@ -278,15 +302,14 @@ export class MergeCustomerDialogComponent {
     }
   }
 
-  onCandidateSelected(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    const candidateId = target.value;
+  onCandidateSelectedValue(candidateId: string): void {
+    this.mergeForm.patchValue({ sourceCustomerId: candidateId });
     const match = this.candidates().find((c) => c.id === candidateId) ?? null;
     this.selectedCandidate.set(match);
   }
 
   async submitMerge(): Promise<void> {
-    if (this.mergeForm.invalid) {
+    if (this.mergeForm.invalid || this.selectedCandidate()?.isRegistered) {
       this.mergeForm.markAllAsTouched();
       return;
     }

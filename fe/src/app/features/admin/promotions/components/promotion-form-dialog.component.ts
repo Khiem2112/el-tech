@@ -17,6 +17,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { z } from 'zod';
+import {
+  SelectComponent,
+  SelectOption,
+} from '../../../../components/atoms/select/select.component';
 import { AdminCategoryService } from '../../categories/services/admin-category.service';
 import { AdminVariantService } from '../../variants/services/admin-variant.service';
 import {
@@ -94,32 +98,33 @@ function formatIsoToDateInput(isoString?: string): string {
 @Component({
   selector: 'app-promotion-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SelectComponent],
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="promo-dialog-title"
       >
         <div
-          class="relative bg-[#161b26] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col text-sm text-white"
+          data-modal-id="MOD-33"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <header class="p-5 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0">
+          <header class="p-5 border-b border-line flex items-center justify-between shrink-0 bg-surface">
             <div>
-              <h2 id="promo-dialog-title" class="font-bold text-white uppercase text-base tracking-wide">
+              <h2 id="promo-dialog-title" class="font-bold text-foreground uppercase text-base tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Khuyến Mãi Sản Phẩm' : 'Thêm Mới Khuyến Mãi Sản Phẩm' }}
               </h2>
-              <p class="text-xs text-slate-400 mt-0.5">
-                Thiết lập chương trình giảm giá tự động theo danh mục hoặc danh sách SKU (MOD-33)
+              <p class="text-xs text-muted mt-0.5">
+                Thiết lập chương trình giảm giá tự động theo danh mục hoặc danh sách SKU
               </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded text-slate-400 hover:text-white hover:bg-[#272f3d] transition-colors"
+              class="p-1 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors cursor-pointer"
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
@@ -131,124 +136,123 @@ function formatIsoToDateInput(isoString?: string): string {
 
           <div class="overflow-y-auto p-5 flex-1 space-y-4">
             @if (errorMessage()) {
-              <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+              <div class="p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-400 text-xs font-medium">
                 {{ errorMessage() }}
               </div>
             }
 
             <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate id="promo-form">
               <div>
-                <label for="promo-name" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                  Tên chương trình khuyến mãi <span class="text-rose-400">*</span>
+                <label for="promo-name" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                  Tên chương trình khuyến mãi <span class="text-rose-500">*</span>
                 </label>
                 <input
                   id="promo-name"
                   type="text"
                   formControlName="name"
                   placeholder="Ví dụ: Đại Tiệc RTX 50 Series - Giảm Trực Tiếp 1.000.000đ"
-                  class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-semibold text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-semibold text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                 />
                 @if (fieldError('name')) {
-                  <p class="text-rose-400 text-xs mt-1">{{ fieldError('name') }}</p>
+                  <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">{{ fieldError('name') }}</p>
                 }
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="promo-discount-type" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Loại giảm giá <span class="text-rose-400">*</span>
+                  <label class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Loại giảm giá <span class="text-rose-500">*</span>
                   </label>
-                  <select
-                    id="promo-discount-type"
-                    formControlName="discountType"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors font-semibold"
-                  >
-                    <option value="PERCENTAGE">Phần trăm (%)</option>
-                    <option value="FIXED_AMOUNT">Số tiền cố định (VNĐ)</option>
-                  </select>
+                  <app-select
+                    [options]="discountTypeOptions"
+                    [value]="form.get('discountType')?.value"
+                    (valueChange)="onDiscountTypeChange($event)"
+                    size="md"
+                  />
                 </div>
 
                 <div>
-                  <label for="promo-discount-value" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Mức giảm ({{ form.get('discountType')?.value === 'PERCENTAGE' ? '%' : 'VNĐ' }}) <span class="text-rose-400">*</span>
+                  <label for="promo-discount-value" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Mức giảm ({{ form.get('discountType')?.value === 'PERCENTAGE' ? '%' : 'VNĐ' }}) <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="promo-discount-value"
                     type="number"
                     formControlName="discountValue"
                     [placeholder]="form.get('discountType')?.value === 'PERCENTAGE' ? 'Ví dụ: 10' : 'Ví dụ: 500000'"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md font-bold tabular-nums text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-bold tabular-nums text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                   @if (fieldError('discountValue')) {
-                    <p class="text-rose-400 text-xs mt-1">{{ fieldError('discountValue') }}</p>
+                    <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">{{ fieldError('discountValue') }}</p>
                   }
                 </div>
               </div>
 
-              <div class="space-y-3 border-t border-b border-[#272f3d] py-3.5">
-                <span class="block font-semibold text-slate-300 text-xs uppercase">
-                  Phạm vi áp dụng <span class="text-rose-400">*</span>
+              <div class="space-y-3 border-t border-b border-line py-3.5">
+                <span class="block font-semibold text-foreground text-xs uppercase">
+                  Phạm vi áp dụng <span class="text-rose-500">*</span>
                 </span>
                 <div class="grid grid-cols-2 gap-3">
                   <label
                     class="flex items-center gap-2.5 p-3 rounded-md border cursor-pointer transition-colors"
-                    [class.border-[#76b900]]="form.get('scope')?.value === 'CATEGORY'"
-                    [class.bg-[#76b900]/10]="form.get('scope')?.value === 'CATEGORY'"
-                    [class.border-[#272f3d]]="form.get('scope')?.value !== 'CATEGORY'"
-                    [class.bg-[#090d16]]="form.get('scope')?.value !== 'CATEGORY'"
+                    [class.border-primary]="form.get('scope')?.value === 'CATEGORY'"
+                    [class.bg-primary/5]="form.get('scope')?.value === 'CATEGORY'"
+                    [class.border-line]="form.get('scope')?.value !== 'CATEGORY'"
+                    [class.bg-surface-alt]="form.get('scope')?.value !== 'CATEGORY'"
                   >
                     <input
                       type="radio"
                       formControlName="scope"
                       value="CATEGORY"
-                      class="text-[#76b900] focus:ring-[#76b900]"
+                      class="text-primary focus:ring-primary"
                     />
                     <div>
-                      <div class="font-bold text-white text-sm">Theo danh mục</div>
-                      <div class="text-[11px] text-slate-400">Áp dụng toàn bộ linh kiện thuộc ngành hàng</div>
+                      <div class="font-bold text-foreground text-sm">Theo danh mục</div>
+                      <div class="text-xs text-muted">Áp dụng toàn bộ linh kiện thuộc ngành hàng</div>
                     </div>
                   </label>
 
                   <label
                     class="flex items-center gap-2.5 p-3 rounded-md border cursor-pointer transition-colors"
-                    [class.border-[#76b900]]="form.get('scope')?.value === 'SKU'"
-                    [class.bg-[#76b900]/10]="form.get('scope')?.value === 'SKU'"
-                    [class.border-[#272f3d]]="form.get('scope')?.value !== 'SKU'"
-                    [class.bg-[#090d16]]="form.get('scope')?.value !== 'SKU'"
+                    [class.border-primary]="form.get('scope')?.value === 'SKU'"
+                    [class.bg-primary/5]="form.get('scope')?.value === 'SKU'"
+                    [class.border-line]="form.get('scope')?.value !== 'SKU'"
+                    [class.bg-surface-alt]="form.get('scope')?.value !== 'SKU'"
                   >
                     <input
                       type="radio"
                       formControlName="scope"
                       value="SKU"
-                      class="text-[#76b900] focus:ring-[#76b900]"
+                      class="text-primary focus:ring-primary"
                     />
                     <div>
-                      <div class="font-bold text-white text-sm">Theo danh sách SKU</div>
-                      <div class="text-[11px] text-slate-400">Chỉ định chính xác biến thể phần cứng</div>
+                      <div class="font-bold text-foreground text-sm">Theo danh sách SKU</div>
+                      <div class="text-xs text-muted">Chỉ định chính xác biến thể phần cứng</div>
                     </div>
                   </label>
                 </div>
 
                 @if (form.get('scope')?.value === 'CATEGORY') {
-                  <div class="p-3 bg-[#090d16] rounded-md border border-[#272f3d] space-y-2">
-                    <label for="select-cat-picker" class="block font-semibold text-slate-300 text-xs uppercase">
+                  <div class="p-3 bg-surface-alt rounded-md border border-line space-y-2">
+                    <label class="block font-semibold text-foreground text-xs uppercase">
                       Chọn danh mục áp dụng:
                     </label>
-                    <div class="flex gap-2">
-                      <select
-                        id="select-cat-picker"
-                        #catPicker
-                        class="flex-1 px-3 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white text-sm focus:outline-none focus:border-[#76b900]"
-                      >
-                        <option value="">-- Chọn ngành hàng --</option>
-                        @for (cat of availableCategories(); track cat.id) {
-                          <option [value]="cat.id">{{ cat.name }}</option>
-                        }
-                      </select>
+                    <div class="flex gap-2 items-center">
+                      <div class="flex-1">
+                        <app-select
+                          [options]="categoryOptions()"
+                          [value]="selectedCatIdToAdd()"
+                          (valueChange)="selectedCatIdToAdd.set($event)"
+                          placeholder="-- Chọn ngành hàng --"
+                          size="sm"
+                          [searchable]="true"
+                        />
+                      </div>
                       <button
                         type="button"
-                        (click)="onAddCategory(catPicker.value); catPicker.value = ''"
-                        class="px-3 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors"
+                        (click)="handleAddCategory()"
+                        [disabled]="!selectedCatIdToAdd()"
+                        class="px-3.5 py-1.5 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer"
                       >
                         Thêm
                       </button>
@@ -257,12 +261,12 @@ function formatIsoToDateInput(isoString?: string): string {
                     @if (selectedCategories().length > 0) {
                       <div class="flex flex-wrap gap-1.5 pt-1">
                         @for (item of selectedCategories(); track item.id) {
-                          <span class="px-2 py-1 bg-[#161b26] border border-[#272f3d] rounded flex items-center gap-2 text-xs">
-                            <span class="text-white font-medium">{{ item.name }}</span>
+                          <span class="px-2.5 py-1 bg-surface border border-line rounded flex items-center gap-2 text-xs">
+                            <span class="text-foreground font-medium">{{ item.name }}</span>
                             <button
                               type="button"
                               (click)="onRemoveCategory(item.id)"
-                              class="text-slate-400 hover:text-rose-400"
+                              class="text-muted hover:text-rose-600 cursor-pointer"
                               title="Xóa danh mục"
                             >
                               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -273,33 +277,32 @@ function formatIsoToDateInput(isoString?: string): string {
                         }
                       </div>
                     } @else {
-                      <p class="text-amber-400 text-xs">Chưa chọn danh mục ngành hàng nào.</p>
+                      <p class="text-amber-600 dark:text-amber-400 text-xs">Chưa chọn danh mục ngành hàng nào.</p>
                     }
                   </div>
                 }
 
                 @if (form.get('scope')?.value === 'SKU') {
-                  <div class="p-3 bg-[#090d16] rounded-md border border-[#272f3d] space-y-2">
-                    <label for="select-sku-picker" class="block font-semibold text-slate-300 text-xs uppercase">
+                  <div class="p-3 bg-surface-alt rounded-md border border-line space-y-2">
+                    <label class="block font-semibold text-foreground text-xs uppercase">
                       Chọn SKU biến thể áp dụng:
                     </label>
-                    <div class="flex gap-2">
-                      <select
-                        id="select-sku-picker"
-                        #skuPicker
-                        class="flex-1 px-3 py-1.5 bg-[#161b26] border border-[#272f3d] rounded text-white text-sm focus:outline-none focus:border-[#76b900]"
-                      >
-                        <option value="">-- Chọn SKU linh kiện --</option>
-                        @for (v of availableVariants(); track v.id) {
-                          <option [value]="v.id">
-                            {{ v.sku }} - {{ v.productTemplate.name }} {{ v.variationLabel ? '(' + v.variationLabel + ')' : '' }}
-                          </option>
-                        }
-                      </select>
+                    <div class="flex gap-2 items-center">
+                      <div class="flex-1">
+                        <app-select
+                          [options]="skuOptions()"
+                          [value]="selectedSkuIdToAdd()"
+                          (valueChange)="selectedSkuIdToAdd.set($event)"
+                          placeholder="-- Chọn SKU linh kiện --"
+                          size="sm"
+                          [searchable]="true"
+                        />
+                      </div>
                       <button
                         type="button"
-                        (click)="onAddSku(skuPicker.value); skuPicker.value = ''"
-                        class="px-3 py-1.5 bg-[#76b900] hover:bg-[#5a8d00] text-[#090d16] font-bold rounded text-xs transition-colors"
+                        (click)="handleAddSku()"
+                        [disabled]="!selectedSkuIdToAdd()"
+                        class="px-3.5 py-1.5 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer"
                       >
                         Thêm
                       </button>
@@ -308,13 +311,13 @@ function formatIsoToDateInput(isoString?: string): string {
                     @if (selectedSkus().length > 0) {
                       <div class="flex flex-wrap gap-1.5 pt-1">
                         @for (skuItem of selectedSkus(); track skuItem.id) {
-                          <span class="px-2 py-1 bg-[#161b26] border border-[#272f3d] rounded flex items-center gap-2 font-mono text-xs">
-                            <strong class="text-[#76b900]">{{ skuItem.sku }}</strong>
-                            <span class="text-slate-300 font-sans truncate max-w-[200px]">{{ skuItem.name }}</span>
+                          <span class="px-2.5 py-1 bg-surface border border-line rounded flex items-center gap-2 font-mono text-xs">
+                            <strong class="text-primary">{{ skuItem.sku }}</strong>
+                            <span class="text-foreground font-sans truncate max-w-[200px]">{{ skuItem.name }}</span>
                             <button
                               type="button"
                               (click)="onRemoveSku(skuItem.id)"
-                              class="text-slate-400 hover:text-rose-400"
+                              class="text-muted hover:text-rose-600 cursor-pointer"
                               title="Xóa SKU"
                             >
                               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -325,7 +328,7 @@ function formatIsoToDateInput(isoString?: string): string {
                         }
                       </div>
                     } @else {
-                      <p class="text-amber-400 text-xs">Chưa chọn SKU biến thể linh kiện nào.</p>
+                      <p class="text-amber-600 dark:text-amber-400 text-xs">Chưa chọn SKU biến thể linh kiện nào.</p>
                     }
                   </div>
                 }
@@ -333,60 +336,60 @@ function formatIsoToDateInput(isoString?: string): string {
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="promo-effective-from" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Từ ngày <span class="text-rose-400">*</span>
+                  <label for="promo-effective-from" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Từ ngày <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="promo-effective-from"
                     type="date"
                     formControlName="effectiveFrom"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                   @if (fieldError('effectiveFrom')) {
-                    <p class="text-rose-400 text-xs mt-1">{{ fieldError('effectiveFrom') }}</p>
+                    <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">{{ fieldError('effectiveFrom') }}</p>
                   }
                 </div>
 
                 <div>
-                  <label for="promo-effective-to" class="block font-semibold text-slate-300 text-xs uppercase mb-1">
-                    Đến ngày <span class="text-rose-400">*</span>
+                  <label for="promo-effective-to" class="block font-semibold text-foreground text-xs uppercase mb-1">
+                    Đến ngày <span class="text-rose-500">*</span>
                   </label>
                   <input
                     id="promo-effective-to"
                     type="date"
                     formControlName="effectiveTo"
-                    class="w-full px-3 py-2 bg-[#090d16] border border-[#272f3d] rounded-md text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   />
                   @if (fieldError('effectiveTo')) {
-                    <p class="text-rose-400 text-xs mt-1">{{ fieldError('effectiveTo') }}</p>
+                    <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">{{ fieldError('effectiveTo') }}</p>
                   }
                 </div>
               </div>
 
               <div class="space-y-3 pt-1">
-                <label class="flex items-start gap-3 p-3 bg-[#090d16] rounded-md border border-[#272f3d] cursor-pointer">
+                <label class="flex items-start gap-3 p-3 bg-surface-alt rounded-md border border-line cursor-pointer">
                   <input
                     type="checkbox"
                     formControlName="isExclusive"
-                    class="mt-0.5 text-[#76b900] focus:ring-[#76b900] rounded"
+                    class="mt-0.5 text-primary focus:ring-primary rounded"
                   />
                   <div>
-                    <span class="font-bold text-white text-sm">Áp dụng độc quyền</span>
-                    <p class="text-xs text-slate-400 mt-0.5">
+                    <span class="font-bold text-foreground text-sm">Áp dụng độc quyền</span>
+                    <p class="text-xs text-muted mt-0.5">
                       Nếu bật, sản phẩm này không được áp dụng đồng thời với bất kỳ mã coupon giảm giá đơn hàng nào khác.
                     </p>
                   </div>
                 </label>
 
-                <label class="flex items-start gap-3 p-3 bg-[#090d16] rounded-md border border-[#272f3d] cursor-pointer">
+                <label class="flex items-start gap-3 p-3 bg-surface-alt rounded-md border border-line cursor-pointer">
                   <input
                     type="checkbox"
                     formControlName="isActive"
-                    class="mt-0.5 text-[#76b900] focus:ring-[#76b900] rounded"
+                    class="mt-0.5 text-primary focus:ring-primary rounded"
                   />
                   <div>
-                    <span class="font-bold text-white text-sm">Kích hoạt chương trình</span>
-                    <p class="text-xs text-slate-400 mt-0.5">
+                    <span class="font-bold text-foreground text-sm">Kích hoạt chương trình</span>
+                    <p class="text-xs text-muted mt-0.5">
                       Chương trình sẽ tự động có hiệu lực giảm giá cho khách hàng trong khoảng thời gian đã định.
                     </p>
                   </div>
@@ -395,11 +398,11 @@ function formatIsoToDateInput(isoString?: string): string {
             </form>
           </div>
 
-          <footer class="p-5 border-t border-[#272f3d] flex items-center justify-end gap-3 flex-shrink-0 bg-[#161b26]">
+          <footer class="p-5 border-t border-line flex items-center justify-end gap-3 shrink-0 bg-surface">
             <button
               type="button"
               (click)="onClose()"
-              class="px-4 py-2 bg-[#272f3d] hover:bg-slate-700 text-slate-200 font-semibold rounded-md text-sm transition-colors"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line text-foreground font-semibold rounded-md text-sm transition-colors cursor-pointer"
             >
               Hủy Bỏ
             </button>
@@ -407,10 +410,10 @@ function formatIsoToDateInput(isoString?: string): string {
               type="submit"
               form="promo-form"
               [disabled]="isSaving()"
-              class="px-5 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:opacity-50 text-[#090d16] font-bold rounded-md shadow-sm text-sm transition-colors flex items-center gap-2"
+              class="px-5 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded-md shadow-sm text-sm transition-colors flex items-center gap-2 cursor-pointer"
             >
               @if (isSaving()) {
-                <span class="w-4 h-4 border-2 border-[#090d16] border-t-transparent rounded-full animate-spin"></span>
+                <span class="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></span>
                 <span>Đang Lưu...</span>
               } @else {
                 <span>Lưu Khuyến Mãi</span>
@@ -441,10 +444,32 @@ export class PromotionFormDialogComponent {
   readonly selectedSkus = signal<SkuTargetItem[]>([]);
   readonly selectedCategories = signal<CategoryTargetItem[]>([]);
 
+  readonly selectedCatIdToAdd = signal<string>('');
+  readonly selectedSkuIdToAdd = signal<string>('');
+
   readonly availableCategories = computed(() => this.categoryService.categories());
   readonly availableVariants = signal<
     { id: number; sku: string; variationLabel: string | null; productTemplate: { name: string } }[]
   >([]);
+
+  readonly categoryOptions = computed<readonly SelectOption[]>(() =>
+    this.availableCategories().map((c) => ({
+      value: c.id.toString(),
+      label: c.name,
+    })),
+  );
+
+  readonly skuOptions = computed<readonly SelectOption[]>(() =>
+    this.availableVariants().map((v) => ({
+      value: v.id.toString(),
+      label: `${v.sku} - ${v.productTemplate.name}${v.variationLabel ? ' (' + v.variationLabel + ')' : ''}`,
+    })),
+  );
+
+  readonly discountTypeOptions: readonly SelectOption[] = [
+    { value: 'PERCENTAGE', label: 'Phần trăm (%)' },
+    { value: 'FIXED_AMOUNT', label: 'Số tiền cố định (VNĐ)' },
+  ];
 
   readonly isEditMode = computed(() => Boolean(this.promotion()?.id));
 
@@ -490,6 +515,8 @@ export class PromotionFormDialogComponent {
 
   private resetFormWithPromotion(promo: AdminProductPromotion | null): void {
     this.errorMessage.set(null);
+    this.selectedCatIdToAdd.set('');
+    this.selectedSkuIdToAdd.set('');
 
     if (promo) {
       const effectiveScope = promo.scope === 'SKU' ? 'SKU' : 'CATEGORY';
@@ -539,8 +566,13 @@ export class PromotionFormDialogComponent {
     }
   }
 
-  onAddCategory(categoryIdStr: string): void {
-    const catId = Number(categoryIdStr);
+  onDiscountTypeChange(val: string): void {
+    this.form.patchValue({ discountType: val });
+  }
+
+  handleAddCategory(): void {
+    const catIdStr = this.selectedCatIdToAdd();
+    const catId = Number(catIdStr);
     if (!catId) return;
 
     const cat = this.availableCategories().find((c) => c.id === catId);
@@ -549,13 +581,15 @@ export class PromotionFormDialogComponent {
     if (!this.selectedCategories().some((c) => c.id === catId)) {
       this.selectedCategories.update((list) => [...list, { id: cat.id, name: cat.name }]);
     }
+    this.selectedCatIdToAdd.set('');
   }
 
   onRemoveCategory(id: number): void {
     this.selectedCategories.update((list) => list.filter((c) => c.id !== id));
   }
 
-  onAddSku(skuIdStr: string): void {
+  handleAddSku(): void {
+    const skuIdStr = this.selectedSkuIdToAdd();
     const skuId = Number(skuIdStr);
     if (!skuId) return;
 
@@ -568,6 +602,7 @@ export class PromotionFormDialogComponent {
         { id: variant.id, sku: variant.sku, name: variant.productTemplate.name },
       ]);
     }
+    this.selectedSkuIdToAdd.set('');
   }
 
   onRemoveSku(id: number): void {

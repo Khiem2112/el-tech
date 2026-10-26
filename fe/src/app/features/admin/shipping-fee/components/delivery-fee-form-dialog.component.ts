@@ -51,33 +51,31 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
       >
         <div
-          class="fixed inset-0 bg-[#090d16]/75 backdrop-blur-sm transition-opacity"
+          class="fixed inset-0"
           (click)="onBackdropClick()"
           aria-hidden="true"
         ></div>
 
         <div
-          class="relative bg-[#090d16] border border-[#272f3d] rounded-lg shadow-2xl w-full max-w-lg z-10 overflow-hidden flex flex-col max-h-[90vh]"
+          data-modal-id="MOD-36"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg z-10 overflow-hidden flex flex-col max-h-[90vh] text-foreground text-sm"
           (click)="$event.stopPropagation()"
         >
-          <header class="px-6 py-4 border-b border-[#272f3d] flex items-center justify-between flex-shrink-0 bg-[#161b26]">
+          <header class="px-6 py-4 border-b border-line flex items-center justify-between shrink-0 bg-surface">
             <div>
               <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-[#76b900]"></span>
-                <h2 id="dialog-title" class="font-bold text-white uppercase text-sm tracking-wide">
+                <span class="w-2 h-2 rounded-full bg-primary"></span>
+                <h2 id="dialog-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
                   Cập Nhật Biểu Phí Vận Chuyển
                 </h2>
-                <span class="text-[10px] bg-[#090d16] border border-[#272f3d] text-slate-400 font-mono px-1.5 py-0.5 rounded">
-                  MOD-36
-                </span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">
+              <p class="text-xs text-muted mt-0.5">
                 Thiết lập mức phí giao hàng cố định và ngưỡng miễn phí vận chuyển toàn hệ thống
               </p>
             </div>
@@ -85,7 +83,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
             <button
               type="button"
               (click)="onClose()"
-              class="p-1 rounded text-slate-400 hover:text-white hover:bg-[#272f3d] transition-colors"
+              class="p-1 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors cursor-pointer"
               title="Đóng hộp thoại"
               aria-label="Đóng"
             >
@@ -103,10 +101,10 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
           >
             @if (formError()) {
               <div
-                class="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-400 text-xs flex items-center gap-2"
+                class="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-700 dark:text-rose-400 text-xs flex items-center gap-2"
                 role="alert"
               >
-                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01" />
                 </svg>
@@ -115,8 +113,8 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
             }
 
             <div class="space-y-1">
-              <label for="fixedFee" class="block font-semibold text-slate-300 text-xs uppercase">
-                Mức phí giao hàng cố định (VNĐ) <span class="text-rose-400">*</span>
+              <label for="fixedFee" class="block font-semibold text-foreground text-xs uppercase">
+                Mức phí giao hàng cố định (VNĐ) <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <input
@@ -126,29 +124,29 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                   min="0"
                   formControlName="fixedFee"
                   placeholder="50000"
-                  class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded font-bold tabular-nums text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold tabular-nums text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   [class.border-rose-500]="isFieldInvalid('fixedFee')"
                 />
-                <span class="absolute right-3 top-2 text-xs text-slate-400 font-semibold pointer-events-none">
+                <span class="absolute right-3 top-2 text-xs text-muted font-semibold pointer-events-none">
                   VND
                 </span>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-1">
+              <div class="flex items-center justify-between text-xs text-muted mt-1">
                 <span>Đồng giá cho đơn giao tận nơi dưới ngưỡng miễn phí</span>
-                <span class="text-[#76b900] font-mono font-semibold tabular-nums">
+                <span class="text-primary font-mono font-semibold tabular-nums">
                   {{ formatVnd(feeForm.get('fixedFee')?.value) }}
                 </span>
               </div>
               @if (isFieldInvalid('fixedFee')) {
-                <p class="text-rose-400 text-xs mt-0.5">
+                <p class="text-rose-600 dark:text-rose-400 text-xs mt-0.5">
                   {{ getFieldError('fixedFee') }}
                 </p>
               }
             </div>
 
             <div class="space-y-1">
-              <label for="freeShippingThreshold" class="block font-semibold text-slate-300 text-xs uppercase">
-                Ngưỡng đơn hàng miễn phí giao hàng (VNĐ) <span class="text-rose-400">*</span>
+              <label for="freeShippingThreshold" class="block font-semibold text-foreground text-xs uppercase">
+                Ngưỡng đơn hàng miễn phí giao hàng (VNĐ) <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <input
@@ -158,43 +156,43 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                   min="0"
                   formControlName="freeShippingThreshold"
                   placeholder="5000000"
-                  class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded font-bold tabular-nums text-white text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold tabular-nums text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
                   [class.border-rose-500]="isFieldInvalid('freeShippingThreshold')"
                 />
-                <span class="absolute right-3 top-2 text-xs text-slate-400 font-semibold pointer-events-none">
+                <span class="absolute right-3 top-2 text-xs text-muted font-semibold pointer-events-none">
                   VND
                 </span>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-400 mt-1">
+              <div class="flex items-center justify-between text-xs text-muted mt-1">
                 <span>Đơn hàng có giá trị ròng đạt mức này sẽ được miễn 100% ship</span>
-                <span class="text-[#76b900] font-mono font-semibold tabular-nums">
+                <span class="text-primary font-mono font-semibold tabular-nums">
                   {{ formatVnd(feeForm.get('freeShippingThreshold')?.value) }}
                 </span>
               </div>
               @if (isFieldInvalid('freeShippingThreshold')) {
-                <p class="text-rose-400 text-xs mt-0.5">
+                <p class="text-rose-600 dark:text-rose-400 text-xs mt-0.5">
                   {{ getFieldError('freeShippingThreshold') }}
                 </p>
               }
             </div>
 
             <div class="space-y-1">
-              <label for="effectiveFrom" class="block font-semibold text-slate-300 text-xs uppercase">
+              <label for="effectiveFrom" class="block font-semibold text-foreground text-xs uppercase">
                 Thời điểm bắt đầu có hiệu lực
               </label>
               <input
                 id="effectiveFrom"
                 type="datetime-local"
                 formControlName="effectiveFrom"
-                class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-slate-200 text-sm focus:outline-none focus:border-[#76b900] transition-colors"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
               />
-              <p class="text-[11px] text-slate-400 mt-1">
+              <p class="text-xs text-muted mt-1">
                 Để trống để áp dụng ngay lập tức sau khi lưu.
               </p>
             </div>
 
             <div class="space-y-1">
-              <label for="note" class="block font-semibold text-slate-300 text-xs uppercase">
+              <label for="note" class="block font-semibold text-foreground text-xs uppercase">
                 Ghi chú lý do điều chỉnh
               </label>
               <textarea
@@ -202,36 +200,36 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                 rows="2"
                 formControlName="note"
                 placeholder="Ví dụ: Điều chỉnh phụ phí nhiên liệu hoặc chính sách ưu đãi quý mới..."
-                class="w-full px-3 py-2 bg-[#161b26] border border-[#272f3d] rounded text-slate-200 text-sm focus:outline-none focus:border-[#76b900] transition-colors resize-none"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary transition-colors resize-none"
               ></textarea>
-              <p class="text-[11px] text-slate-400 mt-1">
+              <p class="text-xs text-muted mt-1">
                 Ghi chú nội bộ phục vụ kiểm toán và theo dõi lịch sử vận hành.
               </p>
             </div>
 
-            <div class="p-3 bg-[#161b26] border border-[#272f3d] rounded text-xs text-slate-300 space-y-1">
-              <strong class="text-white uppercase text-[11px] tracking-wider block">Cơ chế hiệu lực đơn nhất:</strong>
-              <p class="text-slate-400">
+            <div class="p-3 bg-surface-alt border border-line rounded text-xs text-foreground space-y-1">
+              <strong class="text-foreground uppercase text-xs tracking-wider block font-semibold">Cơ chế hiệu lực đơn nhất:</strong>
+              <p class="text-muted leading-relaxed">
                 Khi áp dụng cấu hình mới, cấu hình đang hoạt động trước đó sẽ được tự động kết thúc hiệu lực và lưu vào bảng lịch sử.
               </p>
             </div>
 
-            <footer class="flex items-center justify-end gap-3 pt-4 border-t border-[#272f3d] flex-shrink-0">
+            <footer class="flex items-center justify-end gap-3 pt-4 border-t border-line shrink-0">
               <button
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSaving()"
-                class="px-4 py-2 bg-[#161b26] hover:bg-[#272f3d] border border-[#272f3d] text-slate-300 rounded font-semibold text-xs transition-colors"
+                class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line text-foreground rounded font-semibold text-xs transition-colors cursor-pointer"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSaving()"
-                class="px-4 py-2 bg-[#76b900] hover:bg-[#5a8d00] disabled:bg-[#76b900]/50 text-[#090d16] font-bold rounded text-xs transition-colors shadow-sm inline-flex items-center gap-1.5"
+                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
                 @if (isSaving()) {
-                  <svg class="animate-spin h-3.5 w-3.5 text-[#090d16]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg class="animate-spin h-3.5 w-3.5 text-primary-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                   </svg>

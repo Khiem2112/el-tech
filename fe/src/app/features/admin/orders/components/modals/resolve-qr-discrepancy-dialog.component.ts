@@ -58,16 +58,16 @@ import {
             <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
               <div class="flex justify-between items-center">
                 <span class="text-muted-foreground">Số tiền đơn hàng yêu cầu:</span>
-                <strong class="font-mono text-foreground text-sm">{{ formatCurrency(d.expectedAmount) }}</strong>
+                <strong class="font-mono text-foreground text-sm whitespace-nowrap tabular-nums">{{ formatCurrency(d.expectedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-muted-foreground">Số tiền thực nhận từ ngân hàng:</span>
-                <strong class="font-mono text-rose-600 dark:text-rose-400 text-sm">{{ formatCurrency(d.receivedAmount) }}</strong>
+                <strong class="font-mono text-rose-600 dark:text-rose-400 text-sm whitespace-nowrap tabular-nums">{{ formatCurrency(d.receivedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center pt-1 border-t border-line">
                 <span class="text-muted-foreground">Chênh lệch phát hiện:</span>
                 <strong
-                  class="font-mono font-bold"
+                  class="font-mono font-bold whitespace-nowrap tabular-nums"
                   [class.text-rose-600]="d.isUnderpaid"
                   [class.dark:text-rose-400]="d.isUnderpaid"
                   [class.text-emerald-600]="d.isExactMatch"
