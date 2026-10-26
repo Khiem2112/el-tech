@@ -280,9 +280,9 @@ export class StockLedgerSheetComponent {
       case 'TRANSFER_OUT':
         return `${base} bg-orange-50 text-orange-700 border border-orange-200`;
       case 'TRANSFER_IN':
-        return `${base} bg-indigo-50 text-indigo-700 border border-indigo-200`;
+        return `${base} bg-surface-alt text-foreground border border-line`;
       case 'SUPPLIER_RETURN':
-        return `${base} bg-purple-50 text-purple-700 border border-purple-200`;
+        return `${base} bg-surface-alt text-muted border border-line`;
       case 'QUARANTINE':
         return `${base} bg-red-50 text-red-700 border border-red-200`;
       case 'RELEASE_QUARANTINE':

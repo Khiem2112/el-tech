@@ -71,11 +71,11 @@ type ToastNotification = {
                   Đã Gộp Hồ Sơ
                 </span>
               } @else if (cust.isRegistered) {
-                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-cyan-500/15 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30 uppercase tracking-wide">
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary-strong border border-primary/30 uppercase tracking-wide">
                   Thành Viên Chính Thức
                 </span>
               } @else {
-                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-muted/15 text-muted border border-line uppercase tracking-wide">
+                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-surface-alt text-muted border border-line uppercase tracking-wide">
                   Khách Vãng Lai
                 </span>
               }

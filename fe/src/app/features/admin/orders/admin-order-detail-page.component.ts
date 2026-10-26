@@ -139,14 +139,10 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 {{ statusLabel(ord.status) }}
               </span>
               <span
-                class="px-2.5 py-0.5 rounded text-xs font-bold font-mono"
-                [class.bg-purple-50]="ord.hasAssembly"
-                [class.text-purple-700]="ord.hasAssembly"
-                [class.dark:bg-purple-950/60]="ord.hasAssembly"
-                [class.dark:text-purple-300]="ord.hasAssembly"
-                [class.border]="ord.hasAssembly"
-                [class.border-purple-200]="ord.hasAssembly"
-                [class.dark:border-purple-800/40]="ord.hasAssembly"
+                class="px-2.5 py-0.5 rounded text-xs font-bold font-mono border"
+                [class.bg-surface-elevated]="ord.hasAssembly"
+                [class.text-primary]="ord.hasAssembly"
+                [class.border-line]="ord.hasAssembly"
                 [class.bg-surface-alt]="!ord.hasAssembly"
                 [class.text-muted]="!ord.hasAssembly"
                 [class.border-line]="!ord.hasAssembly"
@@ -478,13 +474,13 @@ export class AdminOrderDetailPageComponent implements OnInit {
         return 'bg-blue-500/20 text-blue-400 border border-blue-500/40';
       case 'READY_FOR_PICKUP':
       case 'SHIPPING':
-        return 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/40';
+        return 'bg-blue-500/20 text-blue-400 border border-blue-500/40';
       case 'PENDING_COD_CONFIRMATION':
       case 'PENDING_PAYMENT':
       case 'DELIVERY_FAILED':
         return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
       case 'ON_HOLD':
-        return 'bg-purple-500/20 text-purple-400 border border-purple-500/40';
+        return 'bg-warning/20 text-warning border border-warning/40';
       case 'CANCELLED':
       case 'RETURNING':
         return 'bg-rose-500/20 text-rose-400 border border-rose-500/40';

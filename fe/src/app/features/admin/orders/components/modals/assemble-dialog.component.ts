@@ -49,7 +49,7 @@ type SelectedSerialEntry = {
             </button>
           </div>
 
-          <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded text-purple-700 dark:text-purple-300 text-xs leading-relaxed">
+          <div class="p-3 bg-surface-alt border border-line rounded text-muted text-xs leading-relaxed">
             Chỉ áp dụng cho đơn hàng có linh kiện lắp ráp PC. Thao tác này sẽ tự động xác thực việc trừ tồn kho thực tế (onHand) và giải phóng số lượng giữ (reserved) của toàn bộ linh kiện cấu thành trong một giao dịch duy nhất.
           </div>
 
@@ -61,7 +61,7 @@ type SelectedSerialEntry = {
               type="text"
               [(ngModel)]="technicianName"
               placeholder="Nhập tên kỹ thuật viên hoặc mã KTV..."
-              class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-purple-500"
+              class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
             />
           </div>
 
@@ -93,13 +93,10 @@ type SelectedSerialEntry = {
                         <div>
                           <span
                             class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold mt-0.5"
-                            [class.bg-purple-50]="item.serialRequired"
-                            [class.text-purple-700]="item.serialRequired"
-                            [class.dark:bg-purple-950/60]="item.serialRequired"
-                            [class.dark:text-purple-300]="item.serialRequired"
+                            [class.bg-primary/10]="item.serialRequired"
+                            [class.text-primary-strong]="item.serialRequired"
                             [class.border]="item.serialRequired"
-                            [class.border-purple-200]="item.serialRequired"
-                            [class.dark:border-purple-800/40]="item.serialRequired"
+                            [class.border-primary/30]="item.serialRequired"
                             [class.bg-surface]="!item.serialRequired"
                             [class.text-muted]="!item.serialRequired"
                           >
@@ -121,7 +118,7 @@ type SelectedSerialEntry = {
                         @if (getItemAssignedSerials(item.skuId).length > 0) {
                           <div class="flex flex-wrap gap-1.5">
                             @for (s of getItemAssignedSerials(item.skuId); track s) {
-                              <span class="px-2 py-0.5 bg-purple-50 border border-purple-200 text-purple-700 dark:bg-purple-950/60 dark:border-purple-800/40 dark:text-purple-300 rounded font-mono text-xs flex items-center gap-1.5">
+                              <span class="px-2 py-0.5 bg-surface-alt border border-line text-foreground rounded font-mono text-xs flex items-center gap-1.5">
                                 <span>{{ s }}</span>
                                 <button
                                   type="button"
@@ -144,7 +141,7 @@ type SelectedSerialEntry = {
                                 #barcodeInput
                                 placeholder="Quét mã vạch barcode hoặc gõ số sê-ri..."
                                 (keydown.enter)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
-                                class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground font-mono text-xs focus:outline-none focus:border-purple-500"
+                                class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
                               />
                               <button
                                 type="button"
@@ -167,11 +164,9 @@ type SelectedSerialEntry = {
                                       (click)="toggleSerialSelection(item.skuId, avail.serialNumber)"
                                       [disabled]="isSerialSelectedElsewhere(avail.serialNumber, item.skuId) || (getItemAssignedCount(item.skuId) >= item.quantity && !isSerialSelected(item.skuId, avail.serialNumber))"
                                       class="text-left px-2 py-1 rounded border text-xs font-mono flex items-center justify-between cursor-pointer disabled:opacity-40 transition-colors"
-                                      [class.bg-purple-50]="isSerialSelected(item.skuId, avail.serialNumber)"
-                                      [class.border-purple-300]="isSerialSelected(item.skuId, avail.serialNumber)"
-                                      [class.text-purple-700]="isSerialSelected(item.skuId, avail.serialNumber)"
-                                      [class.dark:bg-purple-950/60]="isSerialSelected(item.skuId, avail.serialNumber)"
-                                      [class.dark:text-purple-300]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.bg-primary/10]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.border-primary]="isSerialSelected(item.skuId, avail.serialNumber)"
+                                      [class.text-primary-strong]="isSerialSelected(item.skuId, avail.serialNumber)"
                                       [class.bg-surface-alt]="!isSerialSelected(item.skuId, avail.serialNumber)"
                                       [class.border-line]="!isSerialSelected(item.skuId, avail.serialNumber)"
                                       [class.text-foreground]="!isSerialSelected(item.skuId, avail.serialNumber)"
@@ -216,7 +211,7 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isAllSerialsProvided()"
-              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Xuất Kho Lắp Ráp...' : 'Xác Nhận Chuyển Bàn Lắp Ráp' }}
             </button>

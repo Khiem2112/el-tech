@@ -43,8 +43,8 @@ type FlowStep = {
           <div class="inline-flex items-center rounded-full bg-surface-alt p-0.5 border border-line text-xs">
             <span
               class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-purple-600]="order().hasAssembly"
-              [class.text-white]="order().hasAssembly"
+              [class.bg-surface-elevated]="order().hasAssembly"
+              [class.text-primary]="order().hasAssembly"
               [class.text-muted]="!order().hasAssembly"
             >
               Có Lắp Ráp PC
@@ -188,7 +188,7 @@ export class OrderStatusBarComponent {
       return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
     }
     if (s === 'ON_HOLD') {
-      return 'bg-purple-500/10 text-purple-300 border-purple-500/30';
+      return 'bg-warning/10 text-warning border-warning/30';
     }
     if (s === 'PENDING_COD_CONFIRMATION' || s === 'DELIVERY_FAILED') {
       return 'bg-amber-500/10 text-amber-300 border-amber-500/30';

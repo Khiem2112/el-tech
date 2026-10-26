@@ -97,10 +97,10 @@ import { AdminSerialService } from './services/admin-serial.service';
           type="button"
           (click)="filterByStatus('ISSUED')"
           class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'ISSUED' ? 'border-purple-500 ring-1 ring-purple-500' : 'border-line hover:border-muted'"
+          [ngClass]="activeStatus() === 'ISSUED' ? 'border-primary ring-1 ring-primary' : 'border-line hover:border-muted'"
         >
-          <div class="text-[11px] font-semibold text-purple-600 uppercase tracking-wider">Đã xuất bán</div>
-          <div class="text-lg font-bold font-mono text-purple-600 mt-1">{{ summary().issuedCount }}</div>
+          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đã xuất bán</div>
+          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().issuedCount }}</div>
         </button>
 
         <button
@@ -658,7 +658,7 @@ export class AdminSerialsPageComponent implements OnInit {
       case 'IN_TRANSIT':
         return 'bg-sky-50 text-sky-700 border border-sky-200';
       case 'ISSUED':
-        return 'bg-purple-50 text-purple-700 border border-purple-200';
+        return 'bg-surface-alt text-foreground border border-line';
       case 'QUARANTINED':
         return 'bg-rose-50 text-rose-700 border border-rose-200';
       case 'RETURNED_TO_SUPPLIER':
@@ -677,7 +677,7 @@ export class AdminSerialsPageComponent implements OnInit {
       case 'IN_TRANSIT':
         return 'text-sky-700';
       case 'ISSUED':
-        return 'text-purple-700';
+        return 'text-foreground';
       case 'QUARANTINED':
         return 'text-rose-700';
       case 'RETURNED_TO_SUPPLIER':
@@ -715,7 +715,7 @@ export class AdminSerialsPageComponent implements OnInit {
       case 'IN_TRANSIT':
         return 'bg-sky-500';
       case 'ISSUED':
-        return 'bg-purple-500';
+        return 'bg-primary';
       case 'QUARANTINED':
         return 'bg-rose-500';
       case 'RETURNED_TO_SUPPLIER':

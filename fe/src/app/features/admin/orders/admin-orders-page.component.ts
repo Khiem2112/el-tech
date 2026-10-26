@@ -312,7 +312,7 @@ type OrderGroup = {
                         <div class="mt-0.5">
                           @if (order.hasAssembly) {
                             <span
-                              class="text-xs font-mono text-purple-700 bg-purple-50 dark:text-purple-300 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/40 px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-xs font-mono text-primary bg-surface-elevated border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
                             >
                               Lắp ráp PC
                             </span>
@@ -689,9 +689,9 @@ export class AdminOrdersPageComponent implements OnInit {
       case 'CONFIRMED':
         return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30';
       case 'PREPARING_COMPONENTS':
-        return 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30';
+        return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/30';
       case 'ASSEMBLING':
-        return 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border border-purple-500/30';
+        return 'bg-surface-elevated text-primary border border-line';
       case 'READY_FOR_PICKUP':
         return 'bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/30';
       case 'SHIPPING':
@@ -705,7 +705,7 @@ export class AdminOrdersPageComponent implements OnInit {
       case 'COMPLETED':
         return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/40 font-bold';
       case 'ON_HOLD':
-        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/40 font-bold';
+        return 'bg-warning/10 text-warning border border-warning/30 font-bold';
       case 'CANCELLED':
         return 'bg-surface-alt text-muted border border-line';
       default:

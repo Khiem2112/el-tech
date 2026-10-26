@@ -45,7 +45,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               [title]="'Đang soạn hàng: ' + activeStats().preparingComponents"
             ></div>
             <div
-              class="bg-purple-500 transition-all duration-300"
+              class="bg-primary transition-all duration-300"
               [style.width.%]="(activeStats().assembling / activeTotal()) * 100"
               [title]="'Đang lắp ráp: ' + activeStats().assembling"
             ></div>
@@ -79,9 +79,9 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
             <span class="font-bold text-blue-400 font-mono">{{ activeStats().preparingComponents }}</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
             <span class="text-slate-400">Đang lắp ráp:</span>
-            <span class="font-bold text-purple-400 font-mono">{{ activeStats().assembling }}</span>
+            <span class="font-bold text-primary font-mono">{{ activeStats().assembling }}</span>
           </div>
           <div class="flex items-center gap-1.5">
             <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
@@ -144,11 +144,11 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                     {{ branch.preparingComponents }}
                   </a>
                 </td>
-                <td class="py-3 px-4 text-center font-semibold tabular-nums text-purple-400 bg-purple-950/20">
+                <td class="py-3 px-4 text-center font-semibold tabular-nums text-primary bg-primary/10">
                   <a
                     [routerLink]="['/admin/orders']"
                     [queryParams]="{ tab: 'ASSEMBLING', status: 'ASSEMBLING', branchId: branch.branchId }"
-                    class="hover:underline text-purple-400"
+                    class="hover:underline text-primary"
                   >
                     {{ branch.assembling }}
                   </a>
@@ -201,7 +201,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               <td class="py-2.5 px-4 text-center tabular-nums text-blue-400">
                 {{ distribution()?.systemTotal?.preparingComponents ?? 0 }}
               </td>
-              <td class="py-2.5 px-4 text-center tabular-nums text-purple-400">
+              <td class="py-2.5 px-4 text-center tabular-nums text-primary">
                 {{ distribution()?.systemTotal?.assembling ?? 0 }}
               </td>
               <td class="py-2.5 px-4 text-center tabular-nums text-teal-400">

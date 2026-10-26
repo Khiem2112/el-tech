@@ -13,7 +13,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
         <div class="bg-surface border border-line rounded-lg shadow-card text-foreground overflow-hidden">
           <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt">
             <div class="flex items-center gap-3">
-              <span class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800/40 font-mono text-xs font-bold uppercase">
+              <span class="px-2 py-0.5 rounded bg-surface-elevated text-primary border border-line font-mono text-xs font-bold uppercase">
                 Gói PC
               </span>
               <div>

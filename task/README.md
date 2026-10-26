@@ -221,6 +221,13 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 74. Task 74: Chuẩn Hóa Giao Diện Danh Mục, Thương Hiệu, Mẫu Sản Phẩm, Biến Thể Và PC Bundles ([TASK-74-ADMIN-CATALOG-AND-PC-BUNDLES-UI.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-74-ADMIN-CATALOG-AND-PC-BUNDLES-UI.md))
 75. Task 75: Chuẩn Hóa Phân Hệ Khuyến Mãi, Mã Giảm Giá, Đối Soát QR Và Hồ Sơ Khách Hàng ([TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS.md))
 
+#### Phase 9: Tinh Chỉnh Thủ Công & Tối Ưu Thẩm Mỹ Giao Diện (Impeccable UI/UX Polish)
+76. Task 76: Chuẩn Hóa Bảng Màu NVIDIA Design System Và Loại Bỏ Vết Tích Màu Sinh Bởi AI ([TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL.md))
+77. Task 77: Bổ Sung Cơ Chế Dự Phòng Ảnh Hỏng Và Fallback Placeholder ([TASK-77-FRONTEND-IMAGE-FALLBACKS-AND-BROKEN-IMAGE-PROTECTION.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-77-FRONTEND-IMAGE-FALLBACKS-AND-BROKEN-IMAGE-PROTECTION.md))
+78. Task 78: Chuẩn Hóa Dropdown Select Atom Và Dọn Dẹp Icon SVG Thô ([TASK-78-FRONTEND-SELECT-ATOM-STANDARDIZATION-AND-SVG-CLEANUP.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-78-FRONTEND-SELECT-ATOM-STANDARDIZATION-AND-SVG-CLEANUP.md))
+79. Task 79: Tinh Chỉnh Chữ Số Có Cột, Độ Tương Phản Và Loại Bỏ Chuyển Động Nảy ([TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH.md))
+80. Task 80: Hoàn Thiện Khung Trạng Thái Rỗng, Bộ Đệm Tải Và Dọn Dẹp Mã Nguồn Dư Thừa ([TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL.md))
+
 ### 6.2. Bảng Ánh Xạ Vấn Đề Báo Cáo Sang Task Khắc Phục
 
 | Task ID | Vấn đề báo cáo được giải quyết | Phạm vi kỹ thuật | Mức độ ưu tiên | Trạng thái |
@@ -237,6 +244,11 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-73 | Nhóm 1-6 UI/UX & MOD-09/11 quét sê-ri, MOD-19 mã OTP/QR thu phụ phí, xóa tiền tố MOD-xx | frontend | P1 | Complete |
 | TASK-74 | Nhóm 1-6 UI/UX (Catalog, mẫu sản phẩm, biến thể SKU, trường nhập chiết khấu PC Bundles) | frontend | P1 | Complete |
 | TASK-75 | Nhóm 1-6 UI/UX & FQ36-A đối soát QR không thu tiền mặt, chặn sáp nhập tài khoản có user | frontend | P1 | Complete |
+| TASK-76 | Polish Audit Nhóm 1 (Xóa bỏ dải màu tím, xanh lơ, chàm ngoài hệ thống; chuẩn hóa về token NVIDIA) | frontend | P1 | Complete |
+| TASK-77 | Polish Audit Nhóm 2 (Bảo vệ 12 vị trí ảnh admin khỏi lỗi hộp ảnh vỡ bằng fallback placeholder) | frontend | P1 | Pending |
+| TASK-78 | Polish Audit Nhóm 3 (Chuẩn hóa 15 tệp dùng select thô sang app-select; chuyển svg inline sang Lucide) | frontend | P1 | Pending |
+| TASK-79 | Polish Audit Nhóm 4 (Gắn class tabular cho 190 vị trí số tiền; sửa tương phản chữ và xóa bounce animation) | frontend | P1 | Pending |
+| TASK-80 | Polish Audit Nhóm 5 (Bổ sung empty state, skeleton loading cho tra cứu đơn; xóa mã thừa admin/pages) | frontend | P1 | Pending |
 
 ---
 
@@ -301,6 +313,18 @@ graph TD
         T57["[[TASK-57-ADMIN-PRODUCT-PROMOTIONS-HUB]]"] --> T75
         T58 --> T75
         T60 --> T75
+        T71 --> T76["[[TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL]]"]
+        T73 --> T76
+        T75 --> T76
+        T72 --> T77["[[TASK-77-FRONTEND-IMAGE-FALLBACKS-AND-BROKEN-IMAGE-PROTECTION]]"]
+        T74 --> T77
+        T18 --> T78["[[TASK-78-FRONTEND-SELECT-ATOM-STANDARDIZATION-AND-SVG-CLEANUP]]"]
+        T72 --> T78
+        T75 --> T78
+        T17 --> T79["[[TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH]]"]
+        T71 --> T79
+        T73 --> T80["[[TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL]]"]
+        T71 --> T80
     end
 ```
 
@@ -324,6 +348,12 @@ graph TD
 | [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]] | UI/UX Fix | Nhóm 1-6 & MOD-07 đến MOD-21 (Giao diện đơn hàng, quét mã sê-ri, OTP/QR thu phụ phí) | [[TASK-52-ADMIN-ORDERS-LIST-AND-SEGMENTED-PIPELINE]], [[TASK-53-ADMIN-ORDER-DETAIL-LAYOUT-FINANCE-AND-AUDIT]], [[TASK-54-ADMIN-ORDER-OPERATIONS-CONFIRM-PREPARE-ASSEMBLE-PICKUP]], [[TASK-55-ADMIN-ORDER-OPERATIONS-SHIPPING-DELIVERY-FAILED-AND-RETURNS]], [[TASK-56-ADMIN-ORDER-OPERATIONS-COMPLETION-CANCELLATION-AND-HOLD-RESOLUTION]] |
 | [[TASK-74-ADMIN-CATALOG-AND-PC-BUNDLES-UI]] | UI/UX Fix | Nhóm 1-6 (Danh mục, thương hiệu, mẫu sản phẩm, biến thể và nhập chiết khấu PC Bundles) | [[TASK-41-ADMIN-CATEGORIES-AND-DYNAMIC-SPEC-SCHEMA]], [[TASK-42-ADMIN-BRANDS-MANAGEMENT]], [[TASK-43-ADMIN-PRODUCT-TEMPLATES-LIST-AND-DYNAMIC-DETAIL]], [[TASK-44-ADMIN-VARIANTS-SYSTEM-CATALOG]], [[TASK-45-ADMIN-PC-BUNDLES-AND-VIRTUAL-BOM]] |
 | [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] | UI/UX Fix | Nhóm 1-6 & FQ36-A (Khuyến mãi, coupon, đối soát QR không thu tiền mặt, chặn sáp nhập tài khoản) | [[TASK-38-ADMIN-PAYMENTS-QR-DISCREPANCY-AND-SUPPLIER-RETURNS-COMPLIANCE]], [[TASK-57-ADMIN-PRODUCT-PROMOTIONS-HUB]], [[TASK-58-ADMIN-ORDER-COUPONS-AND-REDEMPTION-HISTORY]], [[TASK-60-ADMIN-CUSTOMER-PROFILES-AND-IDENTITY-MERGING]] |
+| [[TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL]] | UI/UX Polish | Polish Audit Nhóm 1 (Xóa bỏ dải màu tím, xanh lơ, chàm ngoài hệ thống; chuẩn hóa về token NVIDIA) | [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]], [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]], [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] |
+| [[TASK-77-FRONTEND-IMAGE-FALLBACKS-AND-BROKEN-IMAGE-PROTECTION]] | UI/UX Polish | Polish Audit Nhóm 2 (Bảo vệ 12 vị trí ảnh admin khỏi lỗi hộp ảnh vỡ bằng fallback placeholder) | [[TASK-72-ADMIN-INVENTORY-TABLES-AND-TRANSFERS]], [[TASK-74-ADMIN-CATALOG-AND-PC-BUNDLES-UI]] |
+| [[TASK-78-FRONTEND-SELECT-ATOM-STANDARDIZATION-AND-SVG-CLEANUP]] | UI/UX Polish | Polish Audit Nhóm 3 (Chuẩn hóa 15 tệp dùng select thô sang app-select; chuyển svg inline sang Lucide) | [[TASK-18-SPARTAN-COMBOBOX-AND-CATALOG-SELECTION]], [[TASK-72-ADMIN-INVENTORY-TABLES-AND-TRANSFERS]], [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] |
+| [[TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH]] | UI/UX Polish | Polish Audit Nhóm 4 (Gắn class tabular cho 190 vị trí số tiền; sửa tương phản chữ và xóa bounce animation) | [[TASK-17-TYPOGRAPHY-AND-HEADER-DROPDOWN-CLEANUP]], [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]] |
+| [[TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL]] | UI/UX Polish | Polish Audit Nhóm 5 (Bổ sung empty state, skeleton loading cho tra cứu đơn; xóa mã thừa admin/pages) | [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]], [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]] |
+
 
 
 

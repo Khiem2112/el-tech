@@ -145,7 +145,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
                           Đã Gộp
                         </span>
                       } @else if (item.isRegistered) {
-                        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/20 uppercase tracking-wide whitespace-nowrap">
+                        <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary-strong border border-primary/30 uppercase tracking-wide whitespace-nowrap">
                           Thành Viên
                         </span>
                       } @else {

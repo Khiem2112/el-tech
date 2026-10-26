@@ -29,7 +29,7 @@ import {
         <div data-modal-id="MOD-18" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-purple-600 dark:text-purple-400 uppercase text-sm tracking-wide">
+              <h3 class="font-bold text-warning uppercase text-sm tracking-wide">
                 {{ isCurrentlyOnHold() ? 'Xử Lý Ngoại Lệ Đơn Tạm Giữ' : 'Tạm Giữ Đơn Hàng' }}
               </h3>
               <p class="text-xs text-muted-foreground">
@@ -47,7 +47,7 @@ import {
           </div>
 
           @if (isCurrentlyOnHold()) {
-            <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded text-purple-800 dark:text-purple-300 text-xs leading-relaxed space-y-1">
+            <div class="p-3 bg-warning/10 border border-warning/30 rounded text-warning text-xs leading-relaxed space-y-1">
               <div>Đơn hàng đang bị tạm giữ với lý do: <strong class="text-foreground font-mono">{{ order().holdReason }}</strong></div>
               <div>
                 @switch (order().holdReason) {
@@ -135,7 +135,7 @@ import {
               rows="3"
               [(ngModel)]="note"
               [placeholder]="isCurrentlyOnHold() ? 'Ghi nhận chi tiết thỏa thuận với khách hàng...' : 'Nhập chi tiết lý do phát sinh tạm giữ...'"
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-purple-500"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
             ></textarea>
           </div>
 
@@ -158,7 +158,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !note.trim()"
-              class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-warning hover:opacity-90 text-white font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : (isCurrentlyOnHold() ? 'Xác Nhận Giải Quyết' : 'Xác Nhận Tạm Giữ') }}
             </button>

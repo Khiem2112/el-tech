@@ -308,7 +308,7 @@ export class SerialDetailDialogComponent {
       case 'IN_TRANSIT':
         return 'bg-sky-50 text-sky-700 border border-sky-200';
       case 'ISSUED':
-        return 'bg-purple-50 text-purple-700 border border-purple-200';
+        return 'bg-surface-alt text-foreground border border-line';
       case 'QUARANTINED':
         return 'bg-rose-50 text-rose-700 border border-rose-200';
       case 'RETURNED_TO_SUPPLIER':
