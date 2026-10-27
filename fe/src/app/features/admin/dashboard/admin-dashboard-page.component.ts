@@ -2,8 +2,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { InTransitTransfersCardComponent } from './components/in-transit-transfers-card.component';
 import { LowStockAlertCardComponent } from './components/low-stock-alert-card.component';
 import { OrderStatusDistributionComponent } from './components/order-status-distribution.component';
+import { SmartBiAnalyticsCardsComponent } from './components/smart-bi-analytics-cards.component';
 import { UrgentQueuesGridComponent } from './components/urgent-queues-grid.component';
 import { AdminDashboardService } from './services/admin-dashboard.service';
 
@@ -14,19 +16,18 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
     CommonModule,
     RouterModule,
     UrgentQueuesGridComponent,
+    SmartBiAnalyticsCardsComponent,
     OrderStatusDistributionComponent,
     LowStockAlertCardComponent,
+    InTransitTransfersCardComponent,
     SelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="w-full min-h-full p-4 lg:p-6 space-y-6 text-sm text-foreground bg-white">
+    <div class="w-full min-h-full p-4 lg:p-6 space-y-6 text-sm text-foreground bg-canvas">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary-strong font-mono text-xs font-bold">
-              SCR-02
-            </span>
             <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
               Trung Tâm Vận Hành
             </h1>
@@ -53,7 +54,7 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
             type="button"
             (click)="onRefresh()"
             [disabled]="dashboardService.isLoading()"
-            class="px-3.5 py-1.5 text-[13px] bg-white hover:bg-surface-alt border border-line text-foreground font-medium rounded transition-colors shadow-xs disabled:opacity-50"
+            class="px-3.5 py-1.5 text-[13px] bg-surface hover:bg-surface-alt border border-line text-foreground font-medium rounded transition-colors shadow-xs disabled:opacity-50"
           >
             Làm mới
           </button>
@@ -84,17 +85,25 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           [selectedBranchId]="dashboardService.selectedBranchId()"
         />
 
+        <app-smart-bi-analytics-cards />
+
         <app-order-status-distribution
           [distribution]="dashboardService.orderDistribution()"
           [selectedBranchId]="dashboardService.selectedBranchId()"
         />
 
-        <app-low-stock-alert-card
-          [alerts]="dashboardService.lowStockAlerts()"
-          [selectedBranchId]="dashboardService.selectedBranchId()"
-        />
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <app-low-stock-alert-card
+            [alerts]="dashboardService.lowStockAlerts()"
+            [selectedBranchId]="dashboardService.selectedBranchId()"
+          />
+          <app-in-transit-transfers-card
+            [transfers]="dashboardService.inTransitTransfers()"
+            [selectedBranchId]="dashboardService.selectedBranchId()"
+          />
+        </div>
 
-        <div class="p-5 bg-white border border-line rounded-lg shadow-xs">
+        <div class="p-5 bg-surface border border-line rounded-lg shadow-xs">
           <h2 class="text-xs font-bold uppercase tracking-wider text-muted mb-3">
             Lối Tắt Thao Tác Nhanh
           </h2>

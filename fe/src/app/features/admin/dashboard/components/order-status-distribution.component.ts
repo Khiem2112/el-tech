@@ -9,7 +9,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
   imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
+    <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
       <div class="p-5 border-b border-line flex items-center justify-between flex-wrap gap-2">
         <div>
           <h2 class="text-sm font-bold uppercase tracking-wider text-foreground">
@@ -125,6 +125,9 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               >
                 <td class="py-3 px-4 font-semibold text-foreground">
                   <div>{{ branch.branchCode }}: {{ branch.branchName }}</div>
+                  <div class="text-xs text-muted font-normal mt-0.5">
+                    {{ getPriorityRegion(branch.branchCode, branch.branchName) }}
+                  </div>
                 </td>
                 <td class="py-3 px-4 text-center font-semibold tabular-nums">
                   <a
@@ -266,4 +269,23 @@ export class OrderStatusDistributionComponent {
       stats.onHold
     );
   });
+
+  getPriorityRegion(code: string, name: string): string {
+    const upper = `${code} ${name}`.toUpperCase();
+    if (upper.includes('HN') || upper.includes('HÀ NỘI') || upper.includes('HA NOI')) {
+      return 'Ưu tiên giao hàng: Miền Bắc';
+    }
+    if (upper.includes('DN') || upper.includes('ĐÀ NẴNG') || upper.includes('DA NANG')) {
+      return 'Ưu tiên giao hàng: Miền Trung';
+    }
+    if (
+      upper.includes('HCM') ||
+      upper.includes('SG') ||
+      upper.includes('HỒ CHÍ MINH') ||
+      upper.includes('HO CHI MINH')
+    ) {
+      return 'Ưu tiên giao hàng: Miền Nam';
+    }
+    return 'Ưu tiên giao hàng: Nội vùng';
+  }
 }

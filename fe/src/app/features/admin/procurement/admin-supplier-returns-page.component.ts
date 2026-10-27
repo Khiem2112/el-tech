@@ -25,9 +25,6 @@ import {
     <div class="p-4 lg:p-6 space-y-4 w-full text-[13px] text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-primary font-mono text-xs font-bold">
-            SCR-22
-          </span>
           <div>
             <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
               Xuất Trả Nhà Cung Cấp

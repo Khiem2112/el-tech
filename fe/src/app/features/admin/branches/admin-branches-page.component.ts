@@ -35,9 +35,6 @@ type ToastNotification = {
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div class="flex items-center gap-3">
-          <span class="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary-strong font-mono text-xs font-bold">
-            SCR-29
-          </span>
           <div>
             <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
               Chi Nhánh & Khu Vực
@@ -168,7 +165,7 @@ type ToastNotification = {
                           Hoạt Động
                         </span>
                       } @else {
-                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-muted border border-line uppercase tracking-wide">
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold bg-surface-alt text-muted border border-line uppercase tracking-wide">
                           Tạm Dừng
                         </span>
                       }
@@ -232,7 +229,7 @@ type ToastNotification = {
       </div>
     </div>
 
-    <!-- MOD-39 Modal -->
+    <!-- Hop thoai chi nhanh -->
     <app-branch-form-dialog
       [isOpen]="isFormModalOpen()"
       [branch]="selectedBranch()"
@@ -301,7 +298,7 @@ type ToastNotification = {
           <button
             type="button"
             (click)="dismissToast(toast.id)"
-            class="text-slate-400 hover:text-white"
+            class="text-muted hover:text-foreground"
             aria-label="Đóng thông báo"
           >
             <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>

@@ -105,6 +105,14 @@ export type InventoryFilterParams = {
   limit?: number;
 };
 
+export type QuarantineStockPayload = {
+  branchId: number;
+  skuId: number;
+  quantity: number;
+  serialIds?: string[];
+  reason: string;
+};
+
 export type LedgerFilterParams = {
   search?: string;
   branchId?: number;
@@ -378,5 +386,12 @@ export class AdminInventoryService {
     } catch {
       return [];
     }
+  }
+
+  async quarantineStock(payload: QuarantineStockPayload): Promise<ApiResponse<unknown>> {
+    const headers = this.getAuthHeaders();
+    return firstValueFrom(
+      this.http.post<ApiResponse<unknown>>(`${this.baseUrl}/quarantine`, payload, { headers }),
+    );
   }
 }

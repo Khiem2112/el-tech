@@ -34,9 +34,6 @@ import {
               <h3 class="font-extrabold text-foreground uppercase tracking-wide text-sm">
                 Chi Tiết Thông Báo Outbox
               </h3>
-              <span class="text-[10px] font-mono bg-surface-alt text-primary border border-line px-2 py-0.5 rounded font-bold">
-                SCR-30
-              </span>
             </div>
             <p class="text-xs text-muted mt-0.5">
               Theo dõi dữ liệu phát hành thông báo giao dịch transactional

@@ -113,6 +113,7 @@ type FlattenedCategoryRow = AdminCategory & {
           <table class="w-full text-left border-collapse min-w-[1000px]">
             <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
+                <th class="py-3 px-4 w-16 text-center whitespace-nowrap">Ảnh</th>
                 <th class="py-3 px-4 whitespace-nowrap">Tên Danh Mục Ngành Hàng</th>
                 <th class="py-3 px-4 whitespace-nowrap">Mã Đường Dẫn (Slug)</th>
                 <th class="py-3 px-4 text-center whitespace-nowrap">Phiên Bản Schema</th>
@@ -124,14 +125,14 @@ type FlattenedCategoryRow = AdminCategory & {
             <tbody class="divide-y divide-line text-xs">
               @if (categoryService.isLoading()) {
                 <tr>
-                  <td colspan="6" class="py-12 text-center text-muted">
+                  <td colspan="7" class="py-12 text-center text-muted">
                     <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
                     <p>Đang tải cây danh mục ngành hàng...</p>
                   </td>
                 </tr>
               } @else if (visibleCategories().length === 0) {
                 <tr>
-                  <td colspan="6" class="py-12 text-center text-muted">
+                  <td colspan="7" class="py-12 text-center text-muted">
                     <p class="font-medium text-foreground">Không tìm thấy danh mục ngành hàng nào phù hợp</p>
                     <p class="text-xs text-muted mt-1">Vui lòng điều chỉnh lại bộ lọc hoặc tạo danh mục mới</p>
                   </td>
@@ -139,6 +140,15 @@ type FlattenedCategoryRow = AdminCategory & {
               } @else {
                 @for (cat of visibleCategories(); track cat.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors group">
+                    <td class="py-3 px-4 text-center">
+                      <div class="w-10 h-10 rounded border border-line bg-surface overflow-hidden flex items-center justify-center mx-auto shadow-xs p-1">
+                        <img
+                          [src]="getCategoryThumbnail(cat.slug)"
+                          [alt]="cat.name"
+                          class="w-full h-full object-contain"
+                        />
+                      </div>
+                    </td>
                     <td class="py-3 px-4 font-bold text-foreground">
                       <div class="flex items-center gap-2" [style.padding-left.px]="cat.depth * 24">
                         @if (cat.hasChildren) {
@@ -521,5 +531,25 @@ export class AdminCategoriesPageComponent implements OnInit {
 
   dismissToast(id: number): void {
     this.toasts.update((current) => current.filter((item) => item.id !== id));
+  }
+
+  getCategoryThumbnail(slug: string): string {
+    const s = slug.toLowerCase();
+    if (s.includes('vga') || s.includes('card') || s.includes('do-hoa')) {
+      return '/images/products/rtx-5090.svg';
+    }
+    if (s.includes('cpu') || s.includes('vi-xu-ly')) {
+      return '/images/products/ryzen-9800x3d.svg';
+    }
+    if (s.includes('main') || s.includes('bo-mach')) {
+      return '/images/products/z890-aorus.svg';
+    }
+    if (s.includes('ram') || s.includes('bo-nho')) {
+      return '/images/products/ram-corsair.svg';
+    }
+    if (s.includes('pc') || s.includes('may-bo') || s.includes('case')) {
+      return '/images/products/pc-apex-gaming.svg';
+    }
+    return '/images/products/placeholder.webp';
   }
 }

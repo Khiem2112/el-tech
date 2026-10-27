@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   ElementRef,
@@ -14,7 +15,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { SerialDetailDialogComponent } from './components/serial-detail-dialog.component';
-import { AdminSerialService } from './services/admin-serial.service';
+import { AdminSerialService, SerialDetailResponse } from './services/admin-serial.service';
 
 @Component({
   selector: 'app-admin-serials-page',
@@ -128,6 +129,8 @@ import { AdminSerialService } from './services/admin-serial.service';
           <div class="relative flex-1">
             <input
               #scannerInput
+              id="serial-scanner-input"
+              autofocus
               type="text"
               [(ngModel)]="scannerQuery"
               name="scannerQuery"
@@ -181,8 +184,16 @@ import { AdminSerialService } from './services/admin-serial.service';
         <div class="bg-surface border border-primary/50 rounded-xl shadow-card overflow-hidden max-w-4xl mx-auto text-foreground">
           <div class="bg-surface-alt p-4 border-b border-line flex items-center justify-between flex-wrap gap-4">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded border border-line bg-surface flex items-center justify-center text-primary-strong font-mono font-bold text-base">
-                SN
+              <div class="w-14 h-14 rounded-lg border border-line bg-surface overflow-hidden flex items-center justify-center shrink-0">
+                @if (getProductImage(qk.productTemplate.media)) {
+                  <img
+                    [src]="getProductImage(qk.productTemplate.media)!"
+                    [alt]="qk.productTemplate.name"
+                    class="w-full h-full object-contain p-1"
+                  />
+                } @else {
+                  <div class="text-primary-strong font-mono font-bold text-base">SN</div>
+                }
               </div>
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
@@ -191,10 +202,14 @@ import { AdminSerialService } from './services/admin-serial.service';
                     {{ getStatusLabel(qk.status) }}
                   </span>
                 </div>
-                <div class="text-xs text-muted font-mono mt-0.5">
-                  Serial: <strong class="text-foreground">{{ qk.serialNumber }}</strong> | SKU: <strong>{{ qk.sku }}</strong>
+                <div class="text-xs text-muted font-mono mt-0.5 flex items-center gap-2 flex-wrap">
+                  <span>Serial: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
+                  <span>| SKU: <strong>{{ qk.sku }}</strong></span>
                   @if (qk.barcode) {
-                    <span> | Barcode: <strong>{{ qk.barcode }}</strong></span>
+                    <span>| Barcode: <strong>{{ qk.barcode }}</strong></span>
+                  }
+                  @if (qk.productTemplate.brandName) {
+                    <span>| Hãng: <strong>{{ qk.productTemplate.brandName }}</strong></span>
                   }
                 </div>
               </div>
@@ -211,27 +226,57 @@ import { AdminSerialService } from './services/admin-serial.service';
             </div>
           </div>
 
-          <div class="p-4 bg-primary/10 border-b border-primary/20 text-primary-strong text-xs">
-            Linh kiện đang ở trạng thái hợp lệ. Số Serial gắn cố định với lịch sử di chuyển và chính sách bảo hành chính hãng.
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-surface border-b border-line text-xs">
+            <div class="p-2.5 rounded bg-surface-alt border border-line">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Nhà cung cấp</span>
+              <span class="font-bold text-foreground truncate block mt-0.5">
+                {{ qk.origin?.supplierName ?? qk.productTemplate.brandName + ' Authorized Dist' }}
+              </span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-alt border border-line">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Đơn nhập PO</span>
+              <span class="font-bold font-mono text-primary-strong truncate block mt-0.5">
+                {{ qk.origin?.purchaseOrderCode ?? 'PO-GỐC' }}
+              </span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-alt border border-line">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Đơn bán liên kết</span>
+              <span class="font-bold font-mono text-foreground truncate block mt-0.5">
+                {{ getAssociatedOrderCode(qk) ?? 'Chưa gán đơn bán' }}
+              </span>
+            </div>
+            <div class="p-2.5 rounded bg-surface-alt border border-line">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Hạn bảo hành còn lại</span>
+              <span class="font-bold text-emerald-700 truncate block mt-0.5">
+                {{ getRemainingWarranty(qk.warranty.endDate) }}
+              </span>
+            </div>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-line">
             <div class="p-5 space-y-4">
               <div class="flex items-center justify-between border-b border-line pb-2">
-                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lịch sử di chuyển gần nhất</span>
-                <span class="text-xs font-mono text-primary-strong">{{ qk.movements.length }} bản ghi</span>
+                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lộ trình luân chuyển thiết bị</span>
+                <span class="text-xs font-mono text-primary-strong">{{ qk.movements.length }} trạm di chuyển</span>
               </div>
 
               @if (qk.movements.length === 0) {
                 <div class="py-6 text-center text-xs text-muted">Chưa có lịch sử di chuyển</div>
               } @else {
                 <div class="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-line">
-                  @for (mov of qk.movements.slice(-3); track mov.id) {
+                  @for (mov of qk.movements; track mov.id) {
                     <div class="relative">
                       <span class="absolute -left-6 top-1 w-3 h-3 rounded-full border border-surface" [ngClass]="getMovementDotClass(mov.resultingStatus)"></span>
                       <div class="font-bold text-foreground text-xs">{{ mov.summaryText }}</div>
-                      <div class="text-xs text-muted">
-                        {{ formatDateTime(mov.occurredAt) }} | Phiếu: <strong class="text-primary-strong font-mono">{{ mov.stockMoveCode }}</strong>
+                      <div class="text-xs text-muted flex items-center gap-2 flex-wrap mt-0.5">
+                        <span>{{ formatDateTime(mov.occurredAt) }}</span>
+                        <span>| Phiếu: <strong class="text-primary-strong font-mono">{{ mov.stockMoveCode }}</strong></span>
+                        @if (mov.orderCode) {
+                          <span>| Đơn hàng: <strong class="text-foreground font-mono">{{ mov.orderCode }}</strong></span>
+                        }
+                        @if (mov.purchaseOrderCode) {
+                          <span>| PO: <strong class="text-primary-strong font-mono">{{ mov.purchaseOrderCode }}</strong></span>
+                        }
                       </div>
                       <div class="text-xs font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
                         Trạng thái: {{ getStatusLabel(mov.resultingStatus) }}
@@ -269,6 +314,10 @@ import { AdminSerialService } from './services/admin-serial.service';
                   <div class="flex items-center justify-between">
                     <span class="text-muted">Ngày hết hạn dự kiến:</span>
                     <span class="font-bold font-mono text-primary-strong">{{ formatDate(qk.warranty.endDate) }}</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-muted">Thời gian còn lại:</span>
+                    <span class="font-bold font-mono text-emerald-700">{{ getRemainingWarranty(qk.warranty.endDate) }}</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span class="text-muted">Số lần bảo hành đã ghi nhận:</span>
@@ -485,7 +534,7 @@ import { AdminSerialService } from './services/admin-serial.service';
     </div>
   `,
 })
-export class AdminSerialsPageComponent implements OnInit {
+export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
   private readonly serialService = inject(AdminSerialService);
   private readonly route = inject(ActivatedRoute);
 
@@ -536,6 +585,12 @@ export class AdminSerialsPageComponent implements OnInit {
     }
     void this.serialService.loadBranches();
     void this.loadTableData();
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.scannerInputElement?.nativeElement?.focus();
+    }, 150);
   }
 
   async loadTableData(): Promise<void> {
@@ -723,5 +778,47 @@ export class AdminSerialsPageComponent implements OnInit {
       default:
         return 'bg-slate-400';
     }
+  }
+
+  getProductImage(media: unknown): string | null {
+    if (!media) {
+      return null;
+    }
+    if (Array.isArray(media) && media.length > 0) {
+      const first = media[0];
+      if (typeof first === 'string') {
+        return first;
+      }
+      if (typeof first === 'object' && first && 'url' in first) {
+        return (first as { url: string }).url;
+      }
+    }
+    if (typeof media === 'string') {
+      return media;
+    }
+    return null;
+  }
+
+  getAssociatedOrderCode(qk: SerialDetailResponse): string | null {
+    const mov = qk.movements.find((m) => m.orderCode);
+    return mov?.orderCode ?? null;
+  }
+
+  getRemainingWarranty(endDateStr: string | null): string {
+    if (!endDateStr) {
+      return 'Không xác định';
+    }
+    const end = new Date(endDateStr);
+    const now = new Date();
+    if (now > end) {
+      return 'Đã hết hạn';
+    }
+    const diffMs = end.getTime() - now.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (diffDays > 30) {
+      const months = Math.floor(diffDays / 30);
+      return `Còn ${months} tháng (${diffDays} ngày)`;
+    }
+    return `Còn ${diffDays} ngày`;
   }
 }

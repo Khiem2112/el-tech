@@ -76,7 +76,6 @@ type ToastMessage = {
             </span>
           }
         </nav>
-        <span class="text-[11px] text-muted font-mono">SCR-21</span>
       </div>
 
       <header class="bg-white border-b border-line px-6 py-2.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0 shadow-xs">

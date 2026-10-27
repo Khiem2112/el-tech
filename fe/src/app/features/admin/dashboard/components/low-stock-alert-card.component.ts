@@ -9,7 +9,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
   imports: [CommonModule, RouterModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
+    <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
       <div class="p-5 border-b border-line flex items-center justify-between flex-wrap gap-2">
         <div>
           <h2 class="text-sm font-bold uppercase tracking-wider text-rose-600">
@@ -90,7 +90,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
         <div class="flex items-center gap-2">
           <a
             [routerLink]="['/admin/inventory/transfers']"
-            class="px-3.5 py-1.5 bg-white border border-line hover:bg-surface-alt rounded font-semibold text-foreground text-[13px] transition-colors shadow-xs"
+            class="px-3.5 py-1.5 bg-surface border border-line hover:bg-surface-alt rounded font-semibold text-foreground text-[13px] transition-colors shadow-xs"
           >
             Điều chuyển &rarr;
           </a>

@@ -32,9 +32,6 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
               <h3 class="font-extrabold text-foreground uppercase tracking-wide text-sm">
                 Chi Tiết & Kiểm Duyệt Đánh Giá
               </h3>
-              <span class="text-[10px] font-mono bg-surface-alt text-primary border border-line px-2 py-0.5 rounded font-bold">
-                MOD-38
-              </span>
             </div>
             <p class="text-xs text-muted mt-0.5">
               Kiểm duyệt nội dung và quản lý hiển thị đánh giá sản phẩm

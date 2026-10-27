@@ -56,10 +56,23 @@ export type LowStockAlertItem = {
   available: number;
 };
 
+export type InTransitTransferItem = {
+  id: string;
+  code: string;
+  sourceBranchCode: string;
+  sourceBranchName: string;
+  destinationBranchCode: string;
+  destinationBranchName: string;
+  totalQuantity: number;
+  skuCount: number;
+  dispatchedAt: string | null;
+};
+
 export type AdminDashboardSummary = {
   urgentQueues: UrgentQueuesData;
   orderDistribution: OrderStatusDistributionData;
   lowStockAlerts: LowStockAlertItem[];
+  inTransitTransfers?: InTransitTransferItem[];
 };
 
 @Injectable({ providedIn: 'root' })
@@ -78,6 +91,7 @@ export class AdminDashboardService {
   readonly urgentQueues = signal<UrgentQueuesData | null>(null);
   readonly orderDistribution = signal<OrderStatusDistributionData | null>(null);
   readonly lowStockAlerts = signal<LowStockAlertItem[]>([]);
+  readonly inTransitTransfers = signal<InTransitTransferItem[]>([]);
   readonly branches = signal<AdminBranch[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
@@ -125,6 +139,7 @@ export class AdminDashboardService {
         this.urgentQueues.set(response.data.urgentQueues);
         this.orderDistribution.set(response.data.orderDistribution);
         this.lowStockAlerts.set(response.data.lowStockAlerts);
+        this.inTransitTransfers.set(response.data.inTransitTransfers ?? []);
       } else {
         this.error.set('Khong the tai du lieu ban dieu khien');
       }

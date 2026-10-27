@@ -23,7 +23,7 @@ import { UrgentQueuesData } from '../services/admin-dashboard.service';
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-[13px] font-semibold text-muted uppercase">COD Chờ Duyệt</span>
@@ -75,7 +75,7 @@ import { UrgentQueuesData } from '../services/admin-dashboard.service';
           </div>
         </div>
 
-        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-[13px] font-semibold text-muted uppercase">Nhận Tại Showroom Quá 14 Ngày</span>
@@ -101,7 +101,7 @@ import { UrgentQueuesData } from '../services/admin-dashboard.service';
           </div>
         </div>
 
-        <div class="bg-white border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
+        <div class="bg-surface border border-line rounded-lg p-5 shadow-xs flex flex-col justify-between hover:border-line-strong transition-colors">
           <div>
             <div class="flex items-center justify-between mb-2">
               <span class="text-[13px] font-semibold text-rose-600 uppercase">Linh Kiện Chạm Ngưỡng Đặt Hàng</span>

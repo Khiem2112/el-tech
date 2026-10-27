@@ -40,9 +40,6 @@ import {
           <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0">
             <div>
               <div class="flex items-center gap-2">
-                <span class="px-1.5 py-0.5 rounded bg-muted/20 border border-line text-primary font-mono text-[11px] font-bold">
-                  MOD-32
-                </span>
                 <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
                   Tạo Phiếu Xuất Trả Nhà Cung Cấp
                 </h3>

@@ -27,15 +27,15 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent, AppIconModule, SelectComponent],
   template: `
-    <div class="flex flex-col h-full w-full bg-white text-foreground overflow-hidden text-[13px]">
-      <header class="h-14 bg-white border-b border-line flex items-center justify-between px-6 flex-shrink-0">
-        <div class="flex items-center gap-4">
+    <div class="p-4 lg:p-6 space-y-4 w-full text-[13px] text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
           <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">
             Nhật Ký Thông Báo Giao Dịch
           </h1>
-          <span class="text-xs text-muted border-l border-line pl-3 font-mono">
-            SCR-30
-          </span>
+          <p class="text-xs text-muted mt-0.5">
+            Hàng đợi và lịch sử gửi thông báo tự động (In-app, Email, SMS)
+          </p>
         </div>
 
         <div class="flex items-center gap-3">
@@ -43,10 +43,9 @@ type ToastNotification = {
             Hàng đợi thông báo tự động
           </span>
         </div>
-      </header>
+      </div>
 
-      <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
-        <div class="bg-white border border-line rounded-lg p-4 shadow-xs grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div class="bg-surface border border-line rounded-lg p-4 shadow-xs grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
             <label class="block font-semibold text-muted text-xs uppercase mb-1">
               Mã đơn / Người nhận
@@ -111,7 +110,7 @@ type ToastNotification = {
           </div>
         </div>
 
-        <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
+        <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left">
               <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
@@ -255,7 +254,6 @@ type ToastNotification = {
             </div>
           }
         </div>
-      </main>
 
       @if (selectedNotification()) {
         <app-notification-detail-dialog
@@ -269,7 +267,7 @@ type ToastNotification = {
         @for (toast of toasts(); track toast.id) {
           <div
             class="px-4 py-2.5 rounded-md shadow-lg text-[13px] font-semibold border flex items-center justify-between gap-3 transition-all"
-            [class]="toast.type === 'success' ? 'bg-white border-emerald-500 text-emerald-700' : toast.type === 'error' ? 'bg-white border-rose-500 text-rose-700' : 'bg-white border-amber-500 text-amber-700'"
+            [class]="toast.type === 'success' ? 'bg-surface border-emerald-500 text-emerald-700' : toast.type === 'error' ? 'bg-surface border-rose-500 text-rose-700' : 'bg-surface border-amber-500 text-amber-700'"
           >
             <span>{{ toast.message }}</span>
             <button
