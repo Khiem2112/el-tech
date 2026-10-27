@@ -135,26 +135,26 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
-                          <span class="text-[11px] font-bold uppercase tracking-wider text-primary">
+                          <span class="text-xs font-bold uppercase tracking-wider text-primary">
                             {{ slot.categoryName }}
                           </span>
                           @if (item.tag) {
-                            <span class="px-1.5 py-0.5 rounded text-[10px] text-muted bg-surface-alt border border-line">
+                            <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
                               {{ item.tag }}
                             </span>
                           }
                         </div>
 
-                        <h2 class="text-xs sm:text-sm font-bold text-foreground truncate mt-0.5">{{ item.name }}</h2>
-                        <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
+                        <h2 class="text-sm font-bold text-foreground truncate mt-0.5">{{ item.name }}</h2>
+                        <p class="text-xs text-muted truncate mt-0.5">{{ item.specs }}</p>
                       </div>
                     </div>
 
                     <!-- Slot Price & Actions -->
                     <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
                       <div class="text-left md:text-right">
-                        <div class="text-xs sm:text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
-                        <div class="text-[10px] text-muted">Bảo hành 36T</div>
+                        <div class="text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
+                        <div class="text-xs text-muted">Bảo hành 36T</div>
                       </div>
 
                       <div class="flex items-center gap-1.5">
@@ -189,7 +189,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                           <span class="text-xs font-bold uppercase tracking-wider text-foreground">
                             {{ slot.categoryName }}
                           </span>
-                          <span class="text-[11px] text-muted">({{ slot.defaultSpecTag }})</span>
+                          <span class="text-xs text-muted">({{ slot.defaultSpecTag }})</span>
                         </div>
                         <p class="text-xs text-muted mt-0.5">Chưa chọn linh kiện cho vị trí này</p>
                       </div>
@@ -218,9 +218,9 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   <lucide-icon name="wrench" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Gói Dịch Vụ Kỹ Thuật Đính Kèm Tự Chọn (Miễn Phí 0 đ)</span>
                 </div>
-                <span class="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">MIỄN PHÍ</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-bold">MIỄN PHÍ</span>
               </div>
-              <div class="grid sm:grid-cols-2 gap-2.5 pt-1 text-[11px]">
+              <div class="grid sm:grid-cols-2 gap-2.5 pt-1 text-xs">
                 <label class="p-3 rounded-lg bg-surface-alt border border-line flex items-start gap-3 cursor-pointer hover:border-primary/50 transition-colors">
                   <input
                     type="checkbox"
@@ -233,7 +233,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                       <span>Lắp ráp &amp; đi dây chuyên nghiệp</span>
                       <span class="text-primary font-bold">0 đ</span>
                     </div>
-                    <p class="text-muted text-[11px] leading-relaxed">Kỹ thuật viên bóc seal, đi dây nẹp thẩm mỹ, luồn dây âm thân case.</p>
+                    <p class="text-muted text-xs leading-relaxed">Kỹ thuật viên bóc seal, đi dây nẹp thẩm mỹ, luồn dây âm thân case.</p>
                   </div>
                 </label>
 
@@ -249,7 +249,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                       <span>Cài đặt HĐH &amp; Stress Test 24h</span>
                       <span class="text-primary font-bold">0 đ</span>
                     </div>
-                    <p class="text-muted text-[11px] leading-relaxed">Kiểm tra tải FurMark, Cinebench R23 và cập nhật BIOS bo mạch mới nhất.</p>
+                    <p class="text-muted text-xs leading-relaxed">Kiểm tra tải FurMark, Cinebench R23 và cập nhật BIOS bo mạch mới nhất.</p>
                   </div>
                 </label>
               </div>
@@ -260,13 +260,13 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
           <div class="lg:col-span-4 sticky top-24 space-y-4">
             <div class="rounded-xl p-5 bg-surface shadow-sm border border-line space-y-4">
               <div class="border-b border-line pb-3">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-muted">TỔNG KẾT BẢO TOÀN DÀN MÁY</span>
+                <span class="text-xs font-bold uppercase tracking-wider text-muted">TỔNG KẾT BẢO TOÀN DÀN MÁY</span>
                 <h3 class="text-sm font-bold text-foreground mt-0.5">Báo Giá Chi Tiết PC Tự Ráp</h3>
               </div>
 
               <!-- Showroom Branch Selector & Inventory Telemetry (PB-01) -->
               <div class="space-y-2 pb-2 border-b border-line">
-                <label for="branch-selector" class="block text-[11px] font-bold text-foreground uppercase tracking-wider">
+                <label for="branch-selector" class="block text-xs font-bold text-foreground uppercase tracking-wider">
                   Chi nhánh lắp ráp / nhận máy
                 </label>
                 <app-select
@@ -282,14 +282,14 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   @if (isAllInStockAtBranch()) {
                     <span class="size-2 rounded-full bg-primary shrink-0 inline-block"></span>
                     <div class="min-w-0">
-                      <span class="text-primary font-bold block text-[11px]">Đủ linh kiện tại chi nhánh</span>
-                      <p class="text-[10px] text-muted">Sẵn sàng lắp ráp ngay trong 120 phút.</p>
+                      <span class="text-primary font-bold block text-xs">Đủ linh kiện tại chi nhánh</span>
+                      <p class="text-xs text-muted">Sẵn sàng lắp ráp ngay trong 120 phút.</p>
                     </div>
                   } @else {
                     <span class="size-2 rounded-full bg-amber-400 shrink-0 inline-block"></span>
                     <div class="min-w-0">
-                      <span class="text-amber-400 font-bold block text-[11px]">Cần điều chuyển 1-2 món từ kho tổng</span>
-                      <p class="text-[10px] text-muted">Thời gian lắp ráp và kiểm tra dự kiến 24h.</p>
+                      <span class="text-amber-400 font-bold block text-xs">Cần điều chuyển 1-2 món từ kho tổng</span>
+                      <p class="text-xs text-muted">Thời gian lắp ráp và kiểm tra dự kiến 24h.</p>
                     </div>
                   }
                 </div>
@@ -313,31 +313,31 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <div class="flex items-baseline justify-between pt-1">
                   <div>
                     <div class="text-xs font-black uppercase text-foreground">TỔNG THANH TOÁN</div>
-                    <div class="text-[10px] text-muted">Bao gồm VAT 10% &amp; Hóa đơn GTGT</div>
+                    <div class="text-xs text-muted">Bao gồm VAT 10% &amp; Hóa đơn GTGT</div>
                   </div>
                   <div class="text-right">
                     <div class="text-xl sm:text-2xl font-black text-primary tabular">{{ totalHardwarePrice() | vnd }}</div>
-                    <div class="text-[10px] text-primary font-bold tabular">Tiết kiệm trọn gói 1.800.000 đ</div>
+                    <div class="text-xs text-primary font-bold tabular">Tiết kiệm trọn gói 1.800.000 đ</div>
                   </div>
                 </div>
               </div>
 
               <!-- Custom COD Regulations Policy (PAY-011) -->
               <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1.5 text-xs text-muted">
-                <div class="flex items-center gap-1.5 text-foreground font-bold text-[11px]">
+                <div class="flex items-center gap-1.5 text-foreground font-bold text-xs">
                   <lucide-icon name="shield-check" class="size-4 text-warning" aria-hidden="true"></lucide-icon>
                   <span>Quy định đặt cọc máy ráp (COD - PAY-011)</span>
                 </div>
-                <p class="text-[11px] leading-relaxed">
+                <p class="text-xs leading-relaxed">
                   Máy tính ráp theo yêu cầu áp dụng quy tắc đặt cọc: Tối thiểu <strong class="text-foreground">10%</strong> để kỹ thuật bóc seal và lắp đặt an toàn.
                 </p>
-                <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                <div class="grid grid-cols-2 gap-2 text-xs pt-1">
                   <div class="bg-surface p-2 rounded border border-line">
-                    <div class="text-muted text-[10px]">Cọc trước (VietQR):</div>
+                    <div class="text-muted text-xs">Cọc trước (VietQR):</div>
                     <div class="font-bold text-primary tabular text-xs mt-0.5">{{ depositAmount() | vnd }}</div>
                   </div>
                   <div class="bg-surface p-2 rounded border border-line">
-                    <div class="text-muted text-[10px]">Còn lại COD khi nhận:</div>
+                    <div class="text-muted text-xs">Còn lại COD khi nhận:</div>
                     <div class="font-bold text-foreground tabular text-xs mt-0.5">{{ remainingCodAmount() | vnd }}</div>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   appButton
                   variant="primary"
                   size="lg"
-                  class="w-full text-xs font-bold uppercase tracking-wider"
+                  class="w-full font-bold uppercase tracking-wider"
                   [disabled]="activeItemCount() === 0 || adding()"
                   (click)="proceedToCheckout()"
                 >
@@ -363,7 +363,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   appButton
                   variant="secondary"
                   size="md"
-                  class="w-full text-xs font-bold"
+                  class="w-full font-bold"
                   [disabled]="activeItemCount() === 0 || adding()"
                   (click)="addToCartWhole()"
                 >
@@ -373,7 +373,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               </div>
 
               <!-- Assurance Micro Badges -->
-              <div class="pt-2 flex items-center justify-between text-[11px] text-muted border-t border-line">
+              <div class="pt-2 flex items-center justify-between text-xs text-muted border-t border-line">
                 <span class="flex items-center gap-1">
                   <lucide-icon name="rotate-ccw" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Đổi mới 30 ngày</span>
@@ -393,14 +393,14 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 
             <!-- Diagnostics Card -->
             <div class="rounded-xl p-4 bg-surface shadow-sm border border-line space-y-1.5 text-xs text-muted">
-              <div class="flex items-center justify-between text-foreground font-bold text-[11px]">
+              <div class="flex items-center justify-between text-foreground font-bold text-xs">
                 <span class="flex items-center gap-1.5">
                   <lucide-icon name="cpu" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Kiến trúc hệ thống</span>
                 </span>
-                <span class="font-mono text-primary font-bold">x86-64 / PCIe 5.0</span>
+                <span class="text-primary font-bold tabular">x86-64 / PCIe 5.0</span>
               </div>
-              <p class="text-[11px] leading-relaxed">
+              <p class="text-xs leading-relaxed">
                 Cấu hình tương thích các chuẩn tản nhiệt Radiator 360mm và khoảng không thông thoáng cho card đồ họa thế hệ mới nhất.
               </p>
             </div>

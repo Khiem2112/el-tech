@@ -62,7 +62,7 @@ export type CancelOrderPayload = {
             <div class="bg-warning/10 border border-amber-500/30 p-3.5 rounded-lg flex items-start gap-3">
               <lucide-icon name="ShieldCheck" class="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
               <div class="space-y-1">
-                <span class="font-bold text-warning uppercase tracking-wide text-[11px] block">
+                <span class="font-bold text-warning uppercase tracking-wide text-xs block">
                   Quy định hủy đơn trực tuyến (ORD-012)
                 </span>
                 <p class="text-muted leading-relaxed">
@@ -77,7 +77,7 @@ export type CancelOrderPayload = {
             <div class="bg-primary/10 border border-primary/30 p-3.5 rounded-lg flex items-start gap-3">
               <lucide-icon name="CreditCard" class="size-5 text-primary shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
               <div class="space-y-1">
-                <span class="font-bold text-primary uppercase tracking-wide text-[11px] block">
+                <span class="font-bold text-primary uppercase tracking-wide text-xs block">
                   Chính sách hoàn tiền 100% (ORD-014)
                 </span>
                 <p class="text-muted leading-relaxed">
@@ -95,12 +95,12 @@ export type CancelOrderPayload = {
                 <lucide-icon name="Package" class="size-5" aria-hidden="true"></lucide-icon>
               </div>
               <div>
-                <span class="text-[10px] text-muted uppercase font-bold tracking-wider">Mã đơn hàng</span>
+                <span class="text-xs text-muted uppercase font-bold tracking-wider">Mã đơn hàng</span>
                 <p class="font-bold text-sm text-foreground">#{{ orderCode() }}</p>
               </div>
             </div>
             <div class="text-right">
-              <span class="text-[10px] text-muted uppercase font-bold tracking-wider">Tổng giá trị đơn</span>
+              <span class="text-xs text-muted uppercase font-bold tracking-wider">Tổng giá trị đơn</span>
               <p class="font-bold text-sm text-primary tabular">{{ totalAmount() | vnd }}</p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export type CancelOrderPayload = {
               <textarea
                 id="cancelDetailNote"
                 appInput
-                class="w-full text-xs"
+                class="w-full text-sm"
                 rows="2"
                 [ngModel]="detailNote()"
                 (ngModelChange)="detailNote.set($event)"
@@ -144,15 +144,15 @@ export type CancelOrderPayload = {
                   <lucide-icon name="CreditCard" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                   Thông tin tài khoản nhận hoàn tiền
                 </span>
-                <span class="text-[11px] text-primary font-bold">Khớp giao dịch đối soát</span>
+                <span class="text-xs text-primary font-bold">Khớp giao dịch đối soát</span>
               </div>
               <div class="grid sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
-                  <label class="text-[10px] text-muted uppercase font-bold" for="bankName">Ngân hàng thụ hưởng</label>
+                  <label class="text-xs text-muted uppercase font-bold" for="bankName">Ngân hàng thụ hưởng</label>
                   <input
                     id="bankName"
                     appInput
-                    class="w-full text-xs font-semibold"
+                    class="w-full text-sm font-medium"
                     [ngModel]="refundBankName()"
                     (ngModelChange)="refundBankName.set($event)"
                     name="bankName"
@@ -160,11 +160,11 @@ export type CancelOrderPayload = {
                   >
                 </div>
                 <div class="space-y-1">
-                  <label class="text-[10px] text-muted uppercase font-bold" for="bankAccount">Số tài khoản / VietQR</label>
+                  <label class="text-xs text-muted uppercase font-bold" for="bankAccount">Số tài khoản / VietQR</label>
                   <input
                     id="bankAccount"
                     appInput
-                    class="w-full text-xs font-semibold"
+                    class="w-full text-sm font-medium tabular"
                     [ngModel]="refundAccount()"
                     (ngModelChange)="refundAccount.set($event)"
                     name="bankAccount"

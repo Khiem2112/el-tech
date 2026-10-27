@@ -35,7 +35,7 @@
         </div>
         <div class="flex flex-col">
           <span class="text-lg font-black tracking-tight leading-none text-foreground uppercase font-bold">EL-TECH</span>
-          <span class="text-[11px] font-bold tracking-widest text-primary uppercase mt-0.5">HARDWARE LAB</span>
+          <span class="text-xs font-bold tracking-widest text-primary uppercase mt-0.5">HARDWARE LAB</span>
         </div>
       </a>
     </div>
@@ -84,10 +84,10 @@
             <div class="p-6 text-center text-xs text-muted flex flex-col items-center justify-center gap-1.5">
               <lucide-icon name="package" class="w-6 h-6 text-muted/60" aria-hidden="true"></lucide-icon>
               <span>Không tìm thấy linh kiện nào khớp với "<strong>{{ searchQuery }}</strong>"</span>
-              <span class="text-[11px] text-muted/80">Thử tìm theo từ khóa như Intel, RTX, ASUS, DDR5...</span>
+              <span class="text-xs text-muted/80">Thử tìm theo từ khóa như Intel, RTX, ASUS, DDR5...</span>
             </div>
           } @else {
-            <div class="px-3.5 py-2 bg-surface-alt/70 border-b border-line flex items-center justify-between text-[11px] font-semibold text-muted">
+            <div class="px-3.5 py-2 bg-surface-alt/70 border-b border-line flex items-center justify-between text-xs font-semibold text-muted">
               <span>Sản phẩm gợi ý ({{ searchResults().length }})</span>
               <span>Bấm vào để xem chi tiết</span>
             </div>
@@ -107,19 +107,19 @@
                   </div>
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 flex-wrap">
-                      <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-primary border border-line">
+                      <span class="px-1.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-surface-alt text-primary border border-line">
                         {{ product.category.name }}
                       </span>
                       @if (product.brand?.name) {
-                        <span class="text-[11px] text-muted font-medium">{{ product.brand.name }}</span>
+                        <span class="text-xs text-muted font-medium">{{ product.brand.name }}</span>
                       }
                     </div>
-                    <div class="text-xs font-bold text-foreground truncate mt-0.5 group-hover:text-primary transition-colors">
+                    <div class="text-sm font-bold text-foreground truncate mt-0.5 group-hover:text-primary transition-colors">
                       {{ product.name }}
                     </div>
                   </div>
                   <div class="text-right shrink-0 flex items-center gap-1.5">
-                    <div class="text-xs font-mono font-bold text-primary">
+                    <div class="text-sm font-bold text-primary tabular">
                       {{ getMinPrice(product) | vnd }}
                     </div>
                     <lucide-icon name="chevron-right" class="w-3.5 h-3.5 text-muted group-hover:text-primary transition-colors" aria-hidden="true"></lucide-icon>
@@ -247,9 +247,9 @@
                       >
                     </div>
                     <div class="min-w-0 flex-1">
-                      <div class="text-[10px] text-primary font-bold uppercase truncate">{{ product.category.name }}</div>
-                      <div class="text-xs font-semibold text-foreground truncate">{{ product.name }}</div>
-                      <div class="text-[11px] font-mono font-bold text-primary">{{ getMinPrice(product) | vnd }}</div>
+                      <div class="text-xs text-primary font-bold uppercase truncate">{{ product.category.name }}</div>
+                      <div class="text-sm font-semibold text-foreground truncate">{{ product.name }}</div>
+                      <div class="text-sm font-bold text-primary tabular">{{ getMinPrice(product) | vnd }}</div>
                     </div>
                   </div>
                 }
@@ -306,7 +306,7 @@
         <lucide-icon name="shield-check" class="w-5 h-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         <div>
           <h4 class="font-bold text-white text-xs sm:text-sm">100% Chính Hãng</h4>
-          <p class="text-[11px] text-muted">Nhập khẩu ủy quyền, đầy đủ VAT</p>
+          <p class="text-xs text-muted">Nhập khẩu ủy quyền, đầy đủ VAT</p>
         </div>
       </div>
 
@@ -314,7 +314,7 @@
         <lucide-icon name="rotate-ccw" class="w-5 h-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         <div>
           <h4 class="font-bold text-white text-xs sm:text-sm">Đổi Mới 30 Ngày</h4>
-          <p class="text-[11px] text-muted">Lỗi phần cứng NSX đổi ngay</p>
+          <p class="text-xs text-muted">Lỗi phần cứng NSX đổi ngay</p>
         </div>
       </div>
 
@@ -322,7 +322,7 @@
         <lucide-icon name="wrench" class="w-5 h-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         <div>
           <h4 class="font-bold text-white text-xs sm:text-sm">Lắp Ráp &amp; Test 24h</h4>
-          <p class="text-[11px] text-muted">Kiểm tra nhiệt độ &amp; xung nhịp</p>
+          <p class="text-xs text-muted">Kiểm tra nhiệt độ &amp; xung nhịp</p>
         </div>
       </div>
 
@@ -330,7 +330,7 @@
         <lucide-icon name="truck" class="w-5 h-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
         <div>
           <h4 class="font-bold text-white text-xs sm:text-sm">Giao Hỏa Tốc</h4>
-          <p class="text-[11px] text-muted">Nội thành HN, TP.HCM &amp; ĐN</p>
+          <p class="text-xs text-muted">Nội thành HN, TP.HCM &amp; ĐN</p>
         </div>
       </div>
     </div>

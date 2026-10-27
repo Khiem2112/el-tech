@@ -39,7 +39,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <div class="size-11 rounded-xl bg-surface-dark border border-line-dark flex items-center justify-center shadow-xs mb-3">
                 <lucide-icon name="Cpu" class="size-6 text-primary" aria-hidden="true"></lucide-icon>
               </div>
-              <span class="text-[10px] tracking-widest text-primary font-bold uppercase">EL-TECH HARDWARE</span>
+              <span class="text-xs tracking-widest text-primary font-bold uppercase">EL-TECH HARDWARE</span>
               <h2 id="auth-modal-title" class="text-xl font-black text-foreground tracking-tight mt-1">
                 {{ authMode() === 'login' ? 'Chào mừng trở lại' : 'Tạo tài khoản mới' }}
               </h2>
@@ -94,7 +94,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             <!-- Divider -->
             <div class="relative flex items-center justify-center">
               <div class="w-full h-px bg-border"></div>
-              <span class="absolute px-3 bg-surface text-[10px] text-muted uppercase font-bold tracking-wider">
+              <span class="absolute px-3 bg-surface text-xs text-muted uppercase font-bold tracking-wider">
                 Hoặc với Email / SĐT
               </span>
             </div>
@@ -109,7 +109,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <input
                       id="regName"
                       appInput
-                      class="w-full text-xs pl-8"
+                      class="w-full text-sm font-medium pl-8"
                       [(ngModel)]="name"
                       name="name"
                       placeholder="Nguyễn Văn A"
@@ -127,7 +127,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <input
                     id="authIdentifier"
                     appInput
-                    class="w-full text-xs pl-8"
+                    class="w-full text-sm font-medium pl-8"
                     [(ngModel)]="identifier"
                     name="identifier"
                     placeholder="name@example.com hoặc 0912xxxxxx"
@@ -145,7 +145,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     id="authPassword"
                     appInput
                     [type]="showPassword() ? 'text' : 'password'"
-                    class="w-full text-xs pl-8 pr-9"
+                    class="w-full text-sm font-medium pl-8 pr-9"
                     [(ngModel)]="password"
                     name="password"
                     placeholder="••••••••"
@@ -154,7 +154,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <lucide-icon name="Lock" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
                   <button
                     type="button"
-                    class="absolute right-2.5 text-muted hover:text-foreground transition-colors"
+                    class="absolute right-2.5 text-muted hover:text-foreground transition-colors cursor-pointer"
                     aria-label="Ẩn hiện mật khẩu"
                     (click)="showPassword.set(!showPassword())"
                   >
@@ -217,7 +217,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
             <!-- Terms notice on register -->
             @if (authMode() === 'register') {
-              <p class="text-center text-[11px] text-muted leading-relaxed">
+              <p class="text-center text-xs text-muted leading-relaxed">
                 Bằng việc đăng ký, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của EL-TECH.
               </p>
             }

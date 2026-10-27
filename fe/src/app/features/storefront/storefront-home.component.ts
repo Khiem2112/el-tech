@@ -67,27 +67,27 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             <!-- Clean Specs Matrix -->
             <div class="grid grid-cols-2 gap-2 text-xs pt-1">
               <div class="bg-surface-dark p-2.5 rounded border border-line-dark">
-                <span class="text-muted block text-[10px]">VI XỬ LÝ</span>
+                <span class="text-muted block text-xs font-semibold">VI XỬ LÝ</span>
                 <span class="text-foreground-dark font-semibold">i9-14900K (24C/32T)</span>
               </div>
               <div class="bg-surface-dark p-2.5 rounded border border-line-dark">
-                <span class="text-muted block text-[10px]">CARD ĐỒ HỌA</span>
+                <span class="text-muted block text-xs font-semibold">CARD ĐỒ HỌA</span>
                 <span class="text-primary font-semibold">RTX 4080 Super 16GB</span>
               </div>
               <div class="bg-surface-dark p-2.5 rounded border border-line-dark">
-                <span class="text-muted block text-[10px]">BỘ NHỚ RAM</span>
+                <span class="text-muted block text-xs font-semibold">BỘ NHỚ RAM</span>
                 <span class="text-foreground-dark font-semibold">64GB DDR5 6000</span>
               </div>
               <div class="bg-surface-dark p-2.5 rounded border border-line-dark">
-                <span class="text-muted block text-[10px]">LƯU TRỮ SSD</span>
+                <span class="text-muted block text-xs font-semibold">LƯU TRỮ SSD</span>
                 <span class="text-foreground-dark font-semibold">2TB NVMe Gen 4</span>
               </div>
             </div>
 
             <div class="pt-3 border-t border-line-dark flex items-center justify-between">
               <div>
-                <span class="text-[11px] text-muted block">Giá combo trọn gói</span>
-                <span class="text-lg font-black text-primary tabular font-mono">51.990.000 đ</span>
+                <span class="text-xs text-muted block">Giá combo trọn gói</span>
+                <span class="text-lg font-black text-primary tabular">51.990.000 đ</span>
               </div>
               <a
                 routerLink="/tu-lap-pc"
@@ -123,37 +123,37 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
         <a routerLink="/san-pham" [queryParams]="{ category: 'cpu' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">CPU</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Bộ Vi Xử Lý</h3>
-          <p class="text-[11px] text-muted mt-0.5">Intel, AMD Ryzen</p>
+          <p class="text-xs text-muted mt-0.5">Intel, AMD Ryzen</p>
         </a>
 
         <a routerLink="/san-pham" [queryParams]="{ category: 'vga' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">VGA</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Card Đồ Họa</h3>
-          <p class="text-[11px] text-muted mt-0.5">RTX 40 / 50 Series</p>
+          <p class="text-xs text-muted mt-0.5">RTX 40 / 50 Series</p>
         </a>
 
         <a routerLink="/san-pham" [queryParams]="{ category: 'mainboard' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">MAIN</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Bo Mạch Chủ</h3>
-          <p class="text-[11px] text-muted mt-0.5">Z790, B760, X670</p>
+          <p class="text-xs text-muted mt-0.5">Z790, B760, X670</p>
         </a>
 
         <a routerLink="/san-pham" [queryParams]="{ category: 'ram' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">RAM</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Bộ Nhớ RAM</h3>
-          <p class="text-[11px] text-muted mt-0.5">DDR5, DDR4 RGB</p>
+          <p class="text-xs text-muted mt-0.5">DDR5, DDR4 RGB</p>
         </a>
 
         <a routerLink="/san-pham" [queryParams]="{ category: 'ssd' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">SSD</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Ổ Cứng SSD</h3>
-          <p class="text-[11px] text-muted mt-0.5">NVMe PCIe Gen 4/5</p>
+          <p class="text-xs text-muted mt-0.5">NVMe PCIe Gen 4/5</p>
         </a>
 
         <a routerLink="/san-pham" [queryParams]="{ category: 'psu' }" class="group p-4 rounded-lg border border-line hover:border-primary bg-surface hover:shadow-xs transition-all text-center">
           <div class="size-11 mx-auto rounded-md bg-surface-alt group-hover:bg-primary/10 text-foreground group-hover:text-primary font-bold flex items-center justify-center text-xs transition-colors">PSU</div>
           <h3 class="font-bold text-xs text-foreground mt-2 group-hover:text-primary transition-colors">Nguồn Máy Tính</h3>
-          <p class="text-[11px] text-muted mt-0.5">Chuẩn 80 Plus Gold</p>
+          <p class="text-xs text-muted mt-0.5">Chuẩn 80 Plus Gold</p>
         </a>
       </div>
     </section>
@@ -179,7 +179,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-foreground">CREATOR STUDIO</span>
-              <span class="text-[11px] text-muted">Bảo hành 36 tháng</span>
+              <span class="text-xs text-muted">Bảo hành 36 tháng</span>
             </div>
 
             <div class="space-y-1">
@@ -210,7 +210,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="pt-4 border-t border-line mt-4 space-y-3">
             <div class="flex items-baseline justify-between">
               <span class="text-xs text-muted">Giá trọn gói:</span>
-              <span class="text-base font-bold text-foreground tabular font-mono">41.890.000 đ</span>
+              <span class="text-base font-bold text-foreground tabular">41.890.000 đ</span>
             </div>
             <a
               routerLink="/tu-lap-pc"
@@ -230,7 +230,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-foreground">GAMING APEX</span>
-              <span class="text-[11px] text-muted">Bảo hành 36 tháng</span>
+              <span class="text-xs text-muted">Bảo hành 36 tháng</span>
             </div>
 
             <div class="space-y-1">
@@ -261,7 +261,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="pt-4 border-t border-line mt-4 space-y-3">
             <div class="flex items-baseline justify-between">
               <span class="text-xs text-muted">Giá trọn gói:</span>
-              <span class="text-base font-bold text-foreground tabular font-mono">55.290.000 đ</span>
+              <span class="text-base font-bold text-foreground tabular">55.290.000 đ</span>
             </div>
             <a
               routerLink="/tu-lap-pc"
@@ -281,7 +281,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-foreground">OFFICE PRO</span>
-              <span class="text-[11px] text-muted">Bảo hành 36 tháng</span>
+              <span class="text-xs text-muted">Bảo hành 36 tháng</span>
             </div>
 
             <div class="space-y-1">
@@ -312,7 +312,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="pt-4 border-t border-line mt-4 space-y-3">
             <div class="flex items-baseline justify-between">
               <span class="text-xs text-muted">Giá trọn gói:</span>
-              <span class="text-base font-bold text-foreground tabular font-mono">14.890.000 đ</span>
+              <span class="text-base font-bold text-foreground tabular">14.890.000 đ</span>
             </div>
             <a
               routerLink="/tu-lap-pc"
@@ -355,7 +355,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <article class="bg-surface rounded-lg border border-line overflow-hidden hover:border-primary/50 transition-all flex flex-col justify-between group shadow-xs">
                 <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="p-4 block">
                   <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-3 border border-line/50">
-                    <span appBadge variant="outline" class="absolute top-2 right-2 text-[10px] py-0.5 px-1.5 bg-surface/90 text-primary border-line">SẴN KHO</span>
+                    <span appBadge variant="outline" class="absolute top-2 right-2 text-xs py-0.5 px-1.5 bg-surface/90 text-primary border-line">SẴN KHO</span>
                     <img
                       [src]="product.media | productImage"
                       [alt]="product.name"
@@ -364,8 +364,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       loading="lazy"
                     >
                   </div>
-                  <div class="text-[11px] font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</div>
-                  <h3 class="font-bold text-xs text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">
+                  <div class="text-xs font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</div>
+                  <h3 class="font-bold text-sm text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">
                     {{ product.name }}
                   </h3>
                   <p class="text-xs text-muted mt-1">{{ product.model }}</p>
@@ -376,7 +376,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <span class="text-base font-black text-foreground tabular">
                       {{ product.variants[0].sellingPrice | vnd }}
                     </span>
-                    <span class="text-[10px] text-muted">Đã gồm VAT</span>
+                    <span class="text-xs text-muted">Đã gồm VAT</span>
                   </div>
                   <div class="mt-3">
                     <button
@@ -415,7 +415,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
         <div class="w-full md:w-auto flex items-center gap-2">
           <input
             type="text"
-            class="h-10 px-3.5 rounded-lg bg-surface-elevated text-xs font-mono font-bold text-white placeholder:text-muted border border-line-dark focus:border-primary focus:outline-none w-full sm:w-64"
+            class="h-10 px-3.5 rounded-lg bg-surface-elevated text-sm font-semibold text-white placeholder:text-muted border border-line-dark focus:border-primary focus:outline-none w-full sm:w-64"
             placeholder="Mã đơn hoặc số ĐT..."
             [(ngModel)]="quickLookupQuery"
             (keyup.enter)="navigateToLookup()"

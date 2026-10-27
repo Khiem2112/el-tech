@@ -139,7 +139,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
               <div>
                 <div class="flex items-center gap-2 flex-wrap">
                   <h3 class="text-base sm:text-lg font-bold text-foreground">Đổi linh kiện: {{ categoryName }}</h3>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/15 text-primary border border-primary/20">
+                  <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/15 text-primary border border-primary/20">
                     BẢO HÀNH CHÍNH HÃNG 36T
                   </span>
                 </div>
@@ -171,7 +171,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 <span>Hệ thống: Socket {{ currentSocket }} / RAM {{ currentRamType }}</span>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 text-muted text-[11px]">
+            <div class="flex items-center gap-1.5 text-muted text-xs">
               <span class="size-2 rounded-full bg-primary inline-block"></span>
               <span>Cập nhật kho hàng trực tiếp</span>
             </div>
@@ -221,11 +221,11 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
             <!-- Quick Brand Filter Chips -->
             @if (brands().length > 0) {
               <div class="flex items-center gap-1.5 flex-wrap text-xs">
-                <span class="text-muted font-medium text-[11px] mr-1">Thương hiệu:</span>
+                <span class="text-muted font-medium text-xs mr-1">Thương hiệu:</span>
                 <button
                   type="button"
                   (click)="selectedBrand.set('')"
-                  class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold transition-colors cursor-pointer"
+                  class="px-2.5 py-0.5 rounded-full border text-xs font-semibold transition-colors cursor-pointer"
                   [class.bg-primary]="!selectedBrand()"
                   [class.text-primary-foreground]="!selectedBrand()"
                   [class.border-primary]="!selectedBrand()"
@@ -239,7 +239,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                   <button
                     type="button"
                     (click)="selectedBrand.set(brand)"
-                    class="px-2.5 py-0.5 rounded-full border text-[11px] font-semibold transition-colors cursor-pointer"
+                    class="px-2.5 py-0.5 rounded-full border text-xs font-semibold transition-colors cursor-pointer"
                     [class.bg-primary]="selectedBrand() === brand"
                     [class.text-primary-foreground]="selectedBrand() === brand"
                     [class.border-primary]="selectedBrand() === brand"
@@ -258,7 +258,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
               <div class="pt-2.5 border-t border-line space-y-2">
                 <div class="flex items-center justify-between text-xs flex-wrap gap-2">
                   <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                    <span class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
                       <lucide-icon name="sliders-horizontal" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                       <span>Thông số kỹ thuật chi tiết:</span>
                     </span>
@@ -266,7 +266,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                       <button
                         type="button"
                         (click)="applyCompatibilityFilter(chip.key, chip.value)"
-                        class="px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1"
+                        class="px-2 py-0.5 rounded text-xs font-bold border transition-colors cursor-pointer flex items-center gap-1"
                         [class.bg-primary]="isCompatibilityFilterActive(chip.key, chip.value)"
                         [class.text-primary-foreground]="isCompatibilityFilterActive(chip.key, chip.value)"
                         [class.border-primary]="isCompatibilityFilterActive(chip.key, chip.value)"
@@ -283,7 +283,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                     <button
                       type="button"
                       (click)="clearAllSpecFilters()"
-                      class="text-[11px] text-muted hover:text-danger font-semibold cursor-pointer flex items-center gap-1 transition-colors"
+                      class="text-xs text-muted hover:text-danger font-semibold cursor-pointer flex items-center gap-1 transition-colors"
                     >
                       <lucide-icon name="rotate-ccw" class="size-3" aria-hidden="true"></lucide-icon>
                       <span>Đặt lại thông số</span>
@@ -294,10 +294,10 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   @for (spec of availableSpecFilters(); track spec.key) {
                     <div>
-                      <label class="block text-[11px] font-medium text-muted mb-1 truncate" [title]="spec.label">
+                      <label class="block text-xs font-medium text-muted mb-1 truncate" [title]="spec.label">
                         {{ spec.label }}
                         @if (spec.unit) {
-                          <span class="text-[10px]">({{ spec.unit }})</span>
+                          <span class="text-xs">({{ spec.unit }})</span>
                         }
                       </label>
                       <app-select
@@ -315,9 +315,9 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
 
                 @if (selectedSpecChips().length > 0) {
                   <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span class="text-[10px] text-muted font-medium">Đang lọc:</span>
+                    <span class="text-xs text-muted font-medium">Đang lọc:</span>
                     @for (chip of selectedSpecChips(); track chip.key) {
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
                         <span>{{ chip.label }}: {{ chip.displayValue }}</span>
                         <button
                           type="button"
@@ -341,11 +341,11 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
             @if (currentSlot?.item; as current) {
               <div class="p-3.5 rounded-xl bg-surface-alt border border-line space-y-2">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
+                  <span class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5">
                     <span class="size-2 rounded-full bg-primary inline-block"></span>
                     Linh kiện đang có trong cấu hình:
                   </span>
-                  <span class="text-[10px] px-2 py-0.5 rounded bg-surface border border-line font-bold text-primary">
+                  <span class="text-xs px-2 py-0.5 rounded bg-surface border border-line font-bold text-primary">
                     Đang chọn
                   </span>
                 </div>
@@ -360,13 +360,13 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                       >
                     </div>
                     <div class="min-w-0 flex-1">
-                      <div class="text-xs font-bold text-foreground truncate">{{ current.name }}</div>
-                      <p class="text-[11px] text-muted truncate mt-0.5">{{ current.specs }}</p>
+                      <div class="text-sm font-bold text-foreground truncate">{{ current.name }}</div>
+                      <p class="text-xs text-muted truncate mt-0.5">{{ current.specs }}</p>
                     </div>
                   </div>
                   <div class="text-right shrink-0">
-                    <div class="text-xs font-bold text-foreground tabular">{{ current.price | vnd }}</div>
-                    <span class="text-[10px] text-muted">Giá đang tính</span>
+                    <div class="text-sm font-bold text-foreground tabular">{{ current.price | vnd }}</div>
+                    <span class="text-xs text-muted">Giá đang tính</span>
                   </div>
                 </div>
               </div>
@@ -379,7 +379,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                   <lucide-icon name="sliders-horizontal" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Danh sách linh kiện khả dụng ({{ filteredItems().length }} sản phẩm)</span>
                 </h4>
-                <span class="text-[11px] text-muted">Hiển thị chênh lệch giá tự động</span>
+                <span class="text-xs text-muted">Hiển thị chênh lệch giá tự động</span>
               </div>
 
               @if (isLoading) {
@@ -390,7 +390,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
               } @else if (filteredItems().length === 0) {
                 <div class="rounded-xl border border-dashed border-line p-8 text-center bg-surface space-y-3">
                   <p class="text-xs font-bold text-foreground">Không tìm thấy linh kiện phù hợp với bộ lọc hiện tại</p>
-                  <p class="text-[11px] text-muted">Vui lòng xóa từ khóa tìm kiếm hoặc điều chỉnh lại các tiêu chí lọc thông số kỹ thuật.</p>
+                  <p class="text-xs text-muted">Vui lòng xóa từ khóa tìm kiếm hoặc điều chỉnh lại các tiêu chí lọc thông số kỹ thuật.</p>
                   <button
                     type="button"
                     appButton
@@ -417,17 +417,17 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                         </div>
                         <div class="flex-1 min-w-0">
                           <div class="flex items-center gap-2 flex-wrap">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-foreground border border-line">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-surface-alt text-foreground border border-line">
                               {{ item.brand }}
                             </span>
                             @if (item.tag) {
-                              <span class="px-1.5 py-0.5 rounded text-[10px] bg-primary/10 text-primary font-bold">
+                              <span class="px-1.5 py-0.5 rounded text-xs bg-primary/10 text-primary font-bold">
                                 {{ item.tag }}
                               </span>
                             }
                             @if (checkCompatibility(item); as comp) {
                               <span
-                                class="px-1.5 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1"
+                                class="px-1.5 py-0.5 rounded text-xs font-bold border flex items-center gap-1"
                                 [class.bg-primary-subtle]="comp.isCompatible"
                                 [class.text-primary]="comp.isCompatible"
                                 [class.border-primary-subtle]="comp.isCompatible"
@@ -439,26 +439,26 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                                 <span>{{ comp.label }}</span>
                               </span>
                             }
-                            <span class="text-[11px] text-muted font-medium flex items-center gap-1">
+                            <span class="text-xs text-muted font-medium flex items-center gap-1">
                               <lucide-icon name="store" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
                               <span>{{ item.stockStatus || 'Sẵn hàng tại HN & HCM' }}</span>
                             </span>
                           </div>
-                          <h5 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h5>
-                          <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
+                          <h5 class="text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h5>
+                          <p class="text-xs text-muted truncate mt-0.5">{{ item.specs }}</p>
                         </div>
                       </div>
 
                       <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
                         <div class="text-left sm:text-right">
-                          <div class="text-xs font-bold text-foreground tabular">{{ item.price | vnd }}</div>
+                          <div class="text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
                           @if (getPriceDifference(item.price); as diff) {
                             @if (diff > 0) {
-                              <div class="text-[11px] font-bold text-warning font-mono tabular">+{{ diff | vnd }}</div>
+                              <div class="text-xs font-bold text-warning tabular">+{{ diff | vnd }}</div>
                             } @else if (diff < 0) {
-                              <div class="text-[11px] font-bold text-primary font-mono tabular">-{{ (-diff) | vnd }}</div>
+                              <div class="text-xs font-bold text-primary tabular">-{{ (-diff) | vnd }}</div>
                             } @else {
-                              <div class="text-[10px] text-muted">Bằng giá (0 đ)</div>
+                              <div class="text-xs text-muted">Bằng giá (0 đ)</div>
                             }
                           }
                         </div>

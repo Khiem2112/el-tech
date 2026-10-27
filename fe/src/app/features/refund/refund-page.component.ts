@@ -37,11 +37,11 @@ type RmaTicket = {
             <span class="text-foreground font-bold">Chính sách bảo hành & Hoàn tiền</span>
           </div>
           <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface text-primary font-bold text-xs border border-line">
               <span class="size-2 rounded-full bg-primary animate-pulse"></span>
               TIÊU CHUẨN KỸ THUẬT V2.4 - HIỆU LỰC 2025
             </span>
-            <span class="hidden md:inline text-[11px] text-muted">Bảo hành linh kiện chính hãng 100%</span>
+            <span class="hidden md:inline text-xs text-muted">Bảo hành linh kiện chính hãng 100%</span>
           </div>
         </div>
       </section>
@@ -64,19 +64,19 @@ type RmaTicket = {
 
           <div class="lg:col-span-4 flex flex-col gap-2 p-5 rounded-xl bg-surface-dark/90 border border-line-dark shadow-xl">
             <div class="flex items-center justify-between text-muted text-xs">
-              <span class="font-bold uppercase tracking-wider text-[10px]">TỐC ĐỘ XỬ LÝ RMA</span>
-              <span class="text-primary font-black">&lt; 2 Giờ làm việc</span>
+              <span class="font-bold uppercase tracking-wider text-xs">TỐC ĐỘ XỬ LÝ RMA</span>
+              <span class="text-primary font-black tabular">&lt; 2 Giờ làm việc</span>
             </div>
             <div class="w-full bg-line-dark h-2 rounded-full overflow-hidden flex my-1">
               <div class="bg-primary h-full w-[85%]"></div>
               <div class="bg-primary/40 h-full w-[15%]"></div>
             </div>
-            <div class="flex items-center justify-between text-[11px] text-muted pt-1">
+            <div class="flex items-center justify-between text-xs text-muted pt-1">
               <span class="flex items-center gap-1.5 text-primary">
                 <lucide-icon name="Check" class="size-3.5" aria-hidden="true"></lucide-icon>
                 <span>Hoàn tất 85% trong ngày</span>
               </span>
-              <span class="font-bold text-slate-200">98.6% Khách hài lòng</span>
+              <span class="font-bold text-slate-200 tabular">98.6% Khách hài lòng</span>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ type RmaTicket = {
                 <div class="space-y-1.5 flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <h3 class="text-sm font-bold text-foreground">Quy định Đổi mới 30 Ngày (Do Lỗi NSX)</h3>
-                    <span appBadge variant="primary" class="text-[10px] font-bold">1-đổi-1 trong 30 ngày</span>
+                    <span appBadge variant="primary" class="font-bold">1-đổi-1 trong 30 ngày</span>
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Áp dụng cho tất cả linh kiện rời (CPU, GPU RTX 50/40-Series, Bo mạch chủ, RAM DDR5, SSD NVMe, Nguồn PSU) phát sinh lỗi vật lý hoặc lỗi kỹ thuật xác định từ Nhà sản xuất trong vòng 30 ngày kể từ thời điểm nhận hàng.
@@ -136,13 +136,13 @@ type RmaTicket = {
                 <div class="space-y-1.5 flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <h3 class="text-sm font-bold text-foreground">Hủy đơn & Hoàn tiền trước Chuẩn bị hàng</h3>
-                    <span appBadge variant="outline" class="text-[10px] font-bold text-primary border-primary/30">Hoàn tiền 100%</span>
+                    <span appBadge variant="outline" class="font-bold text-primary border-primary/30">Hoàn tiền 100%</span>
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Khách hàng có thể tự hủy đơn trực tuyến ngay trên hệ thống khi đơn hàng đang ở trạng thái
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">PENDING_PAYMENT</code>,
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">PENDING_COD_CONFIRMATION</code> hoặc
-                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground font-mono text-[11px] border border-line">CONFIRMED</code>.
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground text-xs font-semibold tabular border border-line">PENDING_PAYMENT</code>,
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground text-xs font-semibold tabular border border-line">PENDING_COD_CONFIRMATION</code> hoặc
+                    <code class="px-1.5 py-0.5 rounded bg-surface-alt text-foreground text-xs font-semibold tabular border border-line">CONFIRMED</code>.
                   </p>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1">
@@ -150,7 +150,7 @@ type RmaTicket = {
                         <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                         <span>Hoàn tiền tự động 100%</span>
                       </div>
-                      <p class="text-[11px] text-muted">
+                      <p class="text-xs text-muted">
                         Hệ thống giải phóng hạn mức thẻ hoặc chuyển khoản ngân hàng hoàn tiền đúng 100% giá trị trong 24h làm việc.
                       </p>
                     </div>
@@ -159,7 +159,7 @@ type RmaTicket = {
                         <lucide-icon name="ShieldCheck" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                         <span>Không thu phí giao dịch</span>
                       </div>
-                      <p class="text-[11px] text-muted">
+                      <p class="text-xs text-muted">
                         EL-TECH chi trả hoàn toàn chi phí cổng thanh toán (Visa/Mastercard/Napas), người mua nhận lại nguyên vẹn số tiền.
                       </p>
                     </div>
@@ -177,7 +177,7 @@ type RmaTicket = {
                 <div class="space-y-1.5 flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <h3 class="text-sm font-bold text-foreground">Quy định Cọc Cấu hình PC Custom Build</h3>
-                    <span appBadge variant="outline" class="text-[10px] font-bold text-warning border-amber-500/30">Quy định đặt cọc</span>
+                    <span appBadge variant="outline" class="font-bold text-warning border-amber-500/30">Quy định đặt cọc</span>
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Do đặc thù các cấu hình máy bàn lắp ráp theo yêu cầu sử dụng linh kiện đập hộp bóc seal riêng biệt (khui màng co seal vỏ hộp CPU, xé seal chống tĩnh điện VGA, cắt keo tản nhiệt), quý khách vui lòng nắm rõ tiến trình:
@@ -204,7 +204,7 @@ type RmaTicket = {
                 <div class="space-y-1.5 flex-1 min-w-0">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <h3 class="text-sm font-bold text-foreground">Xử lý Giao hàng Không Thành công</h3>
-                    <span appBadge variant="outline" class="text-[10px] font-bold text-muted">Hỗ trợ giao hàng</span>
+                    <span appBadge variant="outline" class="font-bold text-muted">Hỗ trợ giao hàng</span>
                   </div>
                   <p class="text-xs text-muted leading-relaxed">
                     Trường hợp đơn vị vận chuyển công nghệ cao chuyên dụng của EL-TECH không thể liên lạc được với người nhận tại địa chỉ giao hàng:
@@ -212,11 +212,11 @@ type RmaTicket = {
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div class="p-3 rounded-lg bg-surface-alt border border-line">
                       <div class="text-xs font-bold text-foreground">1. Thử giao lại tối đa 2 lần</div>
-                      <p class="text-[11px] text-muted mt-0.5">Đơn vị vận chuyển liên hệ trước khi đến. Lần 2 diễn ra trong vòng 24h kế tiếp.</p>
+                      <p class="text-xs text-muted mt-0.5">Đơn vị vận chuyển liên hệ trước khi đến. Lần 2 diễn ra trong vòng 24h kế tiếp.</p>
                     </div>
                     <div class="p-3 rounded-lg bg-surface-alt border border-line">
                       <div class="text-xs font-bold text-foreground">2. Nhận tại Showroom gần nhất</div>
-                      <p class="text-[11px] text-muted mt-0.5">Hàng được lưu kho an toàn tại Showroom khu vực trong 7 ngày để khách ghé nhận trực tiếp.</p>
+                      <p class="text-xs text-muted mt-0.5">Hàng được lưu kho an toàn tại Showroom khu vực trong 7 ngày để khách ghé nhận trực tiếp.</p>
                     </div>
                   </div>
                 </div>
@@ -232,11 +232,11 @@ type RmaTicket = {
               <div class="space-y-1">
                 <div class="flex items-center gap-2">
                   <span class="size-2 rounded-full bg-primary animate-pulse"></span>
-                  <span class="text-[10px] uppercase font-bold text-primary tracking-wider">HỆ THỐNG RMA TRỰC TUYẾN</span>
+                  <span class="text-xs uppercase font-bold text-primary tracking-wider">HỆ THỐNG RMA TRỰC TUYẾN</span>
                 </div>
                 <h2 class="text-lg font-black text-foreground tracking-tight">Xử Lý Đổi Trả & Khiếu Nại Phần Cứng</h2>
                 <p class="text-xs text-muted">
-                  Kỹ thuật viên EL-TECH sẽ tiếp nhận mã ticket và liên hệ giải quyết trong vòng <strong class="text-primary font-bold">2 giờ làm việc</strong>.
+                  Kỹ thuật viên EL-TECH sẽ tiếp nhận mã ticket và liên hệ giải quyết trong vòng <strong class="text-primary font-bold tabular">2 giờ làm việc</strong>.
                 </p>
               </div>
 
@@ -244,7 +244,7 @@ type RmaTicket = {
               <div class="flex items-center gap-1 bg-surface-alt p-1 rounded-lg border border-line text-xs font-bold">
                 <button
                   type="button"
-                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center"
+                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center cursor-pointer"
                   [class.bg-surface]="activeTab() === 'create'"
                   [class.shadow-xs]="activeTab() === 'create'"
                   [class.text-foreground]="activeTab() === 'create'"
@@ -255,7 +255,7 @@ type RmaTicket = {
                 </button>
                 <button
                   type="button"
-                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center"
+                  class="flex-1 py-1.5 px-3 rounded-md transition-all text-center cursor-pointer"
                   [class.bg-surface]="activeTab() === 'lookup'"
                   [class.shadow-xs]="activeTab() === 'lookup'"
                   [class.text-foreground]="activeTab() === 'lookup'"
@@ -276,7 +276,7 @@ type RmaTicket = {
                     <input
                       id="ticketOrderId"
                       appInput
-                      class="w-full text-xs font-bold uppercase"
+                      class="w-full text-sm font-medium uppercase tabular"
                       [(ngModel)]="orderId"
                       name="orderId"
                       placeholder="VD: ELT-91024"
@@ -291,7 +291,7 @@ type RmaTicket = {
                     <input
                       id="ticketPhone"
                       appInput
-                      class="w-full text-xs"
+                      class="w-full text-sm font-medium tabular"
                       [(ngModel)]="phone"
                       name="phone"
                       type="tel"
@@ -307,7 +307,7 @@ type RmaTicket = {
                     <input
                       id="ticketSerial"
                       appInput
-                      class="w-full text-xs font-mono"
+                      class="w-full text-sm font-medium tabular"
                       [(ngModel)]="serialNumber"
                       name="serialNumber"
                       placeholder="VD: SN-ASUS-99120"
@@ -334,7 +334,7 @@ type RmaTicket = {
                     <textarea
                       id="ticketDescription"
                       appInput
-                      class="w-full text-xs resize-none"
+                      class="w-full text-sm font-medium resize-none"
                       rows="3"
                       [(ngModel)]="description"
                       name="description"
@@ -362,7 +362,7 @@ type RmaTicket = {
                       <span class="text-xs font-bold text-foreground">
                         {{ uploadedFiles().length > 0 ? uploadedFiles().join(', ') : 'Chọn hoặc kéo thả hình ảnh/video vào đây' }}
                       </span>
-                      <span class="text-[10px] text-muted mt-0.5">Hỗ trợ PNG, JPG, MP4 dung lượng tối đa 25MB</span>
+                      <span class="text-xs text-muted mt-0.5">Hỗ trợ PNG, JPG, MP4 dung lượng tối đa 25MB</span>
                     </div>
                   </div>
 
@@ -406,7 +406,7 @@ type RmaTicket = {
                       <input
                         id="rmaLookupInput"
                         appInput
-                        class="flex-1 text-xs"
+                        class="flex-1 text-sm font-medium"
                         [(ngModel)]="lookupQuery"
                         placeholder="VD: 0988 123 456 hoặc TK-8412"
                         (keyup.enter)="lookupRmaHistory()"
@@ -449,14 +449,14 @@ type RmaTicket = {
                         @for (ticket of rmaTickets(); track ticket.code) {
                           <div class="p-4 rounded-lg bg-surface-alt border border-line space-y-2">
                             <div class="flex items-center justify-between">
-                              <span class="font-mono text-xs font-bold text-primary">#{{ ticket.code }}</span>
-                              <span appBadge variant="primary" class="text-[10px]">{{ ticket.status }}</span>
+                              <span class="text-xs font-bold text-primary tabular">#{{ ticket.code }}</span>
+                              <span appBadge variant="primary" class="font-bold">{{ ticket.status }}</span>
                             </div>
                             <p class="text-xs font-bold text-foreground">{{ ticket.category }}</p>
-                            <p class="text-[11px] text-muted">{{ ticket.note }}</p>
-                            <div class="pt-2 border-t border-line flex items-center justify-between text-[10px] text-muted">
-                              <span>Mã đơn: <strong class="text-foreground">{{ ticket.orderId }}</strong></span>
-                              <span>Ngày tiếp nhận: {{ ticket.createdAt }}</span>
+                            <p class="text-xs text-muted">{{ ticket.note }}</p>
+                            <div class="pt-2 border-t border-line flex items-center justify-between text-xs text-muted">
+                              <span>Mã đơn: <strong class="text-foreground tabular">{{ ticket.orderId }}</strong></span>
+                              <span class="tabular">Ngày tiếp nhận: {{ ticket.createdAt }}</span>
                             </div>
                           </div>
                         }
@@ -465,7 +465,7 @@ type RmaTicket = {
                       <div class="p-6 text-center rounded-lg bg-surface-alt border border-dashed border-line space-y-2">
                         <lucide-icon name="Package" class="size-6 text-muted mx-auto" aria-hidden="true"></lucide-icon>
                         <p class="text-xs font-bold text-foreground">Không tìm thấy ticket RMA</p>
-                        <p class="text-[11px] text-muted max-w-xs mx-auto leading-relaxed">
+                        <p class="text-xs text-muted max-w-xs mx-auto leading-relaxed">
                           Chưa có yêu cầu đổi trả hoặc khiếu nại nào được tìm thấy với thông tin vừa nhập.
                         </p>
                       </div>
@@ -475,7 +475,7 @@ type RmaTicket = {
               }
 
               <!-- SLA Commitment -->
-              <div class="pt-3 border-t border-line flex items-center justify-between text-muted text-[11px]">
+              <div class="pt-3 border-t border-line flex items-center justify-between text-muted text-xs">
                 <span class="flex items-center gap-1">
                   <lucide-icon name="Clock" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   Cam kết SLA 120 phút
@@ -500,7 +500,7 @@ type RmaTicket = {
                 <a href="tel:19006868" class="text-base font-black text-primary hover:underline tracking-wide">
                   1900.6868 (Phím 2)
                 </a>
-                <span class="text-[10px] text-muted">Miễn phí cước gọi</span>
+                <span class="text-xs text-muted">Miễn phí cước gọi</span>
               </div>
             </div>
 
@@ -514,7 +514,7 @@ type RmaTicket = {
         <div class="max-w-7xl mx-auto space-y-8">
           <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <span class="text-[10px] font-bold uppercase text-primary tracking-wider">HỆ THỐNG TRỰC TIẾP</span>
+              <span class="text-xs font-bold uppercase text-primary tracking-wider">HỆ THỐNG TRỰC TIẾP</span>
               <h2 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight mt-0.5">
                 Trung Tâm Bảo Hành & Tiếp Nhận Showroom Toàn Quốc
               </h2>
@@ -535,7 +535,7 @@ type RmaTicket = {
                   alt="EL-TECH Hà Nội Flagship"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-xs font-bold uppercase">
                   Showroom Miền Bắc
                 </div>
               </div>
@@ -546,7 +546,7 @@ type RmaTicket = {
                     <span>EL-TECH Hà Nội (Flagship)</span>
                   </h3>
                   <p class="text-xs text-foreground font-medium">45 Thái Hà, Phường Trung Liệt, Quận Đống Đa</p>
-                  <p class="text-[11px] text-muted">Khu kỹ thuật: Tầng 2 - Phòng Testbench & Đi dây Custom</p>
+                  <p class="text-xs text-muted">Khu kỹ thuật: Tầng 2 - Phòng Testbench & Đi dây Custom</p>
                 </div>
                 <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">
@@ -569,7 +569,7 @@ type RmaTicket = {
                   alt="EL-TECH TP. Hồ Chí Minh"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-xs font-bold uppercase">
                   Showroom Miền Nam
                 </div>
               </div>
@@ -580,7 +580,7 @@ type RmaTicket = {
                     <span>EL-TECH TP. Hồ Chí Minh</span>
                   </h3>
                   <p class="text-xs text-foreground font-medium">280 Ba Tháng Hai, Phường 12, Quận 10</p>
-                  <p class="text-[11px] text-muted">Khu kỹ thuật: Tầng trệt - Trạm tiếp nhận kiểm định nhanh</p>
+                  <p class="text-xs text-muted">Khu kỹ thuật: Tầng trệt - Trạm tiếp nhận kiểm định nhanh</p>
                 </div>
                 <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">
@@ -603,7 +603,7 @@ type RmaTicket = {
                   alt="EL-TECH Đà Nẵng"
                   class="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-500"
                 >
-                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-[10px] font-bold uppercase">
+                <div class="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-dark/80 backdrop-blur text-white text-xs font-bold uppercase">
                   Showroom Miền Trung
                 </div>
               </div>
@@ -614,7 +614,7 @@ type RmaTicket = {
                     <span>EL-TECH Đà Nẵng</span>
                   </h3>
                   <p class="text-xs text-foreground font-medium">112 Hàm Nghi, Phường Thạc Gián, Quận Thanh Khê</p>
-                  <p class="text-[11px] text-muted">Khu kỹ thuật: Quầy hỗ trợ kỹ thuật và nhận bảo hành linh kiện</p>
+                  <p class="text-xs text-muted">Khu kỹ thuật: Quầy hỗ trợ kỹ thuật và nhận bảo hành linh kiện</p>
                 </div>
                 <div class="space-y-1 pt-2 border-t border-line text-xs">
                   <div class="flex items-center justify-between">

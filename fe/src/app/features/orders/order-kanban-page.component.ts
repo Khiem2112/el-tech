@@ -174,7 +174,7 @@ type KanbanOrder = {
                   <span class="size-2.5 rounded-full bg-warning"></span>
                   <span class="text-xs font-bold text-foreground">Chờ TT & Xác nhận</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-warning font-bold text-[10px] border border-line">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-warning font-bold text-xs border border-line tabular">
                   {{ pendingOrders().length }} đơn
                 </span>
               </div>
@@ -185,7 +185,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-[10px] text-muted">Chưa có đơn chờ xác nhận</p>
+                    <p class="text-xs text-muted">Chưa có đơn chờ xác nhận</p>
                   </div>
                 }
               </div>
@@ -198,7 +198,7 @@ type KanbanOrder = {
                   <span class="size-2.5 rounded-full bg-slate-400"></span>
                   <span class="text-xs font-bold text-foreground">Chuẩn bị linh kiện</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-foreground font-bold text-[10px] border border-line">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-foreground font-bold text-xs border border-line tabular">
                   {{ preparingOrders().length }} đơn
                 </span>
               </div>
@@ -209,7 +209,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-[10px] text-muted">Chưa có đơn đang soạn linh kiện</p>
+                    <p class="text-xs text-muted">Chưa có đơn đang soạn linh kiện</p>
                   </div>
                 }
               </div>
@@ -222,7 +222,7 @@ type KanbanOrder = {
                   <span class="size-2.5 rounded-full bg-primary"></span>
                   <span class="text-xs font-bold text-foreground">Lắp ráp & Stress Test</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-xs border border-line tabular">
                   {{ assemblingOrders().length }} đơn
                 </span>
               </div>
@@ -233,7 +233,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-[10px] text-muted">Chưa có đơn đang stress test</p>
+                    <p class="text-xs text-muted">Chưa có đơn đang stress test</p>
                   </div>
                 }
               </div>
@@ -246,7 +246,7 @@ type KanbanOrder = {
                   <span class="size-2.5 rounded-full bg-sky-500"></span>
                   <span class="text-xs font-bold text-foreground">Sẵn sàng / Hub</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-sky-500 font-bold text-[10px] border border-line">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-sky-500 font-bold text-xs border border-line tabular">
                   {{ readyOrders().length }} đơn
                 </span>
               </div>
@@ -257,7 +257,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-[10px] text-muted">Chưa có đơn sẵn sàng tại Hub</p>
+                    <p class="text-xs text-muted">Chưa có đơn sẵn sàng tại Hub</p>
                   </div>
                 }
               </div>
@@ -270,7 +270,7 @@ type KanbanOrder = {
                   <span class="size-2.5 rounded-full bg-primary"></span>
                   <span class="text-xs font-bold text-foreground">Hoàn tất</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-[10px] border border-line">
+                <span class="px-2 py-0.5 rounded-full bg-surface text-primary font-bold text-xs border border-line tabular">
                   {{ completedOrders().length }} đơn
                 </span>
               </div>
@@ -281,7 +281,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-[10px] text-muted">Chưa có đơn hoàn tất trong phiên</p>
+                    <p class="text-xs text-muted">Chưa có đơn hoàn tất trong phiên</p>
                   </div>
                 }
               </div>
@@ -301,18 +301,18 @@ type KanbanOrder = {
                 >
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="font-mono text-xs font-bold text-foreground">#{{ item.code }}</span>
-                    <span appBadge variant="outline" class="text-[10px]">{{ item.typeName }}</span>
-                    <span class="text-[10px] text-muted">{{ item.branchName }}</span>
+                    <span class="text-xs font-bold text-foreground tabular">#{{ item.code }}</span>
+                    <span appBadge variant="outline" class="text-xs">{{ item.typeName }}</span>
+                    <span class="text-xs text-muted">{{ item.branchName }}</span>
                   </div>
-                  <h4 class="text-xs font-bold text-foreground truncate mt-0.5">{{ item.title }}</h4>
-                  <p class="text-[11px] text-muted truncate">{{ item.subtitle }}</p>
+                  <h4 class="text-sm font-bold text-foreground truncate mt-0.5">{{ item.title }}</h4>
+                  <p class="text-xs text-muted truncate">{{ item.subtitle }}</p>
                 </div>
               </div>
 
               <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0">
                 <div class="text-right">
-                  <span class="text-[10px] text-muted block uppercase font-bold">Tổng thanh toán</span>
+                  <span class="text-xs text-muted block uppercase font-bold">Tổng thanh toán</span>
                   <span class="font-bold text-xs text-primary tabular">{{ item.totalAmount | vnd }}</span>
                 </div>
                 <a
@@ -351,11 +351,11 @@ type KanbanOrder = {
     <ng-template #cardTemplate let-item>
       <div class="bg-surface rounded-xl p-3.5 border border-line shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group space-y-2.5">
         <!-- Top Status Indicator -->
-        <div class="flex items-center justify-between text-[11px]">
-          <span class="font-mono font-bold text-foreground bg-surface-alt px-2 py-0.5 rounded border border-line">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-foreground bg-surface-alt px-2 py-0.5 rounded border border-line tabular text-xs">
             #{{ item.code }}
           </span>
-          <span class="text-muted text-[10px]">{{ item.createdAtText }}</span>
+          <span class="text-muted text-xs tabular">{{ item.createdAtText }}</span>
         </div>
 
         <!-- Thumbnail & Specs -->
@@ -366,31 +366,31 @@ type KanbanOrder = {
             class="size-12 rounded-lg object-cover bg-surface-alt shrink-0 border border-line"
           >
           <div class="min-w-0 flex-1">
-            <span class="inline-block px-1.5 py-0.5 rounded bg-surface-alt text-muted text-[9px] font-bold uppercase tracking-wider mb-0.5">
+            <span class="inline-block px-1.5 py-0.5 rounded bg-surface-alt text-muted text-xs font-bold uppercase tracking-wider mb-0.5">
               {{ item.typeName }}
             </span>
-            <h4 class="text-xs font-bold text-foreground truncate leading-tight">{{ item.title }}</h4>
-            <p class="text-[10px] text-muted truncate mt-0.5">{{ item.subtitle }}</p>
+            <h4 class="text-sm font-bold text-foreground truncate leading-tight">{{ item.title }}</h4>
+            <p class="text-xs text-muted truncate mt-0.5">{{ item.subtitle }}</p>
           </div>
         </div>
 
         <!-- Context Highlight Block / Assembling Telemetry (KB-01) -->
         @if (item.stage === 'assembling') {
-          <div class="bg-surface-dark text-white p-2.5 rounded-lg text-[10px] space-y-1.5 font-mono border border-line-dark">
+          <div class="bg-surface-dark text-white p-2.5 rounded-lg text-xs space-y-1.5 border border-line-dark">
             <div class="flex items-center justify-between text-primary font-bold">
               <span class="flex items-center gap-1.5">
                 <lucide-icon name="Activity" class="size-3 text-primary" aria-hidden="true"></lucide-icon>
                 <span>FurMark 64°C · Fan 55% · Đạt chuẩn</span>
               </span>
-              <span class="text-white font-bold">{{ item.highlight?.progress || 78 }}%</span>
+              <span class="text-white font-bold tabular">{{ item.highlight?.progress || 78 }}%</span>
             </div>
             <div class="w-full h-1 bg-line-dark rounded-full overflow-hidden">
               <div class="h-full bg-primary rounded-full" [style.width.%]="item.highlight?.progress || 78"></div>
             </div>
-            <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-[9px] text-muted">
+            <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-xs text-muted">
               <div>
                 <span class="block text-slate-500">GPU Max Temp:</span>
-                <strong class="text-primary font-bold">64°C (Safe)</strong>
+                <strong class="text-primary font-bold tabular">64°C (Safe)</strong>
               </div>
               <div>
                 <span class="block text-slate-500">Cinebench R23:</span>
@@ -400,18 +400,18 @@ type KanbanOrder = {
           </div>
         } @else if (item.highlight; as hl) {
           @if (hl.type === 'warning') {
-            <div class="bg-warning/10 border border-amber-500/20 p-2 rounded-lg flex items-center justify-between text-[10px] text-warning font-bold">
+            <div class="bg-warning/10 border border-amber-500/20 p-2 rounded-lg flex items-center justify-between text-xs text-warning font-bold">
               <span>{{ hl.text }}</span>
               @if (hl.badge) {
-                <span class="font-mono bg-surface px-1.5 py-0.5 rounded shadow-xs text-foreground">{{ hl.badge }}</span>
+                <span class="bg-surface px-1.5 py-0.5 rounded shadow-xs text-foreground tabular text-xs">{{ hl.badge }}</span>
               }
             </div>
           } @else if (hl.type === 'telemetry') {
-            <div class="bg-surface-dark text-white p-2.5 rounded-lg text-[10px] space-y-1.5 font-mono">
+            <div class="bg-surface-dark text-white p-2.5 rounded-lg text-xs space-y-1.5">
               <div class="flex items-center justify-between text-primary">
                 <span>{{ hl.text }}</span>
                 @if (hl.progress) {
-                  <span class="text-white font-bold">{{ hl.progress }}%</span>
+                  <span class="text-white font-bold tabular">{{ hl.progress }}%</span>
                 }
               </div>
               @if (hl.progress) {
@@ -420,41 +420,41 @@ type KanbanOrder = {
                 </div>
               }
               @if (hl.metrics) {
-                <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-[9px] text-muted">
+                <div class="grid grid-cols-2 gap-1 pt-1 border-t border-line-dark text-xs text-muted">
                   @for (m of hl.metrics; track m.label) {
                     <div>
                       <span class="block text-slate-500">{{ m.label }}</span>
-                      <strong class="text-slate-200">{{ m.value }}</strong>
+                      <strong class="text-slate-200 tabular">{{ m.value }}</strong>
                     </div>
                   }
                 </div>
               }
             </div>
           } @else if (hl.type === 'otp') {
-            <div class="bg-sky-500/10 border border-sky-500/20 p-2 rounded-lg text-[10px] text-sky-500 font-bold flex items-center justify-between">
+            <div class="bg-sky-500/10 border border-sky-500/20 p-2 rounded-lg text-xs text-sky-500 font-bold flex items-center justify-between">
               <span>{{ hl.text }}</span>
-              <span class="bg-surface text-foreground px-1.5 py-0.5 rounded text-[9px]">{{ hl.badge }}</span>
+              <span class="bg-surface text-foreground px-1.5 py-0.5 rounded text-xs tabular font-bold">{{ hl.badge }}</span>
             </div>
           } @else if (hl.type === 'success') {
-            <div class="bg-primary/10 border border-primary/20 p-2 rounded-lg text-[10px] text-primary font-bold flex items-center gap-1.5">
+            <div class="bg-primary/10 border border-primary/20 p-2 rounded-lg text-xs text-primary font-bold flex items-center gap-1.5">
               <lucide-icon name="ShieldCheck" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
               <span>{{ hl.text }}</span>
             </div>
           } @else {
-            <div class="bg-surface-alt p-2 rounded-lg text-[10px] text-muted">
+            <div class="bg-surface-alt p-2 rounded-lg text-xs text-muted">
               {{ hl.text }}
             </div>
           }
         }
 
         <!-- Technician & Branch Details -->
-        <div class="flex items-center justify-between pt-1 border-t border-line text-[10px]">
+        <div class="flex items-center justify-between pt-1 border-t border-line text-xs">
           <div>
-            <span class="text-muted block text-[9px]">Tổng thanh toán</span>
+            <span class="text-muted block text-xs">Tổng thanh toán</span>
             <span class="font-bold text-xs text-foreground tabular">{{ item.totalAmount | vnd }}</span>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="size-6 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-[10px] text-foreground" [title]="item.technician.name">
+            <span class="size-6 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-xs text-foreground" [title]="item.technician.name">
               {{ item.technician.initials }}
             </span>
           </div>
@@ -467,7 +467,7 @@ type KanbanOrder = {
             appButton
             variant="outline"
             size="sm"
-            class="text-[11px] h-7 px-2"
+            class="text-xs h-8 px-2"
           >
             Chi tiết
           </a>
@@ -477,7 +477,7 @@ type KanbanOrder = {
               appButton
               variant="primary"
               size="sm"
-              class="text-[11px] h-7 px-2"
+              class="text-xs h-8 px-2"
             >
               <lucide-icon name="QrCode" class="size-3" aria-hidden="true"></lucide-icon>
               <span>VietQR</span>
@@ -488,7 +488,7 @@ type KanbanOrder = {
               appButton
               variant="secondary"
               size="sm"
-              class="text-[11px] h-7 px-2"
+              class="text-xs h-8 px-2"
             >
               <span>Nhật ký</span>
             </a>

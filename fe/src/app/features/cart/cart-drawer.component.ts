@@ -58,7 +58,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <span>Mua thêm <strong class="tabular font-bold">{{ amountLeftForFreeShipping() | vnd }}</strong> để được MIỄN PHÍ VẬN CHUYỂN</span>
                 }
               </span>
-              <span class="text-primary-strong font-mono font-bold tabular">{{ freeShippingPercent() }}%</span>
+              <span class="text-primary-strong font-bold tabular">{{ freeShippingPercent() }}%</span>
             </div>
             <div class="w-full h-1.5 rounded-full bg-line-strong overflow-hidden mt-0.5">
               <div
@@ -66,7 +66,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 [style.width.%]="freeShippingPercent()"
               ></div>
             </div>
-            <div class="flex items-center justify-between text-[11px] text-muted">
+            <div class="flex items-center justify-between text-xs text-muted">
               <span>Đơn linh kiện từ 5.000.000 đ</span>
               <span class="text-foreground font-medium">Bảo hiểm rơi vỡ 100%</span>
             </div>
@@ -108,15 +108,15 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             @for (build of cart.pcBuildGroups(); track build.key) {
               <div class="group relative p-3.5 rounded-xl bg-surface border-2 border-primary/40 shadow-sm flex flex-col gap-2.5 text-foreground">
                 <!-- Header Strip -->
-                <div class="flex items-center justify-between pb-1.5 border-b border-line text-[11px]">
+                <div class="flex items-center justify-between pb-1.5 border-b border-line text-xs">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px]">
+                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-xs">
                       Bộ PC Hoàn Chỉnh
                     </span>
-                    <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-foreground font-mono text-[10px] font-bold">
+                    <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-foreground text-xs font-bold tabular">
                       {{ build.buildType }}
                     </span>
-                    <span class="px-1.5 py-0.5 rounded bg-surface-alt text-primary-strong font-medium flex items-center gap-1 text-[10px]">
+                    <span class="px-1.5 py-0.5 rounded bg-surface-alt text-primary-strong font-medium flex items-center gap-1 text-xs">
                       <lucide-icon name="shield-check" class="w-3 h-3 text-primary-strong" aria-hidden="true"></lucide-icon>
                       <span>Tương thích 100%</span>
                     </span>
@@ -145,20 +145,20 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     } @else {
                       <lucide-icon name="cpu" class="w-8 h-8 text-primary" aria-hidden="true"></lucide-icon>
                     }
-                    <span class="absolute bottom-1 right-1 px-1 py-0.2 rounded bg-surface-dark text-foreground-dark font-mono text-[9px] font-bold border border-line-dark">
+                    <span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-surface-dark text-foreground-dark text-xs font-bold border border-line-dark tabular">
                       PC BUILD
                     </span>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h3 class="text-xs sm:text-sm font-bold text-foreground leading-snug line-clamp-2">
+                    <h3 class="text-sm font-bold text-foreground leading-snug line-clamp-2">
                       {{ build.buildName }}
                     </h3>
-                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-[11px] text-muted">
-                      <span>Mã cấu hình: <strong class="font-mono text-foreground font-semibold">{{ getBuildCode(build.key) }}</strong></span>
+                    <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1 text-xs text-muted">
+                      <span>Mã cấu hình: <strong class="text-foreground font-semibold tabular">{{ getBuildCode(build.key) }}</strong></span>
                       <span>•</span>
                       <span>Gồm <strong class="text-foreground">{{ build.componentCount }} linh kiện chính</strong></span>
                     </div>
-                    <div class="flex items-center gap-1.5 mt-1 text-[11px] text-primary-strong font-medium">
+                    <div class="flex items-center gap-1.5 mt-1 text-xs text-primary-strong font-medium">
                       <span class="size-1.5 rounded-full bg-success inline-block"></span>
                       <span>Sẵn hàng đầy đủ tại Showroom Hà Nội &amp; TP. HCM</span>
                     </div>
@@ -190,7 +190,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <a
                       routerLink="/tu-lap-pc"
                       (click)="cart.closeDrawer()"
-                      class="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:text-primary-strong px-2 py-1 rounded bg-surface hover:bg-surface-alt transition-colors border border-line"
+                      class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-primary-strong px-2 py-1 rounded bg-surface hover:bg-surface-alt transition-colors border border-line"
                       title="Mở trình cấu hình PC để thay đổi"
                     >
                       <lucide-icon name="settings-2" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
@@ -199,7 +199,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   </div>
                   <div class="text-right">
                     <div class="text-sm font-bold text-foreground tabular">{{ build.totalPrice | vnd }}</div>
-                    <div class="text-[10px] text-muted">Trọn bộ dàn máy</div>
+                    <div class="text-xs text-muted">Trọn bộ dàn máy</div>
                   </div>
                 </div>
 
@@ -214,7 +214,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <span class="flex items-center gap-2">
                       <lucide-icon name="list" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
                       <span>{{ isBuildExpanded(build.key) ? 'Thu gọn chi tiết linh kiện' : 'Xem chi tiết ' + build.componentCount + ' linh kiện đã chọn' }}</span>
-                      <span class="px-1.5 py-0.2 rounded-full bg-primary text-primary-foreground font-mono text-[10px] font-bold">
+                      <span class="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-bold tabular">
                         {{ build.componentCount }} món
                       </span>
                     </span>
@@ -231,29 +231,29 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 @if (isBuildExpanded(build.key)) {
                   <div class="flex flex-col gap-2 pt-1 animate-in fade-in duration-150">
                     <div class="bg-surface-alt/60 rounded-lg p-2.5 border border-line space-y-2 text-foreground">
-                      <div class="flex items-center justify-between pb-1.5 border-b border-line text-[11px] text-muted">
-                        <span class="font-bold uppercase tracking-wider text-[10px] text-foreground">Danh mục linh kiện trong cấu hình</span>
+                      <div class="flex items-center justify-between pb-1.5 border-b border-line text-xs text-muted">
+                        <span class="font-bold uppercase tracking-wider text-xs text-foreground">Danh mục linh kiện trong cấu hình</span>
                         <span>Giá đơn lẻ</span>
                       </div>
 
                       @for (hw of build.hardwareItems; track hw.id) {
                         <div class="flex items-center justify-between gap-2 py-1 border-b border-line/60 last:border-b-0">
                           <div class="flex items-start gap-2 min-w-0">
-                            <span class="px-1.5 py-0.5 rounded bg-surface-dark text-foreground-dark font-mono text-[9px] font-bold shrink-0">
+                            <span class="px-2 py-0.5 rounded bg-surface-dark text-foreground-dark text-xs font-bold shrink-0">
                               {{ getComponentBadge(hw.name, hw.sku) }}
                             </span>
                             <div class="min-w-0">
-                              <p class="text-xs font-bold text-foreground truncate">{{ hw.name }}</p>
-                              <p class="text-[10px] text-muted truncate">SKU: <span class="font-mono tabular">{{ hw.sku }}</span> • Số lượng: <span class="tabular font-semibold">{{ hw.quantity }}</span></p>
+                              <p class="text-sm font-bold text-foreground truncate">{{ hw.name }}</p>
+                              <p class="text-xs text-muted truncate">SKU: <span class="tabular font-medium text-foreground">{{ hw.sku }}</span> • Số lượng: <span class="tabular font-semibold">{{ hw.quantity }}</span></p>
                             </div>
                           </div>
                           <div class="text-right shrink-0">
-                            <span class="font-mono text-xs font-semibold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
+                            <span class="text-xs font-semibold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
                             <a
                               [routerLink]="['/tu-lap-pc']"
                               [queryParams]="{ swapSlot: getSlotKey(hw.name, hw.sku) }"
                               (click)="cart.closeDrawer()"
-                              class="block text-[10px] text-primary hover:underline font-bold"
+                              class="block text-xs text-primary hover:underline font-bold"
                             >
                               Đổi món
                             </a>
@@ -262,7 +262,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       }
 
                       <!-- Free Assembly & Testing Pack Included -->
-                      <div class="mt-2 p-2 rounded bg-surface-container-low flex items-center justify-between border border-line text-[11px]">
+                      <div class="mt-2 p-2 rounded bg-surface-container-low flex items-center justify-between border border-line text-xs">
                         <div class="flex items-center gap-1.5 text-primary-strong font-medium">
                           <lucide-icon name="wrench" class="w-3.5 h-3.5 shrink-0" aria-hidden="true"></lucide-icon>
                           <span>Lắp ráp máy, giấu dây thẩm mỹ &amp; ép tải test 24h</span>
@@ -279,9 +279,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             @for (item of cart.individualItems(); track item.id) {
               <div class="p-3.5 rounded-xl bg-surface border border-line hover:border-line-strong transition-colors flex flex-col gap-2.5 text-foreground shadow-xs">
                 <!-- Header Badge -->
-                <div class="flex items-center justify-between pb-1.5 border-b border-line text-[11px]">
+                <div class="flex items-center justify-between pb-1.5 border-b border-line text-xs">
                   <div class="flex items-center gap-1.5 flex-wrap">
-                    <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted font-bold uppercase text-[10px]">
+                    <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted font-bold uppercase text-xs">
                       Linh kiện đơn lẻ
                     </span>
                     <span class="text-muted">SKU: {{ item.sku }}</span>
@@ -307,10 +307,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     >
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h3 class="text-xs font-bold text-foreground leading-snug line-clamp-2">
+                    <h3 class="text-sm font-bold text-foreground leading-snug line-clamp-2">
                       {{ item.name }}
                     </h3>
-                    <div class="flex items-center gap-1 mt-1 text-[11px] text-primary-strong font-medium">
+                    <div class="flex items-center gap-1 mt-1 text-xs text-primary-strong font-medium">
                       <span class="size-1.5 rounded-full bg-success inline-block"></span>
                       <span>Sẵn hàng tại HN 45 Thái Hà &amp; HCM 280 3/2</span>
                     </div>
@@ -342,7 +342,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   </div>
                   <div class="text-right">
                     <div class="text-xs font-bold text-foreground tabular">{{ item.lineTotal | vnd }}</div>
-                    <div class="text-[10px] text-muted tabular">{{ item.unitPrice | vnd }}/món</div>
+                    <div class="text-xs text-muted tabular">{{ item.unitPrice | vnd }}/món</div>
                   </div>
                 </div>
               </div>
@@ -372,14 +372,14 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <div class="pt-2 flex items-baseline justify-between border-t border-line">
                 <div class="flex flex-col">
                   <span class="text-sm font-bold text-foreground">Tổng thanh toán:</span>
-                  <span class="text-[10px] text-muted">(Đã bao gồm thuế VAT 10%)</span>
+                  <span class="text-xs text-muted">(Đã bao gồm thuế VAT 10%)</span>
                 </div>
                 <span class="text-base font-black text-foreground tabular">{{ cart.subtotal() | vnd }}</span>
               </div>
             </div>
 
             <!-- COD Note -->
-            <div class="px-2.5 py-1.5 rounded bg-surface-alt border border-line text-[11px] text-muted leading-tight">
+            <div class="px-2.5 py-1.5 rounded bg-surface-alt border border-line text-xs text-muted leading-tight">
               Cấu hình PC Custom Build chỉ cần đặt cọc trước 10% khi chọn hình thức thanh toán COD nhận hàng.
             </div>
 
@@ -388,7 +388,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <a
                 routerLink="/checkout"
                 (click)="cart.closeDrawer()"
-                class="w-full h-10 rounded-lg bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-md"
+                class="w-full h-10 rounded-lg bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-md"
               >
                 <span>Tiến hành đặt hàng (Checkout)</span>
                 <lucide-icon name="arrow-right" class="w-4 h-4" aria-hidden="true"></lucide-icon>

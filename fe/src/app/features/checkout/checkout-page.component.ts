@@ -84,12 +84,12 @@ type SubmitResult = {
 
               <div class="grid sm:grid-cols-2 gap-3 text-xs">
                 <div class="p-3 rounded-md bg-surface-dark border border-line-dark">
-                  <span class="text-muted block text-[10px]">Nội dung chuyển khoản (chính xác):</span>
-                  <strong class="text-primary text-base tracking-wider font-mono">{{ order.paymentReference }}</strong>
+                  <span class="text-muted block text-xs">Nội dung chuyển khoản (chính xác):</span>
+                  <strong class="text-primary text-base tracking-wider tabular font-bold">{{ order.paymentReference }}</strong>
                 </div>
                 <div class="p-3 rounded-md bg-surface-dark border border-line-dark">
-                  <span class="text-muted block text-[10px]">Số tiền cần thanh toán:</span>
-                  <strong class="text-primary text-base tabular font-mono">{{ (order.expectedAmount ?? '0') | vnd }}</strong>
+                  <span class="text-muted block text-xs">Số tiền cần thanh toán:</span>
+                  <strong class="text-primary text-base tabular font-bold">{{ (order.expectedAmount ?? '0') | vnd }}</strong>
                 </div>
               </div>
             </div>
@@ -121,10 +121,10 @@ type SubmitResult = {
                   </div>
                   <div>
                     <h2 class="font-bold text-sm sm:text-base text-foreground">Thông Tin Nhận Hàng</h2>
-                    <p class="text-[11px] text-muted">Đặt hàng nhanh chóng, không yêu cầu xác thực OTP rườm rà</p>
+                    <p class="text-xs text-muted">Đặt hàng nhanh chóng, không yêu cầu xác thực OTP rườm rà</p>
                   </div>
                 </div>
-                <span appBadge variant="outline" class="text-[10px] text-primary border-primary/30">
+                <span appBadge variant="outline" class="text-xs text-primary border-primary/30">
                   NHẬN DIỆN NHANH
                 </span>
               </div>
@@ -136,7 +136,7 @@ type SubmitResult = {
                   </label>
                   <input
                     appInput
-                    class="w-full text-xs font-medium"
+                    class="w-full text-sm font-medium"
                     [(ngModel)]="name"
                     placeholder="Ví dụ: Nguyễn Hoàng Nam"
                   >
@@ -149,7 +149,7 @@ type SubmitResult = {
                     </label>
                     <input
                       appInput
-                      class="w-full text-xs font-medium"
+                      class="w-full text-sm font-medium"
                       [(ngModel)]="phone"
                       type="tel"
                       placeholder="Ví dụ: 0988 234 567"
@@ -162,7 +162,7 @@ type SubmitResult = {
                     </label>
                     <input
                       appInput
-                      class="w-full text-xs font-medium"
+                      class="w-full text-sm font-medium"
                       [(ngModel)]="email"
                       type="email"
                       placeholder="hoangnam.tech@gmail.com"
@@ -180,7 +180,7 @@ type SubmitResult = {
                 </div>
                 <div>
                   <h2 class="font-bold text-sm sm:text-base text-foreground">Phương Thức Nhận Hàng</h2>
-                  <p class="text-[11px] text-muted">Lựa chọn nhận máy tại Showroom hoặc chuyển phát tận nơi</p>
+                  <p class="text-xs text-muted">Lựa chọn nhận máy tại Showroom hoặc chuyển phát tận nơi</p>
                 </div>
               </div>
 
@@ -199,7 +199,7 @@ type SubmitResult = {
                 >
                   <lucide-icon name="Store" class="size-4" [class.text-primary]="fulfillment === 'PICKUP'" aria-hidden="true"></lucide-icon>
                   <span>Nhận tại Showroom</span>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-primary/15 text-primary uppercase font-bold">Miễn phí</span>
+                  <span class="px-1.5 py-0.5 rounded text-xs bg-primary/15 text-primary uppercase font-bold">Miễn phí</span>
                 </button>
 
                 <button
@@ -242,16 +242,16 @@ type SubmitResult = {
                           >
                           <div>
                             <span class="text-xs font-bold text-foreground block">{{ branch.name }}</span>
-                            <span class="text-[11px] text-muted">{{ branch.address }}</span>
+                            <span class="text-xs text-muted">{{ branch.address }}</span>
                           </div>
                         </div>
-                        <span appBadge variant="outline" class="text-[10px] text-primary border-primary/30">
+                        <span appBadge variant="outline" class="text-xs text-primary border-primary/30">
                           SẴN HÀNG
                         </span>
                       </label>
                     }
                   </div>
-                  <p class="text-[11px] text-muted flex items-center gap-1.5 pt-1">
+                  <p class="text-xs text-muted flex items-center gap-1.5 pt-1">
                     <lucide-icon name="ShieldCheck" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>Nhận tại cửa hàng không yêu cầu nhập địa chỉ nhà, được hỗ trợ unbox và test tại chỗ.</span>
                   </p>
@@ -268,7 +268,7 @@ type SubmitResult = {
                       </label>
                       <input
                         appInput
-                        class="w-full text-xs font-medium"
+                        class="w-full text-sm font-medium"
                         [(ngModel)]="province"
                         placeholder="TP. Hồ Chí Minh / Hà Nội / Đà Nẵng..."
                       >
@@ -280,7 +280,7 @@ type SubmitResult = {
                       </label>
                       <input
                         appInput
-                        class="w-full text-xs font-medium"
+                        class="w-full text-sm font-medium"
                         [(ngModel)]="district"
                         placeholder="Quận 10 / Q. Đống Đa..."
                       >
@@ -293,7 +293,7 @@ type SubmitResult = {
                     </label>
                     <input
                       appInput
-                      class="w-full text-xs font-medium"
+                      class="w-full text-sm font-medium"
                       [(ngModel)]="streetAddress"
                       placeholder="Số 280 Ba Tháng Hai, Phường 12..."
                     >
@@ -310,7 +310,7 @@ type SubmitResult = {
                 <textarea
                   appInput
                   rows="2"
-                  class="w-full text-xs leading-relaxed"
+                  class="w-full text-sm leading-relaxed"
                   [(ngModel)]="technicalNotes"
                   placeholder="Ví dụ: Cập nhật BIOS mới nhất, đi dây gọn mặt sau thùng máy, giao giờ hành chính..."
                 ></textarea>
@@ -325,7 +325,7 @@ type SubmitResult = {
                 </div>
                 <div>
                   <h2 class="font-bold text-sm sm:text-base text-foreground">Phương Thức Thanh Toán</h2>
-                  <p class="text-[11px] text-muted">Hỗ trợ quét mã VietQR tự động hoặc thanh toán khi nhận hàng</p>
+                  <p class="text-xs text-muted">Hỗ trợ quét mã VietQR tự động hoặc thanh toán khi nhận hàng</p>
                 </div>
               </div>
 
@@ -346,11 +346,11 @@ type SubmitResult = {
                   <div>
                     <div class="flex items-center gap-1.5">
                       <span class="font-bold text-xs text-foreground">VietQR Tự Động</span>
-                      <span class="px-1.5 py-0.2 rounded text-[9px] bg-primary text-primary-foreground font-bold uppercase">
+                      <span class="px-1.5 py-0.5 rounded text-xs bg-primary text-primary-foreground font-bold uppercase">
                         Khuyên dùng
                       </span>
                     </div>
-                    <span class="text-[11px] text-muted mt-0.5 block leading-relaxed">
+                    <span class="text-xs text-muted mt-0.5 block leading-relaxed">
                       Giữ hàng ngay lập tức. Khớp lệnh tự động trong 30 giây qua ngân hàng MB Bank.
                     </span>
                   </div>
@@ -371,7 +371,7 @@ type SubmitResult = {
                   >
                   <div>
                     <span class="font-bold text-xs text-foreground block">Thanh toán khi nhận (COD)</span>
-                    <span class="text-[11px] text-muted mt-0.5 block leading-relaxed">
+                    <span class="text-xs text-muted mt-0.5 block leading-relaxed">
                       Kiểm tra hàng cùng nhân viên rồi thanh toán trực tiếp tại quầy hoặc shipper.
                     </span>
                   </div>
@@ -391,7 +391,7 @@ type SubmitResult = {
                   <lucide-icon name="Cpu" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                   <h3 class="font-bold text-sm text-foreground">Chi Tiết Cấu Hình Đặt Mua</h3>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-surface-alt text-muted text-[11px] font-bold">
+                <span class="px-2 py-0.5 rounded-full bg-surface-alt text-muted text-xs font-bold tabular">
                   {{ cart.itemCount() }} món
                 </span>
               </div>
@@ -404,13 +404,13 @@ type SubmitResult = {
                     <div class="flex items-start justify-between gap-2">
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                          <span class="px-1.5 py-0.2 rounded bg-primary text-primary-foreground text-[10px] font-bold uppercase">
+                          <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground text-xs font-bold uppercase">
                             Bộ PC Hoàn Chỉnh
                           </span>
-                          <span class="text-[10px] font-mono text-muted tabular">SL: {{ build.quantity }}</span>
+                          <span class="text-xs text-muted tabular">SL: {{ build.quantity }}</span>
                         </div>
-                        <h4 class="text-xs font-bold text-foreground mt-1 truncate">{{ build.buildName }}</h4>
-                        <span class="text-[10px] text-muted block">Bao gồm {{ build.componentCount }} linh kiện chính hãng</span>
+                        <h4 class="text-sm font-bold text-foreground mt-1 truncate">{{ build.buildName }}</h4>
+                        <span class="text-xs text-muted block">Bao gồm {{ build.componentCount }} linh kiện chính hãng</span>
                       </div>
                       <div class="text-right shrink-0">
                         <span class="text-xs font-bold text-foreground block tabular">{{ build.totalPrice | vnd }}</span>
@@ -421,7 +421,7 @@ type SubmitResult = {
                     <button
                       type="button"
                       (click)="toggleBuildAccordion(build.key)"
-                      class="w-full flex items-center justify-between px-2.5 py-1.5 bg-surface hover:bg-surface-elevated/5 rounded border border-line text-[11px] font-semibold text-foreground transition-all cursor-pointer"
+                      class="w-full flex items-center justify-between px-2.5 py-1.5 bg-surface hover:bg-surface-elevated/5 rounded border border-line text-xs font-semibold text-foreground transition-all cursor-pointer"
                       [attr.aria-expanded]="isBuildExpanded(build.key)"
                     >
                       <span class="flex items-center gap-1.5 text-primary font-bold">
@@ -438,16 +438,16 @@ type SubmitResult = {
 
                     <!-- Collapsible Component List -->
                     @if (isBuildExpanded(build.key)) {
-                      <div class="space-y-1.5 pt-1.5 border-t border-line text-[11px]">
+                      <div class="space-y-1.5 pt-1.5 border-t border-line text-xs">
                         @for (item of build.hardwareItems; track item.id) {
                           <div class="flex items-center justify-between py-1 border-b border-line/40">
                             <div class="flex items-center gap-1.5 min-w-0">
-                              <span class="px-1 py-0.2 rounded bg-surface-dark text-foreground-dark font-mono text-[9px] font-bold shrink-0">
+                              <span class="px-1.5 py-0.5 rounded bg-surface-dark text-foreground-dark text-xs font-bold shrink-0">
                                 {{ getComponentSlot(item.name) }}
                               </span>
-                              <span class="text-foreground truncate text-[11px]">{{ item.name }}</span>
+                              <span class="text-foreground truncate text-xs">{{ item.name }}</span>
                             </div>
-                            <span class="font-mono text-muted text-[10px] shrink-0 tabular ml-2">
+                            <span class="text-muted text-xs shrink-0 tabular ml-2">
                               {{ item.lineTotal | vnd }}
                             </span>
                           </div>
@@ -461,8 +461,8 @@ type SubmitResult = {
                 @for (item of standaloneItems(); track item.id) {
                   <div class="flex items-center justify-between gap-2 p-2.5 bg-surface-alt rounded-lg border border-line">
                     <div class="flex-1 min-w-0">
-                      <h4 class="text-xs font-semibold text-foreground truncate">{{ item.name }}</h4>
-                      <span class="text-[10px] text-muted">Số lượng: <strong class="tabular font-medium text-foreground">{{ item.quantity }}</strong></span>
+                      <h4 class="text-sm font-semibold text-foreground truncate">{{ item.name }}</h4>
+                      <span class="text-xs text-muted">Số lượng: <strong class="tabular font-medium text-foreground">{{ item.quantity }}</strong></span>
                     </div>
                     <div class="text-right shrink-0">
                       <span class="text-xs font-bold text-foreground tabular">{{ item.lineTotal | vnd }}</span>
@@ -497,7 +497,7 @@ type SubmitResult = {
                 <div class="flex items-baseline justify-between pt-2 border-t border-line text-sm font-black text-foreground">
                   <div>
                     <span>Tổng thanh toán:</span>
-                    <span class="block text-[10px] text-muted font-normal">(Đã bao gồm VAT 10%)</span>
+                    <span class="block text-xs text-muted font-normal">(Đã bao gồm VAT 10%)</span>
                   </div>
                   <span class="text-base text-primary font-bold tabular">
                     {{ computedGrandTotal() | vnd }}
@@ -514,7 +514,7 @@ type SubmitResult = {
                     <span class="size-2 rounded-full bg-primary animate-pulse"></span>
                     <h3 class="font-bold text-sm text-foreground">Thanh Toán Chuyển Khoản VietQR</h3>
                   </div>
-                  <span appBadge variant="outline" class="text-[10px] text-primary border-primary/30">
+                  <span appBadge variant="outline" class="text-xs text-primary border-primary/30">
                     Khớp tự động
                   </span>
                 </div>
@@ -522,7 +522,7 @@ type SubmitResult = {
                 <div class="bg-surface-alt p-4 rounded-xl border border-line space-y-3">
                   <!-- VietQR Header & Mock QR Container -->
                   <div class="bg-surface p-3 rounded-lg border border-line shadow-sm flex flex-col items-center mx-auto max-w-[220px]">
-                    <div class="w-full flex items-center justify-between px-2 py-0.5 bg-surface-dark rounded-t text-foreground-dark text-[10px] font-mono font-bold mb-2">
+                    <div class="w-full flex items-center justify-between px-2.5 py-1 bg-surface-dark rounded-t text-foreground-dark text-xs font-bold mb-2 tabular">
                       <span class="text-primary">VIETQR</span>
                       <span class="text-slate-300">MB BANK</span>
                     </div>
@@ -544,7 +544,7 @@ type SubmitResult = {
                     </svg>
 
                     <div class="mt-2 text-center w-full">
-                      <span class="text-[10px] text-muted block">Ngân hàng Quân Đội (MB Bank)</span>
+                      <span class="text-xs text-muted block">Ngân hàng Quân Đội (MB Bank)</span>
                       <span class="text-xs font-bold text-foreground">CTCP CONG NGHE EL-TECH</span>
                     </div>
                   </div>
@@ -552,8 +552,8 @@ type SubmitResult = {
                   <!-- Bank Info and Fast Copy -->
                   <div class="bg-surface p-3 rounded-lg border border-line space-y-2 text-xs">
                     <div class="flex items-center justify-between">
-                      <span class="text-muted text-[11px]">Số tài khoản:</span>
-                      <div class="flex items-center gap-1.5 font-mono font-bold text-foreground">
+                      <span class="text-muted text-xs">Số tài khoản:</span>
+                      <div class="flex items-center gap-1.5 font-bold text-foreground tabular">
                         <span>0868 999 888 999</span>
                         <button
                           type="button"
@@ -568,15 +568,15 @@ type SubmitResult = {
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <span class="text-muted text-[11px]">Số tiền chuyển:</span>
-                      <span class="font-bold text-primary font-mono tabular">
+                      <span class="text-muted text-xs">Số tiền chuyển:</span>
+                      <span class="font-bold text-primary tabular">
                         {{ computedGrandTotal() | vnd }}
                       </span>
                     </div>
 
                     <div class="flex items-center justify-between">
-                      <span class="text-muted text-[11px]">Nội dung CK:</span>
-                      <div class="flex items-center gap-1.5 bg-surface-alt px-1.5 py-0.5 rounded font-mono font-bold text-foreground">
+                      <span class="text-muted text-xs">Nội dung CK:</span>
+                      <div class="flex items-center gap-1.5 bg-surface-alt px-2 py-0.5 rounded font-bold text-foreground tabular">
                         <span>{{ qrTransferMemo }}</span>
                         <button
                           type="button"
@@ -597,7 +597,7 @@ type SubmitResult = {
                       <lucide-icon name="Clock" class="size-4 text-warning" aria-hidden="true"></lucide-icon>
                       <span>Giữ đơn & mã QR trong:</span>
                     </div>
-                    <span class="font-mono text-sm font-bold text-primary tabular">
+                    <span class="text-sm font-bold text-primary tabular">
                       {{ formattedCountdown() }}
                     </span>
                   </div>

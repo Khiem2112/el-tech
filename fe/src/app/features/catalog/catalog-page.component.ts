@@ -146,13 +146,13 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- Dynamic Category Specification Filters -->
         @if (filterableSpecs().length > 0) {
           <div class="space-y-3 pt-2 border-t border-line">
-            <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
             @for (spec of filterableSpecs(); track spec.stable_key) {
               <div>
                 <label class="block text-xs font-semibold text-foreground mb-1">
                   {{ spec.label }}
                   @if (spec.unit) {
-                    <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                    <span class="text-muted text-xs">({{ spec.unit }})</span>
                   }
                 </label>
                 <app-select
@@ -467,12 +467,12 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
               <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="p-3.5 block">
                 <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-2.5">
                   @if (isPreOrder(product)) {
-                    <span appBadge variant="warning" class="absolute top-2 left-2 text-[10px] font-bold">ĐẶT TRƯỚC</span>
+                    <span appBadge variant="warning" size="sm" class="absolute top-2 left-2 font-bold">ĐẶT TRƯỚC</span>
                   } @else {
-                    <span appBadge variant="success" class="absolute top-2 left-2 text-[10px] font-bold">SẴN HÀNG</span>
+                    <span appBadge variant="success" size="sm" class="absolute top-2 left-2 font-bold">SẴN HÀNG</span>
                   }
                   @if (getDiscountPercent(product); as discount) {
-                    <span appBadge variant="danger" class="absolute bottom-2 left-2 text-[10px] font-bold">-{{ discount }}%</span>
+                    <span appBadge variant="danger" size="sm" class="absolute bottom-2 left-2 font-bold">-{{ discount }}%</span>
                   }
                   <img
                     [src]="product.media | productImage"
@@ -483,7 +483,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   >
                 </div>
                 
-                <div class="text-[11px] font-bold text-primary uppercase tracking-wide">
+                <div class="text-xs font-bold text-primary uppercase tracking-wide">
                   {{ product.brand.name }} · {{ product.category.name }}
                 </div>
                 <h2 class="font-bold text-sm text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">
@@ -494,7 +494,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 <!-- Core Specs Pills -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   @for (spec of getCoreSpecPills(product); track spec) {
-                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                    <span class="text-xs px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                       {{ spec }}
                     </span>
                   }
@@ -513,7 +513,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                       </span>
                     }
                   </div>
-                  <span class="text-[10px] text-muted">Đã gồm VAT</span>
+                  <span class="text-xs text-muted">Đã gồm VAT</span>
                 </div>
                 <div class="flex items-center gap-2 mt-2.5">
                   <button
@@ -562,14 +562,14 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</span>
+                    <span class="text-xs font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</span>
                     @if (isPreOrder(product)) {
-                      <span appBadge variant="warning" size="sm" class="text-[10px]">ĐẶT TRƯỚC</span>
+                      <span appBadge variant="warning" size="sm">ĐẶT TRƯỚC</span>
                     } @else {
-                      <span appBadge variant="success" size="sm" class="text-[10px]">SẴN HÀNG</span>
+                      <span appBadge variant="success" size="sm">SẴN HÀNG</span>
                     }
                     @if (getDiscountPercent(product); as discount) {
-                      <span appBadge variant="danger" size="sm" class="text-[10px]">-{{ discount }}%</span>
+                      <span appBadge variant="danger" size="sm">-{{ discount }}%</span>
                     }
                   </div>
                   <h2 class="font-bold text-sm text-foreground line-clamp-1 mt-0.5 group-hover:text-primary transition-colors">
@@ -580,7 +580,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   <!-- Core Specs Pills -->
                   <div class="flex flex-wrap gap-1 mt-1.5">
                     @for (spec of getCoreSpecPills(product); track spec) {
-                      <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                      <span class="text-xs px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                         {{ spec }}
                       </span>
                     }
@@ -596,7 +596,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                       <span class="text-xs text-muted line-through tabular">{{ origPrice | vnd }}</span>
                     }
                   </div>
-                  <div class="text-[10px] text-muted">Đã bao gồm VAT</div>
+                  <div class="text-xs text-muted">Đã bao gồm VAT</div>
                 </div>
                 <div class="flex items-center gap-2">
                   <button
@@ -733,13 +733,13 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       <!-- Mobile Category Specification Filters -->
       @if (filterableSpecs().length > 0) {
         <div class="space-y-3 pt-2 border-t border-line">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+          <div class="text-xs font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
           @for (spec of filterableSpecs(); track spec.stable_key) {
             <div>
               <label class="block text-xs font-bold text-foreground mb-1">
                 {{ spec.label }}
                 @if (spec.unit) {
-                  <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                  <span class="text-muted text-xs">({{ spec.unit }})</span>
                 }
               </label>
               <app-select
@@ -828,11 +828,11 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </div>
         <div>
           <p class="text-xs font-bold text-foreground">Đã thêm vào PC Builder</p>
-          <p class="text-[11px] text-muted line-clamp-1">{{ msg }}</p>
+          <p class="text-xs text-muted line-clamp-1">{{ msg }}</p>
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm" class="text-xs">
+        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm">
           Đến PC Builder
         </a>
         <button type="button" (click)="buildNotification.set(null)" class="text-muted hover:text-foreground p-1 cursor-pointer">
