@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { cn } from '../../../lib/cn';
 
 export type BadgeVariant = 'primary' | 'dark' | 'muted' | 'success' | 'outline' | 'danger' | 'warning' | 'info';
+export type BadgeSize = 'sm' | 'md';
 
 @Component({
   selector: 'span[appBadge], div[appBadge]',
@@ -14,10 +15,16 @@ export type BadgeVariant = 'primary' | 'dark' | 'muted' | 'success' | 'outline' 
 })
 export class BadgeDirective {
   public readonly variant = input<BadgeVariant>('muted');
+  public readonly size = input<BadgeSize>('md');
   public readonly customClass = input<string>('', { alias: 'class' });
 
   protected readonly hostClasses = computed(() => {
-    const base = 'inline-flex items-center px-2 py-0.5 text-xs font-semibold rounded-sm transition-colors tabular-nums';
+    const base = 'inline-flex items-center rounded-sm font-semibold transition-colors tabular-nums';
+
+    const sizes: Record<BadgeSize, string> = {
+      sm: 'px-2 py-0.5 text-xs',
+      md: 'px-2.5 py-0.5 text-sm',
+    };
 
     const variants: Record<BadgeVariant, string> = {
       primary: 'bg-primary/15 text-primary-strong border border-primary/30',
@@ -30,6 +37,6 @@ export class BadgeDirective {
       info: 'bg-surface-alt text-foreground border border-line font-bold',
     };
 
-    return cn(base, variants[this.variant()], this.customClass());
+    return cn(base, sizes[this.size()], variants[this.variant()], this.customClass());
   });
 }

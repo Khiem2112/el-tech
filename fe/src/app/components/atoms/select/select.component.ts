@@ -94,7 +94,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
                   (ngModelChange)="onSearchChange($event)"
                   (keydown)="onSearchKeydown($event)"
                   [placeholder]="searchPlaceholder()"
-                  class="w-full rounded border border-line bg-surface py-1.5 pl-8 pr-2 text-xs text-foreground placeholder:text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                  class="w-full rounded border border-line bg-surface py-1.5 pl-8 pr-2 text-sm text-foreground placeholder:text-muted focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 />
               </div>
             </div>
@@ -109,7 +109,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
               <div
                 role="option"
                 [attr.aria-selected]="option.value === value()"
-                class="flex cursor-pointer items-center justify-between rounded px-2.5 py-1.5 text-xs transition-colors"
+                class="flex cursor-pointer items-center justify-between rounded px-2.5 py-1.5 text-sm transition-colors"
                 [class.bg-surface-alt]="highlightedIndex() === idx"
                 [class.text-primary]="option.value === value()"
                 [class.font-bold]="option.value === value()"
@@ -120,12 +120,12 @@ export type SelectSize = 'sm' | 'md' | 'lg';
                 <div class="flex flex-col min-w-0 pr-2">
                   <span class="truncate">{{ option.label }}</span>
                   @if (option.description) {
-                    <span class="text-[10px] text-muted truncate">{{ option.description }}</span>
+                    <span class="text-xs text-muted truncate">{{ option.description }}</span>
                   }
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
                   @if (option.count !== undefined) {
-                    <span class="rounded bg-surface-alt px-1.5 py-0.5 text-[10px] text-muted">
+                    <span class="rounded bg-surface-alt px-1.5 py-0.5 text-xs text-muted tabular">
                       {{ option.count }}
                     </span>
                   }
@@ -135,7 +135,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
                 </div>
               </div>
             } @empty {
-              <div class="px-3 py-4 text-center text-xs text-muted">
+              <div class="px-3 py-4 text-center text-sm text-muted">
                 Không tìm thấy tùy chọn phù hợp
               </div>
             }
@@ -229,7 +229,7 @@ export class SelectComponent implements ControlValueAccessor {
       'flex w-full items-center justify-between gap-2 rounded-md border border-line bg-surface font-medium text-foreground transition-all duration-150 hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none cursor-pointer select-none';
 
     const sizes: Record<SelectSize, string> = {
-      sm: 'h-8 px-2.5 text-xs',
+      sm: 'h-8 px-2.5 text-sm',
       md: 'h-9 px-3 text-sm',
       lg: 'h-10 px-3.5 text-base',
     };

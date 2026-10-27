@@ -412,10 +412,10 @@ graph TD
 | [[TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS]] | UI Distill | Tinh gọn bảng tồn kho theo cụm, sổ cái biến động, luồng điều chuyển nội bộ và thẻ máy quét sê-ri | [[TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP]] |
 | [[TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS]] | UI Distill | Tinh gọn chi tiết đơn hàng, thanh thao tác 1 Primary CTA và 15 hộp thoại quy trình thực thi đơn | [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]] |
 | [[TASK-91-ADMIN-DISTILL-PROMOTIONS-GOVERNANCE-AND-FEEDBACK]] | UI Distill | Tinh gọn khuyến mãi, coupon, biểu phí giao hàng, khách hàng, duyệt đánh giá và outbox thông báo | [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] |
-
-
-
-
+| [[TASK-92-FOUNDATION-TYPOGRAPHY-TOKENS-AND-SHARED-COMPONENTS]] | Typography Standardization | Thống nhất font Sans-Serif toàn hệ thống, cấm monospace, chuẩn hóa normal text 14px cho toàn bộ components dùng chung | [[TASK-10-DESIGN-SYSTEM-TOKEN-AUDIT-AND-STANDARDIZATION]], [[TASK-17-TYPOGRAPHY-AND-HEADER-DROPDOWN-CLEANUP]] |
+| [[TASK-93-STOREFRONT-TYPOGRAPHY-STANDARDIZATION-AND-MONO-REMOVAL]] | Typography Standardization | Loại bỏ monospace, nâng normal text lên 14px, xóa cỡ chữ < 12px, chỉ giữ 12px cho mô tả phụ toàn Storefront | [[TASK-01-SHELL-AND-TELEMETRY-HEADER]], [[TASK-03-CATALOG-FILTERBAR-AND-GRID]], [[TASK-92-FOUNDATION-TYPOGRAPHY-TOKENS-AND-SHARED-COMPONENTS]] |
+| [[TASK-94-ADMIN-CATALOG-PROCUREMENT-TYPOGRAPHY-STANDARDIZATION]] | Typography Standardization | Chuẩn hóa font 14px và loại bỏ monospace cho Admin Shell, Dashboard, Catalog (Templates, Variants, Bundles), Procurement (PO, Suppliers) | [[TASK-85-ADMIN-DISTILL-SHELL-AND-SHARED-NAVIGATION]], [[TASK-87-ADMIN-DISTILL-CATALOG-AND-PRODUCT-TEMPLATES]], [[TASK-92-FOUNDATION-TYPOGRAPHY-TOKENS-AND-SHARED-COMPONENTS]] |
+| [[TASK-95-ADMIN-INVENTORY-ORDERS-GOVERNANCE-TYPOGRAPHY-STANDARDIZATION]] | Typography Standardization | Chuẩn hóa font 14px và loại bỏ monospace cho Admin Inventory, Serials, Transfers, Orders, 15 Modals thực thi, Promotions và Governance | [[TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS]], [[TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS]], [[TASK-92-FOUNDATION-TYPOGRAPHY-TOKENS-AND-SHARED-COMPONENTS]] |
 
 
 
