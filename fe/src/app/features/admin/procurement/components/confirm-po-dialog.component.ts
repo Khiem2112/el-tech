@@ -6,12 +6,13 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
 
 @Component({
   selector: 'app-confirm-po-dialog',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen && po) {
@@ -22,7 +23,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
         ></div>
 
         <div
-          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 z-10 text-[13px] text-foreground"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-md p-6 space-y-4 z-10 text-xs text-foreground"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
@@ -30,7 +31,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
                 Xác Nhận Đơn Mua Hàng
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Bản thảo &rarr; Đã xác nhận (Phê duyệt đơn PO #{{ po.code }})
+                Khóa dữ liệu và chuyển đơn PO #{{ po.code }} sang trạng thái đã xác nhận
               </p>
             </div>
             <button
@@ -38,35 +39,33 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               (click)="onCancel()"
               class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng"
+              aria-label="Đóng"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
-          <div class="p-3.5 bg-blue-50 border border-blue-200 rounded text-blue-800 text-xs leading-relaxed space-y-1.5">
-            <div class="font-semibold text-blue-900">Quy tắc nghiệp vụ PUR-003, PUR-005:</div>
-            <div>
-              Khi xác nhận, hệ thống sẽ khóa cứng toàn bộ thông tin đối tác nhà cung cấp (<strong>{{ po.supplier.name }}</strong>), kho chi nhánh nhận hàng (<strong>{{ po.receivingBranch.name }}</strong>), danh sách linh kiện, số lượng đặt và đơn giá thỏa thuận.
+          <div class="bg-surface p-3.5 rounded-lg border border-line space-y-2 text-xs">
+            <div class="flex justify-between items-center text-muted">
+              <span>Nhà cung cấp:</span>
+              <strong class="text-foreground text-right truncate max-w-[220px]">{{ po.supplier.name }}</strong>
             </div>
-            <div>
-              Sau khi xác nhận, đơn hàng sẵn sàng cho quy trình đối soát nhập kho tại điểm đích. Không được phép chỉnh sửa dòng hàng trực tiếp.
+            <div class="flex justify-between items-center text-muted">
+              <span>Kho nhận hàng:</span>
+              <strong class="text-foreground text-right truncate max-w-[220px]">{{ po.receivingBranch.name }}</strong>
             </div>
-          </div>
-
-          <div class="bg-surface p-3 rounded border border-line space-y-1">
-            <div class="flex justify-between text-muted text-xs">
-              <span>Tổng số mặt hàng:</span>
-              <strong class="text-foreground">{{ po.lines.length }} linh kiện</strong>
+            <div class="flex justify-between items-center text-muted">
+              <span>Quy mô đơn:</span>
+              <span class="text-foreground">
+                <strong class="font-mono tabular-nums">{{ po.lines.length }}</strong> dòng linh kiện
+                (<strong class="font-mono tabular-nums">{{ po.totalQuantity }}</strong> chiếc)
+              </span>
             </div>
-            <div class="flex justify-between text-muted text-xs">
-              <span>Tổng số lượng:</span>
-              <strong class="text-foreground">{{ po.totalQuantity }} chiếc</strong>
-            </div>
-            <div class="flex justify-between text-muted text-xs pt-1 border-t border-line">
-              <span>Tổng giá trị đơn:</span>
-              <strong class="text-primary text-[13px] tabular-nums font-mono font-bold">{{ po.totalAmount }} ₫</strong>
+            <div class="flex justify-between items-center text-muted pt-2 border-t border-line">
+              <span class="font-semibold text-foreground">Tổng giá trị đơn:</span>
+              <strong class="text-primary text-sm tabular-nums font-mono font-bold">
+                {{ formatCurrency(po.totalAmount) }} ₫
+              </strong>
             </div>
           </div>
 
@@ -75,7 +74,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               type="button"
               (click)="onCancel()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-[13px] text-foreground transition-colors"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors"
             >
               Hủy Bỏ
             </button>
@@ -83,7 +82,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               type="button"
               (click)="onConfirm()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-[13px] transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+              class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
             >
               @if (isSubmitting) {
                 <div class="w-3.5 h-3.5 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
@@ -112,5 +111,12 @@ export class ConfirmPODialogComponent {
 
   onCancel(): void {
     this.cancelled.emit();
+  }
+
+  formatCurrency(value: string | number | undefined): string {
+    if (value === undefined || value === null) return '0';
+    const num = typeof value === 'number' ? value : parseFloat(value);
+    if (isNaN(num)) return '0';
+    return num.toLocaleString('vi-VN');
   }
 }

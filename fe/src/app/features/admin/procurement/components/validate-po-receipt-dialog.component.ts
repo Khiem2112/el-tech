@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import {
   PurchaseOrderDetail,
   ValidateReceiptPayload,
@@ -31,7 +32,7 @@ type ReceiptLineState = {
 @Component({
   selector: 'app-validate-po-receipt-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen && po) {
@@ -42,15 +43,15 @@ type ReceiptLineState = {
         ></div>
 
         <div
-          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-[13px] text-foreground"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-xs text-foreground"
         >
-          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-shrink-0">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Đối Soát & Nhập Kho Đơn Mua 100%
+                Đối Soát Nhập Kho PO #{{ po.code }}
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Xác thực hàng về kho chi nhánh #{{ po.receivingBranch.name }} (PO #{{ po.code }})
+                Kho nhận hàng: <strong class="text-foreground">{{ po.receivingBranch.name }}</strong>
               </p>
             </div>
             <button
@@ -58,84 +59,70 @@ type ReceiptLineState = {
               (click)="onCancel()"
               class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng"
+              aria-label="Đóng"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
-          <div class="p-5 overflow-y-auto space-y-4 flex-1">
-            <div class="p-3.5 bg-emerald-50 border border-emerald-200 rounded text-emerald-800 text-xs space-y-1.5 leading-relaxed">
-              <div class="font-semibold text-emerald-900">Quy tắc đối soát nhập kho 100% (PUR-006, PUR-008, INV-014):</div>
-              <div>
-                - Số lượng và SKU thực tế phải khớp đúng 100% với đơn PO đã xác nhận. Chặn nhập kho nếu thiếu hoặc thừa.
-              </div>
-              <div>
-                - Với linh kiện yêu cầu số serial: Bắt buộc quét đủ số lượng serial duy nhất, không trùng lặp toàn hệ thống.
-              </div>
-              <div>
-                - Khi xác nhận thành công: Hệ thống tự động ghi nhật ký kho bất biến StockLedgerEntry, tăng tồn kho onHand, khởi tạo SerialUnit và tính lại giá vốn bình quân gia quyền.
-              </div>
-            </div>
-
-            <div class="space-y-4">
+          <div class="p-4 overflow-y-auto space-y-3 flex-1">
+            <div class="space-y-3">
               @for (line of linesState(); track line.skuId) {
-                <div class="p-3.5 bg-surface border border-line rounded-lg space-y-3">
+                <div class="p-3 bg-surface border border-line rounded-lg space-y-2.5">
                   <div class="flex items-center justify-between flex-wrap gap-2">
                     <div>
                       <div class="flex items-center gap-2">
                         <span class="font-mono font-bold text-foreground text-xs">{{ line.sku }}</span>
                         @if (line.serialRequired) {
                           <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold">
-                            Bắt buộc Serial
+                            Cần Serial
                           </span>
                         }
                       </div>
                       <div class="text-muted text-xs mt-0.5">{{ line.name }}</div>
                     </div>
                     <div class="text-right">
-                      <div class="text-xs text-muted">Số lượng cần nhập:</div>
-                      <div class="text-foreground font-bold text-sm tabular-nums">{{ line.expectedQuantity }} chiếc</div>
+                      <div class="text-[11px] text-muted">Số lượng cần nhập:</div>
+                      <div class="text-foreground font-bold text-xs tabular-nums">{{ line.expectedQuantity }} chiếc</div>
                     </div>
                   </div>
 
                   @if (line.serialRequired) {
                     <div class="space-y-1.5 pt-2 border-t border-line">
-                      <div class="flex items-center justify-between">
-                        <label class="block text-muted font-medium text-[11px] uppercase tracking-wider">
-                          Quét hoặc nhập {{ line.expectedQuantity }} số Serial (cách nhau bởi dấu phẩy hoặc xuống dòng):
+                      <div class="flex items-center justify-between text-[11px]">
+                        <label class="text-muted font-medium">
+                          Quét hoặc dán danh sách số sê-ri:
                         </label>
                         <span
-                          class="font-mono text-xs font-bold"
+                          class="font-mono text-xs font-bold tabular-nums"
                           [class.text-emerald-700]="line.parsedSerials.length === line.expectedQuantity && line.duplicateSerials.length === 0"
                           [class.text-amber-700]="line.parsedSerials.length !== line.expectedQuantity || line.duplicateSerials.length > 0"
                         >
-                          Đã nhập: {{ line.parsedSerials.length }} / {{ line.expectedQuantity }}
+                          Đã quét: {{ line.parsedSerials.length }} / {{ line.expectedQuantity }}
                         </span>
                       </div>
 
                       <textarea
-                        rows="3"
+                        rows="2"
                         [ngModel]="line.serialText"
                         (ngModelChange)="onSerialTextChange(line.skuId, $event)"
-                        placeholder="Nhập hoặc quét mã vạch serial..."
-                        class="w-full px-3 py-2 bg-white border rounded font-mono text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                        placeholder="Nhập hoặc quét mã vạch (phân tách bởi dấu phẩy, khoảng trắng hoặc xuống dòng)..."
+                        class="w-full px-2.5 py-1.5 bg-white border rounded font-mono text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                         [class.border-line]="line.duplicateSerials.length === 0 && line.parsedSerials.length === line.expectedQuantity"
                         [class.border-amber-500]="line.parsedSerials.length !== line.expectedQuantity || line.duplicateSerials.length > 0"
                       ></textarea>
 
                       @if (line.duplicateSerials.length > 0) {
                         <p class="text-rose-600 text-[11px] font-semibold">
-                          Phát hiện số serial trùng lặp nội bộ: {{ line.duplicateSerials.join(', ') }}
+                          Trùng lặp: {{ line.duplicateSerials.join(', ') }}
                         </p>
                       } @else if (line.parsedSerials.length > line.expectedQuantity) {
                         <p class="text-amber-700 text-[11px]">
-                          Số lượng serial đã nhập ({{ line.parsedSerials.length }}) vượt quá số lượng linh kiện ({{ line.expectedQuantity }}).
+                          Vượt quá số lượng: {{ line.parsedSerials.length }} / {{ line.expectedQuantity }}
                         </p>
                       } @else if (line.parsedSerials.length < line.expectedQuantity) {
                         <p class="text-muted text-[11px]">
-                          Vui lòng nhập thêm {{ line.expectedQuantity - line.parsedSerials.length }} số serial còn thiếu.
+                          Còn thiếu {{ line.expectedQuantity - line.parsedSerials.length }} mã sê-ri.
                         </p>
                       }
                     </div>
@@ -145,12 +132,12 @@ type ReceiptLineState = {
             </div>
           </div>
 
-          <div class="p-4 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt/40">
-            <div class="text-xs text-muted">
+          <div class="p-3.5 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt/40">
+            <div class="text-xs">
               @if (!isFormValid()) {
-                <span class="text-amber-700 font-semibold">Chưa đủ điều kiện nhập kho: Vui lòng kiểm tra đủ số lượng serial hợp lệ.</span>
+                <span class="text-amber-700 font-semibold">Chưa đủ điều kiện: Cần nhập đủ sê-ri hợp lệ.</span>
               } @else {
-                <span class="text-emerald-700 font-semibold">Đã sẵn sàng xác thực đối soát 100%.</span>
+                <span class="text-emerald-700 font-semibold">Đã đủ điều kiện xác thực nhập kho 100%.</span>
               }
             </div>
 
@@ -159,7 +146,7 @@ type ReceiptLineState = {
                 type="button"
                 (click)="onCancel()"
                 [disabled]="isSubmitting"
-                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-[13px] text-foreground transition-colors"
+                class="px-4 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors"
               >
                 Hủy Bỏ
               </button>
@@ -167,10 +154,10 @@ type ReceiptLineState = {
                 type="button"
                 (click)="onSubmit()"
                 [disabled]="!isFormValid() || isSubmitting"
-                class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-[13px] transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
+                class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting) {
-                  <div class="w-3.5 h-3.5 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
+                  <div class="w-3 h-3 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
                   <span>Đang nhập kho...</span>
                 } @else {
                   <span>Xác Nhận Nhập Kho 100%</span>

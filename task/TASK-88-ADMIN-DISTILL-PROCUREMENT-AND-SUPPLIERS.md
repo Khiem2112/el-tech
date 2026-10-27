@@ -4,7 +4,7 @@
 - Governing Spec: [MASTER.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/design-system/el-tech/MASTER.md), [SKILL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/SKILL.md), [distill.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/reference/distill.md), [admin-portal-screens-and-modals.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/docs/admin-portal-screens-and-modals.md) (SCR-11, SCR-12, SCR-13, SCR-14, MOD-01, MOD-02, MOD-03, MOD-04, MOD-05, MOD-06)
 - Scope: frontend
 - Priority: P2 (Medium)
-- Status: To Do
+- Status: Complete
 
 ## Traceability & Graph Links
 
@@ -54,8 +54,8 @@ Thực hiện tinh gọn giao diện theo nguyên tắc Impeccable Distill cho t
 
 ## Checklist
 
-- [ ] Tinh gọn trang chi tiết PO: làm phẳng tổng quan nhà cung cấp/kho nhận và bảng hàng hóa.
-- [ ] Tinh gọn hộp thoại nhận hàng và quét sê-ri PO: loại bỏ text hướng dẫn dài dòng, tối ưu ô nhập sê-ri.
-- [ ] Tinh gọn hộp thoại ghi nhận giao thiếu hàng và tạo phiếu trả hàng nhà cung cấp.
-- [ ] Đơn giản hóa bảng nhà cung cấp và biểu mẫu tạo/sửa nhà cung cấp.
-- [ ] Chạy kiểm tra `npm run check:fe` với exit code 0.
+- [x] Tinh gọn trang chi tiết PO: làm phẳng tổng quan nhà cung cấp/kho nhận và bảng hàng hóa.
+- [x] Tinh gọn hộp thoại nhận hàng và quét sê-ri PO: loại bỏ text hướng dẫn dài dòng, tối ưu ô nhập sê-ri.
+- [x] Tinh gọn hộp thoại ghi nhận giao thiếu hàng và tạo phiếu trả hàng nhà cung cấp.
+- [x] Đơn giản hóa bảng nhà cung cấp và biểu mẫu tạo/sửa nhà cung cấp.
+- [x] Chạy kiểm tra `npm run check:fe` với exit code 0.

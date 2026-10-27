@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { SupplierFormDialogComponent } from './components/supplier-form-dialog.component';
 import {
@@ -26,9 +27,9 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-suppliers-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, BadgeDirective, SelectComponent, SupplierFormDialogComponent],
+  imports: [CommonModule, FormsModule, ButtonDirective, BadgeDirective, SelectComponent, SupplierFormDialogComponent, AppIconModule],
   template: `
-    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
@@ -46,17 +47,15 @@ type ToastNotification = {
             appButton
             variant="primary"
             size="sm"
-            class="uppercase tracking-wide shadow-sm inline-flex items-center gap-1.5"
+            class="uppercase tracking-wide shadow-xs inline-flex items-center gap-1.5"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
             <span>Thêm Nhà Cung Cấp</span>
           </button>
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 flex flex-col md:flex-row md:items-end justify-between gap-4 shadow-card">
+      <div class="bg-surface border border-line rounded-lg p-3.5 flex flex-col md:flex-row md:items-end justify-between gap-3 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
             <label for="supplier-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
@@ -67,17 +66,13 @@ type ToastNotification = {
                 [ngModel]="supplierService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên nhà cung cấp, mã đối tác, người liên hệ, SĐT..."
-                class="w-full h-9 pl-9 pr-4 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
-              <svg
-                class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <lucide-icon
+                name="search"
+                class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                aria-hidden="true"
+              ></lucide-icon>
             </div>
           </div>
 
@@ -87,17 +82,17 @@ type ToastNotification = {
               [options]="statusOptions"
               [value]="supplierService.statusFilter()"
               (valueChange)="onStatusFilterChange($event)"
-              size="md"
+              size="sm"
             />
           </div>
         </div>
 
         <div class="text-xs text-muted text-right whitespace-nowrap">
-          Tổng số: <strong class="text-foreground">{{ visibleSuppliers().length }}</strong> đối tác
+          Tổng số: <strong class="text-foreground font-mono tabular-nums">{{ visibleSuppliers().length }}</strong> đối tác
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         @if (supplierService.isLoading()) {
           <div class="p-8 text-center text-muted space-y-3">
             <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
@@ -105,10 +100,8 @@ type ToastNotification = {
           </div>
         } @else if (visibleSuppliers().length === 0) {
           <div class="p-12 text-center text-muted space-y-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
+            <div class="w-10 h-10 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
+              <lucide-icon name="store" class="size-5" aria-hidden="true"></lucide-icon>
             </div>
             <h3 class="text-sm font-semibold text-foreground">Không tìm thấy nhà cung cấp phù hợp</h3>
             <p class="text-xs text-muted max-w-sm mx-auto">
@@ -126,80 +119,70 @@ type ToastNotification = {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1000px] border-collapse">
+            <table class="w-full text-left min-w-[900px] border-collapse text-xs">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th class="py-3 px-4 whitespace-nowrap">Mã NCC</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Tên Nhà Cung Cấp</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Người Liên Hệ</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Số Điện Thoại</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Email</th>
-                  <th class="py-3 px-4">Kho Xuất Hàng</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Đơn Mua Hàng</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Thông Tin Liên Hệ</th>
+                  <th class="py-2.5 px-4">Kho / Địa Chỉ</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Đơn PO</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                  <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line text-xs text-foreground">
                 @for (supplier of visibleSuppliers(); track supplier.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors group">
-                    <td class="py-3 px-4 font-mono font-bold text-foreground text-xs whitespace-nowrap">
-                      {{ supplier.code }}
-                    </td>
-
-                    <td class="py-3 px-4 font-semibold text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-4 whitespace-nowrap">
                       <div class="flex items-center gap-2">
                         <span
                           class="w-2 h-2 rounded-full flex-shrink-0"
                           [class.bg-primary]="supplier.isActive"
                           [class.bg-muted]="!supplier.isActive"
                         ></span>
-                        <span class="font-bold text-foreground">{{ supplier.name }}</span>
+                        <div>
+                          <div class="font-bold text-foreground text-xs">{{ supplier.name }}</div>
+                          <div class="font-mono text-[11px] text-muted">{{ supplier.code }}</div>
+                        </div>
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-4 whitespace-nowrap">
                       @if (supplier.contactName) {
-                        <span>{{ supplier.contactName }}</span>
-                      } @else {
-                        <span class="text-xs text-muted italic">Chưa cập nhật</span>
+                        <div class="font-medium text-foreground">{{ supplier.contactName }}</div>
                       }
+                      <div class="flex items-center gap-2 text-[11px] text-muted">
+                        @if (supplier.phone) {
+                          <span class="font-mono">{{ supplier.phone }}</span>
+                        }
+                        @if (supplier.phone && supplier.email) {
+                          <span>&bull;</span>
+                        }
+                        @if (supplier.email) {
+                          <a [href]="'mailto:' + supplier.email" class="hover:text-primary hover:underline">
+                            {{ supplier.email }}
+                          </a>
+                        }
+                        @if (!supplier.contactName && !supplier.phone && !supplier.email) {
+                          <span class="italic">Chưa cập nhật</span>
+                        }
+                      </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-xs text-foreground whitespace-nowrap">
-                      @if (supplier.phone) {
-                        <span>{{ supplier.phone }}</span>
-                      } @else {
-                        <span class="text-xs text-muted italic">Chưa cập nhật</span>
-                      }
-                    </td>
-
-                    <td class="py-3 px-4 text-foreground whitespace-nowrap">
-                      @if (supplier.email) {
-                        <a [href]="'mailto:' + supplier.email" class="hover:text-primary-strong underline-offset-2 hover:underline">
-                          {{ supplier.email }}
-                        </a>
-                      } @else {
-                        <span class="text-xs text-muted italic">Chưa cập nhật</span>
-                      }
-                    </td>
-
-                    <td class="py-3 px-4 text-xs text-muted max-w-xs truncate" [title]="supplier.address || ''">
+                    <td class="py-2.5 px-4 text-xs text-muted max-w-xs truncate" [title]="supplier.address || ''">
                       @if (supplier.address) {
                         <span>{{ supplier.address }}</span>
                       } @else {
-                        <span class="text-muted italic">Chưa cập nhật</span>
+                        <span class="italic">Chưa cập nhật</span>
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-center tabular-nums whitespace-nowrap">
-                      <div class="font-bold text-foreground">
-                        {{ supplier.purchaseOrderCount }}
-                      </div>
-                      <div class="text-[11px] text-muted">đơn PO</div>
+                    <td class="py-2.5 px-4 text-center tabular-nums whitespace-nowrap">
+                      <strong class="text-foreground font-mono">{{ supplier.purchaseOrderCount }}</strong>
+                      <span class="text-[11px] text-muted ml-1">đơn</span>
                     </td>
 
-                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-4 text-center whitespace-nowrap">
                       @if (supplier.isActive) {
                         <span appBadge variant="success" class="whitespace-nowrap uppercase">
                           HOẠT ĐỘNG
@@ -211,7 +194,7 @@ type ToastNotification = {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
+                    <td class="py-2.5 px-4 text-right whitespace-nowrap shrink-0">
                       <div class="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
                         <button
                           type="button"
@@ -219,12 +202,11 @@ type ToastNotification = {
                           appButton
                           variant="secondary"
                           size="sm"
-                          class="h-8 w-8 p-0"
+                          class="h-7 w-7 p-0"
                           title="Chỉnh sửa thông tin nhà cung cấp"
+                          aria-label="Chỉnh sửa nhà cung cấp"
                         >
-                          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                          </svg>
+                          <lucide-icon name="pencil" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
                         </button>
 
                         <button
@@ -233,18 +215,14 @@ type ToastNotification = {
                           appButton
                           variant="outline"
                           size="sm"
-                          class="h-8 w-8 p-0"
+                          class="h-7 w-7 p-0"
                           [title]="supplier.isActive ? 'Tạm dừng hợp tác' : 'Kích hoạt hợp tác'"
+                          [attr.aria-label]="supplier.isActive ? 'Tạm dừng hợp tác' : 'Kích hoạt hợp tác'"
                         >
                           @if (supplier.isActive) {
-                            <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <lucide-icon name="ban" class="size-3.5 text-amber-600" aria-hidden="true"></lucide-icon>
                           } @else {
-                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <lucide-icon name="check" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                           }
                         </button>
 
@@ -255,12 +233,11 @@ type ToastNotification = {
                             appButton
                             variant="danger"
                             size="sm"
-                            class="h-8 w-8 p-0"
+                            class="h-7 w-7 p-0"
                             title="Xóa nhà cung cấp"
+                            aria-label="Xóa nhà cung cấp"
                           >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
+                            <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
                           </button>
                         }
                       </div>
@@ -283,7 +260,7 @@ type ToastNotification = {
       <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
         @for (toast of toasts(); track toast.id) {
           <div
-            class="pointer-events-auto px-4 py-3 rounded-lg shadow-card text-xs font-semibold flex items-center justify-between gap-3 border transition-all"
+            class="pointer-events-auto px-3.5 py-2.5 rounded-lg shadow-card text-xs font-semibold flex items-center justify-between gap-3 border transition-all"
             [class.bg-surface]="true"
             [class.border-primary]="toast.type === 'success'"
             [class.text-primary-strong]="toast.type === 'success'"
@@ -298,10 +275,9 @@ type ToastNotification = {
               (click)="removeToast(toast.id)"
               class="text-muted hover:text-foreground"
               title="Đóng thông báo"
+              aria-label="Đóng thông báo"
             >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
         }

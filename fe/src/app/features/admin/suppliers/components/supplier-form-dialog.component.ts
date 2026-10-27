@@ -17,6 +17,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { z } from 'zod';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import {
   AdminSupplier,
   AdminSupplierService,
@@ -57,7 +58,7 @@ const supplierFormSchema = z.object({
 @Component({
   selector: 'app-supplier-form-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, AppIconModule],
   template: `
     @if (isOpen()) {
       <div
@@ -67,7 +68,7 @@ const supplierFormSchema = z.object({
         [attr.aria-labelledby]="'supplier-modal-title'"
       >
         <div
-          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-[13px] text-foreground"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground"
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
@@ -86,20 +87,18 @@ const supplierFormSchema = z.object({
               title="Đóng hộp thoại"
               aria-label="Đóng hộp thoại"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-3 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+            <div class="p-2.5 rounded bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
               {{ errorMessage() }}
             </div>
           }
 
-          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4" novalidate>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-3.5" novalidate>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label for="supplier-code" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                   Mã nhà cung cấp <span class="text-rose-600">*</span>
@@ -109,11 +108,11 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="code"
                   placeholder="Ví dụ: SUP-ASUS-VN"
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary uppercase"
+                  class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary uppercase"
                   [class.border-rose-500]="isFieldInvalid('code')"
                 />
                 @if (isFieldInvalid('code')) {
-                  <p class="mt-1 text-xs text-rose-600">
+                  <p class="mt-1 text-[11px] text-rose-600">
                     {{ getFieldError('code') }}
                   </p>
                 }
@@ -128,18 +127,18 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="name"
                   placeholder="Ví dụ: Công ty TNHH ASUS Technology..."
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('name')"
                 />
                 @if (isFieldInvalid('name')) {
-                  <p class="mt-1 text-xs text-rose-600">
+                  <p class="mt-1 text-[11px] text-rose-600">
                     {{ getFieldError('name') }}
                   </p>
                 }
               </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
                 <label for="supplier-contact" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                   Người liên hệ
@@ -149,11 +148,11 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="contactName"
                   placeholder="Họ và tên..."
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('contactName')"
                 />
                 @if (isFieldInvalid('contactName')) {
-                  <p class="mt-1 text-xs text-rose-600">
+                  <p class="mt-1 text-[11px] text-rose-600">
                     {{ getFieldError('contactName') }}
                   </p>
                 }
@@ -168,11 +167,11 @@ const supplierFormSchema = z.object({
                   type="text"
                   formControlName="phone"
                   placeholder="028.3811.9999"
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('phone')"
                 />
                 @if (isFieldInvalid('phone')) {
-                  <p class="mt-1 text-xs text-rose-600">
+                  <p class="mt-1 text-[11px] text-rose-600">
                     {{ getFieldError('phone') }}
                   </p>
                 }
@@ -187,11 +186,11 @@ const supplierFormSchema = z.object({
                   type="email"
                   formControlName="email"
                   placeholder="sales@asus.com.vn"
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('email')"
                 />
                 @if (isFieldInvalid('email')) {
-                  <p class="mt-1 text-xs text-rose-600">
+                  <p class="mt-1 text-[11px] text-rose-600">
                     {{ getFieldError('email') }}
                   </p>
                 }
@@ -207,42 +206,39 @@ const supplierFormSchema = z.object({
                 rows="2"
                 formControlName="address"
                 placeholder="Địa chỉ chi tiết kho giao hàng hoặc trụ sở chính..."
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary resize-y"
+                class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary resize-y"
               ></textarea>
             </div>
 
-            <div class="pt-2">
+            <div class="pt-1">
               <label class="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
                   formControlName="isActive"
                   class="w-4 h-4 rounded bg-surface border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
                 />
-                <span class="text-[13px] font-medium text-foreground">
+                <span class="text-xs font-medium text-foreground">
                   Kích hoạt trạng thái hợp tác của nhà cung cấp
                 </span>
               </label>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-line">
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
               <button
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-foreground text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+                class="px-4 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-foreground text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+                class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs uppercase tracking-wider rounded transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting()) {
-                  <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                  </svg>
+                  <div class="w-3 h-3 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
                   <span>Đang lưu...</span>
                 } @else {
                   <span>{{ isEditMode() ? 'Lưu Thay Đổi' : 'Lưu Nhà Cung Cấp' }}</span>

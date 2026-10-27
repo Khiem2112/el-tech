@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
   AdminPurchaseOrderService,
@@ -20,10 +21,10 @@ import {
 @Component({
   selector: 'app-admin-purchase-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, BadgeDirective, SelectComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, BadgeDirective, SelectComponent, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
@@ -40,17 +41,15 @@ import {
             appButton
             variant="primary"
             size="sm"
-            class="uppercase tracking-wide shadow-sm inline-flex items-center gap-1.5"
+            class="uppercase tracking-wide shadow-xs inline-flex items-center gap-1.5"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
             <span>Thêm Đơn PO</span>
           </a>
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 flex flex-col md:flex-row md:items-end justify-between gap-4 shadow-card">
+      <div class="bg-surface border border-line rounded-lg p-3.5 flex flex-col md:flex-row md:items-end justify-between gap-3 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
             <label for="po-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
@@ -61,17 +60,13 @@ import {
                 [ngModel]="poService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo mã PO, nhà cung cấp, mã NCC..."
-                class="w-full h-9 pl-9 pr-4 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
-              <svg
-                class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <lucide-icon
+                name="search"
+                class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                aria-hidden="true"
+              ></lucide-icon>
             </div>
           </div>
 
@@ -81,17 +76,17 @@ import {
               [options]="statusOptions"
               [value]="poService.statusFilter()"
               (valueChange)="onStatusFilterChange($event)"
-              size="md"
+              size="sm"
             />
           </div>
         </div>
 
         <div class="text-xs text-muted text-right whitespace-nowrap">
-          Tổng số: <strong class="text-foreground">{{ visibleOrders().length }}</strong> đơn mua hàng
+          Tổng số: <strong class="text-foreground font-mono tabular-nums">{{ visibleOrders().length }}</strong> đơn mua hàng
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
+      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         @if (poService.isLoading()) {
           <div class="p-8 text-center text-muted space-y-3">
             <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
@@ -99,10 +94,8 @@ import {
           </div>
         } @else if (visibleOrders().length === 0) {
           <div class="p-12 text-center text-muted space-y-3">
-            <div class="w-12 h-12 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+            <div class="w-10 h-10 mx-auto rounded-full bg-surface-alt border border-line flex items-center justify-center text-muted">
+              <lucide-icon name="package" class="size-5" aria-hidden="true"></lucide-icon>
             </div>
             <h3 class="text-sm font-semibold text-foreground">Không tìm thấy đơn mua hàng nào</h3>
             <p class="text-xs text-muted max-w-sm mx-auto">
@@ -120,23 +113,23 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1000px] border-collapse">
+            <table class="w-full text-left min-w-[950px] border-collapse text-xs">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
-                  <th class="py-3 px-4 whitespace-nowrap">Mã PO</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Kho Nhận</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Số Dòng</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Tổng Tiền</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Ngày Tạo</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Mã PO</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Kho Nhận</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Số Dòng</th>
+                  <th class="py-2.5 px-4 text-right whitespace-nowrap">Tổng Tiền</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Ngày Tạo</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                  <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line text-xs text-foreground">
                 @for (po of visibleOrders(); track po.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors">
-                    <td class="py-3 px-4 font-mono font-bold whitespace-nowrap">
+                    <td class="py-2.5 px-4 font-mono font-bold whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/procurement/purchase-orders', po.id]"
                         class="text-primary-strong hover:underline inline-flex items-center gap-1.5"
@@ -154,24 +147,24 @@ import {
                         </div>
                       }
                     </td>
-                    <td class="py-3 px-4 whitespace-nowrap">
+                    <td class="py-2.5 px-4 whitespace-nowrap">
                       <div class="font-bold text-foreground">{{ po.supplierName }}</div>
                       <div class="text-muted text-[11px] font-mono">{{ po.supplierCode }}</div>
                     </td>
-                    <td class="py-3 px-4 whitespace-nowrap">
+                    <td class="py-2.5 px-4 whitespace-nowrap">
                       <div class="font-medium text-foreground">{{ po.receivingBranchName }}</div>
                       <div class="text-muted text-[11px] font-mono">{{ po.receivingBranchCode }}</div>
                     </td>
-                    <td class="py-3 px-4 text-center tabular tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-4 text-center tabular-nums text-foreground whitespace-nowrap">
                       {{ po.lineCount }} dòng ({{ po.totalQuantity }} chiếc)
                     </td>
-                    <td class="py-3 px-4 text-right font-black tabular tabular-nums text-foreground font-mono whitespace-nowrap">
-                      {{ formatCurrency(po.totalAmount) }} đ
+                    <td class="py-2.5 px-4 text-right font-black tabular-nums text-foreground font-mono whitespace-nowrap">
+                      {{ formatCurrency(po.totalAmount) }} ₫
                     </td>
-                    <td class="py-3 px-4 text-muted tabular tabular-nums text-xs whitespace-nowrap">
+                    <td class="py-2.5 px-4 text-muted tabular-nums text-xs whitespace-nowrap">
                       {{ formatDate(po.createdAt) }}
                     </td>
-                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-4 text-center whitespace-nowrap">
                       @switch (po.status) {
                         @case ('DRAFT') {
                           <span appBadge variant="muted" class="whitespace-nowrap uppercase">
@@ -200,7 +193,7 @@ import {
                         }
                       }
                     </td>
-                    <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
+                    <td class="py-2.5 px-4 text-right whitespace-nowrap shrink-0">
                       <div class="inline-flex items-center gap-1.5 whitespace-nowrap shrink-0">
                         <a
                           [routerLink]="['/admin/procurement/purchase-orders', po.id]"
@@ -209,14 +202,9 @@ import {
                           size="sm"
                           class="h-8 w-8 p-0"
                           [title]="po.status === 'CONFIRMED' ? 'Đối soát nhập kho' : 'Xem chi tiết'"
+                          aria-label="Xem chi tiết đơn PO"
                         >
-                          <svg class="w-4 h-4 text-muted" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                            <line x1="16" y1="13" x2="8" y2="13" />
-                            <line x1="16" y1="17" x2="8" y2="17" />
-                            <line x1="10" y1="9" x2="8" y2="9" />
-                          </svg>
+                          <lucide-icon name="file-text" class="size-4 text-muted" aria-hidden="true"></lucide-icon>
                         </a>
                       </div>
                     </td>

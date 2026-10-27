@@ -271,7 +271,7 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-85 | Tinh gọn khung Shell, Header, Sidebar, Breadcrumb và Login; xóa viền và container thừa | frontend | P1 | Complete |
 | TASK-86 | Tinh gọn Dashboard, thẻ BI Analytics, hàng đợi khẩn cấp; xóa card-in-card | frontend | P1 | Complete |
 | TASK-87 | Tinh gọn mẫu sản phẩm, dynamic-spec-renderer, danh mục, thương hiệu và BOM PC Bundle | frontend | P1 | Complete |
-| TASK-88 | Tinh gọn đơn PO chi tiết, nhập sê-ri nghiệm thu, trả hàng và danh bạ nhà cung cấp | frontend | P1 | Ready |
+| TASK-88 | Tinh gọn đơn PO chi tiết, nhập sê-ri nghiệm thu, trả hàng và danh bạ nhà cung cấp | frontend | P1 | Complete |
 | TASK-89 | Tinh gọn bảng tồn kho theo cụm, sổ cái biến động, điều chuyển nội bộ và máy quét sê-ri | frontend | P1 | Ready |
 | TASK-90 | Tinh gọn chi tiết đơn hàng, thanh thao tác 1 Primary CTA và 15 hộp thoại quy trình | frontend | P1 | Ready |
 | TASK-91 | Tinh gọn khuyến mãi, coupon, biểu phí giao hàng, khách hàng, duyệt đánh giá, outbox | frontend | P1 | Ready |

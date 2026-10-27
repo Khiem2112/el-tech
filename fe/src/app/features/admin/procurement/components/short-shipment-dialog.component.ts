@@ -10,6 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import {
   PurchaseOrderDetail,
   ShortShipmentPayload,
@@ -26,7 +27,7 @@ type ShortShipmentLineState = {
 @Component({
   selector: 'app-short-shipment-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen && po) {
@@ -37,15 +38,15 @@ type ShortShipmentLineState = {
         ></div>
 
         <div
-          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col z-10 text-[13px] text-foreground"
+          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col z-10 text-xs text-foreground"
         >
-          <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-shrink-0">
             <div>
-              <h3 class="font-bold text-amber-700 uppercase text-sm tracking-wide">
-                Xử Lý Nhà Cung Cấp Giao Thiếu Hàng
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+                Ghi Nhận Giao Thiếu Hàng PO #{{ po.code }}
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Quy trình hủy PO cũ và tự động tạo PO thay thế liên kết (PUR-015, PUR-016)
+                Tự động tạo đơn PO thay thế mới tương ứng với số lượng thực nhận
               </p>
             </div>
             <button
@@ -53,40 +54,26 @@ type ShortShipmentLineState = {
               (click)="onCancel()"
               class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
               title="Đóng"
+              aria-label="Đóng"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
-          <div class="p-5 overflow-y-auto space-y-4 flex-1">
-            <div class="p-3.5 bg-amber-50 border border-amber-200 rounded text-amber-800 text-xs space-y-1.5 leading-relaxed">
-              <div class="font-semibold text-amber-900">Cơ chế xử lý giao thiếu hàng chuẩn ERP:</div>
-              <div>
-                - Không sửa đổi dòng hàng trên PO đã chốt để bảo toàn chứng từ kiểm toán gốc.
-              </div>
-              <div>
-                - Đơn PO hiện tại (<strong>#{{ po.code }}</strong>) sẽ bị hủy với lý do giao thiếu hàng.
-              </div>
-              <div>
-                - Hệ thống tự động tạo mới một PO thay thế ở trạng thái ĐÃ XÁC NHẬN với số lượng thực tế nhận được và liên kết ngược qua trường supersedesPurchaseOrderId.
-              </div>
-            </div>
-
-            <div class="space-y-3">
-              <label class="block text-foreground font-semibold uppercase text-xs tracking-wider">
-                Nhập số lượng thực nhận cho từng linh kiện:
+          <div class="p-4 overflow-y-auto space-y-3 flex-1">
+            <div class="space-y-2">
+              <label class="block text-foreground font-semibold uppercase text-[11px] tracking-wider">
+                Số lượng thực nhận từng linh kiện:
               </label>
 
               <div class="space-y-2">
                 @for (line of linesState(); track line.skuId) {
-                  <div class="p-3 bg-surface border border-line rounded flex items-center justify-between gap-4">
+                  <div class="p-3 bg-surface border border-line rounded-lg flex items-center justify-between gap-3">
                     <div class="flex-1 min-w-0">
                       <div class="font-mono font-bold text-foreground text-xs truncate">{{ line.sku }}</div>
                       <div class="text-muted text-xs truncate">{{ line.name }}</div>
                       <div class="text-[11px] text-muted mt-0.5">
-                        Đã đặt: <strong class="text-foreground">{{ line.orderedQuantity }}</strong> chiếc
+                        Đã đặt: <strong class="text-foreground font-mono tabular-nums">{{ line.orderedQuantity }}</strong> chiếc
                         @if (line.orderedQuantity > line.actualQuantity) {
                           <span class="text-amber-700 ml-2 font-semibold">
                             (Thiếu: {{ line.orderedQuantity - line.actualQuantity }} chiếc)
@@ -103,7 +90,7 @@ type ShortShipmentLineState = {
                         [max]="line.orderedQuantity"
                         [ngModel]="line.actualQuantity"
                         (ngModelChange)="onActualQuantityChange(line.skuId, $event)"
-                        class="w-full px-2.5 py-1.5 bg-white border border-line rounded text-right font-black tabular-nums text-foreground text-[13px] focus:outline-none focus:border-primary"
+                        class="w-full px-2.5 py-1.5 bg-white border border-line rounded text-right font-bold tabular-nums text-foreground text-xs focus:outline-none focus:border-primary"
                       />
                     </div>
                   </div>
@@ -111,25 +98,25 @@ type ShortShipmentLineState = {
               </div>
             </div>
 
-            <div class="space-y-1.5">
-              <label class="block text-foreground font-semibold uppercase text-xs tracking-wider">
-                Biên bản bàn giao thiếu hàng / Ghi chú lý do:
+            <div class="space-y-1">
+              <label class="block text-foreground font-semibold uppercase text-[11px] tracking-wider">
+                Biên bản bàn giao / Lý do thiếu hàng:
               </label>
               <input
                 type="text"
                 [(ngModel)]="memoText"
-                placeholder="Ví dụ: BB-THIEU-ASUS-2210 hoặc Xe giao thiếu linh kiện"
-                class="w-full px-3 py-2 bg-white border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                placeholder="Ví dụ: BB-THIEU-NCC hoặc Xe giao thiếu kiện hàng..."
+                class="w-full px-3 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
             </div>
           </div>
 
-          <div class="p-4 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt/40">
+          <div class="p-3.5 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt/40">
             <div class="text-xs">
               @if (!isValid()) {
                 <span class="text-rose-600 font-semibold">{{ validationError() }}</span>
               } @else {
-                <span class="text-amber-800 font-semibold">Sẽ hủy PO cũ và tạo PO thay thế mới cho {{ totalActualQuantity() }} chiếc.</span>
+                <span class="text-amber-800 font-semibold">Tạo PO thay thế cho {{ totalActualQuantity() }} chiếc thực nhận.</span>
               }
             </div>
 
@@ -138,7 +125,7 @@ type ShortShipmentLineState = {
                 type="button"
                 (click)="onCancel()"
                 [disabled]="isSubmitting"
-                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-[13px] text-foreground transition-colors"
+                class="px-4 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors"
               >
                 Hủy Bỏ
               </button>
@@ -146,10 +133,10 @@ type ShortShipmentLineState = {
                 type="button"
                 (click)="onSubmit()"
                 [disabled]="!isValid() || isSubmitting"
-                class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded text-[13px] transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
+                class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
               >
                 @if (isSubmitting) {
-                  <div class="w-3.5 h-3.5 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
+                  <div class="w-3 h-3 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
                   <span>Đang xử lý...</span>
                 } @else {
                   <span>Tạo PO Thay Thế Mới</span>

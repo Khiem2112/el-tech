@@ -212,150 +212,52 @@ type ToastMessage = {
       </header>
 
       @if (!isNew() && order(); as po) {
-        <div class="bg-surface border-b border-line px-6 py-3.5 flex items-center justify-between flex-wrap gap-4 flex-shrink-0">
-          <div>
-            <div class="flex items-center gap-2">
-              <h1 class="text-xl font-black text-foreground font-mono tracking-tight">
-                ĐƠN MUA HÀNG #{{ po.code }}
-              </h1>
-              @switch (po.status) {
-                @case ('DRAFT') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
-                    Bản thảo
-                  </span>
-                }
-                @case ('CONFIRMED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
-                    Đã xác nhận
-                  </span>
-                }
-                @case ('RECEIVED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    Đã nhập kho
-                  </span>
-                }
-                @case ('CLOSED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-muted border border-line">
-                    Đã đóng
-                  </span>
-                }
-                @case ('CANCELLED') {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
-                    Đã hủy
-                  </span>
-                }
+        <div class="bg-surface border-b border-line px-6 py-2.5 flex items-center justify-between flex-wrap gap-2 flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <h1 class="text-lg font-black text-foreground font-mono tracking-tight">
+              ĐƠN MUA HÀNG #{{ po.code }}
+            </h1>
+            @switch (po.status) {
+              @case ('DRAFT') {
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
+                  Bản thảo
+                </span>
               }
-            </div>
-            <div class="text-xs text-muted mt-1">
-              Nhà cung cấp: <strong class="text-foreground">{{ po.supplier.name }}</strong> | Chi nhánh nhận: <strong class="text-foreground">{{ po.receivingBranch.name }}</strong>
-            </div>
+              @case ('CONFIRMED') {
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
+                  Đã xác nhận
+                </span>
+              }
+              @case ('RECEIVED') {
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Đã nhập kho
+                </span>
+              }
+              @case ('CLOSED') {
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-muted border border-line">
+                  Đã đóng
+                </span>
+              }
+              @case ('CANCELLED') {
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
+                  Đã hủy
+                </span>
+              }
+            }
           </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <a
-              [routerLink]="['/admin/procurement/suppliers']"
-              [queryParams]="{ search: po.supplier.code }"
-              class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px]"
-              title="Mở danh bạ nhà cung cấp"
-            >
-              <div class="font-bold text-primary text-xs font-mono">{{ po.supplier.code }}</div>
-              <div class="text-[10px] text-muted uppercase tracking-wider">Nhà Cung Cấp</div>
-            </a>
-
-            @if (po.receiptMove) {
-              <a
-                [routerLink]="['/admin/inventory/ledger']"
-                [queryParams]="{ search: po.code }"
-                class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
-                title="Nhấp để xem chứng từ nhập kho trong sổ kho bất biến"
-              >
-                <div class="font-bold text-xs font-mono text-emerald-700 truncate group-hover:scale-105 transition-transform">
-                  {{ po.receiptMove.code }}
-                </div>
-                <div class="text-[10px] text-muted uppercase tracking-wider">Phiếu Nhập Kho</div>
-              </a>
-            } @else if (po.status === 'CONFIRMED') {
-              <button
-                type="button"
-                (click)="openValidateReceiptModal()"
-                class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block w-full"
-                title="Nhấp để mở giao diện quét mã và đối soát nhập kho"
-              >
-                <div class="font-bold text-xs font-mono text-amber-700 truncate group-hover:scale-105 transition-transform">
-                  Chờ Nhập Kho
-                </div>
-                <div class="text-[10px] text-muted uppercase tracking-wider">Đối Soát Kho</div>
-              </button>
-            } @else {
-              <div class="p-2 bg-white border border-line rounded text-center min-w-[100px]">
-                <div class="font-bold text-xs font-mono text-muted truncate">Chưa Tạo</div>
-                <div class="text-[10px] text-muted uppercase tracking-wider">Phiếu Nhập Kho</div>
-              </div>
-            }
-
-            <a
-              [routerLink]="['/admin/inventory/serials']"
-              [queryParams]="{ search: po.code }"
-              class="p-2 bg-white hover:bg-surface-alt border border-line rounded text-center transition-colors min-w-[100px] cursor-pointer group block"
-              title="Nhấp để xem danh sách sê-ri linh kiện đã nạp từ đơn PO này"
-            >
-              <div class="font-bold text-foreground text-xs font-mono group-hover:scale-105 transition-transform">
-                {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}
-              </div>
-              <div class="text-[10px] text-muted uppercase tracking-wider">Serial Đã Gán</div>
-            </a>
-
-            @if (po.supersedesPurchaseOrder) {
-              <a
-                [routerLink]="['/admin/procurement/purchase-orders', po.supersedesPurchaseOrder.id]"
-                class="p-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded text-center transition-colors min-w-[100px]"
-                title="Bấm để xem đơn mua hàng gốc bị hủy"
-              >
-                <div class="font-bold text-amber-800 text-xs font-mono">{{ po.supersedesPurchaseOrder.code }}</div>
-                <div class="text-[10px] text-amber-800 uppercase tracking-wider">Đơn Gốc</div>
-              </a>
-            } @else if (po.supersededByOrders.length > 0) {
-              <a
-                [routerLink]="['/admin/procurement/purchase-orders', po.supersededByOrders[0].id]"
-                class="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded text-center transition-colors min-w-[100px]"
-                title="Bấm để xem đơn mua hàng thay thế"
-              >
-                <div class="font-bold text-rose-700 text-xs font-mono">{{ po.supersededByOrders[0].code }}</div>
-                <div class="text-[10px] text-rose-700 uppercase tracking-wider">PO Thay Thế</div>
-              </a>
-            } @else {
-              <div class="p-2 bg-white border border-line rounded text-center min-w-[100px]">
-                <div class="font-bold text-muted text-xs font-mono">Đơn gốc</div>
-                <div class="text-[10px] text-muted uppercase tracking-wider">PO Thay Thế</div>
-              </div>
-            }
+          <div class="text-xs text-muted flex items-center gap-2">
+            <span>Ngày tạo: <strong class="text-foreground font-mono tabular-nums">{{ formatDate(po.createdAt) }}</strong></span>
           </div>
         </div>
       }
 
-      <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-6">
-        <div class="bg-white border border-line rounded-lg p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between border-b border-line pb-2">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
-              Thông Tin Đơn Mua Hàng
-            </h2>
-            <span
-              class="px-2 py-0.5 rounded text-[10px] font-semibold"
-              [class.bg-emerald-50]="isNew() || order()?.status === 'DRAFT'"
-              [class.text-emerald-700]="isNew() || order()?.status === 'DRAFT'"
-              [class.border]="isNew() || order()?.status === 'DRAFT'"
-              [class.border-emerald-200]="isNew() || order()?.status === 'DRAFT'"
-              [class.bg-surface-alt]="!isNew() && order()?.status !== 'DRAFT'"
-              [class.text-muted]="!isNew() && order()?.status !== 'DRAFT'"
-            >
-              {{ (isNew() || order()?.status === 'DRAFT') ? 'Có thể chỉnh sửa' : 'Dữ liệu đã khóa' }}
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-[13px]">
-            <div>
-              <label class="block text-muted font-semibold uppercase text-xs mb-1">Nhà Cung Cấp</label>
-              @if (isNew() || order()?.status === 'DRAFT') {
+      <main class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-5">
+        <!-- Khối tóm tắt thông tin đơn mua hàng phẳng -->
+        <div class="bg-surface border border-line rounded-lg p-4">
+          @if (isNew() || order()?.status === 'DRAFT') {
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 text-xs">
+              <div>
+                <label class="block text-muted font-semibold uppercase mb-1">Nhà Cung Cấp</label>
                 <app-select
                   [options]="supplierOptions()"
                   [value]="selectedSupplierId ? selectedSupplierId.toString() : ''"
@@ -364,15 +266,10 @@ type ToastMessage = {
                   size="sm"
                   ariaLabel="Nhà Cung Cấp"
                 />
-              } @else {
-                <div class="font-bold text-foreground text-sm pt-1">{{ order()?.supplier?.name }}</div>
-                <div class="text-muted text-xs font-mono mt-0.5">{{ order()?.supplier?.code }}</div>
-              }
-            </div>
+              </div>
 
-            <div>
-              <label class="block text-muted font-semibold uppercase text-xs mb-1">Kho Nhận Hàng</label>
-              @if (isNew() || order()?.status === 'DRAFT') {
+              <div>
+                <label class="block text-muted font-semibold uppercase mb-1">Kho Nhận Hàng</label>
                 <app-select
                   [options]="branchOptions()"
                   [value]="selectedBranchId ? selectedBranchId.toString() : ''"
@@ -381,55 +278,120 @@ type ToastMessage = {
                   size="sm"
                   ariaLabel="Kho Nhận Hàng"
                 />
-              } @else {
-                <div class="font-bold text-foreground text-sm pt-1">{{ order()?.receivingBranch?.name }}</div>
-                <div class="text-muted text-xs font-mono mt-0.5">{{ order()?.receivingBranch?.code }}</div>
-              }
-            </div>
+              </div>
 
-            <div>
-              <label class="block text-muted font-semibold uppercase text-xs mb-1">Ghi Chú Đơn Hàng</label>
-              @if (isNew() || order()?.status === 'DRAFT') {
+              <div class="md:col-span-1 lg:col-span-2">
+                <label class="block text-muted font-semibold uppercase mb-1">Ghi Chú Đơn Hàng</label>
                 <input
                   type="text"
                   [(ngModel)]="orderNote"
-                  placeholder="Ghi chú nội bộ hoặc điều khoản giao hàng..."
-                  class="w-full px-2.5 py-2 bg-surface border border-line rounded text-[13px] text-foreground focus:outline-none focus:border-primary"
+                  placeholder="Ghi chú nội bộ hoặc điều khoản giao nhận..."
+                  class="w-full px-3 py-1.5 bg-white border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
                 />
-              } @else {
-                <div class="text-foreground text-[13px] pt-1">{{ order()?.note || 'Không có ghi chú' }}</div>
-              }
-            </div>
-
-            <div>
-              <label class="block text-muted font-semibold uppercase text-xs mb-1">Tổng Giá Trị Đơn PO</label>
-              <div class="font-black text-primary text-base pt-1 tabular tabular-nums font-mono">
-                {{ formatCurrency(calculatedTotalAmount()) }} ₫
               </div>
-              <div class="text-muted text-[10px] mt-0.5">Đã bao gồm đơn giá thỏa thuận VAT</div>
             </div>
-          </div>
+          } @else if (order(); as po) {
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-xs divide-y md:divide-y-0 md:divide-x divide-line">
+              <div class="pr-2">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Nhà Cung Cấp</span>
+                <span class="font-bold text-foreground block truncate mt-0.5">{{ po.supplier.name }}</span>
+                <span class="font-mono text-[11px] text-muted">{{ po.supplier.code }}</span>
+              </div>
+
+              <div class="pt-2 md:pt-0 md:px-3">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Kho Nhận Hàng</span>
+                <span class="font-bold text-foreground block truncate mt-0.5">{{ po.receivingBranch.name }}</span>
+                <span class="font-mono text-[11px] text-muted">{{ po.receivingBranch.code }}</span>
+              </div>
+
+              <div class="pt-2 md:pt-0 md:px-3">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Phiếu Nhập Kho</span>
+                @if (po.receiptMove) {
+                  <a
+                    [routerLink]="['/admin/inventory/ledger']"
+                    [queryParams]="{ search: po.code }"
+                    class="font-mono font-bold text-emerald-700 hover:underline block truncate mt-0.5"
+                  >
+                    {{ po.receiptMove.code }}
+                  </a>
+                  <span class="text-[10px] text-emerald-600 font-medium">Đã ghi sổ kho</span>
+                } @else if (po.status === 'CONFIRMED') {
+                  <button
+                    type="button"
+                    (click)="openValidateReceiptModal()"
+                    class="font-mono font-bold text-amber-700 hover:underline text-left block truncate mt-0.5"
+                  >
+                    Chờ Đối Soát
+                  </button>
+                  <span class="text-[10px] text-amber-600 font-medium">Chưa nhập</span>
+                } @else {
+                  <span class="font-mono text-muted block mt-0.5">Chưa tạo</span>
+                }
+              </div>
+
+              <div class="pt-2 md:pt-0 md:px-3">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Sê-ri Đã Gán</span>
+                <a
+                  [routerLink]="['/admin/inventory/serials']"
+                  [queryParams]="{ search: po.code }"
+                  class="font-mono font-bold text-foreground hover:text-primary block mt-0.5 tabular-nums"
+                >
+                  {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}
+                </a>
+                <span class="text-[10px] text-muted">Định danh sê-ri</span>
+              </div>
+
+              <div class="pt-2 md:pt-0 md:px-3">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Đơn Liên Kết</span>
+                @if (po.supersedesPurchaseOrder) {
+                  <a
+                    [routerLink]="['/admin/procurement/purchase-orders', po.supersedesPurchaseOrder.id]"
+                    class="font-mono font-bold text-amber-800 hover:underline block truncate mt-0.5"
+                  >
+                    Gốc: {{ po.supersedesPurchaseOrder.code }}
+                  </a>
+                } @else if (po.supersededByOrders.length > 0) {
+                  <a
+                    [routerLink]="['/admin/procurement/purchase-orders', po.supersededByOrders[0].id]"
+                    class="font-mono font-bold text-rose-700 hover:underline block truncate mt-0.5"
+                  >
+                    Thay thế: {{ po.supersededByOrders[0].code }}
+                  </a>
+                } @else {
+                  <span class="text-muted block mt-0.5 font-mono">Đơn gốc</span>
+                }
+              </div>
+
+              <div class="pt-2 md:pt-0 md:pl-3">
+                <span class="block text-muted uppercase text-[10px] font-semibold">Ghi Chú Đơn</span>
+                <span class="text-foreground block truncate mt-0.5" [title]="po.note || ''">
+                  {{ po.note || 'Không có ghi chú' }}
+                </span>
+              </div>
+            </div>
+          }
         </div>
 
-        <div class="bg-white border border-line rounded-lg shadow-xs overflow-hidden">
-          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2">
-            <div>
+        <!-- Bảng danh sách mặt hàng đặt mua -->
+        <div class="bg-surface border border-line rounded-lg overflow-hidden">
+          <div class="px-4 py-3 border-b border-line flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2">
               <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Danh Sách Linh Kiện Đặt Mua
               </h2>
-              <p class="text-xs text-muted mt-0.5">
-                {{ (isNew() || order()?.status === 'DRAFT') ? 'Thêm mới hoặc chỉnh sửa linh kiện và đơn giá thỏa thuận' : 'Dòng hàng được khóa cứng theo quy tắc PUR-005' }}
-              </p>
+              <span class="text-xs text-muted tabular-nums font-mono">
+                ({{ editableLines().length }} dòng hàng)
+              </span>
             </div>
 
             @if (isNew() || order()?.status === 'DRAFT') {
-              <div class="relative w-72">
+              <div class="relative w-80">
                 <input
                   type="text"
                   [ngModel]="variantSearchTerm()"
                   (ngModelChange)="onSearchVariants($event)"
-                  placeholder="+ Thêm SKU linh kiện vào PO..."
-                  class="w-full pl-8 pr-3 py-1.5 bg-surface border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  placeholder="Thêm SKU linh kiện vào đơn..."
+                  class="w-full pl-8 pr-3 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 />
                 <lucide-icon
                   name="plus"
@@ -438,18 +400,18 @@ type ToastMessage = {
                 ></lucide-icon>
 
                 @if (searchedVariants().length > 0) {
-                  <div class="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-xl z-30 max-h-56 overflow-y-auto">
+                  <div class="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg z-30 max-h-56 overflow-y-auto">
                     @for (v of searchedVariants(); track v.id) {
                       <div
                         (click)="addVariantToOrder(v)"
                         class="p-2 hover:bg-surface-alt cursor-pointer border-b border-line last:border-none flex items-center justify-between gap-2"
                       >
                         <div class="min-w-0 flex-1">
-                          <div class="font-mono font-bold text-foreground text-[13px] truncate">{{ v.sku }}</div>
-                          <div class="text-xs text-muted truncate">{{ v.productTemplate.name }}</div>
+                          <div class="font-mono font-bold text-foreground text-xs truncate">{{ v.sku }}</div>
+                          <div class="text-[11px] text-muted truncate">{{ v.productTemplate.name }}</div>
                         </div>
                         <div class="text-right flex-shrink-0">
-                          <span class="text-primary text-[13px] font-mono font-bold tabular">
+                          <span class="text-primary text-xs font-mono font-bold tabular-nums">
                             {{ formatCurrency(v.sellingPrice) }} ₫
                           </span>
                           @if (v.serialRequired) {
@@ -465,7 +427,7 @@ type ToastMessage = {
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-[13px]">
+            <table class="w-full text-left border-collapse text-xs">
               <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
                 <tr>
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
@@ -473,10 +435,10 @@ type ToastMessage = {
                   <th class="py-2.5 px-4">Tên Linh Kiện</th>
                   <th class="py-2.5 px-4 text-center">Yêu Cầu Serial</th>
                   <th class="py-2.5 px-4 text-center w-28">Số Lượng</th>
-                  <th class="py-2.5 px-4 text-right w-36">Đơn Giá Thỏa Thuận</th>
+                  <th class="py-2.5 px-4 text-right w-36">Đơn Giá WAC</th>
                   <th class="py-2.5 px-4 text-right">Thành Tiền</th>
                   @if (isNew() || order()?.status === 'DRAFT') {
-                    <th class="py-2.5 px-4 text-center w-16">Xóa</th>
+                    <th class="py-2.5 px-4 text-center w-16">Thao Tác</th>
                   }
                 </tr>
               </thead>
@@ -527,10 +489,10 @@ type ToastMessage = {
                             min="1"
                             [ngModel]="line.quantity"
                             (ngModelChange)="onLineQuantityChange(line.skuId, $event)"
-                            class="w-20 px-2 py-1 bg-surface border border-line rounded text-center font-bold text-foreground text-[13px] focus:outline-none focus:border-primary"
+                            class="w-20 px-2 py-1 bg-white border border-line rounded text-center font-bold text-foreground text-xs focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
-                          <span class="font-black text-foreground tabular tabular-nums text-sm">
+                          <span class="font-bold text-foreground tabular-nums text-xs">
                             {{ line.quantity }} chiếc
                           </span>
                         }
@@ -542,15 +504,15 @@ type ToastMessage = {
                             min="0"
                             [ngModel]="line.agreedUnitCost"
                             (ngModelChange)="onLineCostChange(line.skuId, $event)"
-                            class="w-32 px-2 py-1 bg-surface border border-line rounded text-right font-mono font-bold text-foreground text-[13px] focus:outline-none focus:border-primary tabular"
+                            class="w-32 px-2 py-1 bg-white border border-line rounded text-right font-mono font-bold text-foreground text-xs focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
-                          <span class="font-mono text-foreground tabular tabular-nums">
+                          <span class="font-mono text-foreground tabular-nums">
                             {{ formatCurrency(line.agreedUnitCost) }} ₫
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right font-black tabular tabular-nums font-mono text-primary text-sm">
+                      <td class="py-2.5 px-4 text-right font-bold tabular-nums font-mono text-primary text-xs">
                         {{ formatCurrency(line.lineTotal) }} ₫
                       </td>
                       @if (isNew() || order()?.status === 'DRAFT') {
@@ -571,6 +533,19 @@ type ToastMessage = {
                 }
               </tbody>
             </table>
+          </div>
+
+          <!-- Thanh tổng kết chân bảng liền mạch -->
+          <div class="px-6 py-3 bg-surface-alt/50 border-t border-line flex items-center justify-between text-xs">
+            <div class="text-muted">
+              Tổng số lượng: <strong class="text-foreground font-mono tabular-nums">{{ totalOrderedQuantity() }}</strong> chiếc
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-muted font-medium">Tổng Giá Trị Đơn PO:</span>
+              <span class="text-base font-black font-mono tabular-nums text-primary">
+                {{ formatCurrency(calculatedTotalAmount()) }} ₫
+              </span>
+            </div>
           </div>
         </div>
       </main>
@@ -685,6 +660,10 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
 
   readonly calculatedTotalAmount = computed<number>(() => {
     return this.editableLines().reduce((sum, line) => sum + line.lineTotal, 0);
+  });
+
+  readonly totalOrderedQuantity = computed<number>(() => {
+    return this.editableLines().reduce((sum, line) => sum + line.quantity, 0);
   });
 
   readonly totalAssignedSerials = computed<number>(() => {
@@ -1015,6 +994,20 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       return '0';
     }
     return num.toLocaleString('vi-VN');
+  }
+
+  formatDate(dateStr: string | null | undefined): string {
+    if (!dateStr) {
+      return 'N/A';
+    }
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) {
+      return dateStr;
+    }
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
   }
 
   showToast(text: string, type: 'success' | 'error' | 'info'): void {
