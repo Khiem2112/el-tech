@@ -72,7 +72,7 @@ import {
                         {{ state.label }}
                       </span>
                       @if (currentState() === state.key) {
-                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-surface-alt border border-line text-muted">Hiện tại</span>
+                        <span class="text-xs px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">Hiện tại</span>
                       }
                     </div>
                     <p class="text-xs text-muted mt-0.5 truncate">
@@ -88,7 +88,7 @@ import {
                 <div class="flex items-center justify-between text-xs font-semibold">
                   <span class="text-muted uppercase tracking-wide">Điều Kiện Kích Hoạt (ACTIVE)</span>
                   <span
-                    class="px-2 py-0.5 rounded text-[11px] font-bold"
+                    class="px-2 py-0.5 rounded text-xs font-bold"
                     [class.bg-emerald-500/10]="canTransitionToActive()"
                     [class.text-emerald-700]="canTransitionToActive()"
                     [class.bg-destructive/10]="!canTransitionToActive()"

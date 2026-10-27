@@ -62,7 +62,7 @@ type ToastNotification = {
               <nav class="flex items-center space-x-1.5 text-xs text-muted">
                 <a routerLink="/admin/customers" class="hover:text-primary transition-colors">Khách Hàng</a>
                 <span>/</span>
-                <span class="font-mono text-foreground font-bold">{{ cust.id }}</span>
+                <span class="text-foreground font-bold tabular-nums">{{ cust.id }}</span>
                 <span>/</span>
                 <span class="text-foreground font-bold">{{ cust.name }}</span>
               </nav>
@@ -83,7 +83,7 @@ type ToastNotification = {
             <p class="text-xs text-muted mt-1">
               Ngày tạo hồ sơ: <strong class="text-foreground">{{ formatDate(cust.createdAt) }}</strong>
               @if (cust.user) {
-                | Vai trò hệ thống: <strong class="text-primary font-mono">{{ cust.user.role }}</strong>
+                | Vai trò hệ thống: <strong class="text-primary font-semibold">{{ cust.user.role }}</strong>
               }
             </p>
           </div>
@@ -132,7 +132,7 @@ type ToastNotification = {
             [ngClass]="activeTab() === 'orders' ? 'border-primary' : 'border-line'"
           >
             <div (click)="activeTab.set('orders')" class="cursor-pointer">
-              <div class="text-xl font-bold font-mono text-foreground tabular-nums">
+              <div class="text-xl font-bold text-foreground tabular-nums">
                 {{ cust.stats.orderCount }}
               </div>
               <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
@@ -142,7 +142,7 @@ type ToastNotification = {
           </div>
 
           <div class="p-3 bg-surface border border-line rounded">
-            <div class="text-xl font-bold font-mono text-primary tabular-nums whitespace-nowrap">
+            <div class="text-xl font-bold text-primary tabular-nums whitespace-nowrap">
               {{ formatCurrency(cust.stats.totalSpent) }}
             </div>
             <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
@@ -155,7 +155,7 @@ type ToastNotification = {
             class="p-3 bg-surface border rounded cursor-pointer transition-colors"
             [ngClass]="activeTab() === 'coupons' ? 'border-primary' : 'border-line'"
           >
-            <div class="text-xl font-bold font-mono text-foreground tabular-nums">
+            <div class="text-xl font-bold text-foreground tabular-nums">
               {{ cust.stats.couponUsageCount }}
             </div>
             <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
@@ -168,7 +168,7 @@ type ToastNotification = {
             [ngClass]="activeTab() === 'reviews' ? 'border-primary' : 'border-line'"
           >
             <div (click)="activeTab.set('reviews')" class="cursor-pointer">
-              <div class="text-xl font-bold font-mono text-foreground tabular-nums">
+              <div class="text-xl font-bold text-foreground tabular-nums">
                 {{ cust.stats.reviewCount }}
               </div>
               <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
@@ -178,7 +178,7 @@ type ToastNotification = {
           </div>
 
           <div class="p-3 bg-surface border border-line rounded">
-            <div class="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
+            <div class="text-xl font-bold text-amber-600 dark:text-amber-400 tabular-nums">
               {{ cust.stats.mergedCount }}
             </div>
             <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
@@ -192,7 +192,7 @@ type ToastNotification = {
             <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
               Thông Tin Định Danh Khách Hàng
             </h2>
-            <span class="text-xs text-muted font-mono">ID: {{ cust.id }}</span>
+            <span class="text-xs text-muted tabular-nums">ID: {{ cust.id }}</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -204,8 +204,8 @@ type ToastNotification = {
             <div>
               <span class="text-muted block text-xs uppercase font-medium">Số điện thoại</span>
               <div class="flex items-center gap-2 mt-0.5">
-                <span class="font-mono font-bold text-foreground text-sm tabular-nums">{{ cust.phone }}</span>
-                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/25">
+                <span class="font-bold text-foreground text-sm tabular-nums">{{ cust.phone }}</span>
+                <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary border border-primary/25">
                   Xác thực OTP
                 </span>
               </div>
@@ -215,7 +215,7 @@ type ToastNotification = {
               <span class="text-muted block text-xs uppercase font-medium">Địa chỉ email</span>
               <div class="flex items-center gap-2 mt-0.5">
                 <span class="font-semibold text-foreground truncate text-sm">{{ cust.email }}</span>
-                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/25 shrink-0">
+                <span class="px-1.5 py-0.5 rounded text-xs font-semibold bg-primary/10 text-primary border border-primary/25 shrink-0">
                   Xác thực OTP
                 </span>
               </div>
@@ -232,11 +232,11 @@ type ToastNotification = {
                   <div class="p-2.5 bg-surface-alt border border-line rounded flex items-center justify-between text-xs">
                     <div>
                       <div class="font-bold text-foreground">{{ sub.name }}</div>
-                      <div class="text-xs text-muted font-mono">{{ sub.phone }} - {{ sub.email }}</div>
+                      <div class="text-xs text-muted tabular-nums">{{ sub.phone }} - {{ sub.email }}</div>
                       <div class="text-xs text-muted mt-0.5">Gộp lúc: {{ formatDate(sub.createdAt) }}</div>
                     </div>
                     <div class="text-right">
-                      <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold font-mono text-xs whitespace-nowrap tabular-nums">
+                      <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold text-xs whitespace-nowrap tabular-nums">
                         {{ sub.orderCount }} đơn đã chuyển
                       </span>
                     </div>
@@ -278,7 +278,7 @@ type ToastNotification = {
           @if (activeTab() === 'orders') {
             <div class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden">
               <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
+                <table class="w-full text-left border-collapse text-sm">
                   <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                     <tr>
                       <th class="py-3 px-4">Mã đơn</th>
@@ -301,7 +301,7 @@ type ToastNotification = {
                     } @else {
                       @for (ord of cust.orders; track ord.id) {
                         <tr class="hover:bg-surface-alt/50 transition-colors">
-                          <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap">
+                          <td class="py-3 px-4 font-bold text-foreground whitespace-nowrap tabular-nums">
                             <a [routerLink]="['/admin/orders', ord.id]" class="hover:text-primary transition-colors">
                               {{ ord.code }}
                             </a>
@@ -315,7 +315,7 @@ type ToastNotification = {
                           <td class="py-3 px-4 text-muted whitespace-nowrap">
                             {{ ord.branch.code }} ({{ ord.branch.name }})
                           </td>
-                          <td class="py-3 px-4 text-muted font-mono text-xs whitespace-nowrap">
+                          <td class="py-3 px-4 text-muted text-xs whitespace-nowrap tabular-nums">
                             {{ ord.paymentMethod }} | {{ ord.fulfillmentMethod }}
                           </td>
                           <td class="py-3 px-4 text-right font-bold tabular-nums text-foreground whitespace-nowrap">
@@ -350,7 +350,7 @@ type ToastNotification = {
           @if (activeTab() === 'coupons') {
             <div class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden">
               <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
+                <table class="w-full text-left border-collapse text-sm">
                   <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                     <tr>
                       <th class="py-3 px-4">Mã Voucher</th>
@@ -371,7 +371,7 @@ type ToastNotification = {
                     } @else {
                       @for (redemption of cust.couponRedemptions; track redemption.id) {
                         <tr class="hover:bg-surface-alt/50 transition-colors">
-                          <td class="py-3 px-4 font-mono font-bold text-primary whitespace-nowrap">
+                          <td class="py-3 px-4 font-bold text-primary whitespace-nowrap tabular-nums">
                             {{ redemption.coupon.code }}
                           </td>
                           <td class="py-3 px-4 font-semibold text-foreground">
@@ -406,7 +406,7 @@ type ToastNotification = {
           @if (activeTab() === 'reviews') {
             <div class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden">
               <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs">
+                <table class="w-full text-left border-collapse text-sm">
                   <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                     <tr>
                       <th class="py-3 px-4">Sản phẩm linh kiện</th>
@@ -430,13 +430,13 @@ type ToastNotification = {
                           <td class="py-3 px-4 font-bold text-foreground max-w-xs truncate">
                             {{ rev.productTemplate.name }}
                           </td>
-                          <td class="py-3 px-4 text-center font-bold text-amber-500 font-mono whitespace-nowrap">
+                          <td class="py-3 px-4 text-center font-bold text-amber-500 whitespace-nowrap tabular-nums">
                             {{ rev.rating }} / 5 sao
                           </td>
                           <td class="py-3 px-4 text-foreground">
                             {{ rev.text }}
                           </td>
-                          <td class="py-3 px-4 font-mono text-muted whitespace-nowrap">
+                          <td class="py-3 px-4 text-muted whitespace-nowrap tabular-nums">
                             <a [routerLink]="['/admin/orders', rev.order.id]" class="hover:text-primary underline">
                               {{ rev.order.code }}
                             </a>

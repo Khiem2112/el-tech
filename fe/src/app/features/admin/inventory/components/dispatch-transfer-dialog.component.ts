@@ -52,7 +52,7 @@ type SkuSerialSelection = {
                 Xuất Kho Điều Chuyển
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Phiếu: <strong class="text-foreground font-mono">{{ transfer.code }}</strong> - Xuất từ {{ transfer.sourceBranchName }} đi {{ transfer.destinationBranchName }}
+                Phiếu: <strong class="text-foreground tabular">{{ transfer.code }}</strong> - Xuất từ {{ transfer.sourceBranchName }} đi {{ transfer.destinationBranchName }}
               </p>
             </div>
             <button
@@ -81,14 +81,14 @@ type SkuSerialSelection = {
                     <div class="flex items-center justify-between">
                       <div>
                         <div class="font-bold text-foreground">{{ item.productName }}</div>
-                        <div class="text-[11px] font-mono text-muted">SKU: {{ item.skuCode }} - Số lượng xuất: <strong class="text-foreground">{{ item.quantity }} chiếc</strong></div>
+                        <div class="text-xs text-muted tabular">SKU: {{ item.skuCode }} - Số lượng xuất: <strong class="text-foreground tabular-nums">{{ item.quantity }} chiếc</strong></div>
                       </div>
                       @if (item.serialRequired) {
-                        <span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-warning font-mono text-[10px] font-bold">
+                        <span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-warning text-xs font-semibold tabular tabular-nums">
                           Đã chọn: {{ item.selectedSerials.length }} / {{ item.quantity }}
                         </span>
                       } @else {
-                        <span class="px-2 py-0.5 rounded bg-surface border border-line text-muted text-[10px]">
+                        <span class="px-2 py-0.5 rounded bg-surface border border-line text-muted text-xs">
                           Không quản lý sê-ri
                         </span>
                       }
@@ -104,13 +104,13 @@ type SkuSerialSelection = {
                       } @else {
                         <div class="space-y-1.5 pt-1">
                           <div class="flex items-center justify-between">
-                            <label class="block text-muted text-[11px] font-semibold uppercase">
+                            <label class="block text-muted text-xs font-semibold uppercase">
                               Chọn danh sách sê-ri xuất kho:
                             </label>
                             <button
                               type="button"
                               (click)="autoSelectSerials(item.skuId)"
-                              class="text-[11px] text-primary-strong hover:underline font-semibold"
+                              class="text-xs text-primary-strong hover:underline font-semibold"
                             >
                               Chọn đủ {{ item.quantity }} sê-ri
                             </button>
@@ -124,7 +124,7 @@ type SkuSerialSelection = {
                                   (change)="toggleSerial(item.skuId, serial)"
                                   class="accent-primary rounded"
                                 />
-                                <span class="font-mono text-[11px] font-bold text-foreground">{{ serial }}</span>
+                                <span class="text-xs font-bold text-foreground tabular">{{ serial }}</span>
                               </label>
                             }
                           </div>

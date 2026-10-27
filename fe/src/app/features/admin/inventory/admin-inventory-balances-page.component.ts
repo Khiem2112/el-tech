@@ -73,28 +73,28 @@ export type InventoryRegionCluster = {
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 flex-1">
             <div class="space-y-1">
-              <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Tồn Khả Dụng Bán</span>
-              <div class="text-2xl font-bold font-mono text-primary-strong tabular-nums">{{ summary().totalAvailable }}</div>
-              <p class="text-[11px] text-muted">Sẵn sàng điều phối giao đơn</p>
+              <span class="text-xs font-semibold text-muted uppercase tracking-wider block">Tồn Khả Dụng Bán</span>
+              <div class="text-2xl font-bold text-primary-strong tabular tabular-nums">{{ summary().totalAvailable }}</div>
+              <p class="text-xs text-muted">Sẵn sàng điều phối giao đơn</p>
             </div>
 
             <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
-              <span class="text-[11px] font-semibold text-warning uppercase tracking-wider block">Đang Giữ Cho Đơn</span>
-              <div class="text-2xl font-bold font-mono text-warning tabular-nums">{{ summary().totalReserved }}</div>
-              <p class="text-[11px] text-muted">Đang khóa trong các đơn hàng</p>
+              <span class="text-xs font-semibold text-warning uppercase tracking-wider block">Đang Giữ Cho Đơn</span>
+              <div class="text-2xl font-bold text-warning tabular tabular-nums">{{ summary().totalReserved }}</div>
+              <p class="text-xs text-muted">Đang khóa trong các đơn hàng</p>
             </div>
 
             <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
-              <span class="text-[11px] font-semibold text-danger uppercase tracking-wider block">Cách Ly Lỗi Kho</span>
-              <div class="text-2xl font-bold font-mono text-danger tabular-nums">{{ summary().totalQuarantine }}</div>
-              <p class="text-[11px] text-muted">Hàng móp hộp, chờ kiểm định</p>
+              <span class="text-xs font-semibold text-danger uppercase tracking-wider block">Cách Ly Lỗi Kho</span>
+              <div class="text-2xl font-bold text-danger tabular tabular-nums">{{ summary().totalQuarantine }}</div>
+              <p class="text-xs text-muted">Hàng móp hộp, chờ kiểm định</p>
             </div>
           </div>
 
-          <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs font-mono text-muted">
-            <div>Tổng tồn thực tế: <strong class="text-foreground tabular-nums">{{ summary().totalOnHand }}</strong></div>
-            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular-nums">{{ summary().totalQuants }}</strong></div>
-            <div>Giá trị ước tính: <strong class="text-foreground tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
+          <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs text-muted">
+            <div>Tổng tồn thực tế: <strong class="text-foreground tabular tabular-nums">{{ summary().totalOnHand }}</strong></div>
+            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
+            <div>Giá trị ước tính: <strong class="text-foreground tabular tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
           </div>
         </div>
       </div>
@@ -134,7 +134,7 @@ export type InventoryRegionCluster = {
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
           <div class="relative">
-            <label for="search-input" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <div class="relative">
               <input
                 id="search-input"
@@ -151,7 +151,7 @@ export type InventoryRegionCluster = {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Chi nhánh</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
             <app-select
               [options]="branchOptions()"
               [value]="selectedBranchFilterId()"
@@ -163,7 +163,7 @@ export type InventoryRegionCluster = {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Danh mục</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Danh mục</span>
             <app-select
               [options]="categoryOptions()"
               [value]="selectedCategoryFilterId()"
@@ -175,7 +175,7 @@ export type InventoryRegionCluster = {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Mức tồn</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Mức tồn</span>
             <app-select
               [options]="stockStatusOptions"
               [value]="selectedStockStatus()"
@@ -215,8 +215,8 @@ export type InventoryRegionCluster = {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1000px] border-collapse">
-              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left min-w-[1000px] border-collapse text-sm">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Mã SKU</th>
                   <th class="py-3 px-4">Tên linh kiện</th>
@@ -230,7 +230,7 @@ export type InventoryRegionCluster = {
                   <th class="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-line text-xs text-foreground">
+              <tbody class="divide-y divide-line text-sm text-foreground">
                 @if (isGroupByRegion()) {
                   @for (cluster of regionClusters(); track cluster.regionKey) {
                     <tr class="bg-surface-alt/90 border-y border-line">
@@ -239,7 +239,7 @@ export type InventoryRegionCluster = {
                           <span class="font-bold text-foreground uppercase tracking-wider">
                             {{ cluster.name }} ({{ cluster.branchCodes }})
                           </span>
-                          <div class="flex items-center gap-4 text-xs font-mono text-muted">
+                          <div class="flex items-center gap-4 text-xs text-muted">
                             <span>{{ cluster.totalSkus }} SKU</span>
                             <span>Khả dụng: <strong class="text-emerald-700 font-bold">{{ cluster.totalAvailable }} chiếc</strong></span>
                             <span>Giá trị tồn: <strong class="text-foreground font-bold">{{ formatCurrency(cluster.totalValue) }}</strong></span>
@@ -262,10 +262,10 @@ export type InventoryRegionCluster = {
 
           <ng-template #rowTemplate let-item>
             <tr class="hover:bg-surface-alt/70 transition-colors">
-              <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap">
+              <td class="py-3 px-4 font-bold text-foreground whitespace-nowrap tabular">
                 {{ item.sku }}
                 @if (item.serialRequired) {
-                  <span class="ml-1.5 px-1.5 py-0.5 rounded bg-primary/10 text-primary-strong border border-primary/20 text-xs font-semibold uppercase font-mono">
+                  <span class="ml-1.5 px-1.5 py-0.5 rounded bg-primary/10 text-primary-strong border border-primary/20 text-xs font-semibold uppercase">
                     SN
                   </span>
                 }
@@ -275,7 +275,7 @@ export type InventoryRegionCluster = {
                 <div class="font-semibold text-foreground truncate" [title]="item.productName">
                   {{ item.productName }}
                 </div>
-                <div class="text-[11px] text-muted truncate">
+                <div class="text-xs text-muted truncate">
                   {{ item.categoryName }} &bull; {{ item.brandName }}
                   @if (item.variationLabel) {
                     &bull; <span class="text-foreground">{{ item.variationLabel }}</span>
@@ -285,32 +285,32 @@ export type InventoryRegionCluster = {
 
               <td class="py-3 px-4 whitespace-nowrap">
                 <div class="font-semibold text-foreground">{{ item.branchName }}</div>
-                <div class="text-[11px] font-mono text-muted">{{ item.branchCode }}</div>
+                <div class="text-xs text-muted tabular">{{ item.branchCode }}</div>
               </td>
 
-              <td class="py-3 px-4 text-right font-mono font-bold text-foreground tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right font-bold text-foreground tabular tabular-nums whitespace-nowrap">
                 {{ item.onHand }}
               </td>
 
-              <td class="py-3 px-4 text-right font-mono font-semibold text-warning tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right font-semibold text-warning tabular tabular-nums whitespace-nowrap">
                 {{ item.reserved }}
               </td>
 
-              <td class="py-3 px-4 text-right font-mono font-semibold text-danger tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right font-semibold text-danger tabular tabular-nums whitespace-nowrap">
                 {{ item.quarantineDamaged }}
               </td>
 
-              <td class="py-3 px-4 text-right font-mono font-black tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right font-black tabular tabular-nums whitespace-nowrap">
                 <span [class]="getAvailableBadgeClass(item.available)">
                   {{ item.available }}
                 </span>
               </td>
 
-              <td class="py-3 px-4 text-right font-mono text-muted tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right text-muted tabular tabular-nums whitespace-nowrap">
                 {{ formatCurrency(item.weightedAverageCost) }}
               </td>
 
-              <td class="py-3 px-4 text-right font-mono text-foreground font-semibold tabular tabular-nums whitespace-nowrap">
+              <td class="py-3 px-4 text-right text-foreground font-semibold tabular tabular-nums whitespace-nowrap">
                 {{ formatCurrency(item.sellingPrice) }}
               </td>
 
@@ -381,7 +381,7 @@ export type InventoryRegionCluster = {
             </tr>
           </ng-template>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-surface-alt">
+          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
             <div class="text-muted">
               Hiển thị <strong class="text-foreground">{{ (inventoryService.balancesPage() - 1) * inventoryService.balancesLimit() + 1 }}</strong>
               - <strong class="text-foreground">{{ getEndIndex() }}</strong>
@@ -400,7 +400,7 @@ export type InventoryRegionCluster = {
                 Trước
               </button>
 
-              <span class="px-2 font-mono text-foreground font-semibold">
+              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
                 Trang {{ inventoryService.balancesPage() }} / {{ inventoryService.balancesTotalPages() }}
               </span>
 

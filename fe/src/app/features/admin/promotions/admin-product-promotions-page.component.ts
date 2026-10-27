@@ -127,19 +127,19 @@ type ToastNotification = {
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div class="p-3 bg-surface border border-line rounded">
             <div class="text-muted text-xs uppercase font-semibold">Tổng chương trình</div>
-            <div class="text-xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
+            <div class="text-xl font-bold text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
           </div>
           <div class="p-3 bg-surface border border-line rounded">
             <div class="text-emerald-700 dark:text-emerald-400 text-xs uppercase font-semibold">Đang diễn ra</div>
-            <div class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
+            <div class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
           </div>
           <div class="p-3 bg-surface border border-line rounded">
             <div class="text-sky-700 dark:text-sky-400 text-xs uppercase font-semibold">Sắp diễn ra</div>
-            <div class="text-xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
+            <div class="text-xl font-bold text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
           </div>
           <div class="p-3 bg-surface border border-line rounded">
             <div class="text-muted text-xs uppercase font-semibold">Đã kết thúc</div>
-            <div class="text-xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
+            <div class="text-xl font-bold text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
           </div>
         </div>
 
@@ -151,10 +151,10 @@ type ToastNotification = {
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên chương trình..."
-                class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded-md text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
+                class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded-md text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
               />
               <svg
-                class="w-4 h-4 text-muted absolute left-2.5 top-2 pointer-events-none"
+                class="w-4 h-4 text-muted absolute left-2.5 top-2.5 pointer-events-none"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -183,7 +183,7 @@ type ToastNotification = {
             </div>
           </div>
 
-          <div class="flex items-center gap-2 text-xs text-muted">
+          <div class="flex items-center gap-2 text-sm text-muted">
             <span class="whitespace-nowrap">Tổng cộng: <strong class="text-foreground tabular-nums">{{ total() }}</strong></span>
             <button
               type="button"
@@ -201,7 +201,7 @@ type ToastNotification = {
 
         <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs min-w-[1000px] border-collapse">
+            <table class="w-full text-left text-sm min-w-[1000px] border-collapse">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4">Tên chương trình</th>
@@ -281,9 +281,9 @@ type ToastNotification = {
                         <div class="text-muted">đến {{ promo.effectiveTo | date:'dd/MM/yyyy' }}</div>
                       </td>
 
-                      <td class="py-3.5 px-4 font-mono text-xs text-muted max-w-[200px]">
+                      <td class="py-3.5 px-4 text-xs text-muted tabular-nums max-w-[200px]">
                         @if (promo.scope === 'CATEGORY') {
-                          <div class="truncate text-foreground font-sans" [title]="categoryNames(promo)">
+                          <div class="truncate text-foreground" [title]="categoryNames(promo)">
                             Danh mục: {{ categoryNames(promo) }}
                           </div>
                         } @else if (promo.scope === 'SKU') {
@@ -362,9 +362,9 @@ type ToastNotification = {
           </div>
 
           @if (!isLoading() && total() > 0) {
-            <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-xs text-muted">
+            <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-sm text-muted">
               <div>
-                Hiển thị trang <strong class="text-foreground">{{ page() }}</strong> / <strong class="text-foreground">{{ totalPages() }}</strong>
+                Hiển thị trang <strong class="text-foreground tabular-nums">{{ page() }}</strong> / <strong class="text-foreground tabular-nums">{{ totalPages() }}</strong>
               </div>
 
               <div class="flex items-center gap-1.5">
@@ -372,7 +372,7 @@ type ToastNotification = {
                   type="button"
                   (click)="onPageChange(page() - 1)"
                   [disabled]="page() <= 1"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
+                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
                 >
                   Trước
                 </button>
@@ -380,7 +380,7 @@ type ToastNotification = {
                   type="button"
                   (click)="onPageChange(page() + 1)"
                   [disabled]="page() >= totalPages()"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
+                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
                 >
                   Sau
                 </button>

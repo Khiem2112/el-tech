@@ -70,7 +70,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
             Đơn Hàng
           </a>
           <span>/</span>
-          <span class="font-mono font-bold text-foreground">
+          <span class="font-bold text-foreground tabular tabular-nums">
             {{ detailService.order()?.code || orderId() }}
           </span>
           @if (detailService.order(); as ord) {
@@ -125,14 +125,14 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           <div class="flex items-center justify-between flex-wrap gap-3">
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-lg font-bold text-foreground font-mono tracking-tight tabular-nums">
+                <h1 class="text-lg font-bold text-foreground tracking-tight tabular tabular-nums">
                   ĐƠN HÀNG #{{ ord.code }}
                 </h1>
                 <span class="px-2 py-0.5 rounded text-xs font-semibold" [class]="statusBadgeClass(ord.status)">
                   {{ statusLabel(ord.status) }}
                 </span>
                 <span
-                  class="px-2 py-0.5 rounded text-xs font-mono border"
+                  class="px-2 py-0.5 rounded text-xs border font-medium"
                   [class.bg-surface-elevated]="ord.hasAssembly"
                   [class.text-primary]="ord.hasAssembly"
                   [class.border-line]="ord.hasAssembly"
@@ -143,7 +143,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                   {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
                 </span>
               </div>
-              <div class="text-xs text-muted mt-1 font-mono tabular-nums">
+              <div class="text-xs text-muted mt-1 tabular tabular-nums">
                 Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch.name }}</strong>
               </div>
             </div>
@@ -154,7 +154,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
                 title="Hồ sơ khách hàng"
               >
-                <span class="text-muted text-[11px] block">Khách hàng</span>
+                <span class="text-muted text-xs block">Khách hàng</span>
                 <span class="font-medium text-foreground truncate max-w-[120px] block">{{ ord.customer.name }}</span>
               </a>
 
@@ -164,8 +164,8 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
                 title="Sổ kho bất biến"
               >
-                <span class="text-muted text-[11px] block">Phiếu kho</span>
-                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.stockMoves.length }}</span>
+                <span class="text-muted text-xs block">Phiếu kho</span>
+                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.stockMoves.length }}</span>
               </a>
 
               <a
@@ -173,7 +173,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
                 title="Chi tiết thanh toán"
               >
-                <span class="text-muted text-[11px] block">Thanh toán</span>
+                <span class="text-muted text-xs block">Thanh toán</span>
                 <span class="font-medium text-foreground block">
                   {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Cọc 10%')) : 'Chưa thu' }}
                 </span>
@@ -184,8 +184,8 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
                 title="Phụ lục đơn hàng"
               >
-                <span class="text-muted text-[11px] block">Phụ lục</span>
-                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.amendments.length }}</span>
+                <span class="text-muted text-xs block">Phụ lục</span>
+                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.amendments.length }}</span>
               </a>
 
               <a
@@ -194,8 +194,8 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
                 title="Nhật ký thông báo"
               >
-                <span class="text-muted text-[11px] block">Outbox</span>
-                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.statusHistories.length }}</span>
+                <span class="text-muted text-xs block">Outbox</span>
+                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.statusHistories.length }}</span>
               </a>
             </div>
           </div>

@@ -151,7 +151,7 @@ import {
                       {{ formatDate(item.validatedAt || item.createdAt) }}
                     </td>
                     <td class="py-2.5 px-4 text-center whitespace-nowrap">
-                      <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                         HOÀN TẤT TRẢ
                       </span>
                     </td>
@@ -289,7 +289,7 @@ import {
                               <span class="text-muted text-xs">Không yêu cầu serial</span>
                             }
                           </td>
-                          <td class="py-2 px-3 text-right tabular-nums text-[11px]">
+                          <td class="py-2 px-3 text-right tabular-nums text-xs">
                             @for (entry of line.ledgerEntries; track $index) {
                               @if (entry.deltaQuarantine < 0) {
                                 <div class="text-amber-600 font-bold">

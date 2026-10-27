@@ -22,7 +22,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-14" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground flex flex-col">
+        <div data-modal-id="MOD-14" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-sm text-foreground flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -57,7 +57,7 @@ import {
               [(ngModel)]="note"
               rows="2"
               placeholder="Nhập mã vận đơn khứ hồi hoặc lý do chuyển hoàn..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
@@ -72,7 +72,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-sm rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
               Hủy
             </button>
@@ -80,7 +80,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm rounded transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Chuyển Hoàn' }}
             </button>

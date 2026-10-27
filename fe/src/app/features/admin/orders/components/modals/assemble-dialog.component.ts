@@ -29,7 +29,7 @@ type SelectedSerialEntry = {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-09" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-09" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -54,22 +54,22 @@ type SelectedSerialEntry = {
               type="text"
               [(ngModel)]="technicianName"
               placeholder="Nhập tên hoặc mã kỹ thuật viên..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
             />
           </div>
 
           <div class="flex-1 overflow-y-auto space-y-3 pr-1">
             <div class="flex items-center justify-between">
-              <span class="font-semibold text-foreground uppercase">
+              <span class="font-semibold text-foreground uppercase text-xs">
                 Danh sách linh kiện lắp ráp & Gán số Sê-ri:
               </span>
-              <span class="text-xs font-mono font-bold" [class.text-emerald-600]="isAllSerialsProvided()" [class.dark:text-emerald-400]="isAllSerialsProvided()" [class.text-amber-600]="!isAllSerialsProvided()" [class.dark:text-amber-400]="!isAllSerialsProvided()">
+              <span class="text-xs font-bold tabular tabular-nums" [class.text-emerald-600]="isAllSerialsProvided()" [class.dark:text-emerald-400]="isAllSerialsProvided()" [class.text-amber-600]="!isAllSerialsProvided()" [class.dark:text-amber-400]="!isAllSerialsProvided()">
                 Đã gán {{ selectedSerialsCount() }}/{{ requiredSerialsCount() }} Serial
               </span>
             </div>
 
             @if (isLoading()) {
-              <div class="p-6 text-center bg-surface-alt border border-line rounded text-muted">
+              <div class="p-6 text-center bg-surface-alt border border-line rounded text-muted text-sm">
                 Đang tải danh sách linh kiện và kiểm tra số sê-ri khả dụng...
               </div>
             } @else if (requirements(); as req) {
@@ -78,11 +78,11 @@ type SelectedSerialEntry = {
                   <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
                     <div class="flex items-center justify-between gap-2">
                       <div>
-                        <div class="font-mono font-bold text-foreground">{{ item.skuCode }}</div>
+                        <div class="font-bold text-foreground text-sm tabular tabular-nums">{{ item.skuCode }}</div>
                         <div class="text-xs text-muted">{{ item.name }}</div>
                       </div>
                       <div class="text-right">
-                        <span class="text-xs font-bold text-foreground">SL: {{ item.quantity }}</span>
+                        <span class="text-xs font-bold text-foreground tabular tabular-nums">SL: {{ item.quantity }}</span>
                         <div>
                           <span
                             class="inline-block px-1.5 py-0.5 rounded text-xs font-semibold mt-0.5"
@@ -103,7 +103,7 @@ type SelectedSerialEntry = {
                       <div class="border-t border-line pt-2 space-y-2">
                         <div class="flex items-center justify-between text-xs">
                           <span class="text-muted">Số sê-ri đã gán cho linh kiện này:</span>
-                          <span class="font-mono font-bold" [class.text-emerald-600]="getItemAssignedCount(item.skuId) === item.quantity" [class.dark:text-emerald-400]="getItemAssignedCount(item.skuId) === item.quantity" [class.text-amber-600]="getItemAssignedCount(item.skuId) !== item.quantity" [class.dark:text-amber-400]="getItemAssignedCount(item.skuId) !== item.quantity">
+                          <span class="font-bold tabular tabular-nums" [class.text-emerald-600]="getItemAssignedCount(item.skuId) === item.quantity" [class.dark:text-emerald-400]="getItemAssignedCount(item.skuId) === item.quantity" [class.text-amber-600]="getItemAssignedCount(item.skuId) !== item.quantity" [class.dark:text-amber-400]="getItemAssignedCount(item.skuId) !== item.quantity">
                             {{ getItemAssignedCount(item.skuId) }} / {{ item.quantity }}
                           </span>
                         </div>
@@ -111,7 +111,7 @@ type SelectedSerialEntry = {
                         @if (getItemAssignedSerials(item.skuId).length > 0) {
                           <div class="flex flex-wrap gap-1.5">
                             @for (s of getItemAssignedSerials(item.skuId); track s) {
-                              <span class="px-2 py-0.5 bg-surface-alt border border-line text-foreground rounded font-mono text-xs flex items-center gap-1.5">
+                              <span class="px-2 py-0.5 bg-surface-alt border border-line text-foreground rounded text-xs tabular tabular-nums flex items-center gap-1.5">
                                 <span>{{ s }}</span>
                                 <button
                                   type="button"
@@ -134,12 +134,12 @@ type SelectedSerialEntry = {
                                 #barcodeInput
                                 placeholder="Quét mã vạch barcode hoặc gõ số sê-ri..."
                                 (keydown.enter)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
-                                class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
+                                class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground text-sm tabular tabular-nums focus:outline-none focus:border-primary"
                               />
                               <button
                                 type="button"
                                 (click)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
-                                class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-semibold text-xs text-foreground cursor-pointer transition-colors"
+                                class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-semibold text-sm text-foreground cursor-pointer transition-colors"
                               >
                                 Gán
                               </button>
@@ -156,7 +156,7 @@ type SelectedSerialEntry = {
                                       type="button"
                                       (click)="toggleSerialSelection(item.skuId, avail.serialNumber)"
                                       [disabled]="isSerialSelectedElsewhere(avail.serialNumber, item.skuId) || (getItemAssignedCount(item.skuId) >= item.quantity && !isSerialSelected(item.skuId, avail.serialNumber))"
-                                      class="text-left px-2 py-1 rounded border text-xs font-mono flex items-center justify-between cursor-pointer disabled:opacity-40 transition-colors"
+                                      class="text-left px-2 py-1 rounded border text-xs tabular tabular-nums flex items-center justify-between cursor-pointer disabled:opacity-40 transition-colors"
                                       [class.bg-primary/10]="isSerialSelected(item.skuId, avail.serialNumber)"
                                       [class.border-primary]="isSerialSelected(item.skuId, avail.serialNumber)"
                                       [class.text-primary-strong]="isSerialSelected(item.skuId, avail.serialNumber)"
@@ -196,7 +196,7 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -204,7 +204,7 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isAllSerialsProvided()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Chuyển...' : 'Xác Nhận Chuyển Bàn Lắp Ráp' }}
             </button>

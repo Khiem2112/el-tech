@@ -112,7 +112,7 @@ function slugify(text: string): string {
                 <div class="text-sm font-bold text-foreground group-hover:text-primary tabular-nums transition-colors">
                   {{ cat.productTemplateCount }}
                 </div>
-                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Sản Phẩm</div>
+                <div class="text-xs text-muted uppercase mt-0.5 font-medium">Sản Phẩm</div>
               </button>
 
               <button
@@ -124,7 +124,7 @@ function slugify(text: string): string {
                 <div class="text-sm font-bold text-emerald-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.totalInventory }}
                 </div>
-                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Tồn Kho</div>
+                <div class="text-xs text-muted uppercase mt-0.5 font-medium">Tồn Kho</div>
               </button>
 
               <button
@@ -136,7 +136,7 @@ function slugify(text: string): string {
                 <div class="text-sm font-bold text-blue-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.activeTransfers }}
                 </div>
-                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Chuyển Kho</div>
+                <div class="text-xs text-muted uppercase mt-0.5 font-medium">Chuyển Kho</div>
               </button>
             </div>
           }
@@ -190,7 +190,7 @@ function slugify(text: string): string {
             </div>
 
             <div>
-              <label for="description" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="description" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1.5">
                 Mô tả ngành hàng
               </label>
               <textarea
@@ -198,7 +198,7 @@ function slugify(text: string): string {
                 rows="3"
                 formControlName="description"
                 placeholder="Nhập thông tin giới thiệu và quy chuẩn kỹ thuật của ngành hàng..."
-                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               ></textarea>
             </div>
 
@@ -209,7 +209,7 @@ function slugify(text: string): string {
                 formControlName="isActive"
                 class="w-4 h-4 rounded bg-surface-alt border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
-              <label for="isActive" class="text-[13px] text-foreground cursor-pointer">
+              <label for="isActive" class="text-sm text-foreground cursor-pointer">
                 Kích hoạt hiển thị danh mục trong hệ thống và bộ lọc linh kiện
               </label>
             </div>

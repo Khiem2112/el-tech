@@ -50,23 +50,23 @@ type OrderGroup = {
           </div>
         </div>
 
-        <div class="flex items-center gap-3 text-xs text-muted">
+        <div class="flex items-center gap-3 text-sm text-muted">
           <span>
             Tổng số đơn toàn hệ thống:
-            <strong class="text-foreground font-mono font-bold">{{ orderService.total() }}</strong>
+            <strong class="text-foreground tabular tabular-nums font-bold">{{ orderService.total() }}</strong>
           </span>
         </div>
       </div>
 
       <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
         <div
-          class="flex items-center overflow-x-auto border-b border-line px-3 py-2 text-xs gap-1.5 scrollbar-thin"
+          class="flex items-center overflow-x-auto border-b border-line px-3 py-2 text-sm gap-1.5 scrollbar-thin"
         >
           @for (tab of pipelineTabs; track tab.key) {
             <button
               type="button"
               (click)="onTabClick(tab.key)"
-              class="px-3 py-1.5 rounded-md whitespace-nowrap transition-colors flex items-center gap-1.5 text-xs font-medium"
+              class="px-3 py-1.5 rounded-md whitespace-nowrap transition-colors flex items-center gap-1.5 text-sm font-medium"
               [class.bg-primary]="orderService.selectedTab() === tab.key"
               [class.text-primary-foreground]="orderService.selectedTab() === tab.key"
               [class.font-semibold]="orderService.selectedTab() === tab.key"
@@ -77,7 +77,7 @@ type OrderGroup = {
               <span>{{ tab.label }}</span>
               @if (getTabCount(tab.key) > 0) {
                 <span
-                  class="px-1.5 py-0.2 rounded font-mono text-[11px] tabular-nums"
+                  class="px-1.5 py-0.5 rounded text-xs tabular tabular-nums"
                   [class.bg-black/25]="orderService.selectedTab() === tab.key"
                   [class.text-primary-foreground]="orderService.selectedTab() === tab.key"
                   [class.bg-surface-alt]="orderService.selectedTab() !== tab.key"
@@ -104,7 +104,7 @@ type OrderGroup = {
                 [ngModel]="orderService.searchQuery()"
                 (ngModelChange)="onSearchInput($event)"
                 placeholder="Mã đơn ORD-, SĐT, email, tên..."
-                class="w-full h-9 pl-8 pr-3 bg-surface border border-line rounded text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-[13px] font-sans"
+                class="w-full h-9 pl-8 pr-3 bg-surface border border-line rounded text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-sm font-sans"
               />
               <svg
                 class="w-3.5 h-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
@@ -274,11 +274,11 @@ type OrderGroup = {
                   class="px-4 py-2 bg-surface-alt border-y border-line font-bold text-xs text-primary uppercase tracking-wide flex items-center justify-between"
                 >
                   <span>{{ group.title }}</span>
-                  <span class="font-mono text-muted font-normal">({{ group.items.length }} đơn)</span>
+                  <span class="tabular tabular-nums text-muted font-normal">({{ group.items.length }} đơn)</span>
                 </div>
               }
 
-              <table class="w-full text-left text-[13px]">
+              <table class="w-full text-left text-sm">
                 <thead
                   class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs"
                 >
@@ -300,24 +300,24 @@ type OrderGroup = {
                       class="hover:bg-surface-alt/60 transition-colors cursor-pointer"
                       (click)="onRowClick(order.id)"
                     >
-                      <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap tabular-nums">
+                      <td class="py-3 px-4 font-bold text-foreground whitespace-nowrap tabular tabular-nums">
                         <a
                           [routerLink]="['/admin/orders', order.id]"
                           (click)="$event.stopPropagation()"
-                          class="hover:text-primary transition-colors text-xs font-semibold"
+                          class="hover:text-primary transition-colors text-sm font-semibold"
                         >
                           {{ order.code }}
                         </a>
                         <div class="mt-0.5">
                           @if (order.hasAssembly) {
                             <span
-                              class="text-[11px] font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-xs text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded whitespace-nowrap inline-block font-medium"
                             >
                               Lắp ráp PC
                             </span>
                           } @else {
                             <span
-                              class="text-[11px] font-mono text-muted bg-surface-alt border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-xs text-muted bg-surface-alt border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block font-medium"
                             >
                               Linh kiện lẻ
                             </span>
@@ -325,30 +325,30 @@ type OrderGroup = {
                         </div>
                       </td>
 
-                      <td class="py-3 px-4 text-muted whitespace-nowrap font-mono text-xs tabular-nums">
+                      <td class="py-3 px-4 text-muted whitespace-nowrap text-sm tabular tabular-nums">
                         <div>{{ formatDateTime(order.submittedAt) }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">
-                        <div class="font-medium text-foreground text-xs">{{ order.receiverName }}</div>
-                        <div class="text-[11px] text-muted font-mono tabular-nums">{{ order.receiverPhone }}</div>
+                        <div class="font-medium text-foreground text-sm">{{ order.receiverName }}</div>
+                        <div class="text-xs text-muted tabular tabular-nums">{{ order.receiverPhone }}</div>
                       </td>
 
                       <td class="py-3 px-4 text-foreground whitespace-nowrap">
-                        <div class="font-medium text-xs">{{ order.branch.code }}</div>
-                        <div class="text-muted text-[11px] truncate max-w-[140px]">{{ order.branch.name }}</div>
+                        <div class="font-medium text-sm">{{ order.branch.code }}</div>
+                        <div class="text-muted text-xs truncate max-w-[140px]">{{ order.branch.name }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">
                         @if (order.fulfillmentMethod === 'DELIVERY') {
                           <span
-                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Giao tận nơi
                           </span>
                         } @else {
                           <span
-                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Nhận tại shop
                           </span>
@@ -359,33 +359,33 @@ type OrderGroup = {
                         @if (order.paymentMethod === 'QR') {
                           @if (order.payment?.state === 'PAID') {
                             <span
-                              class="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap"
+                              class="px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap"
                             >
                               QR đã thanh toán
                             </span>
                           } @else {
                             <span
-                              class="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap"
+                              class="px-2 py-0.5 rounded text-xs font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap"
                             >
                               QR chờ thanh toán
                             </span>
                           }
                         } @else {
                           <span
-                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Thu tiền COD
                           </span>
                         }
                       </td>
 
-                      <td class="py-3 px-4 text-right font-mono font-bold tabular-nums text-foreground whitespace-nowrap text-xs">
+                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap text-sm">
                         {{ formatCurrency(order.grandTotal) }}
                       </td>
 
                       <td class="py-3 px-4 text-center whitespace-nowrap">
                         <span
-                          class="px-2.5 py-0.5 rounded text-[11px] font-medium inline-block whitespace-nowrap"
+                          class="px-2.5 py-0.5 rounded text-xs font-medium inline-block whitespace-nowrap"
                           [class]="getStatusBadgeClass(order.status)"
                         >
                           {{ getStatusLabel(order.status) }}
@@ -427,7 +427,7 @@ type OrderGroup = {
           </div>
 
           <div
-            class="px-4 py-3 bg-surface-alt border-t border-line flex items-center justify-between flex-wrap gap-3 text-xs"
+            class="px-4 py-3 bg-surface-alt border-t border-line flex items-center justify-between flex-wrap gap-3 text-sm"
           >
             <div class="text-muted">
               Hiển thị {{ (orderService.page() - 1) * orderService.limit() + 1 }} -
@@ -440,18 +440,18 @@ type OrderGroup = {
                 type="button"
                 [disabled]="orderService.page() <= 1"
                 (click)="orderService.setPage(orderService.page() - 1)"
-                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium"
+                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium text-sm"
               >
                 Trước
               </button>
-              <span class="px-2 font-mono text-muted tabular tabular-nums">
+              <span class="px-2 text-muted tabular tabular-nums">
                 {{ orderService.page() }} / {{ orderService.totalPages() }}
               </span>
               <button
                 type="button"
                 [disabled]="orderService.page() >= orderService.totalPages()"
                 (click)="orderService.setPage(orderService.page() + 1)"
-                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium"
+                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium text-sm"
               >
                 Sau
               </button>

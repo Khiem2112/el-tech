@@ -39,7 +39,7 @@ type ToastNotification = {
             <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
               Chi Nhánh & Khu Vực
             </h1>
-            <p class="text-[13px] text-muted mt-0.5">
+            <p class="text-sm text-muted mt-0.5">
               Quản lý các chi nhánh kho kiêm showroom và cấu hình ưu tiên phục vụ giao hàng
             </p>
           </div>
@@ -49,7 +49,7 @@ type ToastNotification = {
           <button
             type="button"
             (click)="openCreateModal()"
-            class="px-3.5 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold text-xs rounded transition-colors shadow-xs inline-flex items-center gap-1.5 uppercase tracking-wide"
+            class="px-3.5 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-semibold text-sm rounded transition-colors shadow-xs inline-flex items-center gap-1.5 uppercase tracking-wide cursor-pointer"
           >
             <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
             <span>Thêm chi nhánh</span>
@@ -65,7 +65,7 @@ type ToastNotification = {
               [ngModel]="branchService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm kiếm theo mã, tên hoặc địa chỉ..."
-              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <lucide-icon
               name="search"
@@ -75,7 +75,7 @@ type ToastNotification = {
           </div>
 
           <div class="flex items-center gap-2">
-            <span class="text-[13px] text-muted font-medium whitespace-nowrap">Trạng thái:</span>
+            <span class="text-sm text-muted font-medium whitespace-nowrap">Trạng thái:</span>
             <app-select
               [options]="statusOptions"
               [value]="branchService.statusFilter()"
@@ -87,14 +87,14 @@ type ToastNotification = {
           </div>
         </div>
 
-        <div class="text-[13px] text-muted text-right">
+        <div class="text-sm text-muted text-right">
           Tổng số: <strong class="text-foreground">{{ branchService.total() }}</strong> chi nhánh
         </div>
       </div>
 
       <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-[13px]">
+          <table class="w-full text-left border-collapse text-sm">
             <thead class="bg-surface-alt/80 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-3 px-4">Mã chi nhánh</th>
@@ -125,13 +125,13 @@ type ToastNotification = {
                 <tr>
                   <td colspan="8" class="py-12 text-center text-muted">
                     <p class="font-medium text-sm">Không tìm thấy chi nhánh nào</p>
-                    <p class="text-[13px] text-muted mt-1">Hãy thử tìm kiếm với từ khóa khác hoặc tạo thêm chi nhánh mới.</p>
+                    <p class="text-xs text-muted mt-1">Hãy thử tìm kiếm với từ khóa khác hoặc tạo thêm chi nhánh mới.</p>
                   </td>
                 </tr>
               } @else {
                 @for (item of branchService.branches(); track item.id) {
                   <tr class="hover:bg-surface-alt/50 transition-colors">
-                    <td class="py-3.5 px-4 font-mono font-bold text-primary-strong whitespace-nowrap">
+                    <td class="py-3.5 px-4 font-bold text-primary-strong whitespace-nowrap tabular">
                       {{ item.code }}
                     </td>
                     <td class="py-3.5 px-4 font-bold text-foreground whitespace-nowrap">
@@ -150,7 +150,7 @@ type ToastNotification = {
                       @if (item.deliveryAreaCodes && item.deliveryAreaCodes.length > 0) {
                         <div class="flex flex-wrap gap-1 max-w-xs">
                           @for (area of item.deliveryAreaCodes; track area) {
-                            <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line font-mono text-[11px] text-foreground">
+                            <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-xs font-medium text-foreground tabular">
                               {{ area }}
                             </span>
                           }
@@ -202,7 +202,7 @@ type ToastNotification = {
         </div>
 
         @if (branchService.totalPages() > 1) {
-          <div class="p-4 border-t border-line flex items-center justify-between text-[13px] text-muted">
+          <div class="p-4 border-t border-line flex items-center justify-between text-sm text-muted">
             <div>
               Trang <strong class="text-foreground">{{ branchService.page() }}</strong> trên <strong class="text-foreground">{{ branchService.totalPages() }}</strong>
             </div>
@@ -211,7 +211,7 @@ type ToastNotification = {
                 type="button"
                 [disabled]="branchService.page() <= 1"
                 (click)="onPageChange(branchService.page() - 1)"
-                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
+                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm font-medium disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
               >
                 Trước
               </button>
@@ -219,7 +219,7 @@ type ToastNotification = {
                 type="button"
                 [disabled]="branchService.page() >= branchService.totalPages()"
                 (click)="onPageChange(branchService.page() + 1)"
-                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
+                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm font-medium disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
               >
                 Sau
               </button>
@@ -253,7 +253,7 @@ type ToastNotification = {
               <h3 class="font-bold text-foreground text-base">
                 {{ confirmDialog().branch?.isActive ? 'Xác Nhận Tạm Dừng Chi Nhánh' : 'Xác Nhận Kích Hoạt Chi Nhánh' }}
               </h3>
-              <p class="text-[13px] text-muted mt-1 leading-relaxed">
+              <p class="text-sm text-muted mt-1 leading-relaxed">
                 Bạn có chắc chắn muốn {{ confirmDialog().branch?.isActive ? 'tạm dừng hoạt động' : 'kích hoạt lại hoạt động' }} của chi nhánh
                 <strong class="text-foreground">[{{ confirmDialog().branch?.code }}] {{ confirmDialog().branch?.name }}</strong>?
               </p>
@@ -270,7 +270,7 @@ type ToastNotification = {
               type="button"
               (click)="closeConfirmDialog()"
               [disabled]="confirmDialog().isProcessing"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt text-foreground font-semibold rounded text-[13px] border border-line transition-colors shadow-xs"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt text-foreground font-semibold rounded text-sm border border-line transition-colors shadow-xs"
             >
               Hủy Bỏ
             </button>
@@ -278,7 +278,7 @@ type ToastNotification = {
               type="button"
               (click)="executeToggleStatus()"
               [disabled]="confirmDialog().isProcessing"
-              class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-[13px] transition-colors shadow-xs"
+              class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-sm transition-colors shadow-xs"
             >
               {{ confirmDialog().isProcessing ? 'Đang cập nhật...' : 'Xác Nhận Thay Đổi' }}
             </button>
@@ -291,7 +291,7 @@ type ToastNotification = {
     <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
       @for (toast of toasts(); track toast.id) {
         <div
-          class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-[13px] font-semibold border flex items-center justify-between gap-3 animate-fade-in bg-surface border-line"
+          class="pointer-events-auto px-4 py-3 rounded-lg shadow-lg text-sm font-semibold border flex items-center justify-between gap-3 animate-fade-in bg-surface border-line"
           [ngClass]="toast.type === 'success' ? 'text-primary-strong border-primary/30' : 'text-rose-600 border-rose-200'"
         >
           <span>{{ toast.message }}</span>

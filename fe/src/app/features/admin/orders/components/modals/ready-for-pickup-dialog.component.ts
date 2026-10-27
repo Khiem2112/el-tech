@@ -22,7 +22,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-10" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground">
+        <div data-modal-id="MOD-10" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-sm text-foreground">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -42,11 +42,11 @@ import {
           <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-muted text-xs">
             <div class="flex justify-between">
               <span>Mã đơn hàng:</span>
-              <span class="font-mono text-primary font-bold tabular-nums">{{ order().code }}</span>
+              <span class="text-primary font-bold tabular tabular-nums">{{ order().code }}</span>
             </div>
             <div class="flex justify-between">
               <span>Người nhận hàng:</span>
-              <span class="text-foreground font-medium">{{ order().receiverName }} (<span class="font-mono tabular-nums">{{ order().receiverPhone }}</span>)</span>
+              <span class="text-foreground font-medium">{{ order().receiverName }} (<span class="tabular tabular-nums">{{ order().receiverPhone }}</span>)</span>
             </div>
             <div class="flex justify-between">
               <span>Showroom:</span>
@@ -58,7 +58,7 @@ import {
             </div>
             <div class="flex justify-between border-t border-line pt-1.5 mt-1.5">
               <span>Hạn lưu kho (14 ngày):</span>
-              <span class="font-mono text-primary font-medium tabular-nums">{{ pickupDeadlineText() }}</span>
+              <span class="text-primary font-medium tabular tabular-nums">{{ pickupDeadlineText() }}</span>
             </div>
           </div>
 
@@ -68,7 +68,7 @@ import {
               type="text"
               [(ngModel)]="note"
               placeholder="Nhập ghi chú vị trí quầy nhận hoặc dặn dò khách..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
             />
           </div>
 
@@ -83,7 +83,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -91,7 +91,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Gửi...' : 'Báo Khách Nhận Hàng' }}
             </button>

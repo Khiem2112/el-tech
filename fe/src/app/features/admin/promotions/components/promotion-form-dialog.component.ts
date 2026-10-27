@@ -301,9 +301,9 @@ function formatIsoToDateInput(isoString?: string): string {
                     @if (selectedSkus().length > 0) {
                       <div class="flex flex-wrap gap-1.5 pt-1">
                         @for (skuItem of selectedSkus(); track skuItem.id) {
-                          <span class="px-2.5 py-1 bg-surface border border-line rounded flex items-center gap-2 font-mono text-xs">
+                          <span class="px-2.5 py-1 bg-surface border border-line rounded flex items-center gap-2 text-xs tabular-nums">
                             <strong class="text-primary">{{ skuItem.sku }}</strong>
-                            <span class="text-foreground font-sans truncate max-w-[200px]">{{ skuItem.name }}</span>
+                            <span class="text-foreground truncate max-w-[200px]">{{ skuItem.name }}</span>
                             <button
                               type="button"
                               (click)="onRemoveSku(skuItem.id)"

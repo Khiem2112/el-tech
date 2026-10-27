@@ -26,7 +26,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-18" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-18" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -45,7 +45,7 @@ import {
 
           @if (isCurrentlyOnHold()) {
             <div class="p-2.5 bg-warning/10 border border-warning/20 rounded text-warning text-xs space-y-0.5">
-              <div>Lý do tạm giữ: <strong class="text-foreground font-mono">{{ order().holdReason }}</strong></div>
+              <div>Lý do tạm giữ: <strong class="text-foreground">{{ order().holdReason }}</strong></div>
             </div>
 
             <div class="space-y-2">
@@ -60,8 +60,8 @@ import {
                     class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-medium text-foreground">Tiếp tục xử lý đơn (CONFIRMED)</div>
-                    <div class="text-[11px] text-muted">Đã thỏa thuận xong, tiếp tục quy trình chuẩn.</div>
+                    <div class="font-medium text-foreground text-sm">Tiếp tục xử lý đơn (CONFIRMED)</div>
+                    <div class="text-xs text-muted">Đã thỏa thuận xong, tiếp tục quy trình chuẩn.</div>
                   </div>
                 </label>
 
@@ -75,8 +75,8 @@ import {
                       class="mt-0.5 text-primary"
                     />
                     <div>
-                      <div class="font-medium text-foreground">Gia hạn thời gian nhận hàng tại showroom</div>
-                      <div class="text-[11px] text-muted">Khách hẹn lại ngày nhận, tiếp tục lưu kho.</div>
+                      <div class="font-medium text-foreground text-sm">Gia hạn thời gian nhận hàng tại showroom</div>
+                      <div class="text-xs text-muted">Khách hẹn lại ngày nhận, tiếp tục lưu kho.</div>
                     </div>
                   </label>
                 }
@@ -90,8 +90,8 @@ import {
                     class="mt-0.5 text-destructive"
                   />
                   <div>
-                    <div class="font-medium text-destructive">Hủy đơn & Hoàn tiền</div>
-                    <div class="text-[11px] text-muted">Hủy đơn, giải phóng tồn kho và tạo lệnh hoàn tiền.</div>
+                    <div class="font-medium text-destructive text-sm">Hủy đơn & Hoàn tiền</div>
+                    <div class="text-xs text-muted">Hủy đơn, giải phóng tồn kho và tạo lệnh hoàn tiền.</div>
                   </div>
                 </label>
               </div>
@@ -116,7 +116,7 @@ import {
               rows="2"
               [(ngModel)]="note"
               [placeholder]="isCurrentlyOnHold() ? 'Ghi nhận chi tiết thỏa thuận với khách...' : 'Nhập chi tiết lý do phát sinh tạm giữ...'"
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
@@ -131,7 +131,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -139,7 +139,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !note.trim()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : (isCurrentlyOnHold() ? 'Xác Nhận Giải Quyết' : 'Xác Nhận Tạm Giữ') }}
             </button>

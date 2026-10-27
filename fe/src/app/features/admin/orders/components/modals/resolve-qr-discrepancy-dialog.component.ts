@@ -23,7 +23,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-20" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-20" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-destructive uppercase text-sm tracking-wide">
@@ -41,23 +41,23 @@ import {
           </div>
 
           @if (isLoadingDetail()) {
-            <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted">
+            <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted text-sm">
               Đang tải dữ liệu giao dịch webhook và tài khoản ngân hàng...
             </div>
           } @else if (discrepancy(); as d) {
             <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
               <div class="flex justify-between items-center">
                 <span class="text-muted">Đơn hàng yêu cầu:</span>
-                <strong class="font-mono text-foreground tabular-nums">{{ formatCurrency(d.expectedAmount) }}</strong>
+                <strong class="text-foreground tabular tabular-nums">{{ formatCurrency(d.expectedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-muted">Thực nhận ngân hàng:</span>
-                <strong class="font-mono text-foreground font-bold tabular-nums">{{ formatCurrency(d.receivedAmount) }}</strong>
+                <strong class="text-foreground font-bold tabular tabular-nums">{{ formatCurrency(d.receivedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center pt-1 border-t border-line">
                 <span class="text-muted">Chênh lệch:</span>
                 <strong
-                  class="font-mono font-semibold tabular-nums"
+                  class="font-semibold tabular tabular-nums"
                   [class.text-destructive]="d.isUnderpaid"
                   [class.text-emerald-600]="d.isExactMatch"
                   [class.dark:text-emerald-400]="d.isExactMatch"
@@ -71,7 +71,7 @@ import {
                 </strong>
               </div>
               @if (d.providerReference) {
-                <div class="text-[11px] text-muted pt-0.5 font-mono">
+                <div class="text-xs text-muted pt-0.5 tabular tabular-nums">
                   Mã GD: {{ d.providerReference }}
                 </div>
               }
@@ -98,10 +98,10 @@ import {
                     class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-medium text-foreground">
+                    <div class="font-medium text-foreground text-sm">
                       Khớp thủ công (Xác nhận đơn CONFIRMED)
                     </div>
-                    <div class="text-[11px] text-muted mt-0.5">
+                    <div class="text-xs text-muted mt-0.5">
                       Áp dụng khi ngân hàng đã thực nhận đủ 100%, bỏ qua lỗi cú pháp nội dung.
                     </div>
                   </div>
@@ -120,10 +120,10 @@ import {
                     class="mt-0.5 text-destructive"
                   />
                   <div>
-                    <div class="font-medium text-destructive">
+                    <div class="font-medium text-destructive text-sm">
                       Hủy đơn & Hoàn trả số tiền thực nhận (REFUND_PENDING)
                     </div>
-                    <div class="text-[11px] text-muted mt-0.5">
+                    <div class="text-xs text-muted mt-0.5">
                       Hủy đơn {{ order().code }}, giải phóng tồn kho và chuyển {{ formatCurrency(d.receivedAmount) }} vào hàng đợi hoàn tiền.
                     </div>
                   </div>
@@ -140,7 +140,7 @@ import {
               rows="2"
               [(ngModel)]="note"
               placeholder="Nhập mã chuẩn chi hoặc lý do xử lý đối soát..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
@@ -155,7 +155,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -163,7 +163,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !note.trim()"
-              class="px-4 py-2 bg-destructive hover:opacity-90 text-white font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-destructive hover:opacity-90 text-white font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Đối Soát' }}
             </button>

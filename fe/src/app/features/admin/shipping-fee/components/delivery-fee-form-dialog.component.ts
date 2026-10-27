@@ -126,7 +126,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                 </span>
               </div>
               <div class="flex items-center justify-end text-xs mt-1">
-                <span class="text-primary font-mono font-semibold tabular-nums">
+                <span class="text-primary font-semibold tabular tabular-nums">
                   {{ formatVnd(feeForm.get('fixedFee')?.value) }}
                 </span>
               </div>
@@ -157,7 +157,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                 </span>
               </div>
               <div class="flex items-center justify-end text-xs mt-1">
-                <span class="text-primary font-mono font-semibold tabular-nums">
+                <span class="text-primary font-semibold tabular tabular-nums">
                   {{ formatVnd(feeForm.get('freeShippingThreshold')?.value) }}
                 </span>
               </div>
@@ -201,14 +201,14 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSaving()"
-                class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line text-foreground rounded font-semibold text-xs transition-colors cursor-pointer"
+                class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line text-foreground rounded font-semibold text-sm transition-colors cursor-pointer"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSaving()"
-                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
+                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-sm transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
                 @if (isSaving()) {
                   <svg class="animate-spin h-3.5 w-3.5 text-primary-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

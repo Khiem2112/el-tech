@@ -67,7 +67,7 @@ import {
           <span class="w-2 h-2 rounded-full bg-primary shrink-0"></span>
           <span>Toàn bộ biến động tăng giảm tồn kho đều được ghi nhận vĩnh viễn vào nhật ký kiểm toán. Hệ thống không cho phép sửa hoặc xóa trực tiếp số tồn kho.</span>
         </div>
-        <span class="px-2 py-0.5 rounded bg-surface-alt text-muted font-mono text-[11px] border border-line">
+        <span class="px-2 py-0.5 rounded bg-surface-alt text-muted text-xs border border-line tabular">
           Tổng số giao dịch: <strong class="text-foreground">{{ inventoryService.ledgerTotal() }}</strong>
         </span>
       </div>
@@ -75,7 +75,7 @@ import {
       <div class="bg-surface border border-line rounded-lg p-4 space-y-3 shadow-card">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
           <div class="relative lg:col-span-1">
-            <label for="ledger-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <label for="ledger-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <div class="relative">
               <input
                 id="ledger-search"
@@ -92,7 +92,7 @@ import {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Chi nhánh</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
             <app-select
               [options]="branchOptions()"
               [value]="selectedBranchFilterId()"
@@ -104,7 +104,7 @@ import {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Loại giao dịch</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Loại giao dịch</span>
             <app-select
               [options]="entryTypeOptions"
               [value]="selectedEntryType()"
@@ -114,7 +114,7 @@ import {
           </div>
 
           <div>
-            <label for="start-date" class="block text-[11px] font-semibold text-muted uppercase mb-1">Từ ngày</label>
+            <label for="start-date" class="block text-xs font-semibold text-muted uppercase mb-1">Từ ngày</label>
             <input
               id="start-date"
               type="date"
@@ -125,7 +125,7 @@ import {
           </div>
 
           <div>
-            <label for="end-date" class="block text-[11px] font-semibold text-muted uppercase mb-1">Đến ngày</label>
+            <label for="end-date" class="block text-xs font-semibold text-muted uppercase mb-1">Đến ngày</label>
             <input
               id="end-date"
               type="date"
@@ -167,7 +167,7 @@ import {
         } @else {
           <div class="overflow-x-auto">
             <table class="w-full text-left min-w-[1000px] border-collapse">
-              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Thời gian</th>
                   <th class="py-3 px-4 whitespace-nowrap">Chi nhánh</th>
@@ -181,21 +181,21 @@ import {
                   <th class="py-3 px-4 whitespace-nowrap">Tác nhân</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-line text-xs text-foreground">
+              <tbody class="divide-y divide-line text-sm text-foreground">
                 @for (entry of inventoryService.ledgerEntries(); track entry.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors">
-                    <td class="py-3 px-4 font-mono text-muted tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-muted tabular tabular-nums whitespace-nowrap">
                       {{ formatDate(entry.occurredAt) }}
                     </td>
 
                     <td class="py-3 px-4 whitespace-nowrap">
                       <div class="font-semibold text-foreground">{{ entry.branchName }}</div>
-                      <div class="text-[11px] font-mono text-muted">{{ entry.branchCode }}</div>
+                      <div class="text-xs text-muted tabular">{{ entry.branchCode }}</div>
                     </td>
 
                     <td class="py-3 px-4 max-w-xs">
-                      <div class="font-mono font-bold text-foreground">{{ entry.sku }}</div>
-                      <div class="text-[11px] text-muted truncate" [title]="entry.productName">
+                      <div class="font-bold text-foreground tabular">{{ entry.sku }}</div>
+                      <div class="text-xs text-muted truncate" [title]="entry.productName">
                         {{ entry.productName }}
                         @if (entry.variationLabel) {
                           &bull; <span class="text-foreground">{{ entry.variationLabel }}</span>
@@ -209,7 +209,7 @@ import {
                       </span>
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaOnHand > 0) {
                         <span class="text-emerald-600 font-bold">+{{ entry.deltaOnHand }}</span>
                       } @else if (entry.deltaOnHand < 0) {
@@ -219,7 +219,7 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaReserved > 0) {
                         <span class="text-amber-600 font-bold">+{{ entry.deltaReserved }}</span>
                       } @else if (entry.deltaReserved < 0) {
@@ -229,7 +229,7 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono font-bold tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
                       @if (entry.deltaQuarantine > 0) {
                         <span class="text-rose-600 font-bold">+{{ entry.deltaQuarantine }}</span>
                       } @else if (entry.deltaQuarantine < 0) {
@@ -239,20 +239,20 @@ import {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right font-mono text-muted tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-right text-muted tabular tabular-nums whitespace-nowrap">
                       Thực: <strong class="text-foreground">{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-amber-600">{{ entry.reservedAfter }}</strong>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-semibold text-primary-strong whitespace-nowrap">
+                    <td class="py-3 px-4 font-semibold text-primary-strong whitespace-nowrap tabular">
                       <div class="flex items-center gap-1.5">
                         <span>{{ entry.documentCode }}</span>
                       </div>
                     </td>
 
                     <td class="py-3 px-4 whitespace-nowrap">
-                      <div class="font-mono text-[11px] text-foreground">{{ entry.actorType }}</div>
+                      <div class="text-xs text-foreground">{{ entry.actorType }}</div>
                       @if (entry.reason) {
-                        <div class="text-[10px] text-muted truncate max-w-[120px]" [title]="entry.reason">
+                        <div class="text-xs text-muted truncate max-w-[120px]" [title]="entry.reason">
                           {{ entry.reason }}
                         </div>
                       }
@@ -263,7 +263,7 @@ import {
             </table>
           </div>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-surface-alt">
+          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
             <div class="text-muted">
               Hiển thị <strong class="text-foreground">{{ (inventoryService.ledgerPage() - 1) * inventoryService.ledgerLimit() + 1 }}</strong>
               - <strong class="text-foreground">{{ getEndIndex() }}</strong>
@@ -282,7 +282,7 @@ import {
                 Trước
               </button>
 
-              <span class="px-2 font-mono text-foreground font-semibold">
+              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
                 Trang {{ inventoryService.ledgerPage() }} / {{ inventoryService.ledgerTotalPages() }}
               </span>
 
@@ -442,7 +442,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
   }
 
   getEntryBadgeClass(entryType: string): string {
-    const base = 'px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase whitespace-nowrap border';
+    const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
       case 'QUARANTINE':
         return `${base} bg-rose-50 text-danger border-rose-200`;

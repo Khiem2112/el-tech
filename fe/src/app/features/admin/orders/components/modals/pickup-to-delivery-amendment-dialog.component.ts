@@ -27,7 +27,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-19" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-19" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <h3 class="font-bold text-foreground text-sm tracking-wide">
               Chuyển Đổi Sang Giao Hàng Tận Nơi
@@ -51,7 +51,7 @@ import {
                 type="text"
                 [(ngModel)]="deliveryAddress"
                 placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -61,7 +61,7 @@ import {
                 <input
                   type="text"
                   [(ngModel)]="receiverName"
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
@@ -69,7 +69,7 @@ import {
                 <input
                   type="text"
                   [(ngModel)]="receiverPhone"
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums text-foreground text-xs focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded tabular tabular-nums text-foreground text-sm focus:outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -82,7 +82,7 @@ import {
                 <input
                   type="number"
                   [(ngModel)]="shippingFee"
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums font-bold text-primary text-xs focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded tabular tabular-nums font-bold text-primary text-sm focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
@@ -114,7 +114,7 @@ import {
                 maxlength="6"
                 [(ngModel)]="otpCode"
                 placeholder="Nhập 6 số OTP..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums font-bold text-foreground text-xs tracking-widest focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded tabular tabular-nums font-bold text-foreground text-sm tracking-widest focus:outline-none focus:border-primary"
               />
               @if (otpSent()) {
                 <div class="text-xs text-muted-foreground">
@@ -137,8 +137,8 @@ import {
                     />
                   </div>
                   <div class="space-y-1 text-xs text-muted-foreground">
-                    <div>Số tiền phụ phí: <strong class="text-primary font-mono tabular-nums font-bold">{{ formatCurrency(shippingFee) }}</strong></div>
-                    <div>Nội dung CK: <strong class="text-foreground font-mono font-bold">AMEND {{ order().code }}</strong></div>
+                    <div>Số tiền phụ phí: <strong class="text-primary tabular tabular-nums font-bold">{{ formatCurrency(shippingFee) }}</strong></div>
+                    <div>Nội dung CK: <strong class="text-foreground font-bold tabular tabular-nums">AMEND {{ order().code }}</strong></div>
                     <div>Ngân hàng: <span class="text-foreground font-medium">MB Bank (0388234567)</span></div>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ import {
                 type="text"
                 [(ngModel)]="acceptedByValue"
                 placeholder="Mã cuộc gọi hoặc thông tin xác nhận..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -163,7 +163,7 @@ import {
                 rows="2"
                 [(ngModel)]="reason"
                 placeholder="Lý do chuyển sang giao hàng tận nơi..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
               ></textarea>
             </div>
           </div>
@@ -179,7 +179,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-sm text-foreground cursor-pointer disabled:opacity-50"
             >
               Hủy
             </button>
@@ -187,7 +187,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded text-sm transition-colors cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Tạo Phụ Lục...' : 'Tạo Phụ Lục Giao Hàng' }}
             </button>

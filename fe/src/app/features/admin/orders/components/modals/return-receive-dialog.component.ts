@@ -23,7 +23,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-15" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-15" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -42,23 +42,23 @@ import {
 
           <div class="flex-1 overflow-y-auto space-y-3 pr-1">
             @if (isLoading()) {
-              <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted">
+              <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted text-sm">
                 Đang tải danh sách linh kiện và số sê-ri đối soát hoàn kho...
               </div>
             } @else if (requirements(); as req) {
               <div class="space-y-1.5">
-                <div class="font-medium text-foreground">
+                <div class="font-medium text-foreground text-xs">
                   Kiểm đếm thực nhận lại theo SKU:
                 </div>
                 <div class="p-2 bg-surface-alt rounded border border-line space-y-1.5">
                   @for (item of req.items; track item.skuId) {
                     <div class="flex items-center justify-between p-2 bg-surface rounded border border-line">
                       <div>
-                        <div class="font-mono font-medium text-foreground text-xs">{{ item.skuCode }}</div>
-                        <div class="text-[11px] text-muted">{{ item.name }}</div>
+                        <div class="font-semibold text-foreground text-sm tabular tabular-nums">{{ item.skuCode }}</div>
+                        <div class="text-xs text-muted">{{ item.name }}</div>
                       </div>
                       <div class="text-right">
-                        <span class="font-mono font-medium text-emerald-600 dark:text-emerald-400 text-xs tabular-nums">
+                        <span class="font-medium text-emerald-600 dark:text-emerald-400 text-xs tabular tabular-nums">
                           Khớp {{ item.quantity }}/{{ item.quantity }}
                         </span>
                       </div>
@@ -70,10 +70,10 @@ import {
               @if (req.issuedSerials.length > 0) {
                 <div class="space-y-1.5">
                   <div class="flex items-center justify-between">
-                    <span class="font-medium text-foreground">
+                    <span class="font-medium text-foreground text-xs">
                       Số Serial khôi phục về kho:
                     </span>
-                    <span class="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-semibold tabular-nums">
+                    <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold tabular tabular-nums">
                       {{ req.issuedSerials.length }} Serial
                     </span>
                   </div>
@@ -82,10 +82,10 @@ import {
                     @for (s of req.issuedSerials; track s.id) {
                       <div class="flex items-center justify-between p-1.5 bg-surface rounded border border-line text-xs">
                         <div class="flex items-center gap-2">
-                          <span class="font-mono font-medium text-foreground">{{ s.serialNumber }}</span>
-                          <span class="text-[11px] text-muted">({{ s.skuCode }})</span>
+                          <span class="font-medium text-foreground tabular tabular-nums">{{ s.serialNumber }}</span>
+                          <span class="text-xs text-muted">({{ s.skuCode }})</span>
                         </div>
-                        <span class="px-1.5 py-0.2 rounded text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+                        <span class="px-1.5 py-0.5 rounded text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                           Khôi phục
                         </span>
                       </div>
@@ -102,7 +102,7 @@ import {
                   [(ngModel)]="note"
                   rows="2"
                   placeholder="Ghi nhận tình trạng ngoại quan kiện hàng..."
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
                 ></textarea>
               </div>
             }
@@ -119,7 +119,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-sm rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
               Hủy
             </button>
@@ -127,7 +127,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || isLoading()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-xs rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-sm rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Hàng Đã Về Kho' }}
             </button>

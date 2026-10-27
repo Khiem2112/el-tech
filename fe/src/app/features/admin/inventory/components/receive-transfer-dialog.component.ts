@@ -32,7 +32,7 @@ import {
         ></div>
 
         <div
-          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-xs text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-sm text-foreground"
         >
           <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
@@ -40,7 +40,7 @@ import {
                 Xác Nhận Nhập Kho
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Phiếu: <strong class="text-foreground font-mono">{{ transfer.code }}</strong> - Kho nhận: {{ transfer.destinationBranchName }}
+                Phiếu: <strong class="text-foreground tabular">{{ transfer.code }}</strong> - Kho nhận: {{ transfer.destinationBranchName }}
               </p>
             </div>
             <button
@@ -64,18 +64,18 @@ import {
               }
 
               <div class="space-y-2">
-                <div class="flex items-center justify-between text-[11px] uppercase font-semibold text-muted">
+                <div class="flex items-center justify-between text-xs uppercase font-semibold text-muted">
                   <span>Linh kiện tiếp nhận</span>
-                  <span class="font-mono text-foreground font-bold">{{ transfer.totalQuantity }} chiếc</span>
+                  <span class="text-foreground font-bold tabular tabular-nums">{{ transfer.totalQuantity }} chiếc</span>
                 </div>
                 <div class="space-y-1.5 max-h-48 overflow-y-auto">
                   @for (line of transfer.lines; track line.id) {
                     <div class="p-2.5 bg-surface-alt border border-line rounded flex items-center justify-between">
                       <div>
                         <div class="font-bold text-foreground">{{ line.productName }}</div>
-                        <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }}</div>
+                        <div class="text-xs text-muted tabular">SKU: {{ line.skuCode }}</div>
                       </div>
-                      <div class="font-bold text-foreground font-mono text-sm tabular-nums">
+                      <div class="font-bold text-foreground text-sm tabular tabular-nums">
                         {{ line.quantity }} chiếc
                       </div>
                     </div>
@@ -94,7 +94,7 @@ import {
                   (ngModelChange)="note.set($event)"
                   name="receiveNote"
                   placeholder="Ví dụ: Đã kiểm tra nguyên seal, đủ linh kiện theo phiếu"
-                  class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
+                  class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
                 />
               </div>
             </div>

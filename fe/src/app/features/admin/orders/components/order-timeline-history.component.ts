@@ -8,13 +8,13 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-xs">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
       <div class="bg-surface border border-line rounded-lg p-4 text-foreground space-y-4">
         <div class="flex items-center justify-between border-b border-line pb-2">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Chứng Từ & Bút Toán Liên Quan
           </h2>
-          <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted font-mono text-[11px]">
+          <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs">
             Hồ sơ kiểm toán
           </span>
         </div>
@@ -23,23 +23,23 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           <div class="space-y-1.5">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-foreground">Phiếu Di Chuyển Kho (Stock Moves):</span>
-              <span class="font-mono text-[11px] text-muted">{{ order().stockMoves.length }} phiếu</span>
+              <span class="text-xs tabular tabular-nums text-muted">{{ order().stockMoves.length }} phiếu</span>
             </div>
             @if (order().stockMoves.length === 0) {
-              <div class="text-muted text-[11px] py-1">Chưa phát sinh phiếu kho liên kết</div>
+              <div class="text-muted text-xs py-1">Chưa phát sinh phiếu kho liên kết</div>
             } @else {
               <div class="space-y-1">
                 @for (move of order().stockMoves; track move.id) {
-                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line">
+                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line text-xs">
                     <div>
-                      <div class="font-mono font-semibold text-foreground text-xs">{{ move.code }}</div>
-                      <div class="text-[11px] text-muted">Loại: {{ move.moveType }}</div>
+                      <div class="font-semibold text-foreground text-xs tabular tabular-nums">{{ move.code }}</div>
+                      <div class="text-xs text-muted">Loại: {{ move.moveType }}</div>
                     </div>
                     <div class="text-right">
-                      <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface border border-line text-foreground">
+                      <span class="px-1.5 py-0.5 rounded text-xs bg-surface border border-line text-foreground font-medium">
                         {{ move.status }}
                       </span>
-                      <div class="text-[11px] text-muted font-mono tabular-nums mt-0.5">
+                      <div class="text-xs text-muted tabular tabular-nums mt-0.5">
                         {{ formatDate(move.createdAt) }}
                       </div>
                     </div>
@@ -52,25 +52,25 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           <div class="space-y-1.5 pt-2 border-t border-line">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-foreground">Giao Dịch Thanh Toán & Cọc:</span>
-              <span class="font-mono text-[11px] text-muted">{{ paymentCharges().length }} khoản</span>
+              <span class="text-xs tabular tabular-nums text-muted">{{ paymentCharges().length }} khoản</span>
             </div>
             @if (paymentCharges().length === 0) {
-              <div class="text-muted text-[11px] py-1">Chưa có bản ghi giao dịch thu tiền</div>
+              <div class="text-muted text-xs py-1">Chưa có bản ghi giao dịch thu tiền</div>
             } @else {
               <div class="space-y-1">
                 @for (charge of paymentCharges(); track charge.id) {
-                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line">
+                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line text-xs">
                     <div>
-                      <div class="font-mono font-semibold text-foreground text-xs">
+                      <div class="font-semibold text-foreground text-xs tabular tabular-nums">
                         {{ charge.providerReference || charge.id }}
                       </div>
-                      <div class="text-[11px] text-muted">
+                      <div class="text-xs text-muted">
                         {{ charge.chargeType }} | GD NH: {{ charge.providerTransactionId || '-' }}
                       </div>
                     </div>
                     <div class="text-right">
-                      <div class="font-medium font-mono tabular-nums text-foreground">{{ formatVnd(charge.expectedAmount) }}</div>
-                      <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface border border-line text-foreground">
+                      <div class="font-medium tabular tabular-nums text-foreground">{{ formatVnd(charge.expectedAmount) }}</div>
+                      <span class="px-1.5 py-0.5 rounded text-xs bg-surface border border-line text-foreground font-medium">
                         {{ charge.status }}
                       </span>
                     </div>
@@ -83,21 +83,21 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           <div class="space-y-1.5 pt-2 border-t border-line">
             <div class="flex items-center justify-between text-xs">
               <span class="font-medium text-foreground">Phụ Lục Đơn Hàng (Amendments):</span>
-              <span class="font-mono text-[11px] text-muted">{{ order().amendments.length }} phụ lục</span>
+              <span class="text-xs tabular tabular-nums text-muted">{{ order().amendments.length }} phụ lục</span>
             </div>
             @if (order().amendments.length === 0) {
-              <div class="text-muted text-[11px] py-1">Không có phụ lục điều chỉnh</div>
+              <div class="text-muted text-xs py-1">Không có phụ lục điều chỉnh</div>
             } @else {
               <div class="space-y-1">
                 @for (am of order().amendments; track am.id) {
-                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line">
+                  <div class="flex items-center justify-between py-1.5 px-2.5 rounded bg-surface-alt border border-line text-xs">
                     <div>
                       <div class="font-medium text-foreground text-xs">{{ am.type }}</div>
-                      <div class="text-[11px] text-muted truncate max-w-[200px]">{{ am.reason }}</div>
+                      <div class="text-xs text-muted truncate max-w-[200px]">{{ am.reason }}</div>
                     </div>
                     <div class="text-right">
-                      <div class="font-mono tabular-nums font-medium text-foreground">{{ formatVnd(am.fee) }}</div>
-                      <span class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-surface border border-line text-muted">
+                      <div class="tabular tabular-nums font-medium text-foreground">{{ formatVnd(am.fee) }}</div>
+                      <span class="px-1.5 py-0.5 rounded text-xs bg-surface border border-line text-muted">
                         {{ am.status }}
                       </span>
                     </div>
@@ -114,7 +114,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Nhật Ký Tiến Trình Đơn Hàng
           </h2>
-          <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted font-mono text-[11px] tabular-nums">
+          <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs tabular tabular-nums">
             {{ order().statusHistories.length }} sự kiện
           </span>
         </div>
@@ -128,16 +128,16 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
             @for (event of order().statusHistories; track event.id) {
               <div class="relative pl-3 pb-1">
                 <div class="absolute -left-[16px] top-1.5 w-1.5 h-1.5 rounded-full bg-primary"></div>
-                <div class="text-[11px] text-muted font-mono tabular-nums">
+                <div class="text-xs text-muted tabular tabular-nums">
                   {{ formatDate(event.occurredAt) }} &bull; {{ event.actorName }}
                 </div>
                 <div class="font-medium text-foreground mt-0.5 flex items-center gap-1.5 flex-wrap text-xs">
-                  <span class="font-mono text-[11px] text-muted">{{ event.previousStatus }}</span>
+                  <span class="text-xs text-muted tabular tabular-nums">{{ event.previousStatus }}</span>
                   <span class="text-muted/60">&rarr;</span>
-                  <span class="font-mono text-[11px] text-foreground font-semibold">{{ event.nextStatus }}</span>
+                  <span class="text-xs text-foreground font-semibold tabular tabular-nums">{{ event.nextStatus }}</span>
                 </div>
                 @if (event.reason) {
-                  <div class="text-muted mt-0.5 text-[11px] italic">
+                  <div class="text-muted mt-0.5 text-xs italic">
                     {{ event.reason }}
                   </div>
                 }

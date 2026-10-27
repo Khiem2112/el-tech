@@ -30,7 +30,7 @@ import {
       >
         <div class="flex items-center justify-between border-b border-line px-5 py-3.5 flex-shrink-0">
           <div>
-            <h3 class="font-bold text-foreground uppercase tracking-wide text-sm">
+            <h3 class="font-semibold text-foreground uppercase tracking-wide text-base">
               Chi Tiết Thông Báo Outbox
             </h3>
           </div>
@@ -51,7 +51,7 @@ import {
           <div class="p-3 bg-surface-alt border border-line rounded space-y-3">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <div class="text-[11px] font-mono text-muted uppercase tracking-wider">
+                <div class="text-xs text-muted uppercase tracking-wider tabular-nums">
                   Sự kiện: {{ notification.eventType }}
                 </div>
                 <div class="font-bold text-foreground text-sm mt-0.5">
@@ -87,7 +87,7 @@ import {
               <div>
                 <span class="text-muted">Người nhận:</span>
                 <span class="font-semibold text-foreground ml-1">{{ notification.customer.name }}</span>
-                <div class="text-muted text-[11px] mt-0.5">
+                <div class="text-muted text-xs mt-0.5">
                   {{ notification.customer.email }} - {{ notification.customer.phone }}
                 </div>
               </div>
@@ -95,12 +95,12 @@ import {
               <div>
                 <span class="text-muted">Mã đơn hàng:</span>
                 @if (notification.order) {
-                  <span class="font-mono font-bold text-primary ml-1">{{ notification.order.code }}</span>
+                  <span class="font-bold text-primary ml-1 tabular-nums">{{ notification.order.code }}</span>
                 } @else {
                   <span class="text-muted ml-1">Không gắn đơn hàng</span>
                 }
-                <div class="text-muted text-[11px] mt-0.5">
-                  Khóa trùng lặp: <span class="font-mono text-foreground">{{ notification.deduplicationKey }}</span>
+                <div class="text-muted text-xs mt-0.5">
+                  Khóa trùng lặp: <span class="text-foreground tabular-nums">{{ notification.deduplicationKey }}</span>
                 </div>
               </div>
             </div>
@@ -109,7 +109,7 @@ import {
               <span class="text-muted">Kênh phát:</span>
               <div class="flex items-center gap-1.5">
                 @for (ch of notification.channels; track ch) {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface border border-line text-foreground uppercase">
+                  <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface border border-line text-foreground uppercase">
                     {{ ch }}
                   </span>
                 }
@@ -119,21 +119,21 @@ import {
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
             <div class="p-2.5 bg-surface border border-line rounded">
-              <div class="text-muted text-[11px]">Thời điểm tạo</div>
+              <div class="text-muted text-xs">Thời điểm tạo</div>
               <div class="text-foreground font-semibold tabular-nums mt-0.5">
                 {{ notification.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}
               </div>
             </div>
 
             <div class="p-2.5 bg-surface border border-line rounded">
-              <div class="text-muted text-[11px]">Thời điểm xuất bản</div>
+              <div class="text-muted text-xs">Thời điểm xuất bản</div>
               <div class="text-foreground font-semibold tabular-nums mt-0.5">
                 {{ notification.publishedAt ? (notification.publishedAt | date: 'dd/MM/yyyy HH:mm:ss') : 'Chưa xuất bản' }}
               </div>
             </div>
 
             <div class="p-2.5 bg-surface border border-line rounded">
-              <div class="text-muted text-[11px]">Lần gửi cuối cùng</div>
+              <div class="text-muted text-xs">Lần gửi cuối cùng</div>
               <div class="text-foreground font-semibold tabular-nums mt-0.5">
                 {{ notification.lastDeliveryAt ? (notification.lastDeliveryAt | date: 'dd/MM/yyyy HH:mm:ss') : 'Chưa thực hiện' }}
               </div>
@@ -143,7 +143,7 @@ import {
           @if (notification.lastDeliveryError) {
             <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs">
               <div class="font-bold text-rose-800 uppercase mb-1">Chi tiết lỗi phát hành</div>
-              <div class="font-mono text-[11px] whitespace-pre-wrap">{{ notification.lastDeliveryError }}</div>
+              <div class="text-xs tabular-nums whitespace-pre-wrap">{{ notification.lastDeliveryError }}</div>
             </div>
           }
 
@@ -161,10 +161,10 @@ import {
                         <span class="text-muted ml-2">qua {{ attempt.channel }}</span>
                       }
                       @if (attempt.error) {
-                        <span class="text-rose-600 block text-[11px] mt-0.5">Lỗi: {{ attempt.error }}</span>
+                        <span class="text-rose-600 block text-xs mt-0.5">Lỗi: {{ attempt.error }}</span>
                       }
                     </div>
-                    <span class="text-muted tabular-nums text-[11px]">
+                    <span class="text-muted tabular-nums text-xs">
                       {{ attempt.attemptedAt ? (attempt.attemptedAt | date: 'dd/MM/yyyy HH:mm:ss') : '' }}
                     </span>
                   </div>
@@ -175,7 +175,7 @@ import {
 
           <div>
             <div class="text-xs font-semibold text-muted uppercase mb-1.5">Payload dữ liệu gốc</div>
-            <pre class="p-3 bg-surface border border-line rounded-md text-[11px] font-mono text-foreground overflow-x-auto max-h-48">{{ formattedPayload() }}</pre>
+            <pre class="p-3 bg-surface border border-line rounded-md text-xs text-foreground tabular-nums overflow-x-auto max-h-48">{{ formattedPayload() }}</pre>
           </div>
         </div>
 
@@ -183,7 +183,7 @@ import {
           <button
             type="button"
             (click)="onClose()"
-            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface text-foreground rounded font-semibold text-xs transition-colors cursor-pointer"
+            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface text-foreground rounded font-semibold text-sm transition-colors cursor-pointer"
           >
             Đóng
           </button>
@@ -192,7 +192,7 @@ import {
             type="button"
             (click)="onRetry()"
             [disabled]="isRetrying()"
-            class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-sm shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             @if (isRetrying()) {
               <span>Đang gửi lại...</span>

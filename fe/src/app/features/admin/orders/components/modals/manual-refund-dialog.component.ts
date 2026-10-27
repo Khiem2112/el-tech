@@ -22,7 +22,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-21" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-21" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -43,11 +43,11 @@ import {
             <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
               <div class="flex justify-between items-center">
                 <span class="text-muted">Người nhận:</span>
-                <strong class="text-foreground">{{ order().receiverName }} (<span class="font-mono tabular-nums">{{ order().receiverPhone }}</span>)</strong>
+                <strong class="text-foreground">{{ order().receiverName }} (<span class="tabular tabular-nums">{{ order().receiverPhone }}</span>)</strong>
               </div>
               <div class="flex justify-between items-center">
                 <span class="text-muted">Số tiền hoàn:</span>
-                <strong class="font-mono text-foreground font-bold text-sm tabular-nums">
+                <strong class="text-foreground font-bold text-sm tabular tabular-nums">
                   {{ formatCurrency(r.amount) }}
                 </strong>
               </div>
@@ -71,7 +71,7 @@ import {
                 type="text"
                 [(ngModel)]="transactionReference"
                 placeholder="Nhập mã tham chiếu chuyển khoản..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm tabular tabular-nums focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -82,7 +82,7 @@ import {
               <input
                 type="text"
                 [(ngModel)]="bankName"
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -93,7 +93,7 @@ import {
               <input
                 type="datetime-local"
                 [(ngModel)]="transferredAt"
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary font-mono tabular-nums"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary tabular tabular-nums"
               />
             </div>
 
@@ -105,7 +105,7 @@ import {
                 rows="2"
                 [(ngModel)]="note"
                 placeholder="Nhập ghi chú hoặc số biên nhận..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
               ></textarea>
             </div>
           </div>
@@ -121,7 +121,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -129,7 +129,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Lưu...' : 'Xác Nhận Đã Chuyển Tiền' }}
             </button>

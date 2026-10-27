@@ -33,7 +33,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 <lucide-icon name="shopping-cart" class="w-4 h-4" aria-hidden="true"></lucide-icon>
               </div>
               <h2 class="text-sm font-bold text-foreground tracking-tight">Giỏ hàng của bạn</h2>
-              <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground tabular">
+              <span class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-primary text-primary-foreground tabular">
                 {{ cart.itemCount() }} món
               </span>
             </div>

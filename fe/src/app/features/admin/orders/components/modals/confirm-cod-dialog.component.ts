@@ -23,7 +23,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-07" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-07" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -43,15 +43,15 @@ import {
           <div class="p-3 bg-surface-alt border border-line rounded text-xs">
             <div class="grid grid-cols-2 gap-2 text-muted">
               <div>Khách hàng: <span class="text-foreground font-medium">{{ order().receiverName }}</span></div>
-              <div>Số điện thoại: <span class="font-mono text-foreground tabular-nums">{{ order().receiverPhone }}</span></div>
+              <div>Số điện thoại: <span class="text-foreground tabular tabular-nums font-medium">{{ order().receiverPhone }}</span></div>
               <div>Chi nhánh: <span class="text-foreground font-medium">{{ order().fulfillmentBranch.name }}</span></div>
-              <div>Mã đơn: <span class="font-mono text-primary font-bold tabular-nums">{{ order().code }}</span></div>
+              <div>Mã đơn: <span class="text-primary font-bold tabular tabular-nums">{{ order().code }}</span></div>
             </div>
           </div>
 
           <div class="flex-1 overflow-y-auto space-y-2 pr-1">
             <div class="flex items-center justify-between">
-              <span class="font-semibold text-foreground">
+              <span class="font-semibold text-foreground text-xs">
                 Kiểm tra tồn kho chi nhánh {{ order().fulfillmentBranch.code }}:
               </span>
               @if (isLoadingStock()) {
@@ -60,7 +60,7 @@ import {
             </div>
 
             @if (isLoadingStock()) {
-              <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted">
+              <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted text-sm">
                 Đang đối soát số lượng tồn kho khả dụng...
               </div>
             } @else if (stockReadiness(); as readiness) {
@@ -68,15 +68,15 @@ import {
                 @for (item of readiness.items; track item.skuId) {
                   <div class="p-2 bg-surface border border-line rounded flex items-center justify-between gap-2">
                     <div class="min-w-0 flex-1">
-                      <div class="font-mono text-foreground truncate font-medium text-xs">{{ item.skuCode }}</div>
-                      <div class="text-[11px] text-muted truncate">{{ item.name }}</div>
+                      <div class="text-foreground truncate font-semibold text-sm tabular tabular-nums">{{ item.skuCode }}</div>
+                      <div class="text-xs text-muted truncate">{{ item.name }}</div>
                     </div>
                     <div class="text-right flex-shrink-0">
-                      <div class="text-xs text-muted font-mono tabular-nums">
+                      <div class="text-xs text-muted tabular tabular-nums">
                         Cần: <span class="font-bold text-foreground">{{ item.requiredQuantity }}</span> | Khả dụng: <span [class.text-emerald-600]="item.isSufficient" [class.dark:text-emerald-400]="item.isSufficient" [class.text-rose-600]="!item.isSufficient" [class.dark:text-rose-400]="!item.isSufficient">{{ item.available }}</span>
                       </div>
                       <span
-                        class="inline-block px-1.5 py-0.2 rounded text-[10px] font-medium mt-0.5"
+                        class="inline-block px-1.5 py-0.5 rounded text-xs font-medium mt-0.5"
                         [class.bg-emerald-500/10]="item.isSufficient"
                         [class.text-emerald-700]="item.isSufficient"
                         [class.dark:text-emerald-400]="item.isSufficient"
@@ -107,7 +107,7 @@ import {
               type="text"
               [(ngModel)]="note"
               placeholder="Nhập ghi chú liên hệ khách xác nhận đơn..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
             />
           </div>
 
@@ -122,7 +122,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -130,7 +130,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || (stockReadiness() && !stockReadiness()?.canConfirm)"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Khóa Tồn...' : 'Xác Nhận & Khóa Tồn Kho' }}
             </button>

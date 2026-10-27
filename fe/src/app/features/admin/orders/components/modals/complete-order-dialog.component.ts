@@ -22,7 +22,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-16" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-16" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -39,9 +39,9 @@ import {
             </button>
           </div>
 
-          <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5">
+          <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
             <div class="grid grid-cols-2 gap-2 text-muted">
-              <div>Mã đơn: <span class="font-mono font-bold text-primary tabular-nums">{{ order().code }}</span></div>
+              <div>Mã đơn: <span class="font-bold text-primary tabular tabular-nums">{{ order().code }}</span></div>
               <div>Khách nhận: <span class="text-foreground font-medium">{{ order().receiverName }}</span></div>
               <div>Hình thức: <span class="text-foreground font-medium">{{ order().fulfillmentMethod === 'PICKUP' ? 'Nhận tại shop' : 'Giao tận nơi' }}</span></div>
               <div>Thanh toán: <span class="text-foreground font-medium">{{ order().paymentMethod }}</span></div>
@@ -50,7 +50,7 @@ import {
 
           <div class="flex-1 overflow-y-auto space-y-3 pr-1">
             @if (isPickupStandalone()) {
-              <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
+              <div class="p-3 bg-surface-alt border border-line rounded space-y-2 text-xs">
                 <div class="font-medium text-foreground">Đồng kiểm linh kiện tại showroom:</div>
                 <label class="flex items-start gap-2 cursor-pointer text-foreground">
                   <input
@@ -72,10 +72,10 @@ import {
             }
 
             @if (isCod()) {
-              <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
+              <div class="p-3 bg-surface-alt border border-line rounded space-y-2 text-xs">
                 <div class="flex justify-between items-center text-xs">
                   <span class="text-muted">Tiền COD cần thu:</span>
-                  <strong class="text-foreground font-bold font-mono text-sm tabular-nums">
+                  <strong class="text-foreground font-bold text-sm tabular tabular-nums">
                     {{ formatCurrency(codRemainingAmount()) }}
                   </strong>
                 </div>
@@ -87,7 +87,7 @@ import {
                   <input
                     type="number"
                     [(ngModel)]="collectedAmount"
-                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground font-mono font-bold text-xs focus:outline-none focus:border-primary tabular-nums"
+                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground font-semibold text-sm focus:outline-none focus:border-primary tabular tabular-nums"
                   />
                 </div>
 
@@ -99,7 +99,7 @@ import {
                     type="text"
                     [(ngModel)]="actorName"
                     placeholder="Họ tên nhân viên thu tiền..."
-                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
@@ -111,7 +111,7 @@ import {
                 rows="2"
                 [(ngModel)]="note"
                 placeholder="Ghi chú đối soát hoàn tất đơn..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
               ></textarea>
             </div>
           </div>
@@ -127,7 +127,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -135,7 +135,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Hoàn Tất Đơn' }}
             </button>

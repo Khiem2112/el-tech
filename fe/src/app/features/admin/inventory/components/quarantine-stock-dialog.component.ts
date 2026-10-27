@@ -89,14 +89,14 @@ import {
                       type="text"
                       [value]="quant.sku"
                       readonly
-                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-mono font-bold text-foreground text-xs"
+                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold text-foreground text-sm tabular"
                     />
                   } @else {
                     <select
                       [(ngModel)]="selectedSkuId"
                       (ngModelChange)="onSkuChange($event)"
                       name="selectedSkuId"
-                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-xs"
+                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-medium focus:outline-none focus:border-primary text-sm"
                     >
                       <option [value]="0">-- Chọn SKU --</option>
                       @for (s of skus; track s.id) {
@@ -115,7 +115,7 @@ import {
                   </div>
                   <div>
                     <span class="text-muted">Khả dụng tối đa:</span>
-                    <strong class="text-emerald-700 ml-1 font-mono font-bold">
+                    <strong class="text-emerald-700 ml-1 font-bold tabular tabular-nums">
                       {{ currentQuant()?.available }} chiếc
                     </strong>
                   </div>
@@ -145,7 +145,7 @@ import {
                   <label class="font-semibold text-muted text-xs uppercase">
                     Số lượng cách ly
                   </label>
-                  <span class="text-[11px] text-muted font-mono">
+                  <span class="text-xs text-muted tabular">
                     Khả dụng: <strong class="text-foreground">{{ maxAvailable() }} chiếc</strong>
                   </span>
                 </div>
@@ -156,13 +156,13 @@ import {
                     name="quantity"
                     min="1"
                     [max]="maxAvailable()"
-                    class="flex-1 px-3 py-2 bg-surface-alt border border-line rounded font-bold text-danger tabular-nums focus:outline-none focus:border-danger text-xs"
+                    class="flex-1 px-3 py-2 bg-surface-alt border border-line rounded font-bold text-danger tabular-nums focus:outline-none focus:border-danger text-sm"
                   />
                   <button
                     type="button"
                     (click)="quantity = maxAvailable()"
                     [disabled]="maxAvailable() <= 0"
-                    class="px-3 py-2 bg-surface border border-line hover:bg-surface-alt text-xs font-semibold rounded text-muted hover:text-foreground transition-colors disabled:opacity-50"
+                    class="px-3 py-2 bg-surface border border-line hover:bg-surface-alt text-sm font-semibold rounded text-muted hover:text-foreground transition-colors disabled:opacity-50"
                   >
                     Tất cả
                   </button>
@@ -179,9 +179,9 @@ import {
                     [(ngModel)]="serialInput"
                     name="serialInput"
                     placeholder="VD: SN-RTX5090-00105, SN-RTX5090-00106..."
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-mono text-xs focus:outline-none focus:border-danger"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm tabular focus:outline-none focus:border-danger"
                   />
-                  <p class="text-[11px] text-muted">
+                  <p class="text-xs text-muted">
                     Linh kiện có quản lý sê-ri bắt buộc nhập chính xác {{ quantity }} số serial
                   </p>
                 </div>
@@ -196,7 +196,7 @@ import {
                   name="auditNote"
                   rows="2"
                   placeholder="Mô tả chi tiết tình trạng linh kiện hoặc số biên bản kiểm định..."
-                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-danger text-xs"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-danger text-sm"
                 ></textarea>
               </div>
             </div>
@@ -205,14 +205,14 @@ import {
               <button
                 type="button"
                 (click)="onCancel()"
-                class="px-4 py-2 bg-surface border border-line rounded font-semibold text-xs hover:bg-surface-alt transition-colors"
+                class="px-4 py-2 bg-surface border border-line rounded font-semibold text-sm hover:bg-surface-alt transition-colors"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting() || maxAvailable() <= 0"
-                class="px-4 py-2 bg-danger hover:bg-rose-700 text-white font-bold rounded shadow-xs text-xs transition-colors disabled:opacity-50"
+                class="px-4 py-2 bg-danger hover:bg-rose-700 text-white font-bold rounded shadow-xs text-sm transition-colors disabled:opacity-50"
               >
                 @if (isSubmitting()) {
                   <span>Đang xử lý...</span>

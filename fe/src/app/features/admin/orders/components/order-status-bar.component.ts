@@ -18,7 +18,7 @@ type FlowStep = {
     <div class="bg-surface border border-line rounded-lg p-3 sm:p-3.5 space-y-2.5 text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
-          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs font-mono">
+          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs">
             <span
               class="px-2 py-0.5 rounded font-medium transition-colors"
               [class.bg-surface]="order().fulfillmentMethod === 'DELIVERY'"
@@ -37,7 +37,7 @@ type FlowStep = {
             </span>
           </div>
 
-          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs font-mono">
+          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs">
             <span
               class="px-2 py-0.5 rounded font-medium transition-colors"
               [class.bg-surface]="order().hasAssembly"
@@ -81,13 +81,13 @@ type FlowStep = {
               [class.text-muted]="isStepPending(step)"
               [class.border-line]="isStepPending(step)"
             >
-              <div class="text-[10px] uppercase tracking-wider text-muted font-mono" [class.text-primary-foreground]="isStepActive(step)">
+              <div class="text-xs uppercase tracking-wider text-muted font-medium" [class.text-primary-foreground]="isStepActive(step)">
                 Chặng {{ idx + 1 }}
               </div>
               <div class="mt-0.5 truncate font-medium">{{ step.label }}</div>
             </div>
             @if (!last) {
-              <div class="text-muted/40 font-mono px-0.5 text-xs">&rarr;</div>
+              <div class="text-muted/40 px-0.5 text-xs">&rarr;</div>
             }
           }
         </div>

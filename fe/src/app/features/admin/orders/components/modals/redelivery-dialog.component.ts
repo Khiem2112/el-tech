@@ -23,7 +23,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-13" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground flex flex-col">
+        <div data-modal-id="MOD-13" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-sm text-foreground flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
@@ -51,10 +51,10 @@ import {
             </div>
           }
 
-          <div class="p-3 bg-surface-alt border border-line rounded flex items-center justify-between">
+          <div class="p-3 bg-surface-alt border border-line rounded flex items-center justify-between text-xs">
             <span class="text-muted">Số lần đã giao thất bại:</span>
             <span
-              class="font-mono font-medium px-2 py-0.5 rounded text-xs tabular-nums"
+              class="font-medium px-2 py-0.5 rounded text-xs tabular tabular-nums"
               [class.bg-surface]="order().redeliveryAttemptCount < 2"
               [class.text-foreground]="order().redeliveryAttemptCount < 2"
               [class.bg-destructive/10]="order().redeliveryAttemptCount >= 2"
@@ -73,7 +73,7 @@ import {
                 type="date"
                 [(ngModel)]="redeliveryDate"
                 [disabled]="isLimitExceeded()"
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary disabled:opacity-50"
               />
             </div>
 
@@ -86,7 +86,7 @@ import {
                 [(ngModel)]="note"
                 [disabled]="isLimitExceeded()"
                 placeholder="Khách hẹn giao sau 18h tối, gọi trước khi đến..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary disabled:opacity-50"
               />
             </div>
           </div>
@@ -102,7 +102,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-sm rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
               Hủy
             </button>
@@ -110,7 +110,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || isLimitExceeded() || !redeliveryDate"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-xs rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-sm rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {{ isSubmitting() ? 'Đang Lưu...' : 'Xác Nhận Giao Lại (Lần ' + (order().redeliveryAttemptCount + 1) + ')' }}
             </button>

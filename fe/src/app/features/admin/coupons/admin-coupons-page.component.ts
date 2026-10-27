@@ -92,19 +92,19 @@ type ToastNotification = {
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <div class="p-3 bg-surface border border-line rounded">
           <div class="text-muted text-xs uppercase font-semibold">Tổng mã coupon</div>
-          <div class="text-xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
+          <div class="text-xl font-bold text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
         </div>
         <div class="p-3 bg-surface border border-line rounded">
           <div class="text-emerald-700 dark:text-emerald-400 text-xs uppercase font-semibold">Đang hoạt động</div>
-          <div class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
+          <div class="text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
         </div>
         <div class="p-3 bg-surface border border-line rounded">
           <div class="text-sky-700 dark:text-sky-400 text-xs uppercase font-semibold">Sắp diễn ra</div>
-          <div class="text-xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
+          <div class="text-xl font-bold text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
         </div>
         <div class="p-3 bg-surface border border-line rounded">
           <div class="text-muted text-xs uppercase font-semibold">Hết hạn / Tạm dừng</div>
-          <div class="text-xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
+          <div class="text-xl font-bold text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ type ToastNotification = {
               [ngModel]="searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm mã hoặc tên chương trình..."
-              class="w-full pl-8 pr-3 py-1.5 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
+              class="w-full pl-8 pr-3 py-1.5 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
             />
             <svg class="w-3.5 h-3.5 text-muted absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -156,7 +156,7 @@ type ToastNotification = {
 
       <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse text-xs min-w-[1000px]">
+          <table class="w-full text-left border-collapse text-sm min-w-[1000px]">
             <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-3 px-4 whitespace-nowrap">Mã coupon</th>
@@ -187,12 +187,12 @@ type ToastNotification = {
               } @else {
                 @for (coupon of coupons(); track coupon.id) {
                   <tr class="hover:bg-surface-alt/60 transition-colors">
-                    <td class="py-3 px-4 font-mono font-bold text-primary text-xs whitespace-nowrap">
+                    <td class="py-3 px-4 font-bold text-primary text-sm whitespace-nowrap tabular tabular-nums">
                       {{ coupon.code }}
                     </td>
 
                     <td class="py-3 px-4">
-                      <div class="font-bold text-foreground text-xs">{{ coupon.name }}</div>
+                      <div class="font-bold text-foreground text-sm">{{ coupon.name }}</div>
                       @if (coupon.requiredPaymentMethod) {
                         <div class="text-xs text-muted mt-0.5">
                           Phương thức: {{ coupon.requiredPaymentMethod === 'QR' ? 'VietQR' : 'COD' }}
@@ -314,7 +314,7 @@ type ToastNotification = {
         </div>
 
         @if (!isLoading() && total() > 0) {
-          <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-xs text-muted">
+          <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-sm text-muted">
             <div>
               Hiển thị trang <strong class="text-foreground tabular">{{ page() }}</strong> / <strong class="text-foreground tabular">{{ totalPages() }}</strong>
               (Tổng cộng: <strong class="text-foreground tabular tabular-nums">{{ total() }}</strong> mã)
@@ -325,7 +325,7 @@ type ToastNotification = {
                 type="button"
                 (click)="onPageChange(page() - 1)"
                 [disabled]="page() <= 1"
-                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
+                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
               >
                 Trước
               </button>
@@ -333,7 +333,7 @@ type ToastNotification = {
                 type="button"
                 (click)="onPageChange(page() + 1)"
                 [disabled]="page() >= totalPages()"
-                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground rounded border border-line transition-colors cursor-pointer"
+                class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
               >
                 Sau
               </button>

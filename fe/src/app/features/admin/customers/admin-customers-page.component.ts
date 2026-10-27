@@ -37,7 +37,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded p-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      <div class="bg-surface border border-line rounded p-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
         <div>
           <label for="customer-search" class="block font-semibold text-muted uppercase text-xs mb-1">
             Tìm Kiếm
@@ -49,10 +49,10 @@ import { AdminCustomerService } from './services/admin-customer.service';
               [ngModel]="customerService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Họ tên, SĐT, Email..."
-              class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
+              class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
-              class="w-4 h-4 text-muted absolute left-3 top-2 pointer-events-none"
+              class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -90,7 +90,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
 
       <div class="bg-surface border border-line rounded overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse min-w-[1000px] text-xs">
+          <table class="w-full text-left border-collapse min-w-[1000px] text-sm">
             <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-3 px-4">Họ và tên</th>
@@ -102,7 +102,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
                 <th class="py-3 px-4 text-center w-28 whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-line text-foreground text-xs">
+            <tbody class="divide-y divide-line text-foreground">
               @if (customerService.isLoading()) {
                 @for (placeholder of [1, 2, 3, 4]; track placeholder) {
                   <tr class="animate-pulse">
@@ -126,14 +126,14 @@ import { AdminCustomerService } from './services/admin-customer.service';
                 @for (item of customerService.customers(); track item.id) {
                   <tr class="hover:bg-surface-alt/60 transition-colors">
                     <td class="py-3 px-4">
-                      <a [routerLink]="['/admin/customers', item.id]" class="font-bold text-foreground hover:text-primary transition-colors text-xs">
+                      <a [routerLink]="['/admin/customers', item.id]" class="font-bold text-foreground hover:text-primary transition-colors text-sm">
                         {{ item.name }}
                       </a>
-                      <div class="text-xs text-muted font-mono">
+                      <div class="text-xs text-muted tabular-nums">
                         {{ item.id }}
                       </div>
                     </td>
-                    <td class="py-3 px-4 font-mono font-semibold text-foreground whitespace-nowrap">
+                    <td class="py-3 px-4 font-semibold text-foreground whitespace-nowrap tabular-nums">
                       {{ item.phone }}
                     </td>
                     <td class="py-3 px-4 text-muted">
@@ -157,13 +157,13 @@ import { AdminCustomerService } from './services/admin-customer.service';
                     <td class="py-3 px-4 text-center tabular-nums font-bold text-foreground whitespace-nowrap">
                       {{ item.orderCount }} đơn
                     </td>
-                    <td class="py-3 px-4 text-right font-bold tabular-nums text-primary font-mono whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold tabular-nums text-primary whitespace-nowrap">
                       {{ formatCurrency(item.totalSpent) }}
                     </td>
                     <td class="py-3 px-4 text-center whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/customers', item.id]"
-                        class="px-2.5 py-1 bg-surface-alt hover:bg-surface text-foreground border border-line rounded text-xs font-semibold transition-colors inline-flex items-center gap-1 cursor-pointer"
+                        class="px-2.5 py-1 bg-surface-alt hover:bg-surface text-foreground border border-line rounded text-sm font-semibold transition-colors inline-flex items-center gap-1 cursor-pointer"
                         title="Xem chi tiết hồ sơ"
                       >
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -180,9 +180,9 @@ import { AdminCustomerService } from './services/admin-customer.service';
           </table>
         </div>
 
-        <div class="px-4 py-3 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted bg-surface">
+        <div class="px-4 py-3 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted bg-surface">
           <div>
-            Hiển thị <span class="text-foreground font-medium">{{ customerService.customers().length }}</span> trên tổng số <span class="text-foreground font-medium">{{ customerService.total() }}</span> hồ sơ
+            Hiển thị <span class="text-foreground font-medium tabular-nums">{{ customerService.customers().length }}</span> trên tổng số <span class="text-foreground font-medium tabular-nums">{{ customerService.total() }}</span> hồ sơ
           </div>
 
           <div class="flex items-center gap-2">
@@ -190,18 +190,18 @@ import { AdminCustomerService } from './services/admin-customer.service';
               type="button"
               [disabled]="customerService.page() <= 1 || customerService.isLoading()"
               (click)="changePage(customerService.page() - 1)"
-              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold transition-colors cursor-pointer"
+              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold text-sm transition-colors cursor-pointer"
             >
               Trang trước
             </button>
-            <span class="text-muted px-2 font-mono">
+            <span class="text-muted px-2 tabular-nums">
               Trang {{ customerService.page() }} / {{ customerService.totalPages() }}
             </span>
             <button
               type="button"
               [disabled]="customerService.page() >= customerService.totalPages() || customerService.isLoading()"
               (click)="changePage(customerService.page() + 1)"
-              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold transition-colors cursor-pointer"
+              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold text-sm transition-colors cursor-pointer"
             >
               Trang sau
             </button>

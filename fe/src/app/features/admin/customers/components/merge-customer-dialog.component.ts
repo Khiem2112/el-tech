@@ -39,12 +39,12 @@ import {
         aria-labelledby="merge-modal-title"
       >
         <div
-          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h2 id="merge-modal-title" class="font-bold text-foreground uppercase text-sm">
+              <h2 id="merge-modal-title" class="font-semibold text-foreground uppercase text-base">
                 Gộp Hồ Sơ Khách Hàng
               </h2>
               <p class="text-xs text-muted mt-0.5">
@@ -134,7 +134,7 @@ import {
                   <div class="p-2.5 rounded bg-surface border border-line">
                     <span class="text-muted block text-xs uppercase font-bold">Hồ sơ phụ (sẽ vô hiệu hóa)</span>
                     <div class="font-bold text-foreground mt-1">{{ source.name }}</div>
-                    <div class="text-muted font-mono text-xs">{{ source.phone }}</div>
+                    <div class="text-muted text-xs tabular-nums">{{ source.phone }}</div>
                     <div class="text-muted text-xs truncate">{{ source.email }}</div>
                     <div class="mt-2 text-xs pt-1.5 border-t border-line">
                       Đơn hàng chuyển đi: <strong class="text-amber-600 whitespace-nowrap tabular-nums">{{ source.orderCount }} đơn</strong>
@@ -147,7 +147,7 @@ import {
                   <div class="p-2.5 rounded bg-surface border border-primary/30">
                     <span class="text-primary block text-xs uppercase font-bold">Hồ sơ chính (tiếp nhận)</span>
                     <div class="font-bold text-foreground mt-1">{{ target.name }}</div>
-                    <div class="text-muted font-mono text-xs">{{ target.phone }}</div>
+                    <div class="text-muted text-xs tabular-nums">{{ target.phone }}</div>
                     <div class="text-muted text-xs truncate">{{ target.email }}</div>
                     <div class="mt-2 text-xs pt-1.5 border-t border-line">
                       Tổng đơn sau gộp: <strong class="text-primary whitespace-nowrap tabular-nums">{{ target.stats.orderCount + source.orderCount }} đơn</strong>
@@ -169,7 +169,7 @@ import {
                 formControlName="reason"
                 rows="2"
                 placeholder="Ví dụ: Khách mua hàng vãng lai sau đó đăng ký tài khoản thành viên với cùng số điện thoại..."
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-primary"
               ></textarea>
               @if (mergeForm.get('reason')?.touched && mergeForm.get('reason')?.errors?.['required']) {
                 <p class="text-red-500 text-xs mt-0.5">Vui lòng nhập lý do hợp nhất hồ sơ.</p>
@@ -184,14 +184,14 @@ import {
                 type="button"
                 (click)="handleClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded text-foreground font-semibold text-xs transition-colors"
+                class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded text-foreground font-semibold text-sm transition-colors cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="mergeForm.invalid || isSubmitting() || selectedCandidate()?.isRegistered"
-                class="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded text-xs transition-colors shadow-sm inline-flex items-center gap-1.5"
+                class="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded text-sm transition-colors shadow-sm inline-flex items-center gap-1.5 cursor-pointer"
               >
                 @if (isSubmitting()) {
                   <span>Đang thực hiện...</span>

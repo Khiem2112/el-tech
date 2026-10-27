@@ -29,17 +29,17 @@ type SelectedSerialEntry = {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-11" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-11" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+              <h3 class="text-base font-semibold text-foreground tracking-tight">
                 Xuất Kho Giao Hàng
               </h3>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-sm transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
@@ -57,7 +57,7 @@ type SelectedSerialEntry = {
               @if (requirements()?.pendingAmendments; as amendments) {
                 <div class="space-y-1 pt-1">
                   @for (a of amendments; track a.id) {
-                    <div class="p-1.5 bg-surface-alt rounded border border-line flex items-center justify-between font-mono text-xs tabular-nums">
+                    <div class="p-1.5 bg-surface-alt rounded border border-line flex items-center justify-between text-xs tabular-nums">
                       <span>Phụ lục {{ a.type }}: {{ a.reason }}</span>
                       <span class="font-bold text-foreground">{{ a.fee }} VND</span>
                     </div>
@@ -77,7 +77,7 @@ type SelectedSerialEntry = {
                   type="text"
                   [(ngModel)]="carrier"
                   placeholder="Nhập hoặc chọn đơn vị giao nhận (GHTK, ViettelPost, GHN, Ahamove...)"
-                  class="flex-1 px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                  class="flex-1 px-3 py-2 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
                 />
               </div>
               <div class="flex flex-wrap gap-1.5 mt-1.5">
@@ -101,7 +101,7 @@ type SelectedSerialEntry = {
                 type="text"
                 [(ngModel)]="trackingCode"
                 placeholder="Nhập mã vận đơn của hãng giao nhận (VD: GHN-HN-8849201)..."
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-sm tabular-nums focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -113,7 +113,7 @@ type SelectedSerialEntry = {
                 type="text"
                 [(ngModel)]="note"
                 placeholder="Ghi chú đóng gói, tình trạng kiện hàng bàn giao..."
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary"
               />
             </div>
           </div>
@@ -121,10 +121,10 @@ type SelectedSerialEntry = {
           @if (requirements()?.standaloneSerialRequirements?.length) {
             <div class="flex-1 overflow-y-auto space-y-3 pr-1 border-t border-line pt-3">
               <div class="flex items-center justify-between">
-                <span class="font-semibold text-foreground uppercase">
+                <span class="font-semibold text-foreground uppercase text-xs">
                   Quét / Xác Nhận Serial Linh Kiện Bán Lẻ:
                 </span>
-                <span class="text-xs font-mono font-bold" [class.text-emerald-600]="isAllSerialsProvided()" [class.dark:text-emerald-400]="isAllSerialsProvided()" [class.text-amber-600]="!isAllSerialsProvided()" [class.dark:text-amber-400]="!isAllSerialsProvided()">
+                <span class="text-xs font-semibold tabular-nums" [class.text-emerald-600]="isAllSerialsProvided()" [class.dark:text-emerald-400]="isAllSerialsProvided()" [class.text-amber-600]="!isAllSerialsProvided()" [class.dark:text-amber-400]="!isAllSerialsProvided()">
                   Đã gán {{ selectedSerialsCount() }}/{{ requiredSerialsCount() }} Serial
                 </span>
               </div>
@@ -134,11 +134,11 @@ type SelectedSerialEntry = {
                   <div class="p-2.5 bg-surface-alt border border-line rounded space-y-2">
                     <div class="flex items-center justify-between gap-2">
                       <div>
-                        <div class="font-mono font-bold text-foreground">{{ item.skuCode }}</div>
+                        <div class="text-sm font-semibold text-foreground tabular-nums">{{ item.skuCode }}</div>
                         <div class="text-xs text-muted">{{ item.name }}</div>
                       </div>
                       <div class="text-right">
-                        <span class="text-xs font-bold text-foreground">SL: {{ item.quantity }}</span>
+                        <span class="text-xs font-bold text-foreground tabular-nums">SL: {{ item.quantity }}</span>
                       </div>
                     </div>
 
@@ -146,7 +146,7 @@ type SelectedSerialEntry = {
                       @if (getItemAssignedSerials(item.skuId).length > 0) {
                         <div class="flex flex-wrap gap-1.5">
                           @for (s of getItemAssignedSerials(item.skuId); track s) {
-                            <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-950/60 dark:border-blue-800/40 dark:text-blue-300 rounded font-mono text-xs flex items-center gap-1.5">
+                            <span class="px-2 py-0.5 bg-blue-50 border border-blue-200 text-blue-700 dark:bg-blue-950/60 dark:border-blue-800/40 dark:text-blue-300 rounded text-xs tabular-nums flex items-center gap-1.5">
                               <span>{{ s }}</span>
                               <button
                                 type="button"
@@ -169,12 +169,12 @@ type SelectedSerialEntry = {
                               #barcodeInput
                               placeholder="Quét mã vạch barcode hoặc gõ số sê-ri..."
                               (keydown.enter)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
-                              class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground font-mono text-xs focus:outline-none focus:border-primary"
+                              class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded text-foreground text-sm tabular-nums focus:outline-none focus:border-primary"
                             />
                             <button
                               type="button"
                               (click)="addCustomSerial(item.skuId, barcodeInput.value); barcodeInput.value = ''"
-                              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-semibold text-xs text-foreground cursor-pointer transition-colors"
+                              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer transition-colors"
                             >
                               Xác Nhận
                             </button>
@@ -191,7 +191,7 @@ type SelectedSerialEntry = {
                                     type="button"
                                     (click)="toggleSerialSelection(item.skuId, avail.serialNumber)"
                                     [disabled]="isSerialSelectedElsewhere(avail.serialNumber, item.skuId) || (getItemAssignedCount(item.skuId) >= item.quantity && !isSerialSelected(item.skuId, avail.serialNumber))"
-                                    class="text-left px-2 py-1 rounded border text-xs font-mono flex items-center justify-between cursor-pointer disabled:opacity-40 transition-colors"
+                                    class="text-left px-2 py-1 rounded border text-xs tabular-nums flex items-center justify-between cursor-pointer disabled:opacity-40 transition-colors"
                                     [class.bg-blue-50]="isSerialSelected(item.skuId, avail.serialNumber)"
                                     [class.border-blue-300]="isSerialSelected(item.skuId, avail.serialNumber)"
                                     [class.text-blue-700]="isSerialSelected(item.skuId, avail.serialNumber)"
@@ -232,7 +232,7 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-sm rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
               Hủy
             </button>
@@ -240,7 +240,7 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || isLoadingRequirements() || !canSubmit()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-xs rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-sm rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Xuất Kho Giao' }}
             </button>

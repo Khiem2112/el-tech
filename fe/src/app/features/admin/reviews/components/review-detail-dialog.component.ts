@@ -24,12 +24,12 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
       ></div>
 
       <div
-        class="relative bg-white border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-[13px] text-foreground overflow-hidden"
+        class="relative bg-white border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-sm text-foreground overflow-hidden"
       >
         <div class="flex items-center justify-between border-b border-line px-6 py-4 flex-shrink-0">
           <div>
             <div class="flex items-center gap-2">
-              <h3 class="font-extrabold text-foreground uppercase tracking-wide text-sm">
+              <h3 class="font-semibold text-foreground uppercase tracking-wide text-base">
                 Chi Tiết & Kiểm Duyệt Đánh Giá
               </h3>
             </div>
@@ -41,7 +41,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
           <button
             type="button"
             (click)="onClose()"
-            class="p-1.5 rounded-md hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+            class="p-1.5 rounded-md hover:bg-surface-alt text-muted hover:text-foreground transition-colors cursor-pointer"
             title="Đóng hộp thoại"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -58,7 +58,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
                 <div class="font-bold text-foreground text-base mt-0.5">
                   {{ review.productTemplate.name }}
                 </div>
-                <div class="text-xs text-muted font-mono mt-0.5">
+                <div class="text-xs text-muted tabular-nums mt-0.5">
                   Mã SKU: {{ review.sku.sku }}
                   @if (review.sku.variationLabel) {
                     <span> - {{ review.sku.variationLabel }}</span>
@@ -78,14 +78,14 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
               <div>
                 <span class="text-muted">Người đánh giá:</span>
                 <span class="font-semibold text-foreground ml-1">{{ review.customer.name }}</span>
-                <div class="text-muted text-[11px] mt-0.5">
+                <div class="text-muted text-xs mt-0.5">
                   {{ review.customer.email }} - {{ review.customer.phone }}
                 </div>
               </div>
               <div class="md:text-right">
                 <span class="text-muted">Đơn hàng hoàn tất:</span>
-                <span class="font-mono font-bold text-primary ml-1">{{ review.order.code }}</span>
-                <div class="text-muted text-[11px] mt-0.5">
+                <span class="font-bold text-primary ml-1 tabular-nums">{{ review.order.code }}</span>
+                <div class="text-muted text-xs mt-0.5">
                   Ngày gửi: {{ review.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                 </div>
               </div>
@@ -93,7 +93,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
 
             <div class="pt-2">
               <div class="text-xs font-semibold text-muted uppercase mb-1">Nội dung nhận xét</div>
-              <p class="text-foreground p-3 bg-white rounded border border-line text-[13px] whitespace-pre-wrap leading-relaxed">
+              <p class="text-foreground p-3 bg-white rounded border border-line text-sm whitespace-pre-wrap leading-relaxed">
                 "{{ review.text }}"
               </p>
             </div>
@@ -122,7 +122,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
                 rows="3"
                 [(ngModel)]="reasonInput"
                 placeholder="Nhập lý do ẩn (Spam, ngôn từ kích động, xúc phạm, lộ thông tin cá nhân... tối thiểu 3 ký tự)"
-                class="w-full px-3 py-2 bg-surface border border-line rounded-md text-foreground text-[13px] focus:outline-none focus:border-rose-500 transition-colors"
+                class="w-full px-3 py-2 bg-surface border border-line rounded-md text-foreground text-sm focus:outline-none focus:border-rose-500 transition-colors"
               ></textarea>
               @if (validationError()) {
                 <p class="text-xs text-rose-600 mt-1 font-medium">{{ validationError() }}</p>
@@ -137,7 +137,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
                 rows="2"
                 [(ngModel)]="reasonInput"
                 placeholder="Nhập ghi chú phục hồi hiển thị (Đã xác minh đánh giá hợp lệ...)"
-                class="w-full px-3 py-2 bg-surface border border-line rounded-md text-foreground text-[13px] focus:outline-none focus:border-primary transition-colors"
+                class="w-full px-3 py-2 bg-surface border border-line rounded-md text-foreground text-sm focus:outline-none focus:border-primary transition-colors"
               ></textarea>
             </div>
           }
@@ -152,10 +152,10 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
                       <span class="font-bold text-foreground">{{ hist.action }}</span>
                       <span class="text-muted ml-2">bởi {{ hist.changedBy }}</span>
                       @if (hist.reason) {
-                        <span class="text-muted block text-[11px] mt-0.5">Lý do: {{ hist.reason }}</span>
+                        <span class="text-muted block text-xs mt-0.5">Lý do: {{ hist.reason }}</span>
                       }
                     </div>
-                    <span class="text-muted tabular-nums text-[11px]">
+                    <span class="text-muted tabular-nums text-xs">
                       {{ hist.changedAt | date: 'dd/MM/yyyy HH:mm' }}
                     </span>
                   </div>
@@ -169,7 +169,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
           <button
             type="button"
             (click)="onClose()"
-            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface-alt/80 text-foreground rounded-md font-semibold text-[13px] transition-colors"
+            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface-alt/80 text-foreground rounded-md font-semibold text-sm transition-colors cursor-pointer"
           >
             Đóng
           </button>
@@ -179,7 +179,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
               type="button"
               (click)="onToggleVisibility(false)"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold rounded-md text-[13px] shadow-xs transition-colors flex items-center gap-1.5"
+              class="px-4 py-2 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold rounded-md text-sm shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               @if (isSubmitting()) {
                 <span>Đang xử lý...</span>
@@ -192,7 +192,7 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
               type="button"
               (click)="onToggleVisibility(true)"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-primary-foreground font-bold rounded-md text-[13px] shadow-xs transition-colors flex items-center gap-1.5"
+              class="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-primary-foreground font-bold rounded-md text-sm shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
               @if (isSubmitting()) {
                 <span>Đang xử lý...</span>

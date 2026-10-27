@@ -111,23 +111,23 @@ import {
       <div class="p-4 bg-surface border border-line rounded-lg">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-line">
           <div class="space-y-0.5">
-            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Lệnh Điều Chuyển</span>
-            <div class="text-xl font-bold font-mono text-foreground tabular-nums">{{ summary().totalTransfers }}</div>
+            <span class="text-xs font-semibold text-muted uppercase tracking-wider block">Lệnh Điều Chuyển</span>
+            <div class="text-xl font-bold text-foreground tabular tabular-nums">{{ summary().totalTransfers }}</div>
           </div>
 
           <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
-            <span class="text-[11px] font-semibold text-warning uppercase tracking-wider block">Đang Vận Chuyển</span>
-            <div class="text-xl font-bold font-mono text-warning tabular-nums">{{ summary().inTransitUnits }} chiếc</div>
+            <span class="text-xs font-semibold text-warning uppercase tracking-wider block">Đang Vận Chuyển</span>
+            <div class="text-xl font-bold text-warning tabular tabular-nums">{{ summary().inTransitUnits }} chiếc</div>
           </div>
 
           <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
-            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Kho Liên Kết</span>
-            <div class="text-xl font-bold font-mono text-foreground tabular-nums">{{ summary().connectedBranchesCount }} kho</div>
+            <span class="text-xs font-semibold text-muted uppercase tracking-wider block">Kho Liên Kết</span>
+            <div class="text-xl font-bold text-foreground tabular tabular-nums">{{ summary().connectedBranchesCount }} kho</div>
           </div>
 
           <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
-            <span class="text-[11px] font-semibold text-primary-strong uppercase tracking-wider block">Tỉ Lệ Nhận Đủ</span>
-            <div class="text-xl font-bold font-mono text-primary-strong tabular-nums">{{ summary().fullReceiptRate }}</div>
+            <span class="text-xs font-semibold text-primary-strong uppercase tracking-wider block">Tỉ Lệ Nhận Đủ</span>
+            <div class="text-xl font-bold text-primary-strong tabular tabular-nums">{{ summary().fullReceiptRate }}</div>
           </div>
         </div>
       </div>
@@ -142,7 +142,7 @@ import {
       <div class="bg-surface border border-line rounded-lg p-3.5 space-y-3 shadow-card">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 items-end">
           <div>
-            <label for="filter-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <label for="filter-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <input
               id="filter-search"
               type="text"
@@ -154,7 +154,7 @@ import {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Trạng thái</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Trạng thái</span>
             <app-select
               [options]="statusOptions"
               [value]="statusFilter()"
@@ -164,7 +164,7 @@ import {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Kho xuất</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Kho xuất</span>
             <app-select
               [options]="sourceBranchOptions()"
               [value]="sourceBranchFilterId()"
@@ -176,7 +176,7 @@ import {
           </div>
 
           <div>
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Kho nhận</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Kho nhận</span>
             <app-select
               [options]="destinationBranchOptions()"
               [value]="destinationBranchFilterId()"
@@ -205,7 +205,7 @@ import {
       <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left min-w-[1000px] border-collapse">
-            <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
                 <th class="py-2.5 px-4 whitespace-nowrap">Mã phiếu</th>
@@ -218,7 +218,7 @@ import {
                 <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-line text-foreground text-xs">
+            <tbody class="divide-y divide-line text-foreground text-sm">
               @if (isLoading()) {
                 <tr>
                   <td colspan="9" class="py-8 text-center text-muted italic">
@@ -252,7 +252,7 @@ import {
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-bold text-foreground text-xs whitespace-nowrap">
+                    <td class="py-3 px-4 font-bold text-foreground text-sm whitespace-nowrap tabular">
                       {{ item.code }}
                     </td>
 
@@ -260,27 +260,27 @@ import {
                       <div class="font-bold text-foreground truncate" [title]="item.primaryProductName">
                         {{ item.primaryProductName }}
                       </div>
-                      <div class="text-[11px] text-muted truncate" [title]="item.reason || 'Điều chuyển nội bộ'">
+                      <div class="text-xs text-muted truncate" [title]="item.reason || 'Điều chuyển nội bộ'">
                         {{ item.reason || 'Điều chuyển nội bộ' }}
                       </div>
                     </td>
 
                     <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap">
                       <div class="font-semibold">{{ item.sourceBranchCode }}</div>
-                      <div class="text-[10px] text-muted truncate">{{ item.sourceBranchName }}</div>
+                      <div class="text-xs text-muted truncate">{{ item.sourceBranchName }}</div>
                     </td>
 
                     <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap">
                       <div class="font-semibold">{{ item.destinationBranchCode }}</div>
-                      <div class="text-[10px] text-muted truncate">{{ item.destinationBranchName }}</div>
+                      <div class="text-xs text-muted truncate">{{ item.destinationBranchName }}</div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-medium text-foreground whitespace-nowrap tabular tabular-nums text-right">
+                    <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap tabular tabular-nums text-right">
                       {{ item.totalQuantity }} chiếc
-                      <span class="text-[10px] text-muted block font-sans">({{ item.lineCount }} SKU)</span>
+                      <span class="text-xs text-muted block font-sans">({{ item.lineCount }} SKU)</span>
                     </td>
 
-                    <td class="py-3 px-4 text-muted text-xs tabular tabular-nums whitespace-nowrap">
+                    <td class="py-3 px-4 text-muted text-sm tabular tabular-nums whitespace-nowrap">
                       {{ item.createdAt | date:'dd/MM/yyyy HH:mm' }}
                     </td>
 
@@ -365,7 +365,7 @@ import {
                             <span>Nhận hàng</span>
                           </button>
                         } @else {
-                          <span class="text-muted text-[11px] font-semibold italic">Đã chốt sổ</span>
+                          <span class="text-muted text-xs font-semibold italic">Đã chốt sổ</span>
                         }
                       </div>
                     </td>
@@ -377,7 +377,7 @@ import {
         </div>
 
         @if (total() > limit()) {
-          <div class="p-3 bg-surface-alt border-t border-line flex items-center justify-between text-xs text-muted">
+          <div class="p-3 bg-surface-alt border-t border-line flex items-center justify-between text-sm text-muted">
             <div>
               Hiển thị {{ (page() - 1) * limit() + 1 }} - {{ Math.min(page() * limit(), total()) }} trên tổng {{ total() }} phiếu
             </div>
@@ -392,7 +392,7 @@ import {
               >
                 Trước
               </button>
-              <span class="font-mono text-foreground font-semibold">Trang {{ page() }} / {{ totalPages() }}</span>
+              <span class="text-foreground font-semibold tabular tabular-nums">Trang {{ page() }} / {{ totalPages() }}</span>
               <button
                 type="button"
                 [disabled]="page() >= totalPages()"
@@ -434,44 +434,44 @@ import {
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
               <div class="grid grid-cols-2 gap-3 p-3 bg-surface-alt border border-line rounded">
                 <div>
-                  <span class="text-muted text-[11px] uppercase block font-semibold">Kho xuất hàng</span>
+                  <span class="text-muted text-xs uppercase block font-semibold">Kho xuất hàng</span>
                   <span class="font-bold text-foreground text-xs">{{ detail.sourceBranchCode }} - {{ detail.sourceBranchName }}</span>
                 </div>
                 <div>
-                  <span class="text-muted text-[11px] uppercase block font-semibold">Kho nhận hàng</span>
+                  <span class="text-muted text-xs uppercase block font-semibold">Kho nhận hàng</span>
                   <span class="font-bold text-foreground text-xs">{{ detail.destinationBranchCode }} - {{ detail.destinationBranchName }}</span>
                 </div>
                 <div>
-                  <span class="text-muted text-[11px] uppercase block font-semibold">Người xuất kho</span>
+                  <span class="text-muted text-xs uppercase block font-semibold">Người xuất kho</span>
                   <span class="text-foreground">{{ detail.dispatchedByName || 'Chưa xuất kho' }}</span>
                 </div>
                 <div>
-                  <span class="text-muted text-[11px] uppercase block font-semibold">Người nhận hàng</span>
+                  <span class="text-muted text-xs uppercase block font-semibold">Người nhận hàng</span>
                   <span class="text-foreground">{{ detail.validatedByName || 'Chưa nhận hàng' }}</span>
                 </div>
               </div>
 
               <div>
-                <div class="font-bold text-foreground uppercase text-[11px] mb-2">Danh sách linh kiện điều chuyển:</div>
+                <div class="font-bold text-foreground uppercase text-xs mb-2">Danh sách linh kiện điều chuyển:</div>
                 <div class="space-y-2">
                   @for (line of detail.lines; track line.id) {
                     <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5">
                       <div class="flex items-center justify-between">
                         <div>
                           <div class="font-bold text-foreground">{{ line.productName }}</div>
-                          <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }} - Đơn giá vốn: <span class="tabular font-mono">{{ line.unitCost }} đ</span></div>
+                          <div class="text-xs text-muted tabular">SKU: {{ line.skuCode }} - Đơn giá vốn: <span class="tabular tabular-nums">{{ line.unitCost }} đ</span></div>
                         </div>
-                        <div class="font-bold font-mono text-foreground text-sm tabular">
+                        <div class="font-bold text-foreground text-sm tabular tabular-nums">
                           {{ line.quantity }} chiếc
                         </div>
                       </div>
 
                       @if (line.serialRequired && line.serialNumbers.length > 0) {
                         <div class="pt-1.5 border-t border-line">
-                          <span class="text-[10px] text-muted uppercase font-semibold block mb-1">Mã sê-ri xuất kho:</span>
+                          <span class="text-xs text-muted uppercase font-semibold block mb-1">Mã sê-ri xuất kho:</span>
                           <div class="flex flex-wrap gap-1.5">
                             @for (sn of line.serialNumbers; track sn) {
-                              <span class="px-1.5 py-0.5 rounded bg-surface border border-line font-mono text-[10px] text-primary-strong font-bold">
+                              <span class="px-2 py-0.5 rounded bg-surface border border-line text-xs text-primary-strong font-semibold tabular">
                                 {{ sn }}
                               </span>
                             }

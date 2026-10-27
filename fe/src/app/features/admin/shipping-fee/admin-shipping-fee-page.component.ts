@@ -98,7 +98,7 @@ type ToastNotification = {
                 <span class="text-muted text-xs uppercase font-semibold block">
                   Phí giao hàng cố định toàn quốc
                 </span>
-                <div class="text-2xl font-bold font-mono text-foreground tabular-nums tracking-tight whitespace-nowrap">
+                <div class="text-2xl font-bold text-foreground tabular tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.fixedFee) }}
                 </div>
               </div>
@@ -107,7 +107,7 @@ type ToastNotification = {
                 <span class="text-muted text-xs uppercase font-semibold block">
                   Ngưỡng miễn phí vận chuyển
                 </span>
-                <div class="text-2xl font-bold font-mono text-primary tabular-nums tracking-tight whitespace-nowrap">
+                <div class="text-2xl font-bold text-primary tabular tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.freeShippingThreshold) }}
                 </div>
               </div>
@@ -116,7 +116,7 @@ type ToastNotification = {
                 <span class="text-muted text-xs uppercase font-semibold block">
                   Thời điểm hiệu lực
                 </span>
-                <div class="text-sm font-bold text-foreground tabular-nums mt-1 font-mono whitespace-nowrap">
+                <div class="text-sm font-bold text-foreground tabular tabular-nums mt-1 whitespace-nowrap">
                   {{ formatDateTime(activeConfig()?.effectiveFrom) }}
                 </div>
                 <div class="text-xs text-muted">
@@ -130,7 +130,7 @@ type ToastNotification = {
               <button
                 type="button"
                 (click)="onOpenCreateDialog()"
-                class="mt-2 text-primary hover:underline font-semibold cursor-pointer"
+                class="mt-2 text-primary hover:underline font-semibold cursor-pointer text-sm"
               >
                 Nhấn vào đây để thiết lập biểu phí mới
               </button>
@@ -145,7 +145,7 @@ type ToastNotification = {
             <h2 id="history-table-title" class="text-xs font-bold uppercase tracking-wider text-foreground">
               Lịch Sử Cấu Hình Biểu Phí Vận Chuyển
             </h2>
-            <span class="text-xs bg-surface-alt border border-line text-muted px-2 py-0.5 rounded font-mono font-semibold">
+            <span class="text-xs bg-surface-alt border border-line text-muted px-2 py-0.5 rounded font-semibold tabular">
               {{ history().length }} phiên bản
             </span>
           </div>
@@ -154,7 +154,7 @@ type ToastNotification = {
             type="button"
             (click)="onRefresh()"
             [disabled]="shippingFeeService.isLoading()"
-            class="px-2.5 py-1 bg-surface-alt hover:bg-surface border border-line text-foreground text-xs rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line text-foreground text-sm font-medium rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer"
             title="Làm mới danh sách"
           >
             <svg
@@ -182,7 +182,7 @@ type ToastNotification = {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs min-w-[1000px] border-collapse">
+            <table class="w-full text-left text-sm min-w-[1000px] border-collapse">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Thời Điểm Hiệu Lực</th>
@@ -195,7 +195,7 @@ type ToastNotification = {
               <tbody class="divide-y divide-line text-foreground">
                 @for (item of history(); track item.id) {
                   <tr class="hover:bg-surface-alt/60 transition-colors">
-                    <td class="py-3 px-4 tabular-nums font-mono whitespace-nowrap">
+                    <td class="py-3 px-4 tabular tabular-nums whitespace-nowrap">
                       <div class="font-bold text-foreground">
                         {{ formatDateTime(item.effectiveFrom) }}
                       </div>
@@ -247,7 +247,7 @@ type ToastNotification = {
       >
         @for (toast of toasts(); track toast.id) {
           <div
-            class="pointer-events-auto p-3.5 rounded-lg shadow-xl text-xs font-semibold flex items-center justify-between gap-3 border transition-all bg-surface border-line"
+            class="pointer-events-auto p-3.5 rounded-lg shadow-xl text-sm font-semibold flex items-center justify-between gap-3 border transition-all bg-surface border-line"
             [class.border-emerald-500]="toast.type === 'success'"
             [class.text-emerald-700]="toast.type === 'success'"
             [class.dark:text-emerald-400]="toast.type === 'success'"

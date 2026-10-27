@@ -37,7 +37,7 @@ import {
                   Lịch Sử Biến Động Kho SKU
                 </h2>
                 @if (detail?.quant; as quant) {
-                  <p class="text-xs text-muted font-mono truncate">
+                  <p class="text-xs text-muted tabular truncate">
                     {{ quant.sku }} - {{ quant.branchName }} ({{ quant.branchCode }})
                   </p>
                 }
@@ -63,21 +63,21 @@ import {
                 <div class="text-foreground font-bold truncate max-w-xs">{{ quant.productName }}</div>
               </div>
 
-              <div class="flex items-center gap-6 font-mono text-right">
+              <div class="flex items-center gap-6 tabular text-right">
                 <div>
-                  <span class="text-muted text-[10px] uppercase font-semibold block">Thực tế</span>
+                  <span class="text-muted text-xs uppercase font-semibold block">Thực tế</span>
                   <span class="text-foreground font-bold text-base tabular-nums">{{ quant.onHand }}</span>
                 </div>
                 <div class="border-l border-line pl-6">
-                  <span class="text-warning text-[10px] uppercase font-semibold block">Đang giữ</span>
+                  <span class="text-warning text-xs uppercase font-semibold block">Đang giữ</span>
                   <span class="text-warning font-bold text-base tabular-nums">{{ quant.reserved }}</span>
                 </div>
                 <div class="border-l border-line pl-6">
-                  <span class="text-danger text-[10px] uppercase font-semibold block">Cách ly</span>
+                  <span class="text-danger text-xs uppercase font-semibold block">Cách ly</span>
                   <span class="text-danger font-bold text-base tabular-nums">{{ quant.quarantineDamaged }}</span>
                 </div>
                 <div class="border-l border-line pl-6">
-                  <span class="text-primary-strong text-[10px] uppercase font-semibold block">Khả dụng</span>
+                  <span class="text-primary-strong text-xs uppercase font-semibold block">Khả dụng</span>
                   <span class="text-primary-strong font-bold text-base tabular-nums">{{ quant.available }}</span>
                 </div>
               </div>
@@ -119,19 +119,19 @@ import {
                         <span [class]="getEntryBadgeClass(entry.entryType)">
                           {{ getEntryLabel(entry.entryType) }}
                         </span>
-                        <span class="text-xs font-mono font-semibold text-primary-strong">
+                        <span class="text-xs font-semibold text-primary-strong tabular">
                           {{ entry.documentCode }}
                         </span>
                       </div>
-                      <span class="text-xs text-muted font-mono tabular-nums">
+                      <span class="text-xs text-muted tabular tabular-nums">
                         {{ formatDate(entry.occurredAt) }}
                       </span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs pt-1 border-t border-line">
                       <div>
-                        <span class="text-muted block text-[11px]">Biến động:</span>
-                        <div class="font-mono font-bold mt-0.5 tabular-nums">
+                        <span class="text-muted block text-xs">Biến động:</span>
+                        <div class="font-bold mt-0.5 tabular tabular-nums">
                           @if (entry.deltaOnHand !== 0) {
                             <span [class]="entry.deltaOnHand > 0 ? 'text-emerald-700' : 'text-danger'">
                               {{ entry.deltaOnHand > 0 ? '+' : '' }}{{ entry.deltaOnHand }} Thực
@@ -154,22 +154,22 @@ import {
                       </div>
 
                       <div>
-                        <span class="text-muted block text-[11px]">Tồn sau giao dịch:</span>
-                        <div class="font-mono text-foreground mt-0.5 tabular-nums">
+                        <span class="text-muted block text-xs">Tồn sau giao dịch:</span>
+                        <div class="text-foreground mt-0.5 tabular tabular-nums">
                           Thực: <strong>{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-warning">{{ entry.reservedAfter }}</strong>
                         </div>
                       </div>
 
                       <div class="col-span-2 sm:col-span-1">
-                        <span class="text-muted block text-[11px]">Tác nhân:</span>
-                        <div class="text-foreground truncate mt-0.5 font-mono text-[11px]">
+                        <span class="text-muted block text-xs">Tác nhân:</span>
+                        <div class="text-foreground truncate mt-0.5 text-xs">
                           {{ entry.actorType }}
                         </div>
                       </div>
                     </div>
 
                     @if (entry.reason) {
-                      <div class="text-[11px] text-muted italic bg-surface-alt px-2.5 py-1 rounded">
+                      <div class="text-xs text-muted italic bg-surface-alt px-2.5 py-1 rounded">
                         Ghi chú: {{ entry.reason }}
                       </div>
                     }
@@ -264,7 +264,7 @@ export class StockLedgerSheetComponent {
   }
 
   getEntryBadgeClass(entryType: string): string {
-    const base = 'px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase whitespace-nowrap border';
+    const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
       case 'QUARANTINE':
         return `${base} bg-rose-50 text-danger border-rose-200`;

@@ -71,7 +71,7 @@ const branchFormSchema = z.object({
         [attr.aria-labelledby]="'branch-modal-title'"
       >
         <div
-          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-[13px] text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
@@ -113,7 +113,7 @@ const branchFormSchema = z.object({
                   type="text"
                   formControlName="code"
                   placeholder="Ví dụ: HN-01"
-                  class="w-full px-3 py-2 bg-surface border rounded font-mono font-bold text-foreground text-[13px] focus:outline-none uppercase placeholder:text-muted"
+                  class="w-full px-3 py-2 bg-surface border rounded font-bold text-foreground text-sm tabular focus:outline-none uppercase placeholder:text-muted"
                   [ngClass]="hasError('code') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('code')) {
@@ -130,7 +130,7 @@ const branchFormSchema = z.object({
                   type="text"
                   formControlName="name"
                   placeholder="Ví dụ: EL-TECH Cầu Giấy"
-                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none font-semibold placeholder:text-muted"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm focus:outline-none font-semibold placeholder:text-muted"
                   [ngClass]="hasError('name') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('name')) {
@@ -148,7 +148,7 @@ const branchFormSchema = z.object({
                 type="text"
                 formControlName="address"
                 placeholder="Số 12 Duy Tân, P. Dịch Vọng Hậu, Q. Cầu Giấy, Hà Nội"
-                class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm focus:outline-none placeholder:text-muted"
                 [ngClass]="hasError('address') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
               />
               @if (hasError('address')) {
@@ -166,7 +166,7 @@ const branchFormSchema = z.object({
                   type="text"
                   formControlName="openingHour"
                   placeholder="08:30 - 21:00"
-                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm focus:outline-none placeholder:text-muted"
                   [ngClass]="hasError('openingHour') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('openingHour')) {
@@ -184,7 +184,7 @@ const branchFormSchema = z.object({
                   formControlName="deliveryPriority"
                   min="0"
                   max="100"
-                  class="w-full px-3 py-2 bg-surface border rounded font-mono font-bold text-foreground text-[13px] focus:outline-none"
+                  class="w-full px-3 py-2 bg-surface border rounded font-bold text-foreground text-sm tabular focus:outline-none"
                   [ngClass]="hasError('deliveryPriority') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('deliveryPriority')) {
@@ -203,7 +203,7 @@ const branchFormSchema = z.object({
                   type="tel"
                   formControlName="phone"
                   placeholder="0987654321"
-                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm tabular focus:outline-none placeholder:text-muted"
                   [ngClass]="hasError('phone') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('phone')) {
@@ -220,7 +220,7 @@ const branchFormSchema = z.object({
                   type="email"
                   formControlName="email"
                   placeholder="branch@eltech.vn"
-                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                  class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm focus:outline-none placeholder:text-muted"
                   [ngClass]="hasError('email') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
                 />
                 @if (hasError('email')) {
@@ -235,12 +235,12 @@ const branchFormSchema = z.object({
                   Danh sách mã khu vực phục vụ
                 </label>
                 <div class="flex items-center gap-1">
-                  <span class="text-[11px] text-muted">Thêm nhanh:</span>
+                  <span class="text-xs text-muted">Thêm nhanh:</span>
                   @for (chip of areaCodePresets; track chip) {
                     <button
                       type="button"
                       (click)="appendAreaCode(chip)"
-                      class="px-1.5 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line font-mono text-[10px] text-foreground font-semibold transition-colors"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-xs text-foreground font-semibold tabular transition-colors"
                     >
                       +{{ chip }}
                     </button>
@@ -252,7 +252,7 @@ const branchFormSchema = z.object({
                 type="text"
                 formControlName="deliveryAreaCodes"
                 placeholder="HN-*, HCM-*, DN-* (phân cách bằng dấu phẩy)"
-                class="w-full px-3 py-2 bg-surface border rounded font-mono text-foreground text-[13px] focus:outline-none placeholder:text-muted"
+                class="w-full px-3 py-2 bg-surface border rounded text-foreground text-sm tabular focus:outline-none placeholder:text-muted"
                 [ngClass]="hasError('deliveryAreaCodes') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
               />
               <p class="text-xs text-muted mt-1">
@@ -267,7 +267,7 @@ const branchFormSchema = z.object({
                 formControlName="isActive"
                 class="w-4 h-4 rounded bg-surface border-line text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
-              <label for="branch-active" class="text-[13px] text-foreground font-medium select-none cursor-pointer">
+              <label for="branch-active" class="text-sm text-foreground font-medium select-none cursor-pointer">
                 Kích hoạt hoạt động cho chi nhánh này
               </label>
             </div>
@@ -277,14 +277,14 @@ const branchFormSchema = z.object({
                 type="button"
                 (click)="onClose()"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 text-foreground font-semibold rounded text-[13px] border border-line transition-colors"
+                class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 text-foreground font-semibold rounded text-sm border border-line transition-colors"
               >
                 Hủy Bỏ
               </button>
               <button
                 type="submit"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded shadow-xs text-[13px] transition-colors"
+                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded shadow-xs text-sm transition-colors"
               >
                 {{ isSubmitting() ? 'Đang lưu...' : (isEditMode() ? 'Lưu Thay Đổi' : 'Tạo Chi Nhánh') }}
               </button>

@@ -164,7 +164,7 @@ function formatIsoToDateInput(isoString?: string): string {
                     formControlName="code"
                     (input)="onCodeInput($event)"
                     placeholder="VÍ DỤ: ELTECH1000K"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-mono font-bold text-foreground text-sm focus:outline-none focus:border-primary uppercase transition-colors"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded-md font-bold text-foreground text-sm tabular-nums focus:outline-none focus:border-primary uppercase transition-colors"
                   />
                   @if (form.get('code')?.touched && form.get('code')?.errors) {
                     <p class="text-rose-600 dark:text-rose-400 text-xs mt-1">Mã coupon từ 3-30 ký tự viết hoa không dấu</p>
@@ -422,7 +422,7 @@ function formatIsoToDateInput(isoString?: string): string {
                         [class.text-emerald-700]="rule.rule === 'INCLUDE'"
                         [class.dark:text-emerald-400]="rule.rule === 'INCLUDE'"
                       >
-                        <span>{{ rule.rule === 'EXCLUDE' ? 'Loại trừ' : 'Áp dụng' }}: <strong class="font-mono">{{ rule.sku }}</strong></span>
+                        <span>{{ rule.rule === 'EXCLUDE' ? 'Loại trừ' : 'Áp dụng' }}: <strong class="tabular-nums font-semibold">{{ rule.sku }}</strong></span>
                         <button
                           type="button"
                           (click)="removeSkuRule(rule.id)"

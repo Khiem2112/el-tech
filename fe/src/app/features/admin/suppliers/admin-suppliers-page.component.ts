@@ -58,7 +58,7 @@ type ToastNotification = {
       <div class="bg-surface border border-line rounded-lg p-3.5 flex flex-col md:flex-row md:items-end justify-between gap-3 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
-            <label for="supplier-search" class="block text-[11px] font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <label for="supplier-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <div class="relative">
               <input
                 id="supplier-search"
@@ -66,7 +66,7 @@ type ToastNotification = {
                 [ngModel]="supplierService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên nhà cung cấp, mã đối tác, người liên hệ, SĐT..."
-                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
               <lucide-icon
                 name="search"
@@ -77,7 +77,7 @@ type ToastNotification = {
           </div>
 
           <div class="w-full sm:w-56">
-            <span class="block text-[11px] font-semibold text-muted uppercase mb-1">Trạng thái</span>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Trạng thái</span>
             <app-select
               [options]="statusOptions"
               [value]="supplierService.statusFilter()"

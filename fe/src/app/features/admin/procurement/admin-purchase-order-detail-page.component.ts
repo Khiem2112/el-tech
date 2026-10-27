@@ -168,7 +168,7 @@ type ToastMessage = {
           }
         </div>
 
-        <div class="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider">
+        <div class="flex items-center gap-1 text-xs font-bold uppercase tracking-wider">
           <div
             class="px-2.5 py-1 rounded transition-colors"
             [class.bg-primary]="currentStep() >= 1"
@@ -578,7 +578,7 @@ type ToastMessage = {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
           @for (toast of toasts(); track toast.id) {
             <div
-              class="px-4 py-2.5 rounded-lg shadow-xl text-[13px] font-semibold pointer-events-auto border transition-all duration-200 ease-out"
+              class="px-4 py-2.5 rounded-lg shadow-xl text-sm font-semibold pointer-events-auto border transition-all duration-200 ease-out"
               [class.bg-white]="true"
               [class.text-emerald-700]="toast.type === 'success'"
               [class.border-emerald-300]="toast.type === 'success'"

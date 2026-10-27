@@ -32,7 +32,7 @@ import {
         ></div>
 
         <div
-          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-xs text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md max-h-[92vh] flex flex-col z-10 text-sm text-foreground"
         >
           <div class="p-5 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
@@ -40,7 +40,7 @@ import {
                 Hủy Phiếu Yêu Cầu Điều Chuyển
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Phiếu: <strong class="text-foreground font-mono">{{ transfer.code }}</strong>
+                Phiếu: <strong class="text-foreground tabular">{{ transfer.code }}</strong>
               </p>
             </div>
             <button
@@ -72,7 +72,7 @@ import {
                     <button
                       type="button"
                       (click)="reason.set(preset)"
-                      class="px-2.5 py-1 rounded text-xs font-semibold border transition-colors"
+                      class="px-3 py-1.5 rounded text-sm font-semibold border transition-colors"
                       [ngClass]="reason() === preset ? 'bg-danger text-white border-danger' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
                     >
                       {{ preset }}
@@ -93,7 +93,7 @@ import {
                   (ngModelChange)="reason.set($event)"
                   name="cancelReason"
                   placeholder="Nhập chi tiết lý do hủy phiếu điều chuyển này..."
-                  class="w-full h-24 px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-danger focus:ring-1 focus:ring-danger"
+                  class="w-full h-24 px-3 py-2 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-danger focus:ring-1 focus:ring-danger"
                 ></textarea>
               </div>
             </div>

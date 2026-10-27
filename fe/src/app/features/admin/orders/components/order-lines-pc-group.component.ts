@@ -14,7 +14,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
         <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden">
           <div class="p-3.5 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt/40">
             <div class="flex items-center gap-2.5">
-              <span class="px-2 py-0.5 rounded bg-surface-elevated text-primary border border-line font-mono text-xs font-semibold uppercase">
+              <span class="px-2 py-0.5 rounded bg-surface-elevated text-primary border border-line text-xs font-semibold uppercase">
                 Gói PC
               </span>
               <div>
@@ -22,13 +22,13 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                   <h2 class="text-xs font-bold text-foreground uppercase tracking-wider">
                     {{ pcGroup.pcBuildName }}
                   </h2>
-                  <span class="px-1.5 py-0.2 rounded bg-surface border border-line text-muted text-[11px] font-mono">
+                  <span class="px-1.5 py-0.5 rounded bg-surface border border-line text-muted text-xs">
                     {{ pcGroup.pcBuildType }}
                   </span>
                 </div>
-                <div class="text-[11px] text-muted mt-0.5 flex items-center gap-3">
-                  <span>Công suất: <strong class="text-foreground font-mono tabular-nums">{{ pcGroup.totalWattage > 0 ? pcGroup.totalWattage + 'W TDP' : 'Tiêu chuẩn' }}</strong></span>
-                  <span>Phí lắp ráp: <strong class="text-foreground font-mono tabular-nums">{{ formatVnd(pcGroup.assemblyFee) }}</strong></span>
+                <div class="text-xs text-muted mt-0.5 flex items-center gap-3">
+                  <span>Công suất: <strong class="text-foreground tabular tabular-nums">{{ pcGroup.totalWattage > 0 ? pcGroup.totalWattage + 'W TDP' : 'Tiêu chuẩn' }}</strong></span>
+                  <span>Phí lắp ráp: <strong class="text-foreground tabular tabular-nums">{{ formatVnd(pcGroup.assemblyFee) }}</strong></span>
                 </div>
               </div>
             </div>
@@ -48,24 +48,24 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-surface-alt/60 border-b border-line text-muted font-medium uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-surface-alt/60 border-b border-line text-muted font-medium uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-2 px-3 w-10 text-center whitespace-nowrap">Ảnh</th>
-                  <th class="py-2 px-3 whitespace-nowrap">Danh mục</th>
-                  <th class="py-2 px-3 whitespace-nowrap">Linh kiện & Sê-ri</th>
-                  <th class="py-2 px-3 text-center whitespace-nowrap">SL</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Đơn giá</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Giảm giá SP</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Coupon</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Thành tiền</th>
-                  <th class="py-2 px-3 text-center whitespace-nowrap">Tồn khả dụng</th>
+                  <th class="py-2.5 px-3 w-10 text-center whitespace-nowrap">Ảnh</th>
+                  <th class="py-2.5 px-3 whitespace-nowrap">Danh mục</th>
+                  <th class="py-2.5 px-3 whitespace-nowrap">Linh kiện & Sê-ri</th>
+                  <th class="py-2.5 px-3 text-center whitespace-nowrap">SL</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Đơn giá</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Giảm giá SP</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Coupon</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Thành tiền</th>
+                  <th class="py-2.5 px-3 text-center whitespace-nowrap">Tồn khả dụng</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line">
                 @for (item of pcGroup.items; track item.id) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
-                    <td class="py-2 px-3 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       <div class="w-8 h-8 rounded border border-line bg-surface overflow-hidden mx-auto flex items-center justify-center">
                         @if (item.imageUrl) {
                           <img
@@ -76,43 +76,43 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                             (error)="onImageError($event)"
                           />
                         } @else {
-                          <span class="text-[10px] text-muted font-mono">HW</span>
+                          <span class="text-xs text-muted">HW</span>
                         }
                       </div>
                     </td>
-                    <td class="py-2 px-3 text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-muted whitespace-nowrap text-xs">
                       {{ item.categoryName || 'Linh kiện' }}
                     </td>
-                    <td class="py-2 px-3">
-                      <div class="font-medium text-foreground">{{ item.nameSnapshot }}</div>
-                      <div class="font-mono text-muted text-[11px] flex items-center gap-2 mt-0.5">
-                        <span>SKU: {{ item.skuSnapshot || 'N/A' }}</span>
+                    <td class="py-2.5 px-3">
+                      <div class="font-medium text-foreground text-sm">{{ item.nameSnapshot }}</div>
+                      <div class="text-muted text-xs flex items-center gap-2 mt-0.5">
+                        <span class="tabular tabular-nums">SKU: {{ item.skuSnapshot || 'N/A' }}</span>
                         @if (item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial']) {
-                          <span class="px-1.5 py-0.2 bg-primary/10 border border-primary/20 rounded text-primary text-[10px]">
+                          <span class="px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-primary text-xs tabular tabular-nums">
                             S/N: {{ item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial'] }}
                           </span>
                         }
                       </div>
                     </td>
-                    <td class="py-2 px-3 text-center font-mono font-medium text-foreground whitespace-nowrap tabular-nums">
+                    <td class="py-2.5 px-3 text-center font-medium text-foreground whitespace-nowrap tabular tabular-nums">
                       {{ item.quantity }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.unitPrice) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-muted whitespace-nowrap">
                       - {{ formatVnd(item.productDiscount) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-rose-600 dark:text-rose-400 whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-rose-600 dark:text-rose-400 whitespace-nowrap">
                       - {{ formatVnd(item.couponDiscount) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono font-semibold tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-semibold tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.netAmount) }}
                     </td>
-                    <td class="py-2 px-3 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       @if (item.availableStock !== null) {
                         <span
-                          class="px-2 py-0.5 rounded text-[11px] font-mono tabular-nums"
+                          class="px-2 py-0.5 rounded text-xs tabular tabular-nums"
                           [class.text-emerald-600]="item.availableStock >= item.quantity"
                           [class.dark:text-emerald-400]="item.availableStock >= item.quantity"
                           [class.text-rose-600]="item.availableStock < item.quantity"
@@ -140,30 +140,30 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                 Linh Kiện & Phụ Kiện Mua Rời
               </h2>
             </div>
-            <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs font-mono tabular-nums">
+            <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs tabular tabular-nums">
               {{ order().standaloneLines.length }} sản phẩm
             </span>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-surface-alt/60 border-b border-line text-muted font-medium uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-surface-alt/60 border-b border-line text-muted font-medium uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-2 px-3 w-10 text-center whitespace-nowrap">Ảnh</th>
-                  <th class="py-2 px-3 whitespace-nowrap">Danh mục</th>
-                  <th class="py-2 px-3 whitespace-nowrap">Linh kiện & Sê-ri</th>
-                  <th class="py-2 px-3 text-center whitespace-nowrap">SL</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Đơn giá</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Giảm giá SP</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Coupon</th>
-                  <th class="py-2 px-3 text-right whitespace-nowrap">Thành tiền</th>
-                  <th class="py-2 px-3 text-center whitespace-nowrap">Tồn khả dụng</th>
+                  <th class="py-2.5 px-3 w-10 text-center whitespace-nowrap">Ảnh</th>
+                  <th class="py-2.5 px-3 whitespace-nowrap">Danh mục</th>
+                  <th class="py-2.5 px-3 whitespace-nowrap">Linh kiện & Sê-ri</th>
+                  <th class="py-2.5 px-3 text-center whitespace-nowrap">SL</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Đơn giá</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Giảm giá SP</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Coupon</th>
+                  <th class="py-2.5 px-3 text-right whitespace-nowrap">Thành tiền</th>
+                  <th class="py-2.5 px-3 text-center whitespace-nowrap">Tồn khả dụng</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line">
                 @for (item of order().standaloneLines; track item.id) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
-                    <td class="py-2 px-3 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       <div class="w-8 h-8 rounded border border-line bg-surface overflow-hidden mx-auto flex items-center justify-center">
                         @if (item.imageUrl) {
                           <img
@@ -174,43 +174,43 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                             (error)="onImageError($event)"
                           />
                         } @else {
-                          <span class="text-[10px] text-muted font-mono">HW</span>
+                          <span class="text-xs text-muted">HW</span>
                         }
                       </div>
                     </td>
-                    <td class="py-2 px-3 text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-muted whitespace-nowrap text-xs">
                       {{ item.categoryName || 'Linh kiện rời' }}
                     </td>
-                    <td class="py-2 px-3">
-                      <div class="font-medium text-foreground">{{ item.nameSnapshot }}</div>
-                      <div class="font-mono text-muted text-[11px] flex items-center gap-2 mt-0.5">
-                        <span>SKU: {{ item.skuSnapshot || 'N/A' }}</span>
+                    <td class="py-2.5 px-3">
+                      <div class="font-medium text-foreground text-sm">{{ item.nameSnapshot }}</div>
+                      <div class="text-muted text-xs flex items-center gap-2 mt-0.5">
+                        <span class="tabular tabular-nums">SKU: {{ item.skuSnapshot || 'N/A' }}</span>
                         @if (item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial']) {
-                          <span class="px-1.5 py-0.2 bg-primary/10 border border-primary/20 rounded text-primary text-[10px]">
+                          <span class="px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-primary text-xs tabular tabular-nums">
                             S/N: {{ item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial'] }}
                           </span>
                         }
                       </div>
                     </td>
-                    <td class="py-2 px-3 text-center font-mono font-medium text-foreground whitespace-nowrap tabular-nums">
+                    <td class="py-2.5 px-3 text-center font-medium text-foreground whitespace-nowrap tabular tabular-nums">
                       {{ item.quantity }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.unitPrice) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-muted whitespace-nowrap">
                       - {{ formatVnd(item.productDiscount) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono tabular-nums text-rose-600 dark:text-rose-400 whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right tabular tabular-nums text-rose-600 dark:text-rose-400 whitespace-nowrap">
                       - {{ formatVnd(item.couponDiscount) }}
                     </td>
-                    <td class="py-2 px-3 text-right font-mono font-semibold tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-right font-semibold tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatVnd(item.netAmount) }}
                     </td>
-                    <td class="py-2 px-3 text-center whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-center whitespace-nowrap">
                       @if (item.availableStock !== null) {
                         <span
-                          class="px-2 py-0.5 rounded text-[11px] font-mono tabular-nums"
+                          class="px-2 py-0.5 rounded text-xs tabular tabular-nums"
                           [class.text-emerald-600]="item.availableStock >= item.quantity"
                           [class.dark:text-emerald-400]="item.availableStock >= item.quantity"
                           [class.text-rose-600]="item.availableStock < item.quantity"

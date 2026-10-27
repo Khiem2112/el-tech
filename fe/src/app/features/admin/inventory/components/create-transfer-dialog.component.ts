@@ -117,7 +117,7 @@ type TransferItemDraft = {
                   (ngModelChange)="reason.set($event)"
                   name="reason"
                   placeholder="Ví dụ: Bổ sung hàng cho chi nhánh phục vụ đơn Custom PC"
-                  class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
+                  class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
                 />
               </div>
 
@@ -128,7 +128,7 @@ type TransferItemDraft = {
                       Danh Sách Linh Kiện Cần Chuyển
                     </span>
                     @if (draftLines().length > 0) {
-                      <span class="px-2 py-0.5 rounded bg-surface-alt font-mono text-[11px] font-bold text-foreground border border-line">
+                      <span class="px-2 py-0.5 rounded bg-surface-alt text-xs font-semibold text-foreground border border-line tabular">
                         {{ totalDraftUnits() }} chiếc ({{ draftLines().length }} SKU)
                       </span>
                     }
@@ -174,7 +174,7 @@ type TransferItemDraft = {
 
                         <div class="w-28 flex-shrink-0">
                           <div class="flex items-center gap-1.5">
-                            <span class="text-muted text-[11px] font-semibold">SL:</span>
+                            <span class="text-muted text-xs font-semibold">SL:</span>
                             <input
                               type="number"
                               min="1"
@@ -208,7 +208,7 @@ type TransferItemDraft = {
             </div>
 
             <div class="p-4 border-t border-line flex items-center justify-between gap-3 flex-shrink-0 bg-surface-alt">
-              <div class="text-xs text-muted font-mono">
+              <div class="text-sm text-muted tabular">
                 @if (draftLines().length > 0) {
                   Tổng chuyển: <strong class="text-foreground font-bold">{{ totalDraftUnits() }} chiếc</strong>
                 }

@@ -44,7 +44,7 @@ import {
                   Vòng Đời & Lịch Sử Di Chuyển Serial
                 </h2>
                 @if (detail; as d) {
-                  <p class="text-xs text-muted font-mono truncate">
+                  <p class="text-xs text-muted tabular truncate">
                     SN: <strong class="text-foreground">{{ d.serialNumber }}</strong> | SKU: {{ d.sku }}
                   </p>
                 }
@@ -81,20 +81,20 @@ import {
                       {{ getStatusLabel(d.status) }}
                     </span>
                   </div>
-                  <div class="text-xs text-muted font-mono flex items-center gap-3 flex-wrap">
+                  <div class="text-xs text-muted tabular flex items-center gap-3 flex-wrap">
                     <span>Thương hiệu: <strong class="text-foreground">{{ d.productTemplate.brandName }}</strong></span>
                     <span>Nhóm: <strong class="text-foreground">{{ d.productTemplate.categoryName }}</strong></span>
-                    <span>Giá niêm yết: <strong class="text-primary-strong">{{ formatCurrency(d.sellingPrice) }}</strong></span>
+                    <span>Giá niêm yết: <strong class="text-primary-strong tabular-nums">{{ formatCurrency(d.sellingPrice) }}</strong></span>
                   </div>
                 </div>
 
                 <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
-                  <span class="text-[11px] uppercase tracking-wider text-muted block font-semibold">Kho hiện tại</span>
+                  <span class="text-xs uppercase tracking-wider text-muted block font-semibold">Kho hiện tại</span>
                   <span class="font-bold text-foreground text-sm">
                     {{ d.currentBranch?.name ?? 'Chưa phân bổ chi nhánh' }}
                   </span>
                   @if (d.currentBranch) {
-                    <span class="text-xs text-muted font-mono block">({{ d.currentBranch.code }})</span>
+                    <span class="text-xs text-muted tabular block">({{ d.currentBranch.code }})</span>
                   }
                 </div>
               </div>
@@ -177,19 +177,19 @@ import {
                 <div class="space-y-4">
                   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                     <div class="p-2.5 rounded bg-surface-alt border border-line">
-                      <span class="text-[11px] uppercase font-semibold text-muted block">Thời hạn BH</span>
+                      <span class="text-xs uppercase font-semibold text-muted block">Thời hạn BH</span>
                       <strong class="text-foreground text-sm font-bold">{{ d.warranty.durationMonths }} Tháng</strong>
                     </div>
                     <div class="p-2.5 rounded bg-surface-alt border border-line">
-                      <span class="text-[11px] uppercase font-semibold text-muted block">Bắt đầu BH</span>
-                      <strong class="text-foreground text-xs font-mono font-bold">{{ formatDate(d.warranty.startDate) }}</strong>
+                      <span class="text-xs uppercase font-semibold text-muted block">Bắt đầu BH</span>
+                      <strong class="text-foreground text-xs font-bold tabular">{{ formatDate(d.warranty.startDate) }}</strong>
                     </div>
                     <div class="p-2.5 rounded bg-surface-alt border border-line">
-                      <span class="text-[11px] uppercase font-semibold text-muted block">Hết hạn BH</span>
-                      <strong class="text-primary-strong text-xs font-mono font-bold">{{ formatDate(d.warranty.endDate) }}</strong>
+                      <span class="text-xs uppercase font-semibold text-muted block">Hết hạn BH</span>
+                      <strong class="text-primary-strong text-xs font-bold tabular">{{ formatDate(d.warranty.endDate) }}</strong>
                     </div>
                     <div class="p-2.5 rounded bg-surface-alt border border-line">
-                      <span class="text-[11px] uppercase font-semibold text-muted block">Số lần BH</span>
+                      <span class="text-xs uppercase font-semibold text-muted block">Số lần BH</span>
                       <strong class="text-foreground text-sm font-bold">{{ d.warranty.warrantyClaimCount }} lần</strong>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ import {
                   <div class="space-y-3 pt-2">
                     <div class="flex items-center justify-between border-b border-line pb-1.5">
                       <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lộ trình luân chuyển</span>
-                      <span class="text-xs font-mono text-muted">{{ d.movements.length }} trạm</span>
+                      <span class="text-xs text-muted tabular">{{ d.movements.length }} trạm</span>
                     </div>
 
                     @if (d.movements.length === 0) {
@@ -208,14 +208,14 @@ import {
                           <div class="relative">
                             <span class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full ring-2 ring-surface" [ngClass]="getMovementDotClass(mov.resultingStatus)"></span>
                             <div class="font-bold text-foreground">{{ mov.summaryText }}</div>
-                            <div class="text-[11px] text-muted flex items-center gap-2 flex-wrap mt-0.5 font-mono">
+                            <div class="text-xs text-muted flex items-center gap-2 flex-wrap mt-0.5 tabular">
                               <span>{{ formatDateTime(mov.occurredAt) }}</span>
                               <span>| Phiếu: <strong class="text-primary-strong">{{ mov.stockMoveCode }}</strong></span>
                               @if (mov.orderCode) {
                                 <span>| Đơn: <strong class="text-foreground">{{ mov.orderCode }}</strong></span>
                               }
                             </div>
-                            <div class="text-[11px] font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
+                            <div class="text-xs font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
                               Trạng thái: {{ getStatusLabel(mov.resultingStatus) }}
                             </div>
                           </div>

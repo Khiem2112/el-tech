@@ -38,7 +38,7 @@ import {
                 Lịch Sử Sử Dụng Mã Giảm Giá
               </h2>
               <p class="text-xs text-muted mt-0.5">
-                Mã: <strong class="font-mono text-primary">{{ coupon()?.code }}</strong>
+                Mã: <strong class="text-primary tabular-nums">{{ coupon()?.code }}</strong>
                 — {{ coupon()?.name }}
               </p>
             </div>
@@ -168,8 +168,8 @@ import {
                 <div class="p-3.5 bg-surface border border-line rounded-lg space-y-2 hover:border-line-strong transition-colors shadow-xs">
                   <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                      <span class="font-mono font-bold text-primary text-sm whitespace-nowrap">{{ item.order.code }}</span>
-                      <span class="text-muted text-xs font-mono">•</span>
+                      <span class="font-bold text-primary text-sm whitespace-nowrap tabular-nums">{{ item.order.code }}</span>
+                      <span class="text-muted text-xs">•</span>
                       <span class="text-muted text-xs whitespace-nowrap">Trạng thái ĐH: {{ item.order.status }}</span>
                     </div>
 

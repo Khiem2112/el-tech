@@ -23,7 +23,7 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-17" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-17" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-destructive uppercase text-sm tracking-wide">
@@ -41,7 +41,7 @@ import {
           </div>
 
           @if (isLoadingPreview()) {
-            <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted">
+            <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted text-sm">
               Đang tính toán chính sách tiền cọc và tồn kho...
             </div>
           } @else if (preview(); as p) {
@@ -52,10 +52,10 @@ import {
             } @else {
               <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
                 <div class="grid grid-cols-2 gap-2 text-muted">
-                  <div>Mã đơn: <span class="font-mono text-foreground font-bold tabular-nums">{{ order().code }}</span></div>
+                  <div>Mã đơn: <span class="text-foreground font-bold tabular tabular-nums">{{ order().code }}</span></div>
                   <div>Khách hàng: <span class="text-foreground font-medium">{{ order().receiverName }}</span></div>
-                  <div>Trạng thái: <span class="font-mono text-foreground">{{ order().status }}</span></div>
-                  <div>Hoàn tiền dự kiến: <span class="font-mono text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">{{ formatCurrency(p.refundableAmount) }}</span></div>
+                  <div>Trạng thái: <span class="text-foreground tabular tabular-nums">{{ order().status }}</span></div>
+                  <div>Hoàn tiền dự kiến: <span class="text-emerald-600 dark:text-emerald-400 font-bold tabular tabular-nums">{{ formatCurrency(p.refundableAmount) }}</span></div>
                 </div>
                 <div class="pt-1.5 border-t border-line text-muted">
                   Giải phóng {{ p.reservedItemsCount }} linh kiện giữ chỗ kho.
@@ -75,7 +75,7 @@ import {
               rows="2"
               [(ngModel)]="reason"
               placeholder="Nhập lý do hủy chi tiết..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-destructive resize-none"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-destructive resize-none"
             ></textarea>
           </div>
 
@@ -90,7 +90,7 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
               Hủy
             </button>
@@ -98,7 +98,7 @@ import {
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-destructive hover:opacity-90 text-white font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-destructive hover:opacity-90 text-white font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Hủy Đơn...' : 'Xác Nhận Hủy Đơn' }}
             </button>
