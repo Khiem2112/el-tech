@@ -29,20 +29,17 @@ type SelectedSerialEntry = {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-11" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-11" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
                 Xuất Kho Giao Hàng
               </h3>
-              <p class="text-xs text-muted">
-                Quy trình: Sẵn sàng xuất kho sang Bàn giao vận chuyển
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
@@ -50,27 +47,23 @@ type SelectedSerialEntry = {
           </div>
 
           @if (requirements()?.hasUnpaidAmendments) {
-            <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-700 dark:text-rose-300 text-xs space-y-1.5">
-              <div class="font-bold uppercase tracking-wider text-rose-800 dark:text-rose-200">
-                Chặn xuất kho: Phụ phí chưa thanh toán (PRC-008, PAY-019)
+            <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs space-y-1">
+              <div class="font-semibold uppercase tracking-wider text-xs">
+                Chặn xuất kho: Phụ phí chưa thanh toán
               </div>
-              <p class="leading-relaxed">
-                Đơn hàng tồn tại phụ lục điều chỉnh chưa thanh toán hoặc chưa được khách hàng xác nhận. Bắt buộc toàn bộ các khoản phụ phí phát sinh từ phụ lục phải được thanh toán đủ trước khi cho phép xuất kho.
+              <p>
+                Đơn hàng tồn tại phụ lục điều chỉnh chưa thanh toán. Vui lòng quyết toán phụ phí trước khi xuất kho.
               </p>
               @if (requirements()?.pendingAmendments; as amendments) {
                 <div class="space-y-1 pt-1">
                   @for (a of amendments; track a.id) {
-                    <div class="p-1.5 bg-surface-alt rounded border border-rose-500/20 flex items-center justify-between font-mono text-xs">
+                    <div class="p-1.5 bg-surface-alt rounded border border-line flex items-center justify-between font-mono text-xs tabular-nums">
                       <span>Phụ lục {{ a.type }}: {{ a.reason }}</span>
-                      <span class="font-bold text-amber-700 dark:text-amber-400">{{ a.fee }} VND (Trạng thái: {{ a.status }})</span>
+                      <span class="font-bold text-foreground">{{ a.fee }} VND</span>
                     </div>
                   }
                 </div>
               }
-            </div>
-          } @else {
-            <div class="p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-700 dark:text-blue-300 text-xs leading-relaxed">
-              Bắt buộc toàn bộ các khoản phụ phí điều chỉnh nếu có phải được thanh toán trước khi xuất kho. Đối với đơn linh kiện lẻ chưa qua lắp ráp, thao tác này sẽ tự động trừ tồn kho thực tế (onHand) và giải phóng tồn giữ chỗ (reserved).
             </div>
           }
 
@@ -239,21 +232,17 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-semibold text-xs rounded transition-colors disabled:opacity-50"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || isLoadingRequirements() || !canSubmit()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-bold text-xs rounded transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-xs rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
-              @if (isSubmitting()) {
-                <span>Đang xử lý xuất kho...</span>
-              } @else {
-                <span>Xác Nhận Xuất Kho Giao</span>
-              }
+              {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Xuất Kho Giao' }}
             </button>
           </div>
         </div>

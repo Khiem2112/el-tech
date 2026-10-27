@@ -23,20 +23,17 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-13" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 sm:p-6 space-y-4 text-xs text-foreground flex flex-col">
+        <div data-modal-id="MOD-13" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
                 Lên Lịch Hẹn Giao Lại
               </h3>
-              <p class="text-xs text-muted">
-                Quy trình: Giao thất bại sang Thiết lập lịch hẹn giao lại
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
@@ -44,32 +41,24 @@ import {
           </div>
 
           @if (isLimitExceeded()) {
-            <div class="p-3 bg-rose-500/10 border border-rose-500/30 rounded text-rose-700 dark:text-rose-300 text-xs space-y-1">
-              <div class="font-bold uppercase tracking-wider text-rose-800 dark:text-rose-200">
-                Chặn hẹn giao lại: Đã chạm giới hạn (ORD-024)
+            <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs space-y-1">
+              <div class="font-semibold uppercase tracking-wider text-xs">
+                Chặn hẹn giao lại: Đã chạm giới hạn 2 lần
               </div>
-              <p class="leading-relaxed">
-                Đơn hàng đã chạm mốc 2 lần giao lại thất bại (Hiện tại: {{ order().redeliveryAttemptCount }}/2). Hệ thống không cho phép lên lịch giao tiếp, nhân viên bắt buộc phải kích hoạt luồng Chuyển hoàn về kho.
+              <p>
+                Đơn hàng đã chạm mốc 2 lần giao lại thất bại. Bắt buộc kích hoạt luồng chuyển hoàn về kho.
               </p>
-            </div>
-          } @else {
-            <div class="p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-700 dark:text-blue-300 text-xs leading-relaxed">
-              Kiểm tra số lần giao lại hiện tại phải nhỏ hơn 2 (tối đa 2 lần). Khi xác nhận, số lần đếm tự động tăng thêm 1 và đơn hàng sẽ quay lại trạng thái Đang Giao Hàng (SHIPPING).
             </div>
           }
 
           <div class="p-3 bg-surface-alt border border-line rounded flex items-center justify-between">
-            <span class="text-muted">Số lần đã giao lại thất bại:</span>
+            <span class="text-muted">Số lần đã giao thất bại:</span>
             <span
-              class="font-mono font-bold px-2 py-0.5 rounded text-xs"
-              [class.bg-amber-50]="order().redeliveryAttemptCount < 2"
-              [class.text-amber-700]="order().redeliveryAttemptCount < 2"
-              [class.dark:bg-amber-950/60]="order().redeliveryAttemptCount < 2"
-              [class.dark:text-amber-300]="order().redeliveryAttemptCount < 2"
-              [class.bg-rose-50]="order().redeliveryAttemptCount >= 2"
-              [class.text-rose-700]="order().redeliveryAttemptCount >= 2"
-              [class.dark:bg-rose-950/60]="order().redeliveryAttemptCount >= 2"
-              [class.dark:text-rose-300]="order().redeliveryAttemptCount >= 2"
+              class="font-mono font-medium px-2 py-0.5 rounded text-xs tabular-nums"
+              [class.bg-surface]="order().redeliveryAttemptCount < 2"
+              [class.text-foreground]="order().redeliveryAttemptCount < 2"
+              [class.bg-destructive/10]="order().redeliveryAttemptCount >= 2"
+              [class.text-destructive]="order().redeliveryAttemptCount >= 2"
             >
               {{ order().redeliveryAttemptCount }} / 2 lần
             </span>
@@ -77,33 +66,33 @@ import {
 
           <div class="space-y-3">
             <div>
-              <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                Ngày hẹn giao lại
+              <label class="block font-medium text-muted text-xs mb-1">
+                Ngày hẹn giao lại:
               </label>
               <input
                 type="date"
                 [(ngModel)]="redeliveryDate"
                 [disabled]="isLimitExceeded()"
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
               />
             </div>
 
             <div>
-              <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                Ghi chú hẹn khách (Lộ trình, thời gian cụ thể)
+              <label class="block font-medium text-muted text-xs mb-1">
+                Ghi chú hẹn khách:
               </label>
               <input
                 type="text"
                 [(ngModel)]="note"
                 [disabled]="isLimitExceeded()"
                 placeholder="Khách hẹn giao sau 18h tối, gọi trước khi đến..."
-                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary disabled:opacity-50"
               />
             </div>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2.5 bg-rose-500/20 border border-rose-500/40 rounded text-rose-700 dark:text-rose-300 text-xs">
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
@@ -113,21 +102,17 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-semibold text-xs rounded transition-colors disabled:opacity-50"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground font-medium text-xs rounded transition-colors disabled:opacity-50 cursor-pointer"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || isLimitExceeded() || !redeliveryDate"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-bold text-xs rounded transition-opacity shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold text-xs rounded transition-opacity disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
-              @if (isSubmitting()) {
-                <span>Đang lưu lịch hẹn...</span>
-              } @else {
-                <span>Xác Nhận Giao Lại (Lần {{ order().redeliveryAttemptCount + 1 }})</span>
-              }
+              {{ isSubmitting() ? 'Đang Lưu...' : 'Xác Nhận Giao Lại (Lần ' + (order().redeliveryAttemptCount + 1) + ')' }}
             </button>
           </div>
         </div>

@@ -61,7 +61,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
-      <div class="h-9 bg-surface border border-line rounded px-4 flex items-center justify-between text-xs shadow-card">
+      <div class="flex items-center justify-between text-xs py-1">
         <nav class="flex items-center gap-1.5 text-muted">
           <a
             routerLink="/admin/orders"
@@ -76,14 +76,14 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           @if (detailService.order(); as ord) {
             <span>/</span>
             <span class="text-muted">
-              Chi Nhánh: {{ ord.fulfillmentBranch.code }} ({{ ord.fulfillmentBranch.name }})
+              {{ ord.fulfillmentBranch.code }} ({{ ord.fulfillmentBranch.name }})
             </span>
           }
         </nav>
       </div>
 
       @if (actionToastMessage()) {
-        <div class="p-3 bg-primary/10 border border-primary/30 rounded text-foreground text-xs flex items-center justify-between shadow-card">
+        <div class="p-3 bg-primary/10 border border-primary/30 rounded text-foreground text-xs flex items-center justify-between">
           <span class="font-medium">{{ actionToastMessage() }}</span>
           <button
             type="button"
@@ -96,12 +96,12 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
       }
 
       @if (detailService.isLoading()) {
-        <div class="p-12 text-center bg-surface border border-line rounded-lg shadow-card">
+        <div class="p-12 text-center bg-surface border border-line rounded-lg">
           <div class="text-primary font-bold text-sm">Đang tải dữ liệu chi tiết đơn hàng...</div>
           <p class="text-xs text-muted mt-1">Đang kết xuất thông tin khách hàng, linh kiện và sổ kiểm toán</p>
         </div>
       } @else if (detailService.error()) {
-        <div class="p-8 text-center bg-surface border border-rose-500/30 rounded-lg space-y-3 shadow-card">
+        <div class="p-8 text-center bg-surface border border-rose-500/30 rounded-lg space-y-3">
           <div class="text-rose-600 dark:text-rose-400 font-bold text-sm">Không thể truy xuất đơn hàng</div>
           <p class="text-xs text-muted">{{ detailService.error() }}</p>
           <div class="flex items-center justify-center gap-2 pt-2">
@@ -121,6 +121,86 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           </div>
         </div>
       } @else if (detailService.order(); as ord) {
+        <div class="bg-surface border border-line rounded-lg p-4 space-y-3">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="text-lg font-bold text-foreground font-mono tracking-tight tabular-nums">
+                  ĐƠN HÀNG #{{ ord.code }}
+                </h1>
+                <span class="px-2 py-0.5 rounded text-xs font-semibold" [class]="statusBadgeClass(ord.status)">
+                  {{ statusLabel(ord.status) }}
+                </span>
+                <span
+                  class="px-2 py-0.5 rounded text-xs font-mono border"
+                  [class.bg-surface-elevated]="ord.hasAssembly"
+                  [class.text-primary]="ord.hasAssembly"
+                  [class.border-line]="ord.hasAssembly"
+                  [class.bg-surface-alt]="!ord.hasAssembly"
+                  [class.text-muted]="!ord.hasAssembly"
+                  [class.border-line]="!ord.hasAssembly"
+                >
+                  {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
+                </span>
+              </div>
+              <div class="text-xs text-muted mt-1 font-mono tabular-nums">
+                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch.name }}</strong>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap text-xs">
+              <a
+                [routerLink]="['/admin/customers', ord.customer.id]"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                title="Hồ sơ khách hàng"
+              >
+                <span class="text-muted text-[11px] block">Khách hàng</span>
+                <span class="font-medium text-foreground truncate max-w-[120px] block">{{ ord.customer.name }}</span>
+              </a>
+
+              <a
+                [routerLink]="['/admin/inventory/ledger']"
+                [queryParams]="{ search: ord.code }"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                title="Sổ kho bất biến"
+              >
+                <span class="text-muted text-[11px] block">Phiếu kho</span>
+                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.stockMoves.length }}</span>
+              </a>
+
+              <a
+                href="#section-finance"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                title="Chi tiết thanh toán"
+              >
+                <span class="text-muted text-[11px] block">Thanh toán</span>
+                <span class="font-medium text-foreground block">
+                  {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Cọc 10%')) : 'Chưa thu' }}
+                </span>
+              </a>
+
+              <a
+                href="#section-timeline"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                title="Phụ lục đơn hàng"
+              >
+                <span class="text-muted text-[11px] block">Phụ lục</span>
+                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.amendments.length }}</span>
+              </a>
+
+              <a
+                [routerLink]="['/admin/settings/notification-outbox']"
+                [queryParams]="{ search: ord.code }"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                title="Nhật ký thông báo"
+              >
+                <span class="text-muted text-[11px] block">Outbox</span>
+                <span class="font-mono font-bold text-foreground tabular-nums block">{{ ord.statusHistories.length }}</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
         <app-order-status-bar [order]="ord" />
 
         <app-order-action-bar
@@ -128,93 +208,6 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           (actionTriggered)="onActionTriggered($event)"
           (refreshRequested)="loadOrder()"
         />
-
-        <div class="bg-surface border border-line rounded-lg p-4 sm:p-5 flex items-center justify-between flex-wrap gap-4 shadow-card">
-          <div>
-            <div class="flex items-center gap-2.5 flex-wrap">
-              <h1 class="text-xl font-bold text-foreground font-mono tracking-tight">
-                ĐƠN HÀNG #{{ ord.code }}
-              </h1>
-              <span class="px-2.5 py-0.5 rounded text-xs font-bold" [class]="statusBadgeClass(ord.status)">
-                {{ statusLabel(ord.status) }}
-              </span>
-              <span
-                class="px-2.5 py-0.5 rounded text-xs font-bold font-mono border"
-                [class.bg-surface-elevated]="ord.hasAssembly"
-                [class.text-primary]="ord.hasAssembly"
-                [class.border-line]="ord.hasAssembly"
-                [class.bg-surface-alt]="!ord.hasAssembly"
-                [class.text-muted]="!ord.hasAssembly"
-                [class.border-line]="!ord.hasAssembly"
-              >
-                {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
-              </span>
-            </div>
-            <div class="text-xs text-muted mt-1">
-              Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground">{{ ord.fulfillmentBranch.name }}</strong>
-            </div>
-          </div>
-
-          <!-- Smart Buttons Block -->
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
-            <a
-              [routerLink]="['/admin/customers', ord.customer.id]"
-              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
-              title="Nhấp để xem hồ sơ chi tiết khách hàng"
-            >
-              <div class="font-mono font-bold text-primary truncate group-hover:scale-105 transition-transform">
-                {{ ord.customer.name }}
-              </div>
-              <div class="text-xs text-muted uppercase tracking-wider">Khách Hàng</div>
-            </a>
-
-            <a
-              [routerLink]="['/admin/inventory/ledger']"
-              [queryParams]="{ search: ord.code }"
-              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
-              title="Nhấp để xem các chứng từ và bút toán xuất giữ trong sổ kho bất biến"
-            >
-              <div class="font-mono font-bold text-amber-600 dark:text-amber-400 group-hover:scale-105 transition-transform">
-                {{ ord.stockMoves.length }} phiếu
-              </div>
-              <div class="text-xs text-muted uppercase tracking-wider">Phiếu Xuất/Giữ Kho</div>
-            </a>
-
-            <a
-              href="#section-finance"
-              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
-              title="Nhấp để xem chi tiết chứng từ thanh toán và quyết toán"
-            >
-              <div class="font-mono font-bold text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform">
-                {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn tiền' : 'Cọc 10%')) : 'Chưa thu' }}
-              </div>
-              <div class="text-xs text-muted uppercase tracking-wider">Thanh Toán</div>
-            </a>
-
-            <a
-              href="#section-timeline"
-              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
-              title="Nhấp để xem các phụ lục đơn hàng và lịch sử thay đổi"
-            >
-              <div class="font-mono font-bold text-foreground group-hover:scale-105 transition-transform">
-                {{ ord.amendments.length }} phụ lục
-              </div>
-              <div class="text-xs text-muted uppercase tracking-wider">Phụ Lục Đơn</div>
-            </a>
-
-            <a
-              [routerLink]="['/admin/settings/notification-outbox']"
-              [queryParams]="{ search: ord.code }"
-              class="p-2 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors cursor-pointer group block shadow-card"
-              title="Nhấp để xem nhật ký thông báo email/SMS đã phát cho đơn này"
-            >
-              <div class="font-mono font-bold text-primary group-hover:scale-105 transition-transform">
-                {{ ord.statusHistories.length }} sự kiện
-              </div>
-              <div class="text-xs text-muted uppercase tracking-wider">Nhật Ký Outbox</div>
-            </a>
-          </div>
-        </div>
 
         <app-order-buyer-section [order]="ord" />
 
@@ -467,25 +460,26 @@ export class AdminOrderDetailPageComponent implements OnInit {
   statusBadgeClass(status: string): string {
     switch (status) {
       case 'CONFIRMED':
+        return 'bg-primary/10 text-primary border border-primary/20';
       case 'COMPLETED':
-        return 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30';
       case 'PREPARING_COMPONENTS':
       case 'ASSEMBLING':
-        return 'bg-blue-500/20 text-blue-400 border border-blue-500/40';
+        return 'bg-surface-elevated text-primary border border-primary/30';
       case 'READY_FOR_PICKUP':
       case 'SHIPPING':
-        return 'bg-blue-500/20 text-blue-400 border border-blue-500/40';
+        return 'bg-surface-alt text-foreground border border-line';
       case 'PENDING_COD_CONFIRMATION':
       case 'PENDING_PAYMENT':
-      case 'DELIVERY_FAILED':
-        return 'bg-amber-500/20 text-amber-400 border border-amber-500/40';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'ON_HOLD':
-        return 'bg-warning/20 text-warning border border-warning/40';
+        return 'bg-warning/10 text-warning border border-warning/30';
       case 'CANCELLED':
       case 'RETURNING':
-        return 'bg-rose-500/20 text-rose-400 border border-rose-500/40';
+      case 'DELIVERY_FAILED':
+        return 'bg-destructive/10 text-destructive border border-destructive/20';
       default:
-        return 'bg-slate-700 text-slate-300';
+        return 'bg-surface-alt text-muted border border-line';
     }
   }
 

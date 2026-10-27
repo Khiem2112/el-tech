@@ -4,7 +4,7 @@
 - Governing Spec: [MASTER.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/design-system/el-tech/MASTER.md), [SKILL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/SKILL.md), [distill.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/reference/distill.md), [admin-portal-screens-and-modals.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/docs/admin-portal-screens-and-modals.md) (SCR-20, SCR-21, MOD-07 đến MOD-21)
 - Scope: frontend
 - Priority: P1 (High)
-- Status: To Do
+- Status: Complete
 
 ## Traceability & Graph Links
 
@@ -73,9 +73,9 @@ Thực hiện tinh gọn giao diện theo nguyên tắc Impeccable Distill cho t
 
 ## Checklist
 
-- [ ] Tinh gọn trang danh sách đơn hàng và các tab pipeline.
-- [ ] Loại bỏ hiện tượng thẻ card lồng card trên trang chi tiết đơn hàng.
-- [ ] Tinh gọn thanh trạng thái đơn và thiết kế lại thanh tác vụ chỉ giữ 1 Primary CTA duy nhất + menu phụ.
-- [ ] Tinh gọn các khối thông tin người mua, dòng sản phẩm PC, tóm tắt tài chính và lịch sử.
-- [ ] Chuẩn hóa và tinh gọn 15 hộp thoại xử lý đơn hàng về mẫu hộp thoại nhẹ nhàng, nhanh chóng.
-- [ ] Chạy kiểm tra `npm run check:fe` với exit code 0.
+- [x] Tinh gọn trang danh sách đơn hàng và các tab pipeline.
+- [x] Loại bỏ hiện tượng thẻ card lồng card trên trang chi tiết đơn hàng.
+- [x] Tinh gọn thanh trạng thái đơn và thiết kế lại thanh tác vụ chỉ giữ 1 Primary CTA duy nhất + menu phụ.
+- [x] Tinh gọn các khối thông tin người mua, dòng sản phẩm PC, tóm tắt tài chính và lịch sử.
+- [x] Chuẩn hóa và tinh gọn 15 hộp thoại xử lý đơn hàng về mẫu hộp thoại nhẹ nhàng, nhanh chóng.
+- [x] Chạy kiểm tra `npm run check:fe` với exit code 0.

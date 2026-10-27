@@ -66,10 +66,10 @@ type OrderGroup = {
             <button
               type="button"
               (click)="onTabClick(tab.key)"
-              class="px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors flex items-center gap-1.5 text-[13px] font-semibold"
+              class="px-3 py-1.5 rounded-md whitespace-nowrap transition-colors flex items-center gap-1.5 text-xs font-medium"
               [class.bg-primary]="orderService.selectedTab() === tab.key"
               [class.text-primary-foreground]="orderService.selectedTab() === tab.key"
-              [class.font-bold]="orderService.selectedTab() === tab.key"
+              [class.font-semibold]="orderService.selectedTab() === tab.key"
               [class.text-muted]="orderService.selectedTab() !== tab.key"
               [class.hover:text-foreground]="orderService.selectedTab() !== tab.key"
               [class.hover:bg-surface-alt]="orderService.selectedTab() !== tab.key"
@@ -77,14 +77,13 @@ type OrderGroup = {
               <span>{{ tab.label }}</span>
               @if (getTabCount(tab.key) > 0) {
                 <span
-                  class="px-1.5 py-0.5 rounded-full font-mono text-xs font-semibold"
-                  [class.bg-black/20]="orderService.selectedTab() === tab.key"
+                  class="px-1.5 py-0.2 rounded font-mono text-[11px] tabular-nums"
+                  [class.bg-black/25]="orderService.selectedTab() === tab.key"
                   [class.text-primary-foreground]="orderService.selectedTab() === tab.key"
-                  [class.bg-amber-500/20]="orderService.selectedTab() !== tab.key && tab.isUrgent"
-                  [class.text-amber-700]="orderService.selectedTab() !== tab.key && tab.isUrgent"
-                  [class.dark:text-amber-400]="orderService.selectedTab() !== tab.key && tab.isUrgent"
-                  [class.bg-surface-alt]="orderService.selectedTab() !== tab.key && !tab.isUrgent"
-                  [class.text-foreground]="orderService.selectedTab() !== tab.key && !tab.isUrgent"
+                  [class.bg-surface-alt]="orderService.selectedTab() !== tab.key"
+                  [class.border]="orderService.selectedTab() !== tab.key"
+                  [class.border-line]="orderService.selectedTab() !== tab.key"
+                  [class.text-foreground]="orderService.selectedTab() !== tab.key"
                 >
                   {{ getTabCount(tab.key) }}
                 </span>
@@ -301,24 +300,24 @@ type OrderGroup = {
                       class="hover:bg-surface-alt/60 transition-colors cursor-pointer"
                       (click)="onRowClick(order.id)"
                     >
-                      <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap">
+                      <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap tabular-nums">
                         <a
                           [routerLink]="['/admin/orders', order.id]"
                           (click)="$event.stopPropagation()"
-                          class="hover:text-primary transition-colors"
+                          class="hover:text-primary transition-colors text-xs font-semibold"
                         >
                           {{ order.code }}
                         </a>
                         <div class="mt-0.5">
                           @if (order.hasAssembly) {
                             <span
-                              class="text-xs font-mono text-primary-strong bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-[11px] font-mono text-primary bg-primary/10 border border-primary/20 px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
                             >
                               Lắp ráp PC
                             </span>
                           } @else {
                             <span
-                              class="text-xs font-mono text-muted bg-surface-alt border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
+                              class="text-[11px] font-mono text-muted bg-surface-alt border border-line px-1.5 py-0.5 rounded whitespace-nowrap inline-block"
                             >
                               Linh kiện lẻ
                             </span>
@@ -326,30 +325,30 @@ type OrderGroup = {
                         </div>
                       </td>
 
-                      <td class="py-3 px-4 text-muted whitespace-nowrap">
+                      <td class="py-3 px-4 text-muted whitespace-nowrap font-mono text-xs tabular-nums">
                         <div>{{ formatDateTime(order.submittedAt) }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">
-                        <div class="font-bold text-foreground">{{ order.receiverName }}</div>
-                        <div class="text-xs text-muted font-mono">{{ order.receiverPhone }}</div>
+                        <div class="font-medium text-foreground text-xs">{{ order.receiverName }}</div>
+                        <div class="text-[11px] text-muted font-mono tabular-nums">{{ order.receiverPhone }}</div>
                       </td>
 
                       <td class="py-3 px-4 text-foreground whitespace-nowrap">
-                        <div class="font-semibold">{{ order.branch.code }}</div>
-                        <div class="text-muted text-xs truncate max-w-[140px]">{{ order.branch.name }}</div>
+                        <div class="font-medium text-xs">{{ order.branch.code }}</div>
+                        <div class="text-muted text-[11px] truncate max-w-[140px]">{{ order.branch.name }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">
                         @if (order.fulfillmentMethod === 'DELIVERY') {
                           <span
-                            class="px-2 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800/40 whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Giao tận nơi
                           </span>
                         } @else {
                           <span
-                            class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Nhận tại shop
                           </span>
@@ -360,33 +359,33 @@ type OrderGroup = {
                         @if (order.paymentMethod === 'QR') {
                           @if (order.payment?.state === 'PAID') {
                             <span
-                              class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 whitespace-nowrap"
+                              class="px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap"
                             >
                               QR đã thanh toán
                             </span>
                           } @else {
                             <span
-                              class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 whitespace-nowrap"
+                              class="px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap"
                             >
                               QR chờ thanh toán
                             </span>
                           }
                         } @else {
                           <span
-                            class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-foreground border border-line whitespace-nowrap"
+                            class="px-2 py-0.5 rounded text-[11px] font-medium bg-surface-alt text-foreground border border-line whitespace-nowrap"
                           >
                             Thu tiền COD
                           </span>
                         }
                       </td>
 
-                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
+                      <td class="py-3 px-4 text-right font-mono font-bold tabular-nums text-foreground whitespace-nowrap text-xs">
                         {{ formatCurrency(order.grandTotal) }}
                       </td>
 
                       <td class="py-3 px-4 text-center whitespace-nowrap">
                         <span
-                          class="px-2.5 py-0.5 rounded-full text-xs font-semibold inline-block whitespace-nowrap"
+                          class="px-2.5 py-0.5 rounded text-[11px] font-medium inline-block whitespace-nowrap"
                           [class]="getStatusBadgeClass(order.status)"
                         >
                           {{ getStatusLabel(order.status) }}
@@ -683,31 +682,27 @@ export class AdminOrdersPageComponent implements OnInit {
   getStatusBadgeClass(status: AdminOrderStatus): string {
     switch (status) {
       case 'PENDING_PAYMENT':
-        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30';
       case 'PENDING_COD_CONFIRMATION':
-        return 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border border-orange-500/30';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'CONFIRMED':
-        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30';
+        return 'bg-primary/10 text-primary border border-primary/20';
       case 'PREPARING_COMPONENTS':
-        return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/30';
       case 'ASSEMBLING':
-        return 'bg-surface-elevated text-primary border border-line';
+        return 'bg-surface-elevated text-primary border border-primary/30';
       case 'READY_FOR_PICKUP':
-        return 'bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/30';
       case 'SHIPPING':
-        return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/30';
+        return 'bg-surface-alt text-foreground border border-line';
       case 'DELIVERY_FAILED':
-        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/30';
+        return 'bg-destructive/10 text-destructive border border-destructive/20';
       case 'RETURNING':
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 border border-yellow-500/30';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'RETURNED_TO_BRANCH':
-        return 'bg-slate-500/10 text-slate-700 dark:text-slate-400 border border-slate-500/30';
-      case 'COMPLETED':
-        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/40 font-bold';
-      case 'ON_HOLD':
-        return 'bg-warning/10 text-warning border border-warning/30 font-bold';
       case 'CANCELLED':
         return 'bg-surface-alt text-muted border border-line';
+      case 'COMPLETED':
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-medium';
+      case 'ON_HOLD':
+        return 'bg-warning/10 text-warning border border-warning/30 font-medium';
       default:
         return 'bg-surface-alt text-foreground border border-line';
     }

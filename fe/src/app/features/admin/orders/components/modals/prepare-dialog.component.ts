@@ -21,53 +21,46 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-08" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 sm:p-6 space-y-4 text-xs text-foreground">
+        <div data-modal-id="MOD-08" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Bắt Đầu Soạn Hàng Linh Kiện
+                Bắt Đầu Soạn Hàng
               </h3>
-              <p class="text-xs text-muted">
-                Quy trình: Đã xác nhận sang Bắt đầu soạn hàng
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-700 dark:text-blue-300 text-xs leading-relaxed">
-            Chuyển đơn sang khâu soạn hàng thực tế tại kho. Từ thời điểm này trở đi, khách hàng không còn quyền tự hủy đơn trên giao diện người dùng (ORD-015). Nếu đơn hàng có tiền đặt cọc lắp ráp máy 10%, khoản cọc sẽ bị tịch thu nếu khách hàng yêu cầu hủy sau bước này.
-          </div>
-
-          <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-muted">
+          <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
             <div class="flex justify-between">
-              <span>Mã đơn hàng:</span>
-              <span class="font-mono text-foreground font-bold">{{ order().code }}</span>
+              <span class="text-muted">Mã đơn hàng:</span>
+              <span class="font-mono text-primary font-bold tabular-nums">{{ order().code }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Khách hàng:</span>
-              <span class="text-foreground">{{ order().customer.name }}</span>
+              <span class="text-muted">Khách hàng:</span>
+              <span class="text-foreground font-medium">{{ order().customer.name }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Kho thực hiện:</span>
-              <span class="text-foreground">{{ order().fulfillmentBranch.name }}</span>
+              <span class="text-muted">Kho thực hiện:</span>
+              <span class="text-foreground font-medium">{{ order().fulfillmentBranch.name }}</span>
             </div>
             <div class="flex justify-between">
-              <span>Dạng đơn hàng:</span>
-              <span class="font-semibold text-foreground">
+              <span class="text-muted">Dạng đơn:</span>
+              <span class="font-medium text-foreground">
                 {{ order().hasAssembly ? 'Máy tính lắp ráp (Custom PC)' : 'Linh kiện bán lẻ' }}
               </span>
             </div>
           </div>
 
           <div class="space-y-1">
-            <label class="block font-semibold text-muted text-xs">Ghi chú phân công soạn kho (Tùy chọn):</label>
+            <label class="block font-medium text-muted text-xs">Ghi chú phân công soạn kho:</label>
             <input
               type="text"
               [(ngModel)]="note"
@@ -77,7 +70,7 @@ import {
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-700 dark:text-rose-300 text-xs">
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
@@ -87,15 +80,15 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-bold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
             >
               {{ isSubmitting() ? 'Đang Chuyển...' : 'Bắt Đầu Soạn Hàng' }}
             </button>

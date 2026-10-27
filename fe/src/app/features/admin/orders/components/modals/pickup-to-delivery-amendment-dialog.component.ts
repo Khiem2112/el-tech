@@ -29,14 +29,9 @@ import {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
         <div data-modal-id="MOD-19" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
-            <div>
-              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Chuyển Đổi Sang Giao Hàng Tận Nơi
-              </h3>
-              <p class="text-xs text-muted-foreground">
-                Quy trình: Tạo phụ lục chuyển đổi hình thức nhận hàng (Nhận tại quầy sang Giao tận nơi)
-              </p>
-            </div>
+            <h3 class="font-bold text-foreground text-sm tracking-wide">
+              Chuyển Đổi Sang Giao Hàng Tận Nơi
+            </h3>
             <button
               type="button"
               (click)="onClose()"
@@ -47,26 +42,15 @@ import {
             </button>
           </div>
 
-          <div class="p-3 bg-blue-500/10 border border-blue-500/30 rounded text-blue-700 dark:text-blue-300 text-xs leading-relaxed space-y-1">
-            <div>Phụ lục sẽ cập nhật thông tin địa chỉ giao nhận mà không làm thay đổi snapshot giá ban đầu.</div>
-            <div>
-              @if (order().paymentMethod === 'COD') {
-                Đối với đơn COD, phụ phí giao hàng sẽ tự động cộng vào số tiền COD cần thu khi giao.
-              } @else {
-                Đối với đơn QR/Online, hệ thống sẽ sinh mã QR phụ phí giao hàng riêng; kiện hàng chỉ được phép xuất kho sau khi phụ phí này đã thanh toán.
-              }
-            </div>
-          </div>
-
           <div class="flex-1 overflow-y-auto space-y-3 pr-1">
             <div class="space-y-1">
               <label class="block font-semibold text-muted-foreground text-xs uppercase">
-                Địa chỉ giao hàng chi tiết:
+                Địa chỉ giao hàng:
               </label>
               <input
                 type="text"
                 [(ngModel)]="deliveryAddress"
-                placeholder="Số nhà, ngõ/đường, phường/xã, quận/huyện, tỉnh/thành..."
+                placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành..."
                 class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               />
             </div>
@@ -85,7 +69,7 @@ import {
                 <input
                   type="text"
                   [(ngModel)]="receiverPhone"
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono text-foreground text-xs focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums text-foreground text-xs focus:outline-none focus:border-primary"
                 />
               </div>
             </div>
@@ -93,16 +77,16 @@ import {
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block font-semibold text-muted-foreground text-xs uppercase mb-1">
-                  Biểu phí giao hàng áp dụng (VND):
+                  Phí giao hàng (VND):
                 </label>
                 <input
                   type="number"
                   [(ngModel)]="shippingFee"
-                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono font-bold text-primary text-xs focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums font-bold text-primary text-xs focus:outline-none focus:border-primary"
                 />
               </div>
               <div>
-                <label class="block font-semibold text-muted-foreground text-xs uppercase mb-1">Kênh xác nhận khách:</label>
+                <label class="block font-semibold text-muted-foreground text-xs uppercase mb-1">Kênh xác nhận:</label>
                 <app-select
                   [options]="channelOptions"
                   [value]="acceptanceChannel"
@@ -115,7 +99,7 @@ import {
             <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
               <div class="flex items-center justify-between">
                 <label class="block font-semibold text-foreground text-xs uppercase">
-                  Mã xác thực OTP khách hàng (6 chữ số):
+                  Mã OTP xác thực:
                 </label>
                 <button
                   type="button"
@@ -129,12 +113,12 @@ import {
                 type="text"
                 maxlength="6"
                 [(ngModel)]="otpCode"
-                placeholder="Nhập 6 số OTP xác nhận từ khách (ví dụ: 123456)..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono font-bold text-foreground text-xs tracking-widest focus:outline-none focus:border-primary"
+                placeholder="Nhập 6 số OTP..."
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono tabular-nums font-bold text-foreground text-xs tracking-widest focus:outline-none focus:border-primary"
               />
               @if (otpSent()) {
                 <div class="text-xs text-muted-foreground">
-                  Đã gửi yêu cầu mã xác thực chuyển đổi hình thức nhận hàng tới {{ receiverPhone }}.
+                  Đã gửi yêu cầu mã xác thực tới {{ receiverPhone }}.
                 </div>
               }
             </div>
@@ -142,10 +126,10 @@ import {
             @if (order().paymentMethod === 'QR' && shippingFee > 0) {
               <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
                 <div class="font-semibold text-foreground text-xs uppercase">
-                  Mã VietQR thu phụ phí giao hàng tận nơi:
+                  Mã VietQR thu phụ phí giao hàng:
                 </div>
                 <div class="flex items-center gap-4">
-                  <div class="w-28 h-28 bg-white p-1 rounded border border-line flex-shrink-0 flex items-center justify-center">
+                  <div class="w-24 h-24 bg-white p-1 rounded border border-line shrink-0 flex items-center justify-center">
                     <img
                       [src]="vietQrUrl()"
                       alt="VietQR Phụ phí giao hàng"
@@ -153,10 +137,9 @@ import {
                     />
                   </div>
                   <div class="space-y-1 text-xs text-muted-foreground">
-                    <div>Số tiền phụ phí: <strong class="text-primary font-mono font-bold">{{ formatCurrency(shippingFee) }}</strong></div>
+                    <div>Số tiền phụ phí: <strong class="text-primary font-mono tabular-nums font-bold">{{ formatCurrency(shippingFee) }}</strong></div>
                     <div>Nội dung CK: <strong class="text-foreground font-mono font-bold">AMEND {{ order().code }}</strong></div>
                     <div>Ngân hàng: <span class="text-foreground font-medium">MB Bank (0388234567)</span></div>
-                    <div class="text-xs text-muted-foreground italic">Khách hàng quét mã thanh toán phụ phí trước khi đơn hàng được xuất kho.</div>
                   </div>
                 </div>
               </div>
@@ -169,7 +152,7 @@ import {
               <input
                 type="text"
                 [(ngModel)]="acceptedByValue"
-                placeholder="Nhập mã xác thực cuộc gọi hoặc thông tin người liên hệ xác nhận..."
+                placeholder="Mã cuộc gọi hoặc thông tin xác nhận..."
                 class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               />
             </div>
@@ -179,7 +162,7 @@ import {
               <textarea
                 rows="2"
                 [(ngModel)]="reason"
-                placeholder="Khách hàng không tiện qua showroom, yêu cầu giao tận nơi..."
+                placeholder="Lý do chuyển sang giao hàng tận nơi..."
                 class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               ></textarea>
             </div>
@@ -198,7 +181,7 @@ import {
               [disabled]="isSubmitting()"
               class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"

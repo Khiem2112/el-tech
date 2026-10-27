@@ -15,42 +15,39 @@ type FlowStep = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg p-3 sm:p-4 space-y-3 shadow-card text-foreground">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-xs">
+    <div class="bg-surface border border-line rounded-lg p-3 sm:p-3.5 space-y-2.5 text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-muted font-semibold uppercase text-xs tracking-wider">
-            Phân loại vận hành:
-          </span>
-          <div class="inline-flex items-center rounded-full bg-surface-alt p-0.5 border border-line text-xs">
+          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs font-mono">
             <span
-              class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-primary]="order().fulfillmentMethod === 'DELIVERY'"
-              [class.text-primary-foreground]="order().fulfillmentMethod === 'DELIVERY'"
+              class="px-2 py-0.5 rounded font-medium transition-colors"
+              [class.bg-surface]="order().fulfillmentMethod === 'DELIVERY'"
+              [class.text-foreground]="order().fulfillmentMethod === 'DELIVERY'"
               [class.text-muted]="order().fulfillmentMethod !== 'DELIVERY'"
             >
               Giao Tận Nơi
             </span>
             <span
-              class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-primary]="order().fulfillmentMethod === 'PICKUP'"
-              [class.text-primary-foreground]="order().fulfillmentMethod === 'PICKUP'"
+              class="px-2 py-0.5 rounded font-medium transition-colors"
+              [class.bg-surface]="order().fulfillmentMethod === 'PICKUP'"
+              [class.text-foreground]="order().fulfillmentMethod === 'PICKUP'"
               [class.text-muted]="order().fulfillmentMethod !== 'PICKUP'"
             >
               Nhận Tại Shop
             </span>
           </div>
 
-          <div class="inline-flex items-center rounded-full bg-surface-alt p-0.5 border border-line text-xs">
+          <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs font-mono">
             <span
-              class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
-              [class.bg-surface-elevated]="order().hasAssembly"
+              class="px-2 py-0.5 rounded font-medium transition-colors"
+              [class.bg-surface]="order().hasAssembly"
               [class.text-primary]="order().hasAssembly"
               [class.text-muted]="!order().hasAssembly"
             >
               Có Lắp Ráp PC
             </span>
             <span
-              class="px-2.5 py-0.5 rounded-full font-bold transition-colors"
+              class="px-2 py-0.5 rounded font-medium transition-colors"
               [class.bg-surface]="!order().hasAssembly"
               [class.text-foreground]="!order().hasAssembly"
               [class.text-muted]="order().hasAssembly"
@@ -61,36 +58,36 @@ type FlowStep = {
         </div>
 
         @if (isExceptionState()) {
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded border text-xs font-bold" [class]="exceptionClass()">
-            <span>Trạng thái ngoại lệ:</span>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded border text-xs font-medium" [class]="exceptionClass()">
+            <span class="text-muted">Ngoại lệ:</span>
             <span>{{ exceptionLabel() }}</span>
           </div>
         }
       </div>
 
-      <div class="overflow-x-auto pb-1">
-        <div class="flex items-center min-w-[620px] gap-1.5">
+      <div class="overflow-x-auto pb-0.5">
+        <div class="flex items-center min-w-[580px] gap-1.5">
           @for (step of activeFlowSteps(); track step.key; let idx = $index; let last = $last) {
             <div
-              class="flex-1 px-3 py-2 rounded text-xs font-semibold text-center border transition-all select-none"
+              class="flex-1 px-2.5 py-1.5 rounded text-xs text-center border transition-all select-none"
               [class.bg-primary]="isStepActive(step)"
               [class.text-primary-foreground]="isStepActive(step)"
               [class.border-primary]="isStepActive(step)"
-              [class.font-bold]="isStepActive(step)"
+              [class.font-semibold]="isStepActive(step)"
               [class.bg-primary/10]="isStepCompleted(step)"
               [class.text-primary]="isStepCompleted(step)"
-              [class.border-primary/30]="isStepCompleted(step)"
+              [class.border-primary/20]="isStepCompleted(step)"
               [class.bg-surface-alt]="isStepPending(step)"
               [class.text-muted]="isStepPending(step)"
               [class.border-line]="isStepPending(step)"
             >
-              <div class="text-xs uppercase tracking-wider text-muted" [class.text-primary-foreground]="isStepActive(step)">
+              <div class="text-[10px] uppercase tracking-wider text-muted font-mono" [class.text-primary-foreground]="isStepActive(step)">
                 Chặng {{ idx + 1 }}
               </div>
-              <div class="mt-0.5 truncate">{{ step.label }}</div>
+              <div class="mt-0.5 truncate font-medium">{{ step.label }}</div>
             </div>
             @if (!last) {
-              <div class="text-muted font-bold px-0.5">&gt;</div>
+              <div class="text-muted/40 font-mono px-0.5 text-xs">&rarr;</div>
             }
           }
         </div>
@@ -185,15 +182,15 @@ export class OrderStatusBarComponent {
   readonly exceptionClass = computed<string>(() => {
     const s = this.order().status;
     if (s === 'CANCELLED') {
-      return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+      return 'bg-destructive/10 text-destructive border-destructive/20';
     }
     if (s === 'ON_HOLD') {
       return 'bg-warning/10 text-warning border-warning/30';
     }
     if (s === 'PENDING_COD_CONFIRMATION' || s === 'DELIVERY_FAILED') {
-      return 'bg-amber-500/10 text-amber-300 border-amber-500/30';
+      return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
     }
-    return 'bg-blue-500/10 text-blue-300 border-blue-500/30';
+    return 'bg-surface-alt text-muted border-line';
   });
 
   private getStepOrderIndex(status: AdminOrderStatus): number {

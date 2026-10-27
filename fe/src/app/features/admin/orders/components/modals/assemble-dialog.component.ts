@@ -29,39 +29,32 @@ type SelectedSerialEntry = {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-09" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-09" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Chuyển Lắp Ráp Máy Tính
+                Bàn Giao Lắp Ráp PC
               </h3>
-              <p class="text-xs text-muted">
-                Quy trình: Đang soạn hàng sang Bàn giao lắp ráp PC
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-surface-alt border border-line rounded text-muted text-xs leading-relaxed">
-            Chỉ áp dụng cho đơn hàng có linh kiện lắp ráp PC. Thao tác này sẽ tự động xác thực việc trừ tồn kho thực tế (onHand) và giải phóng số lượng giữ (reserved) của toàn bộ linh kiện cấu thành trong một giao dịch duy nhất.
-          </div>
-
           <div class="space-y-1">
-            <label class="block font-semibold text-muted text-xs uppercase">
-              Kỹ thuật viên phụ trách lắp ráp:
+            <label class="block font-medium text-muted text-xs">
+              Kỹ thuật viên phụ trách:
             </label>
             <input
               type="text"
               [(ngModel)]="technicianName"
-              placeholder="Nhập tên kỹ thuật viên hoặc mã KTV..."
-              class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+              placeholder="Nhập tên hoặc mã kỹ thuật viên..."
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
             />
           </div>
 
@@ -203,17 +196,17 @@ type SelectedSerialEntry = {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isAllSerialsProvided()"
-              class="px-4 py-2 bg-primary hover:bg-primary-strong text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
             >
-              {{ isSubmitting() ? 'Đang Xuất Kho Lắp Ráp...' : 'Xác Nhận Chuyển Bàn Lắp Ráp' }}
+              {{ isSubmitting() ? 'Đang Chuyển...' : 'Xác Nhận Chuyển Bàn Lắp Ráp' }}
             </button>
           </div>
         </div>

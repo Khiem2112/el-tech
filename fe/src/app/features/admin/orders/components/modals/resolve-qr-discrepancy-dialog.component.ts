@@ -23,79 +23,65 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-20" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-20" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
-              <h3 class="font-bold text-rose-600 dark:text-rose-400 uppercase text-sm tracking-wide">
-                Đối Soát Giao Dịch Lệch VietQR
+              <h3 class="font-bold text-destructive uppercase text-sm tracking-wide">
+                Đối Soát Lệch VietQR
               </h3>
-              <p class="text-xs text-muted-foreground">
-                Tuân thủ quy định: Tuyệt đối không chấp nhận nộp thêm tiền mặt đối với đơn thanh toán trực tuyến
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-800 dark:text-amber-300 text-xs leading-relaxed space-y-1">
-            <div class="font-bold uppercase tracking-wider text-xs">Quy tắc đối soát thanh toán trực tuyến:</div>
-            <div>- Hệ thống không hỗ trợ thu tiền mặt bổ sung cho đơn đặt online và không cho phép chuyển bù nhiều lần.</div>
-            <div>- "Khớp thủ công" chỉ hợp lệ khi tài khoản ngân hàng đã thực nhận đủ 100% nhưng sai cú pháp mã tham chiếu.</div>
-            <div>- Trường hợp chuyển thiếu tiền hoặc hết hạn 24 giờ đối soát: Bắt buộc hủy đơn và hoàn trả 100% số tiền thực nhận sang hàng đợi REFUND_PENDING.</div>
-          </div>
-
           @if (isLoadingDetail()) {
-            <div class="p-6 text-center bg-surface-alt border border-line rounded text-muted-foreground">
+            <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted">
               Đang tải dữ liệu giao dịch webhook và tài khoản ngân hàng...
             </div>
           } @else if (discrepancy(); as d) {
-            <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
+            <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
               <div class="flex justify-between items-center">
-                <span class="text-muted-foreground">Số tiền đơn hàng yêu cầu:</span>
-                <strong class="font-mono text-foreground text-sm whitespace-nowrap tabular-nums">{{ formatCurrency(d.expectedAmount) }}</strong>
+                <span class="text-muted">Đơn hàng yêu cầu:</span>
+                <strong class="font-mono text-foreground tabular-nums">{{ formatCurrency(d.expectedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-muted-foreground">Số tiền thực nhận từ ngân hàng:</span>
-                <strong class="font-mono text-rose-600 dark:text-rose-400 text-sm whitespace-nowrap tabular-nums">{{ formatCurrency(d.receivedAmount) }}</strong>
+                <span class="text-muted">Thực nhận ngân hàng:</span>
+                <strong class="font-mono text-foreground font-bold tabular-nums">{{ formatCurrency(d.receivedAmount) }}</strong>
               </div>
               <div class="flex justify-between items-center pt-1 border-t border-line">
-                <span class="text-muted-foreground">Chênh lệch phát hiện:</span>
+                <span class="text-muted">Chênh lệch:</span>
                 <strong
-                  class="font-mono font-bold whitespace-nowrap tabular-nums"
-                  [class.text-rose-600]="d.isUnderpaid"
-                  [class.dark:text-rose-400]="d.isUnderpaid"
+                  class="font-mono font-semibold tabular-nums"
+                  [class.text-destructive]="d.isUnderpaid"
                   [class.text-emerald-600]="d.isExactMatch"
                   [class.dark:text-emerald-400]="d.isExactMatch"
-                  [class.text-amber-600]="d.isOverpaid"
+                  [class.text-amber-700]="d.isOverpaid"
                   [class.dark:text-amber-400]="d.isOverpaid"
                 >
                   {{ formatCurrency(d.differenceAmount) }}
-                  @if (d.isUnderpaid) { (Chuyển thiếu tiền) }
-                  @else if (d.isOverpaid) { (Chuyển thừa tiền) }
-                  @else { (Khớp 100% số tiền) }
+                  @if (d.isUnderpaid) { (Chuyển thiếu) }
+                  @else if (d.isOverpaid) { (Chuyển thừa) }
+                  @else { (Khớp số tiền) }
                 </strong>
               </div>
               @if (d.providerReference) {
-                <div class="text-xs text-muted-foreground">
-                  Mã tham chiếu: <span class="font-mono text-foreground">{{ d.providerReference }}</span>
-                  @if (d.providerTransactionId) {
-                    | Mã GD NH: <span class="font-mono text-foreground">{{ d.providerTransactionId }}</span>
-                  }
+                <div class="text-[11px] text-muted pt-0.5 font-mono">
+                  Mã GD: {{ d.providerReference }}
                 </div>
               }
             </div>
 
             <div class="space-y-2">
-              <label class="block font-semibold text-muted-foreground text-xs uppercase">Chọn phương án giải quyết:</label>
+              <label class="block font-medium text-muted text-xs">Phương án xử lý:</label>
               <div class="space-y-2">
                 <label
-                  class="flex items-start gap-2.5 p-3 rounded border transition-colors"
+                  class="flex items-start gap-2.5 p-2.5 rounded border transition-colors"
                   [class.bg-surface-alt]="d.isExactMatch"
                   [class.border-primary]="selectedResolution === 'MANUAL_MATCH'"
                   [class.border-line]="selectedResolution !== 'MANUAL_MATCH'"
@@ -112,23 +98,18 @@ import {
                     class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-bold text-foreground">
+                    <div class="font-medium text-foreground">
                       Khớp thủ công (Xác nhận đơn CONFIRMED)
                     </div>
-                    <div class="text-xs text-muted-foreground mt-0.5">
-                      Chỉ cho phép khi ngân hàng đã thực nhận đủ 100% tiền đơn. Bỏ qua lỗi cú pháp nội dung chuyển khoản.
+                    <div class="text-[11px] text-muted mt-0.5">
+                      Áp dụng khi ngân hàng đã thực nhận đủ 100%, bỏ qua lỗi cú pháp nội dung.
                     </div>
-                    @if (!d.isExactMatch) {
-                      <div class="text-xs text-rose-600 dark:text-rose-400 mt-1 font-semibold">
-                        Vô hiệu hóa vì giao dịch thực tế bị lệch so với giá trị đơn hàng.
-                      </div>
-                    }
                   </div>
                 </label>
 
                 <label
-                  class="flex items-start gap-2.5 p-3 rounded border transition-colors bg-surface-alt cursor-pointer"
-                  [class.border-rose-500]="selectedResolution === 'CANCEL_REFUND'"
+                  class="flex items-start gap-2.5 p-2.5 rounded border transition-colors bg-surface-alt cursor-pointer"
+                  [class.border-destructive]="selectedResolution === 'CANCEL_REFUND'"
                   [class.border-line]="selectedResolution !== 'CANCEL_REFUND'"
                 >
                   <input
@@ -136,14 +117,14 @@ import {
                     name="resolution"
                     value="CANCEL_REFUND"
                     [(ngModel)]="selectedResolution"
-                    class="mt-0.5 text-rose-500"
+                    class="mt-0.5 text-destructive"
                   />
                   <div>
-                    <div class="font-bold text-rose-600 dark:text-rose-400">
-                      Hủy đơn & Hoàn trả 100% số tiền thực nhận (REFUND_PENDING)
+                    <div class="font-medium text-destructive">
+                      Hủy đơn & Hoàn trả số tiền thực nhận (REFUND_PENDING)
                     </div>
-                    <div class="text-xs text-muted-foreground mt-0.5">
-                      Hủy đơn hàng {{ order().code }}, giải phóng tồn kho giữ chỗ và chuyển {{ formatCurrency(d.receivedAmount) }} vào hàng đợi hoàn tiền thủ công.
+                    <div class="text-[11px] text-muted mt-0.5">
+                      Hủy đơn {{ order().code }}, giải phóng tồn kho và chuyển {{ formatCurrency(d.receivedAmount) }} vào hàng đợi hoàn tiền.
                     </div>
                   </div>
                 </label>
@@ -152,19 +133,19 @@ import {
           }
 
           <div class="space-y-1">
-            <label class="block font-semibold text-muted-foreground text-xs uppercase">
-              Ghi chú đối soát kiểm toán (Bắt buộc):
+            <label class="block font-medium text-muted text-xs">
+              Ghi chú đối soát:
             </label>
             <textarea
-              rows="3"
+              rows="2"
               [(ngModel)]="note"
-              placeholder="Nhập mã giao dịch ngân hàng khớp lệnh hoặc lý do hủy hoàn tiền đối soát..."
-              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+              placeholder="Nhập mã chuẩn chi hoặc lý do xử lý đối soát..."
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
             ></textarea>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
@@ -174,17 +155,17 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !note.trim()"
-              class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-destructive hover:opacity-90 text-white font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
             >
-              {{ isSubmitting() ? 'Đang Xử Lý Đối Soát...' : 'Xác Nhận Xử Lý Đối Soát' }}
+              {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Đối Soát' }}
             </button>
           </div>
         </div>

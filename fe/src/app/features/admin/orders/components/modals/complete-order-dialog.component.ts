@@ -22,40 +22,28 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-16" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-16" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Xác Nhận Bàn Giao & Hoàn Tất Đơn Hàng
+                Hoàn Tất Đơn Hàng
               </h3>
-              <p class="text-xs text-muted-foreground">
-                Quy trình: Hoàn tất giao nhận và kích hoạt quyền đánh giá đã xác minh
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
             </button>
           </div>
 
-          <div class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded text-emerald-800 dark:text-emerald-300 text-xs leading-relaxed">
-            @if (isPickupStandalone()) {
-              Đơn nhận tại showroom mua linh kiện lẻ: Số lượng tồn kho đang ở trạng thái giữ chỗ sẽ chính thức được trừ tồn thực tế (onHand) và giải phóng số lượng giữ (reserved) ngay tại quầy khi hoàn tất.
-            } @else {
-              Xác nhận đơn hàng đã được giao tận tay khách hàng thành công. Toàn bộ chu trình vận hành và tài chính của đơn hàng sẽ được chốt sổ.
-            }
-          </div>
-
           <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5">
-            <div class="font-semibold text-foreground">Thông tin đối soát đơn hàng:</div>
-            <div class="grid grid-cols-2 gap-2 text-muted-foreground">
-              <div>Mã đơn: <span class="font-mono font-bold text-primary">{{ order().code }}</span></div>
+            <div class="grid grid-cols-2 gap-2 text-muted">
+              <div>Mã đơn: <span class="font-mono font-bold text-primary tabular-nums">{{ order().code }}</span></div>
               <div>Khách nhận: <span class="text-foreground font-medium">{{ order().receiverName }}</span></div>
-              <div>Hình thức nhận: <span class="text-foreground font-medium">{{ order().fulfillmentMethod === 'PICKUP' ? 'Nhận tại quầy showroom' : 'Giao hàng tận nơi' }}</span></div>
+              <div>Hình thức: <span class="text-foreground font-medium">{{ order().fulfillmentMethod === 'PICKUP' ? 'Nhận tại shop' : 'Giao tận nơi' }}</span></div>
               <div>Thanh toán: <span class="text-foreground font-medium">{{ order().paymentMethod }}</span></div>
             </div>
           </div>
@@ -63,14 +51,14 @@ import {
           <div class="flex-1 overflow-y-auto space-y-3 pr-1">
             @if (isPickupStandalone()) {
               <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
-                <div class="font-semibold text-foreground">Đồng kiểm linh kiện & Bàn giao tại showroom:</div>
+                <div class="font-medium text-foreground">Đồng kiểm linh kiện tại showroom:</div>
                 <label class="flex items-start gap-2 cursor-pointer text-foreground">
                   <input
                     type="checkbox"
                     [(ngModel)]="isInspected"
                     class="mt-0.5 rounded bg-surface border-line text-primary focus:ring-0"
                   />
-                  <span>Đã đối chiếu số lượng và số Serial linh kiện bàn giao khớp 100% với đơn hàng.</span>
+                  <span>Đã đối chiếu số lượng và số Serial linh kiện bàn giao khớp đơn hàng.</span>
                 </label>
                 <label class="flex items-start gap-2 cursor-pointer text-foreground">
                   <input
@@ -78,7 +66,7 @@ import {
                     [(ngModel)]="isDeductionConfirmed"
                     class="mt-0.5 rounded bg-surface border-line text-primary focus:ring-0"
                   />
-                  <span>Xác nhận trừ tồn kho thực tế tại kho {{ order().fulfillmentBranch.name }} và giải phóng giữ chỗ.</span>
+                  <span>Xác nhận trừ tồn kho thực tế tại {{ order().fulfillmentBranch.name }} và giải phóng giữ chỗ.</span>
                 </label>
               </div>
             }
@@ -86,31 +74,31 @@ import {
             @if (isCod()) {
               <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
                 <div class="flex justify-between items-center text-xs">
-                  <span class="text-muted-foreground">Số tiền COD cần thu:</span>
-                  <strong class="text-rose-600 dark:text-rose-400 font-bold font-mono text-sm">
+                  <span class="text-muted">Tiền COD cần thu:</span>
+                  <strong class="text-foreground font-bold font-mono text-sm tabular-nums">
                     {{ formatCurrency(codRemainingAmount()) }}
                   </strong>
                 </div>
 
                 <div>
-                  <label class="block font-semibold text-muted-foreground text-xs mb-1">
-                    Xác nhận số tiền mặt thực thu (VND):
+                  <label class="block font-medium text-muted text-xs mb-1">
+                    Số tiền mặt thực thu (VND):
                   </label>
                   <input
                     type="number"
                     [(ngModel)]="collectedAmount"
-                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground font-mono font-bold text-xs focus:outline-none focus:border-primary"
+                    class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground font-mono font-bold text-xs focus:outline-none focus:border-primary tabular-nums"
                   />
                 </div>
 
                 <div>
-                  <label class="block font-semibold text-muted-foreground text-xs mb-1">
+                  <label class="block font-medium text-muted text-xs mb-1">
                     Nhân viên xác nhận thu tiền:
                   </label>
                   <input
                     type="text"
                     [(ngModel)]="actorName"
-                    placeholder="Họ tên nhân viên thu ngân hoặc vận chuyển..."
+                    placeholder="Họ tên nhân viên thu tiền..."
                     class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
                   />
                 </div>
@@ -118,18 +106,18 @@ import {
             }
 
             <div class="space-y-1">
-              <label class="block font-semibold text-muted-foreground text-xs">Ghi chú hoàn tất (Tùy chọn):</label>
+              <label class="block font-medium text-muted text-xs">Ghi chú hoàn tất (Tùy chọn):</label>
               <textarea
                 rows="2"
                 [(ngModel)]="note"
-                placeholder="Ghi chú đối soát hoàn tất đơn hàng..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                placeholder="Ghi chú đối soát hoàn tất đơn..."
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
               ></textarea>
             </div>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
@@ -139,17 +127,17 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
             >
-              {{ isSubmitting() ? 'Đang Xử Lý Hoàn Tất...' : 'Xác Nhận Hoàn Tất Đơn' }}
+              {{ isSubmitting() ? 'Đang Xử Lý...' : 'Xác Nhận Hoàn Tất Đơn' }}
             </button>
           </div>
         </div>

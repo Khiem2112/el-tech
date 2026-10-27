@@ -22,20 +22,17 @@ import {
   template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-        <div data-modal-id="MOD-21" class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-md p-5 sm:p-6 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
+        <div data-modal-id="MOD-21" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-md p-5 space-y-4 text-xs text-foreground max-h-[90vh] flex flex-col">
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Xác Nhận Đã Hoàn Tiền Thủ Công
+                Xác Nhận Đã Hoàn Tiền
               </h3>
-              <p class="text-xs text-muted-foreground">
-                Ghi nhận mã chuẩn chi ngân hàng và cập nhật trạng thái đơn sang REFUNDED
-              </p>
             </div>
             <button
               type="button"
               (click)="onClose()"
-              class="px-2 py-1 rounded bg-surface-alt hover:bg-surface text-muted-foreground hover:text-foreground border border-line text-xs"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               Đóng
@@ -43,44 +40,44 @@ import {
           </div>
 
           @if (pendingRefund(); as r) {
-            <div class="p-3 bg-surface-alt border border-line rounded space-y-2">
+            <div class="p-3 bg-surface-alt border border-line rounded space-y-1.5 text-xs">
               <div class="flex justify-between items-center">
-                <span class="text-muted-foreground">Khách hàng nhận:</span>
-                <strong class="text-foreground">{{ order().receiverName }} ({{ order().receiverPhone }})</strong>
+                <span class="text-muted">Người nhận:</span>
+                <strong class="text-foreground">{{ order().receiverName }} (<span class="font-mono tabular-nums">{{ order().receiverPhone }}</span>)</strong>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-muted-foreground">Số tiền cần hoàn:</span>
-                <strong class="font-mono text-rose-600 dark:text-rose-400 font-bold text-sm">
+                <span class="text-muted">Số tiền hoàn:</span>
+                <strong class="font-mono text-foreground font-bold text-sm tabular-nums">
                   {{ formatCurrency(r.amount) }}
                 </strong>
               </div>
               <div class="flex justify-between items-center text-xs">
-                <span class="text-muted-foreground">Lý do hoàn tiền:</span>
+                <span class="text-muted">Lý do hoàn:</span>
                 <span class="text-foreground truncate max-w-[200px]" [title]="r.reason">{{ r.reason }}</span>
               </div>
             </div>
           } @else {
-            <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-800 dark:text-amber-300 text-xs">
-              Cảnh báo: Hiện không tìm thấy bản ghi hoàn tiền nào ở trạng thái chờ (PENDING) cho đơn này.
+            <div class="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded text-amber-700 dark:text-amber-300 text-xs">
+              Không tìm thấy bản ghi hoàn tiền ở trạng thái chờ cho đơn này.
             </div>
           }
 
-          <div class="space-y-3">
+          <div class="space-y-2.5">
             <div class="space-y-1">
-              <label class="block font-semibold text-muted-foreground text-xs uppercase">
-                Mã giao dịch chuyển khoản ngân hàng (Bắt buộc):
+              <label class="block font-medium text-muted text-xs">
+                Mã giao dịch ngân hàng:
               </label>
               <input
                 type="text"
                 [(ngModel)]="transactionReference"
-                placeholder="FT261022881902..."
+                placeholder="Nhập mã tham chiếu chuyển khoản..."
                 class="w-full px-3 py-1.5 bg-surface border border-line rounded font-mono text-foreground text-xs focus:outline-none focus:border-primary"
               />
             </div>
 
             <div class="space-y-1">
-              <label class="block font-semibold text-muted-foreground text-xs uppercase">
-                Ngân hàng thực hiện chuyển tiền:
+              <label class="block font-medium text-muted text-xs">
+                Tài khoản ngân hàng gửi:
               </label>
               <input
                 type="text"
@@ -90,31 +87,31 @@ import {
             </div>
 
             <div class="space-y-1">
-              <label class="block font-semibold text-muted-foreground text-xs uppercase">
-                Thời điểm chuyển khoản:
+              <label class="block font-medium text-muted text-xs">
+                Thời điểm chuyển tiền:
               </label>
               <input
                 type="datetime-local"
                 [(ngModel)]="transferredAt"
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary font-mono tabular-nums"
               />
             </div>
 
             <div class="space-y-1">
-              <label class="block font-semibold text-muted-foreground text-xs uppercase">
-                Ghi chú đối soát bổ sung (Tùy chọn):
+              <label class="block font-medium text-muted text-xs">
+                Ghi chú đối soát (Tùy chọn):
               </label>
               <textarea
                 rows="2"
                 [(ngModel)]="note"
-                placeholder="Nhập thêm ghi chú chứng từ hoặc biên nhận đính kèm..."
-                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                placeholder="Nhập ghi chú hoặc số biên nhận..."
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary resize-none"
               ></textarea>
             </div>
           </div>
 
           @if (errorMessage()) {
-            <div class="p-2 bg-rose-500/10 border border-rose-500/30 rounded text-rose-600 dark:text-rose-400 text-xs">
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
               {{ errorMessage() }}
             </div>
           }
@@ -124,17 +121,17 @@ import {
               type="button"
               (click)="onClose()"
               [disabled]="isSubmitting()"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface border border-line rounded font-semibold text-xs text-foreground cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground cursor-pointer disabled:opacity-50 transition-colors"
             >
-              Hủy Bỏ
+              Hủy
             </button>
             <button
               type="button"
               (click)="onSubmit()"
               [disabled]="isSubmitting() || !isReadyToSubmit()"
-              class="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer disabled:opacity-50"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-xs transition-opacity cursor-pointer disabled:opacity-50"
             >
-              {{ isSubmitting() ? 'Đang Xác Nhận...' : 'Xác Nhận Đã Chuyển Tiền' }}
+              {{ isSubmitting() ? 'Đang Lưu...' : 'Xác Nhận Đã Chuyển Tiền' }}
             </button>
           </div>
         </div>
