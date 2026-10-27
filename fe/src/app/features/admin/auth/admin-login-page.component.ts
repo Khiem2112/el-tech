@@ -19,22 +19,24 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-[#f8fafc] text-[#090d16] flex flex-col justify-center items-center p-4">
-      <div class="w-full max-w-md bg-white border border-line rounded-lg shadow-xl p-8">
-        <div class="mb-6 text-center">
-          <div class="inline-block bg-muted/20 text-primary border border-line text-xs font-bold px-3 py-1 rounded tracking-widest uppercase mb-3 font-mono">
-            EL-TECH PORTAL
+    <div class="min-h-screen bg-canvas text-foreground flex flex-col justify-center items-center p-4">
+      <div class="w-full max-w-sm sm:max-w-md bg-surface border border-line rounded-lg shadow-xs p-6 sm:p-8">
+        <div class="mb-6 text-center space-y-1">
+          <div
+            class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#76b900] text-black font-black text-sm tracking-tight mb-2"
+          >
+            EL
           </div>
-          <h1 class="text-2xl font-bold tracking-tight text-[#090d16]">Đăng Nhập Quản Trị</h1>
-          <p class="text-xs text-muted mt-1">Hệ thống quản trị và vận hành linh kiện EL-TECH</p>
-        </div>
-
-        <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
-          Phân quyền hệ thống: Áp dụng tài khoản quản trị viên (ADMIN) để truy cập và quản lý dữ liệu.
+          <h1 class="text-xl font-bold tracking-tight text-foreground">
+            Đăng Nhập Quản Trị
+          </h1>
+          <p class="text-xs text-muted">
+            Hệ thống quản trị và vận hành linh kiện EL-TECH
+          </p>
         </div>
 
         @if (errorMessage()) {
-          <div class="mb-4 p-3 bg-rose-50 border border-rose-200 rounded text-xs text-rose-700">
+          <div class="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-600 font-medium">
             {{ errorMessage() }}
           </div>
         }
@@ -49,7 +51,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
               type="email"
               formControlName="email"
               placeholder="admin@eltech.vn"
-              class="w-full px-3 py-2 text-sm bg-white border border-line rounded focus:outline-none focus:border-primary text-[#090d16] placeholder:text-muted"
+              class="w-full px-3 py-2 text-sm bg-surface-alt border border-line rounded focus:outline-none focus:border-primary text-foreground placeholder:text-muted transition-colors"
             />
             @if (loginForm.controls.email.touched && loginForm.controls.email.errors) {
               <p class="text-xs text-rose-600 mt-1">
@@ -69,7 +71,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
               type="password"
               formControlName="password"
               placeholder="Nhập mật khẩu quản trị"
-              class="w-full px-3 py-2 text-sm bg-white border border-line rounded focus:outline-none focus:border-primary text-[#090d16] placeholder:text-muted"
+              class="w-full px-3 py-2 text-sm bg-surface-alt border border-line rounded focus:outline-none focus:border-primary text-foreground placeholder:text-muted transition-colors"
             />
             @if (loginForm.controls.password.touched && loginForm.controls.password.errors) {
               <p class="text-xs text-rose-600 mt-1">
@@ -84,7 +86,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
                 id="remember-me"
                 type="checkbox"
                 formControlName="rememberMe"
-                class="w-4 h-4 rounded border-line bg-white text-primary focus:ring-0 focus:ring-offset-0"
+                class="w-4 h-4 rounded border-line bg-surface text-primary focus:ring-0 focus:ring-offset-0 cursor-pointer"
               />
               <span>Ghi nhớ phiên đăng nhập (30 ngày)</span>
             </label>
@@ -93,7 +95,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
           <button
             type="submit"
             [disabled]="isLoading()"
-            class="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-bold text-sm rounded shadow transition-colors mt-2"
+            class="w-full py-2.5 px-4 bg-primary hover:bg-primary-strong disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-bold text-sm rounded transition-colors shadow-xs mt-2"
           >
             {{ isLoading() ? 'Đang xác thực...' : 'Đăng Nhập Quản Trị' }}
           </button>
@@ -101,7 +103,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
 
         <div class="mt-6 pt-4 border-t border-line text-center text-xs text-muted">
           <span>Tài khoản thử nghiệm: </span>
-          <span class="font-mono text-[#090d16]">admin&#64;eltech.vn</span>
+          <span class="font-mono text-foreground font-medium">admin&#64;eltech.vn</span>
         </div>
       </div>
     </div>

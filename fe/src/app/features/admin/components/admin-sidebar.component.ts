@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { AdminApiService } from '../../../core/api/admin-api.service';
 import {
   ADMIN_NAV_GROUPS,
@@ -21,7 +22,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, AppIconModule],
   template: `
     <aside
       class="w-72 h-full bg-surface border-r border-line flex flex-col select-none text-foreground"
@@ -31,32 +32,25 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
       >
         <div class="flex items-center gap-2.5">
           <div
-            class="w-7 h-7 rounded-md bg-[#76b900] shadow-sm text-black font-black flex items-center justify-center text-xs tracking-tighter"
+            class="w-7 h-7 rounded-md bg-[#76b900] text-black font-black flex items-center justify-center text-xs tracking-tighter"
           >
             EL
           </div>
           <div>
-            <div class="font-extrabold text-foreground text-sm tracking-wider flex items-center gap-1.5 leading-none">
+            <div class="font-bold text-foreground text-sm tracking-wide leading-none">
               EL-TECH
-              <span
-                class="text-[11px] bg-primary/10 text-primary-strong border border-primary/20 px-1.5 py-0.5 rounded-full font-mono font-bold"
-              >
-                PORTAL
-              </span>
             </div>
-            <div class="text-xs text-muted tracking-tight mt-0.5">Quản Trị Bán Hàng & Vận Hành</div>
+            <div class="text-xs text-muted tracking-tight mt-0.5">Quản Trị Vận Hành</div>
           </div>
         </div>
 
         <button
           type="button"
           (click)="closeSidebar.emit()"
-          class="lg:hidden p-1.5 rounded text-muted hover:text-foreground hover:bg-surface-alt"
+          class="lg:hidden p-1.5 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors"
           aria-label="Đóng thanh điều hướng"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <lucide-icon name="x" class="w-4 h-4" aria-hidden="true"></lucide-icon>
         </button>
       </div>
 
@@ -67,18 +61,17 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchChange($event)"
             placeholder="Tìm nhanh chức năng, danh mục..."
-            class="w-full px-3 py-2 bg-canvas border border-line rounded-md text-[13px] text-foreground placeholder:text-muted focus:border-primary focus:outline-none transition-colors"
+            class="w-full px-3 py-1.5 bg-canvas border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:border-primary focus:outline-none transition-colors"
           />
           @if (searchQuery()) {
             <button
               type="button"
               (click)="onClearSearch()"
-              class="absolute right-2.5 top-2.5 text-muted hover:text-foreground"
+              class="absolute right-2.5 top-2 text-muted hover:text-foreground transition-colors"
               title="Xóa tìm kiếm"
+              aria-label="Xóa tìm kiếm"
             >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
             </button>
           }
         </div>
@@ -100,41 +93,33 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         }
       </div>
 
-      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-2 text-[13px]">
+      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1.5 text-[13px]">
         @for (group of displayedGroups(); track group.id) {
-          <div class="rounded-md border border-transparent">
+          <div>
             <button
               type="button"
               (click)="toggleGroup(group.id)"
-              class="w-full px-2 py-1.5 rounded-md hover:bg-surface-alt text-xs font-bold uppercase tracking-wider text-muted hover:text-foreground flex items-center justify-between transition-colors"
+              class="w-full px-2.5 py-1.5 rounded hover:bg-surface-alt text-xs font-semibold uppercase tracking-wider text-muted hover:text-foreground flex items-center justify-between transition-colors"
             >
               <span class="truncate">{{ group.label }}</span>
-              <div class="flex items-center gap-1.5 flex-shrink-0">
-                <span class="text-xs text-muted font-normal tabular-nums">
-                  {{ group.items.length }}
-                </span>
-                <svg
-                  class="w-3.5 h-3.5 text-muted transition-transform duration-200"
-                  [class.rotate-180]="isGroupOpen(group.id)"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <lucide-icon
+                name="chevron-down"
+                class="w-3.5 h-3.5 text-muted transition-transform duration-200 flex-shrink-0"
+                [class.rotate-180]="isGroupOpen(group.id)"
+                aria-hidden="true"
+              ></lucide-icon>
             </button>
 
             @if (isGroupOpen(group.id)) {
-              <div class="space-y-0.5 pt-1 pl-1">
+              <div class="space-y-0.5 pt-0.5 pl-2">
                 @for (item of group.items; track item.code) {
                   <a
                     [routerLink]="item.fullPath"
                     routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
                     (click)="onItemClick()"
-                    class="flex items-center px-2.5 py-2 rounded-md text-muted hover:bg-surface-alt hover:text-foreground font-medium text-[13px] transition-colors"
+                    class="block px-2.5 py-1.5 rounded text-muted hover:bg-surface-alt hover:text-foreground text-[13px] transition-colors truncate"
                   >
-                    <span class="truncate">{{ item.title }}</span>
+                    {{ item.title }}
                   </a>
                 }
               </div>
@@ -146,13 +131,13 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
       <div
         class="p-3 border-t border-line bg-surface flex items-center justify-between text-xs flex-shrink-0"
       >
-        <div class="flex items-center gap-2 truncate">
+        <div class="flex items-center gap-2.5 min-w-0">
           <div
             class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong flex-shrink-0"
           >
             AD
           </div>
-          <div class="truncate">
+          <div class="min-w-0">
             <div class="text-foreground font-semibold text-sm leading-tight truncate">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
@@ -165,17 +150,11 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         <button
           type="button"
           (click)="onLogout()"
-          class="text-[13px] text-muted hover:text-rose-600 px-2 py-1.5 rounded-md hover:bg-surface-alt transition-colors inline-flex items-center gap-1.5 flex-shrink-0 font-medium"
+          class="p-1.5 rounded text-muted hover:text-rose-600 hover:bg-rose-500/10 transition-colors flex-shrink-0"
           title="Đăng xuất khỏi hệ thống"
+          aria-label="Đăng xuất khỏi hệ thống"
         >
-          <span>Đăng xuất</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
+          <lucide-icon name="log-out" class="w-4 h-4" aria-hidden="true"></lucide-icon>
         </button>
       </div>
     </aside>
@@ -263,7 +242,7 @@ export class AdminSidebarComponent {
         }
       }
     } catch {
-      // Fallback to default open groups
+      // Khoi phuc danh muc mac dinh neu loi storage
     }
     return new Set(['mod-operations', 'mod-catalog']);
   }
@@ -275,7 +254,7 @@ export class AdminSidebarComponent {
     try {
       localStorage.setItem(STORAGE_ACCORDION_KEY, JSON.stringify(Array.from(groups)));
     } catch {
-      // Ignore storage errors
+      // Bo qua loi ghi storage neu storage bi khoa
     }
   }
 }

@@ -234,6 +234,15 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 83. Task 83: Bổ Sung Khối Thẻ Phân Tích BI Và Bảng Điều Chuyển Trên Dashboard ([TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID.md))
 84. Task 84: Hoàn Thiện Nghiệp Vụ Cách Ly Lỗi Kho Và Tra Cứu Máy Quét Barcode Serial ([TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP.md))
 
+#### Phase 11: Tinh Gọn Phân Hệ Admin Bằng Impeccable Distill (Admin Impeccable Distillation)
+85. Task 85: Tinh Gọn Khung Giao Diện Shell Và Thanh Điều Hướng Admin Bằng Impeccable Distill ([TASK-85-ADMIN-DISTILL-SHELL-AND-SHARED-NAVIGATION.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-85-ADMIN-DISTILL-SHELL-AND-SHARED-NAVIGATION.md))
+86. Task 86: Tinh Gọn Dashboard Và Khối Phân Tích Analytics Bằng Impeccable Distill ([TASK-86-ADMIN-DISTILL-DASHBOARD-AND-ANALYTICS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-86-ADMIN-DISTILL-DASHBOARD-AND-ANALYTICS.md))
+87. Task 87: Tinh Gọn Quản Lý Catalog, Mẫu Sản Phẩm Và BOM PC Bundle Bằng Impeccable Distill ([TASK-87-ADMIN-DISTILL-CATALOG-AND-PRODUCT-TEMPLATES.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-87-ADMIN-DISTILL-CATALOG-AND-PRODUCT-TEMPLATES.md))
+88. Task 88: Tinh Gọn Quy Trình Mua Hàng Và Quản Lý Nhà Cung Cấp Bằng Impeccable Distill ([TASK-88-ADMIN-DISTILL-PROCUREMENT-AND-SUPPLIERS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-88-ADMIN-DISTILL-PROCUREMENT-AND-SUPPLIERS.md))
+89. Task 89: Tinh Gọn Điều Chuyển Kho Và Tra Cứu Sê-ri Bằng Impeccable Distill ([TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS.md))
+90. Task 90: Tinh Gọn Chi Tiết Đơn Hàng Và Hộp Thoại Thực Thi Bằng Impeccable Distill ([TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS.md))
+91. Task 91: Tinh Gọn Khuyến Mãi, Quản Trị Và Đánh Giá Phản Hồi Bằng Impeccable Distill ([TASK-91-ADMIN-DISTILL-PROMOTIONS-GOVERNANCE-AND-FEEDBACK.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-91-ADMIN-DISTILL-PROMOTIONS-GOVERNANCE-AND-FEEDBACK.md))
+
 ### 6.2. Bảng Ánh Xạ Vấn Đề Báo Cáo Sang Task Khắc Phục
 
 | Task ID | Vấn đề báo cáo được giải quyết | Phạm vi kỹ thuật | Mức độ ưu tiên | Trạng thái |
@@ -259,6 +268,13 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-82 | Lỗi lặp Double Header tại Reviews, Outbox; chuẩn hóa mã hex cứng sang token NVIDIA | frontend | P1 | Ready |
 | TASK-83 | Bổ sung 3 thẻ KPI phân tích BI và bảng điều chuyển in-transit trên Dashboard | frontend, backend | P1 | Ready |
 | TASK-84 | Cách ly lỗi kho, gom nhóm vùng miền và tối ưu khối máy quét barcode tra cứu sê-ri | frontend, backend | P2 | Ready |
+| TASK-85 | Tinh gọn khung Shell, Header, Sidebar, Breadcrumb và Login; xóa viền và container thừa | frontend | P1 | Complete |
+| TASK-86 | Tinh gọn Dashboard, thẻ BI Analytics, hàng đợi khẩn cấp; xóa card-in-card | frontend | P1 | Ready |
+| TASK-87 | Tinh gọn mẫu sản phẩm, dynamic-spec-renderer, danh mục, thương hiệu và BOM PC Bundle | frontend | P1 | Ready |
+| TASK-88 | Tinh gọn đơn PO chi tiết, nhập sê-ri nghiệm thu, trả hàng và danh bạ nhà cung cấp | frontend | P1 | Ready |
+| TASK-89 | Tinh gọn bảng tồn kho theo cụm, sổ cái biến động, điều chuyển nội bộ và máy quét sê-ri | frontend | P1 | Ready |
+| TASK-90 | Tinh gọn chi tiết đơn hàng, thanh thao tác 1 Primary CTA và 15 hộp thoại quy trình | frontend | P1 | Ready |
+| TASK-91 | Tinh gọn khuyến mãi, coupon, biểu phí giao hàng, khách hàng, duyệt đánh giá, outbox | frontend | P1 | Ready |
 
 ---
 

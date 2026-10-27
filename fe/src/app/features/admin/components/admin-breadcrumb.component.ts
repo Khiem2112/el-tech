@@ -22,24 +22,26 @@ type BreadcrumbState = {
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="flex items-center gap-3 min-w-0">
-      <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-2 text-[13px] truncate">
-        <span class="text-muted font-medium truncate">{{ state().module }}</span>
-        <span class="text-muted/50">/</span>
-        <a
-          [routerLink]="state().parentUrl || state().fullPath"
-          class="font-bold text-foreground text-sm truncate hover:text-primary transition-colors"
-          [title]="state().parentUrl ? 'Quay lại danh sách cha với bộ lọc bảo toàn' : 'Quay lại danh sách cha'"
-        >
-          {{ state().title }}
-        </a>
+    <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-1.5 text-xs sm:text-[13px] min-w-0">
+      <span class="hidden sm:inline text-muted font-normal truncate max-w-[120px] lg:max-w-none">
+        {{ state().module }}
+      </span>
+      <span class="hidden sm:inline text-muted/40 text-xs select-none">/</span>
+      <a
+        [routerLink]="state().parentUrl || state().fullPath"
+        class="font-medium text-foreground truncate max-w-[150px] sm:max-w-xs md:max-w-none hover:text-primary transition-colors"
+        [title]="state().parentUrl ? 'Quay lại danh sách cha với bộ lọc bảo toàn' : 'Quay lại danh sách cha'"
+      >
+        {{ state().title }}
+      </a>
 
-        @if (state().subTitle) {
-          <span class="text-muted/50">/</span>
-          <span class="text-foreground/80 font-medium truncate">{{ state().subTitle }}</span>
-        }
-      </nav>
-    </div>
+      @if (state().subTitle) {
+        <span class="text-muted/40 text-xs select-none">/</span>
+        <span class="text-muted font-normal truncate max-w-[120px] sm:max-w-xs">
+          {{ state().subTitle }}
+        </span>
+      }
+    </nav>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

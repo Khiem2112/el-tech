@@ -9,7 +9,7 @@ import { AdminSidebarComponent } from './components/admin-sidebar.component';
   standalone: true,
   imports: [CommonModule, RouterModule, AdminSidebarComponent, AdminHeaderComponent],
   template: `
-    <div class="h-screen w-screen overflow-hidden flex bg-canvas text-foreground">
+    <div class="h-screen w-full overflow-hidden flex bg-canvas text-foreground">
       @if (isMobileSidebarOpen()) {
         <div
           (click)="closeMobileSidebar()"
@@ -26,10 +26,10 @@ import { AdminSidebarComponent } from './components/admin-sidebar.component';
         <app-admin-sidebar (closeSidebar)="closeMobileSidebar()" />
       </div>
 
-      <div class="flex-1 flex flex-col h-screen min-w-0 overflow-hidden lg:pl-72 bg-canvas">
+      <div class="flex-1 flex flex-col h-full min-h-0 min-w-0 overflow-hidden lg:pl-72 bg-canvas">
         <app-admin-header (toggleSidebar)="toggleMobileSidebar()" />
 
-        <main class="flex-1 overflow-y-auto bg-canvas text-foreground">
+        <main class="flex-1 overflow-y-auto min-h-0 bg-canvas text-foreground focus:outline-none">
           <router-outlet />
         </main>
       </div>

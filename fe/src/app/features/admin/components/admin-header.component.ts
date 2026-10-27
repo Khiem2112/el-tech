@@ -7,13 +7,14 @@ import {
   inject,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { AdminApiService } from '../../../core/api/admin-api.service';
 import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
 
 @Component({
   selector: 'app-admin-header',
   standalone: true,
-  imports: [CommonModule, AdminBreadcrumbComponent],
+  imports: [CommonModule, AdminBreadcrumbComponent, AppIconModule],
   template: `
     <header
       class="h-14 bg-surface border-b border-line shadow-xs flex items-center justify-between px-4 lg:px-6 flex-shrink-0 z-20"
@@ -25,18 +26,16 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
           class="lg:hidden p-1.5 rounded-md text-foreground hover:bg-surface-alt transition-colors"
           aria-label="Mở trình đơn điều hướng"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <lucide-icon name="menu" class="w-5 h-5" aria-hidden="true"></lucide-icon>
         </button>
 
         <app-admin-breadcrumb />
       </div>
 
       <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="flex items-center gap-2 pl-2 border-l border-line">
+        <div class="flex items-center gap-2 pl-3 border-l border-line">
           <div
-            class="w-8 h-8 rounded-full bg-surface-alt border border-line flex items-center justify-center font-bold text-xs text-primary"
+            class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong"
           >
             AD
           </div>
@@ -53,16 +52,11 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
         <button
           type="button"
           (click)="onLogout()"
-          class="px-2.5 py-1.5 rounded-md text-[13px] text-muted hover:text-rose-600 hover:bg-rose-50 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
+          class="px-2.5 py-1.5 rounded-md text-[13px] text-muted hover:text-rose-600 hover:bg-rose-500/10 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
           title="Đăng xuất khỏi hệ thống"
+          aria-label="Đăng xuất khỏi hệ thống"
         >
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
+          <lucide-icon name="log-out" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
           <span class="hidden sm:inline">Đăng xuất</span>
         </button>
       </div>
