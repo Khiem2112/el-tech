@@ -442,30 +442,14 @@ export class AdminStockLedgerPageComponent implements OnInit {
   }
 
   getEntryBadgeClass(entryType: string): string {
-    const base = 'px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase whitespace-nowrap';
+    const base = 'px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
-      case 'RESERVE':
-        return `${base} bg-amber-50 text-amber-700 border border-amber-200`;
-      case 'RELEASE_RESERVATION':
-        return `${base} bg-sky-50 text-sky-700 border border-sky-200`;
-      case 'PURCHASE_RECEIPT':
-        return `${base} bg-emerald-50 text-emerald-700 border border-emerald-200`;
-      case 'ORDER_ISSUE':
-        return `${base} bg-rose-50 text-rose-700 border border-rose-200`;
-      case 'TRANSFER_OUT':
-        return `${base} bg-orange-50 text-orange-700 border border-orange-200`;
-      case 'TRANSFER_IN':
-        return `${base} bg-surface-alt text-foreground border border-line`;
-      case 'SUPPLIER_RETURN':
-        return `${base} bg-surface-alt text-muted border border-line`;
       case 'QUARANTINE':
-        return `${base} bg-red-50 text-red-700 border border-red-200`;
-      case 'RELEASE_QUARANTINE':
-        return `${base} bg-teal-50 text-teal-700 border border-teal-200`;
-      case 'REVERSAL':
-        return `${base} bg-yellow-50 text-yellow-800 border border-yellow-200`;
+        return `${base} bg-rose-50 text-danger border-rose-200`;
+      case 'RESERVE':
+        return `${base} bg-amber-50 text-warning border-amber-200`;
       default:
-        return `${base} bg-surface-alt text-muted border border-line`;
+        return `${base} bg-surface-alt text-foreground border-line`;
     }
   }
 

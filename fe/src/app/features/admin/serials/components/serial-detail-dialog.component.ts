@@ -173,6 +173,57 @@ import {
                     </button>
                   </div>
                 </div>
+              } @else {
+                <div class="space-y-4">
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                    <div class="p-2.5 rounded bg-surface-alt border border-line">
+                      <span class="text-[11px] uppercase font-semibold text-muted block">Thời hạn BH</span>
+                      <strong class="text-foreground text-sm font-bold">{{ d.warranty.durationMonths }} Tháng</strong>
+                    </div>
+                    <div class="p-2.5 rounded bg-surface-alt border border-line">
+                      <span class="text-[11px] uppercase font-semibold text-muted block">Bắt đầu BH</span>
+                      <strong class="text-foreground text-xs font-mono font-bold">{{ formatDate(d.warranty.startDate) }}</strong>
+                    </div>
+                    <div class="p-2.5 rounded bg-surface-alt border border-line">
+                      <span class="text-[11px] uppercase font-semibold text-muted block">Hết hạn BH</span>
+                      <strong class="text-primary-strong text-xs font-mono font-bold">{{ formatDate(d.warranty.endDate) }}</strong>
+                    </div>
+                    <div class="p-2.5 rounded bg-surface-alt border border-line">
+                      <span class="text-[11px] uppercase font-semibold text-muted block">Số lần BH</span>
+                      <strong class="text-foreground text-sm font-bold">{{ d.warranty.warrantyClaimCount }} lần</strong>
+                    </div>
+                  </div>
+
+                  <div class="space-y-3 pt-2">
+                    <div class="flex items-center justify-between border-b border-line pb-1.5">
+                      <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lộ trình luân chuyển</span>
+                      <span class="text-xs font-mono text-muted">{{ d.movements.length }} trạm</span>
+                    </div>
+
+                    @if (d.movements.length === 0) {
+                      <div class="py-6 text-center text-xs text-muted">Chưa có lịch sử di chuyển</div>
+                    } @else {
+                      <div class="border-l border-line ml-2 pl-4 space-y-3 text-xs">
+                        @for (mov of d.movements; track mov.id) {
+                          <div class="relative">
+                            <span class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full ring-2 ring-surface" [ngClass]="getMovementDotClass(mov.resultingStatus)"></span>
+                            <div class="font-bold text-foreground">{{ mov.summaryText }}</div>
+                            <div class="text-[11px] text-muted flex items-center gap-2 flex-wrap mt-0.5 font-mono">
+                              <span>{{ formatDateTime(mov.occurredAt) }}</span>
+                              <span>| Phiếu: <strong class="text-primary-strong">{{ mov.stockMoveCode }}</strong></span>
+                              @if (mov.orderCode) {
+                                <span>| Đơn: <strong class="text-foreground">{{ mov.orderCode }}</strong></span>
+                              }
+                            </div>
+                            <div class="text-[11px] font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
+                              Trạng thái: {{ getStatusLabel(mov.resultingStatus) }}
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
               }
             }
           </div>
@@ -315,6 +366,56 @@ export class SerialDetailDialogComponent {
         return 'bg-surface-alt text-muted border border-line';
       default:
         return 'bg-surface-alt text-muted border border-line';
+    }
+  }
+
+  formatDate(isoDate: string | null): string {
+    if (!isoDate) {
+      return '-';
+    }
+    const d = new Date(isoDate);
+    return d.toLocaleDateString('vi-VN');
+  }
+
+  formatDateTime(isoDate: string | null): string {
+    if (!isoDate) {
+      return '-';
+    }
+    const d = new Date(isoDate);
+    return `${d.toLocaleDateString('vi-VN')} ${d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  getMovementDotClass(status: string): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'bg-emerald-500';
+      case 'RESERVED':
+        return 'bg-amber-500';
+      case 'IN_TRANSIT':
+        return 'bg-sky-500';
+      case 'ISSUED':
+        return 'bg-primary';
+      case 'QUARANTINED':
+        return 'bg-rose-500';
+      default:
+        return 'bg-slate-400';
+    }
+  }
+
+  getStatusTextClass(status: string): string {
+    switch (status) {
+      case 'AVAILABLE':
+        return 'text-emerald-700';
+      case 'RESERVED':
+        return 'text-amber-700';
+      case 'IN_TRANSIT':
+        return 'text-sky-700';
+      case 'ISSUED':
+        return 'text-foreground';
+      case 'QUARANTINED':
+        return 'text-rose-700';
+      default:
+        return 'text-muted';
     }
   }
 

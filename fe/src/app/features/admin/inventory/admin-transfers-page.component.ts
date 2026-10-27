@@ -108,25 +108,27 @@ import {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Lệnh điều chuyển</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().totalTransfers }}</div>
-        </div>
+      <div class="p-4 bg-surface border border-line rounded-lg">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-line">
+          <div class="space-y-0.5">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Lệnh Điều Chuyển</span>
+            <div class="text-xl font-bold font-mono text-foreground tabular-nums">{{ summary().totalTransfers }}</div>
+          </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đang vận chuyển</div>
-          <div class="text-lg font-bold font-mono text-warning mt-1">{{ summary().inTransitUnits }} chiếc</div>
-        </div>
+          <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
+            <span class="text-[11px] font-semibold text-warning uppercase tracking-wider block">Đang Vận Chuyển</span>
+            <div class="text-xl font-bold font-mono text-warning tabular-nums">{{ summary().inTransitUnits }} chiếc</div>
+          </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Kho chi nhánh</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().connectedBranchesCount }} kho</div>
-        </div>
+          <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
+            <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Kho Liên Kết</span>
+            <div class="text-xl font-bold font-mono text-foreground tabular-nums">{{ summary().connectedBranchesCount }} kho</div>
+          </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tỉ lệ nhận đủ</div>
-          <div class="text-lg font-bold font-mono text-primary-strong mt-1">{{ summary().fullReceiptRate }}</div>
+          <div class="space-y-0.5 pt-3 sm:pt-0 sm:pl-6">
+            <span class="text-[11px] font-semibold text-primary-strong uppercase tracking-wider block">Tỉ Lệ Nhận Đủ</span>
+            <div class="text-xl font-bold font-mono text-primary-strong tabular-nums">{{ summary().fullReceiptRate }}</div>
+          </div>
         </div>
       </div>
 

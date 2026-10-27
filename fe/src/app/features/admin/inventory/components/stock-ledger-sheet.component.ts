@@ -57,31 +57,28 @@ import {
           </div>
 
           @if (detail?.quant; as quant) {
-            <div class="p-4 bg-surface border-b border-line flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="px-6 py-4 bg-surface border-b border-line flex flex-wrap items-center justify-between gap-4 text-xs">
               <div class="space-y-0.5">
                 <div class="text-muted font-medium">Linh kiện:</div>
-                <div class="text-foreground font-semibold truncate max-w-xs">{{ quant.productName }}</div>
+                <div class="text-foreground font-bold truncate max-w-xs">{{ quant.productName }}</div>
               </div>
 
-              <div class="flex items-center gap-4 font-mono">
-                <div class="text-center px-2 py-1 rounded bg-surface-alt border border-line">
-                  <div class="text-muted text-[10px] uppercase font-semibold">Thực tế</div>
-                  <div class="text-foreground font-bold text-sm">{{ quant.onHand }}</div>
+              <div class="flex items-center gap-6 font-mono text-right">
+                <div>
+                  <span class="text-muted text-[10px] uppercase font-semibold block">Thực tế</span>
+                  <span class="text-foreground font-bold text-base tabular-nums">{{ quant.onHand }}</span>
                 </div>
-
-                <div class="text-center px-2 py-1 rounded bg-surface-alt border border-line">
-                  <div class="text-muted text-[10px] uppercase font-semibold">Đang giữ</div>
-                  <div class="text-warning font-bold text-sm">{{ quant.reserved }}</div>
+                <div class="border-l border-line pl-6">
+                  <span class="text-warning text-[10px] uppercase font-semibold block">Đang giữ</span>
+                  <span class="text-warning font-bold text-base tabular-nums">{{ quant.reserved }}</span>
                 </div>
-
-                <div class="text-center px-2 py-1 rounded bg-surface-alt border border-line">
-                  <div class="text-muted text-[10px] uppercase font-semibold">Cách ly</div>
-                  <div class="text-danger font-bold text-sm">{{ quant.quarantineDamaged }}</div>
+                <div class="border-l border-line pl-6">
+                  <span class="text-danger text-[10px] uppercase font-semibold block">Cách ly</span>
+                  <span class="text-danger font-bold text-base tabular-nums">{{ quant.quarantineDamaged }}</span>
                 </div>
-
-                <div class="text-center px-2 py-1 rounded bg-surface-alt border border-line">
-                  <div class="text-muted text-[10px] uppercase font-semibold">Khả dụng</div>
-                  <div class="text-primary-strong font-bold text-sm">{{ quant.available }}</div>
+                <div class="border-l border-line pl-6">
+                  <span class="text-primary-strong text-[10px] uppercase font-semibold block">Khả dụng</span>
+                  <span class="text-primary-strong font-bold text-base tabular-nums">{{ quant.available }}</span>
                 </div>
               </div>
             </div>
@@ -116,7 +113,7 @@ import {
             } @else {
               <div class="space-y-3">
                 @for (entry of detail?.entries; track entry.id) {
-                  <div class="p-3.5 bg-surface-alt border border-line rounded-lg space-y-2 hover:border-muted transition-colors">
+                  <div class="p-3.5 bg-surface border border-line rounded-lg space-y-2 hover:border-muted transition-colors">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                       <div class="flex items-center gap-2">
                         <span [class]="getEntryBadgeClass(entry.entryType)">
@@ -126,45 +123,45 @@ import {
                           {{ entry.documentCode }}
                         </span>
                       </div>
-                      <span class="text-xs text-muted font-mono">
+                      <span class="text-xs text-muted font-mono tabular-nums">
                         {{ formatDate(entry.occurredAt) }}
                       </span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs pt-1 border-t border-line">
                       <div>
-                        <span class="text-muted">Biến động:</span>
-                        <div class="font-mono font-bold mt-0.5">
+                        <span class="text-muted block text-[11px]">Biến động:</span>
+                        <div class="font-mono font-bold mt-0.5 tabular-nums">
                           @if (entry.deltaOnHand !== 0) {
-                            <span [class]="entry.deltaOnHand > 0 ? 'text-emerald-600' : 'text-rose-600'">
-                              {{ entry.deltaOnHand > 0 ? '+' : '' }}{{ entry.deltaOnHand }} Thực tế
+                            <span [class]="entry.deltaOnHand > 0 ? 'text-emerald-700' : 'text-danger'">
+                              {{ entry.deltaOnHand > 0 ? '+' : '' }}{{ entry.deltaOnHand }} Thực
                             </span>
                           }
                           @if (entry.deltaReserved !== 0) {
-                            <span class="text-amber-600 ml-1">
+                            <span class="text-warning ml-1">
                               {{ entry.deltaReserved > 0 ? '+' : '' }}{{ entry.deltaReserved }} Giữ
                             </span>
                           }
                           @if (entry.deltaQuarantine !== 0) {
-                            <span class="text-rose-600 ml-1">
-                              {{ entry.deltaQuarantine > 0 ? '+' : '' }}{{ entry.deltaQuarantine }} Cách ly
+                            <span class="text-danger ml-1">
+                              {{ entry.deltaQuarantine > 0 ? '+' : '' }}{{ entry.deltaQuarantine }} Lỗi
                             </span>
                           }
                           @if (entry.deltaOnHand === 0 && entry.deltaReserved === 0 && entry.deltaQuarantine === 0) {
-                            <span class="text-muted">Không đổi</span>
+                            <span class="text-muted">0</span>
                           }
                         </div>
                       </div>
 
                       <div>
-                        <span class="text-muted">Tồn sau giao dịch:</span>
-                        <div class="font-mono text-foreground mt-0.5">
-                          Thực: <strong>{{ entry.onHandAfter }}</strong> | Giữ: <strong>{{ entry.reservedAfter }}</strong>
+                        <span class="text-muted block text-[11px]">Tồn sau giao dịch:</span>
+                        <div class="font-mono text-foreground mt-0.5 tabular-nums">
+                          Thực: <strong>{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-warning">{{ entry.reservedAfter }}</strong>
                         </div>
                       </div>
 
                       <div class="col-span-2 sm:col-span-1">
-                        <span class="text-muted">Tác nhân:</span>
+                        <span class="text-muted block text-[11px]">Tác nhân:</span>
                         <div class="text-foreground truncate mt-0.5 font-mono text-[11px]">
                           {{ entry.actorType }}
                         </div>
@@ -172,7 +169,7 @@ import {
                     </div>
 
                     @if (entry.reason) {
-                      <div class="text-[11px] text-muted italic bg-surface px-2 py-1 rounded border border-line">
+                      <div class="text-[11px] text-muted italic bg-surface-alt px-2.5 py-1 rounded">
                         Ghi chú: {{ entry.reason }}
                       </div>
                     }
@@ -267,30 +264,14 @@ export class StockLedgerSheetComponent {
   }
 
   getEntryBadgeClass(entryType: string): string {
-    const base = 'px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase whitespace-nowrap';
+    const base = 'px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
-      case 'RESERVE':
-        return `${base} bg-amber-50 text-amber-700 border border-amber-200`;
-      case 'RELEASE_RESERVATION':
-        return `${base} bg-sky-50 text-sky-700 border border-sky-200`;
-      case 'PURCHASE_RECEIPT':
-        return `${base} bg-emerald-50 text-emerald-700 border border-emerald-200`;
-      case 'ORDER_ISSUE':
-        return `${base} bg-rose-50 text-rose-700 border border-rose-200`;
-      case 'TRANSFER_OUT':
-        return `${base} bg-orange-50 text-orange-700 border border-orange-200`;
-      case 'TRANSFER_IN':
-        return `${base} bg-surface-alt text-foreground border border-line`;
-      case 'SUPPLIER_RETURN':
-        return `${base} bg-surface-alt text-muted border border-line`;
       case 'QUARANTINE':
-        return `${base} bg-red-50 text-red-700 border border-red-200`;
-      case 'RELEASE_QUARANTINE':
-        return `${base} bg-teal-50 text-teal-700 border border-teal-200`;
-      case 'REVERSAL':
-        return `${base} bg-yellow-50 text-yellow-800 border border-yellow-200`;
+        return `${base} bg-rose-50 text-danger border-rose-200`;
+      case 'RESERVE':
+        return `${base} bg-amber-50 text-warning border-amber-200`;
       default:
-        return `${base} bg-surface border border-line text-muted`;
+        return `${base} bg-surface-alt text-foreground border-line`;
     }
   }
 }

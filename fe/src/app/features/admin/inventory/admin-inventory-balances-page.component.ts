@@ -69,36 +69,32 @@ export type InventoryRegionCluster = {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tổng cặp SKU-Kho</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1 tabular">{{ summary().totalQuants }}</div>
-        </div>
+      <div class="p-4 bg-surface border border-line rounded-lg">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 flex-1">
+            <div class="space-y-1">
+              <span class="text-[11px] font-semibold text-muted uppercase tracking-wider block">Tồn Khả Dụng Bán</span>
+              <div class="text-2xl font-bold font-mono text-primary-strong tabular-nums">{{ summary().totalAvailable }}</div>
+              <p class="text-[11px] text-muted">Sẵn sàng điều phối giao đơn</p>
+            </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tồn thực tế</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1 tabular">{{ summary().totalOnHand }}</div>
-        </div>
+            <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
+              <span class="text-[11px] font-semibold text-warning uppercase tracking-wider block">Đang Giữ Cho Đơn</span>
+              <div class="text-2xl font-bold font-mono text-warning tabular-nums">{{ summary().totalReserved }}</div>
+              <p class="text-[11px] text-muted">Đang khóa trong các đơn hàng</p>
+            </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đang giữ đơn</div>
-          <div class="text-lg font-bold font-mono text-warning mt-1 tabular">{{ summary().totalReserved }}</div>
-        </div>
+            <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
+              <span class="text-[11px] font-semibold text-danger uppercase tracking-wider block">Cách Ly Lỗi Kho</span>
+              <div class="text-2xl font-bold font-mono text-danger tabular-nums">{{ summary().totalQuarantine }}</div>
+              <p class="text-[11px] text-muted">Hàng móp hộp, chờ kiểm định</p>
+            </div>
+          </div>
 
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Cách ly lỗi</div>
-          <div class="text-lg font-bold font-mono text-danger mt-1 tabular">{{ summary().totalQuarantine }}</div>
-        </div>
-
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Khả dụng bán</div>
-          <div class="text-lg font-bold font-mono text-primary-strong mt-1 tabular">{{ summary().totalAvailable }}</div>
-        </div>
-
-        <div class="p-3 bg-surface border border-line rounded-lg shadow-card">
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Giá trị tồn kho</div>
-          <div class="text-xs font-bold font-mono text-foreground mt-2 truncate tabular" [title]="summary().totalInventoryValue + ' đ'">
-            {{ summary().totalInventoryValue }} đ
+          <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs font-mono text-muted">
+            <div>Tổng tồn thực tế: <strong class="text-foreground tabular-nums">{{ summary().totalOnHand }}</strong></div>
+            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular-nums">{{ summary().totalQuants }}</strong></div>
+            <div>Giá trị ước tính: <strong class="text-foreground tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
           </div>
         </div>
       </div>
@@ -238,7 +234,7 @@ export type InventoryRegionCluster = {
                 @if (isGroupByRegion()) {
                   @for (cluster of regionClusters(); track cluster.regionKey) {
                     <tr class="bg-surface-alt/90 border-y border-line">
-                      <td colspan="7" class="py-2.5 px-4">
+                      <td colspan="10" class="py-2.5 px-4">
                         <div class="flex items-center justify-between text-xs flex-wrap gap-2">
                           <span class="font-bold text-foreground uppercase tracking-wider">
                             {{ cluster.name }} ({{ cluster.branchCodes }})

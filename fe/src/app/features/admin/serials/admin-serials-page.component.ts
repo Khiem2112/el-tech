@@ -53,78 +53,63 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
         <button
           type="button"
           (click)="filterByStatus('ALL')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'ALL' ? 'border-primary ring-1 ring-primary' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'ALL' ? 'bg-primary text-primary-foreground border-primary font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Tất cả Serial</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().totalSerials }}</div>
+          Tất cả ({{ summary().totalSerials }})
         </button>
 
         <button
           type="button"
           (click)="filterByStatus('AVAILABLE')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'AVAILABLE' ? 'border-primary ring-1 ring-primary' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'AVAILABLE' ? 'bg-emerald-700 text-white border-emerald-700 font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-primary-strong uppercase tracking-wider">Trong kho</div>
-          <div class="text-lg font-bold font-mono text-primary-strong mt-1">{{ summary().availableCount }}</div>
+          Trong kho ({{ summary().availableCount }})
         </button>
 
         <button
           type="button"
           (click)="filterByStatus('RESERVED')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'RESERVED' ? 'border-warning ring-1 ring-warning' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'RESERVED' ? 'bg-amber-600 text-white border-amber-600 font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-warning uppercase tracking-wider">Đã gán xuất kho</div>
-          <div class="text-lg font-bold font-mono text-warning mt-1">{{ summary().reservedCount }}</div>
+          Đã gán xuất ({{ summary().reservedCount }})
         </button>
 
         <button
           type="button"
           (click)="filterByStatus('IN_TRANSIT')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'IN_TRANSIT' ? 'border-sky-500 ring-1 ring-sky-500' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'IN_TRANSIT' ? 'bg-sky-700 text-white border-sky-700 font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-sky-600 uppercase tracking-wider">Đang chuyển</div>
-          <div class="text-lg font-bold font-mono text-sky-600 mt-1">{{ summary().inTransitCount }}</div>
+          Đang chuyển ({{ summary().inTransitCount }})
         </button>
 
         <button
           type="button"
           (click)="filterByStatus('ISSUED')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'ISSUED' ? 'border-primary ring-1 ring-primary' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'ISSUED' ? 'bg-surface-alt text-foreground border-line font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-muted uppercase tracking-wider">Đã xuất bán</div>
-          <div class="text-lg font-bold font-mono text-foreground mt-1">{{ summary().issuedCount }}</div>
+          Đã xuất bán ({{ summary().issuedCount }})
         </button>
 
         <button
           type="button"
           (click)="filterByStatus('QUARANTINED')"
-          class="p-3 bg-surface border rounded-lg text-left transition-colors cursor-pointer shadow-card"
-          [ngClass]="activeStatus() === 'QUARANTINED' ? 'border-danger ring-1 ring-danger' : 'border-line hover:border-muted'"
+          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
+          [ngClass]="activeStatus() === 'QUARANTINED' ? 'bg-danger text-white border-danger font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
         >
-          <div class="text-[11px] font-semibold text-danger uppercase tracking-wider">Cách ly / Lỗi</div>
-          <div class="text-lg font-bold font-mono text-danger mt-1">{{ summary().quarantinedCount }}</div>
+          Cách ly lỗi ({{ summary().quarantinedCount }})
         </button>
       </div>
 
-      <div class="bg-surface border border-line rounded-xl p-5 shadow-card space-y-4 max-w-4xl mx-auto">
-        <div class="text-center space-y-1">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
-            Quét Mã Vạch Hoặc Nhập Số Sê-Ri Tra Cứu Tức Thì
-          </h2>
-          <p class="text-xs text-muted">
-            Tương thích súng quét barcode chuyên dụng hoặc nhập tay chuỗi serial, mã SKU, mã vạch linh kiện
-          </p>
-        </div>
-
+      <div class="bg-surface border border-line rounded-lg p-4 space-y-3 max-w-4xl mx-auto">
         <form (ngSubmit)="onQuickScanSubmit()" class="flex items-center gap-2">
           <div class="relative flex-1">
             <input
@@ -134,10 +119,10 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               type="text"
               [(ngModel)]="scannerQuery"
               name="scannerQuery"
-              placeholder="Quét barcode hoặc gõ chuỗi Serial..."
-              class="w-full pl-4 pr-24 py-2.5 bg-surface border border-line focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-mono font-bold text-foreground text-sm focus:outline-none transition-colors"
+              placeholder="Quét mã vạch hoặc gõ chuỗi Serial để tra cứu tức thì..."
+              class="w-full pl-3 pr-20 py-2.5 bg-surface border border-line focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-mono font-bold text-foreground text-xs focus:outline-none transition-colors"
             />
-            <span class="absolute right-3 top-2.5 text-muted font-mono text-xs uppercase tracking-wider">
+            <span class="absolute right-3 top-2.5 text-muted font-mono text-[11px] uppercase tracking-wider">
               MÃ VẠCH
             </span>
           </div>
@@ -148,7 +133,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             appButton
             variant="primary"
             size="md"
-            class="whitespace-nowrap uppercase tracking-wide inline-flex items-center gap-2"
+            class="whitespace-nowrap uppercase tracking-wide inline-flex items-center gap-2 text-xs font-bold"
           >
             @if (isQuickLookupLoading()) {
               <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -160,31 +145,30 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
           </button>
         </form>
 
-        @if (quickLookupError()) {
-          <div class="p-3 bg-danger/10 border border-danger/30 rounded-lg text-danger text-xs text-center font-medium">
-            {{ quickLookupError() }}
+        <div class="flex items-center justify-between text-xs text-muted flex-wrap gap-2 pt-1 border-t border-line">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span>Gợi ý mẫu:</span>
+            @for (sample of sampleSerials; track sample) {
+              <button
+                type="button"
+                (click)="selectSampleSerial(sample)"
+                class="px-2 py-0.5 bg-surface-alt hover:bg-surface border border-line rounded font-mono font-bold text-foreground text-[11px] transition-colors"
+              >
+                {{ sample }}
+              </button>
+            }
           </div>
-        }
-
-        <div class="flex items-center justify-center gap-2 flex-wrap text-xs text-muted">
-          <span>Gợi ý mẫu:</span>
-          @for (sample of sampleSerials; track sample) {
-            <button
-              type="button"
-              (click)="selectSampleSerial(sample)"
-              class="px-2.5 py-1 bg-surface-alt hover:bg-surface border border-line rounded font-mono font-bold text-foreground text-xs transition-colors"
-            >
-              {{ sample }}
-            </button>
+          @if (quickLookupError()) {
+            <span class="text-danger font-semibold">{{ quickLookupError() }}</span>
           }
         </div>
       </div>
 
       @if (quickLookupSerial(); as qk) {
-        <div class="bg-surface border border-primary/50 rounded-xl shadow-card overflow-hidden max-w-4xl mx-auto text-foreground">
-          <div class="bg-surface-alt p-4 border-b border-line flex items-center justify-between flex-wrap gap-4">
+        <div class="bg-surface border border-line rounded-lg shadow-sm overflow-hidden max-w-4xl mx-auto text-foreground">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-3 bg-surface-alt/50">
             <div class="flex items-center gap-3">
-              <div class="w-14 h-14 rounded-lg border border-line bg-surface overflow-hidden flex items-center justify-center shrink-0">
+              <div class="w-12 h-12 rounded border border-line bg-surface overflow-hidden flex items-center justify-center shrink-0">
                 @if (getProductImage(qk.productTemplate.media)) {
                   <img
                     [src]="getProductImage(qk.productTemplate.media)!"
@@ -192,7 +176,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                     class="w-full h-full object-contain p-1"
                   />
                 } @else {
-                  <div class="text-primary-strong font-mono font-bold text-base">SN</div>
+                  <div class="text-primary-strong font-mono font-bold text-sm">SN</div>
                 }
               </div>
               <div>
@@ -204,49 +188,49 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                 </div>
                 <div class="text-xs text-muted font-mono mt-0.5 flex items-center gap-2 flex-wrap">
                   <span>Serial: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
-                  <span>| SKU: <strong>{{ qk.sku }}</strong></span>
+                  <span>| SKU: <strong class="text-foreground">{{ qk.sku }}</strong></span>
                   @if (qk.barcode) {
-                    <span>| Barcode: <strong>{{ qk.barcode }}</strong></span>
+                    <span>| Barcode: <strong class="text-foreground">{{ qk.barcode }}</strong></span>
                   }
                   @if (qk.productTemplate.brandName) {
-                    <span>| Hãng: <strong>{{ qk.productTemplate.brandName }}</strong></span>
+                    <span>| Hãng: <strong class="text-foreground">{{ qk.productTemplate.brandName }}</strong></span>
                   }
                 </div>
               </div>
             </div>
 
             <div class="text-left sm:text-right">
-              <span class="text-xs uppercase font-semibold text-muted block">Vị trí hiện tại</span>
-              <span class="font-bold text-foreground text-sm">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Vị trí hiện tại</span>
+              <span class="font-bold text-foreground text-xs">
                 {{ qk.currentBranch?.name ?? 'Chưa phân bổ' }}
               </span>
               @if (qk.currentBranch) {
-                <span class="text-xs text-muted font-mono block">({{ qk.currentBranch.code }})</span>
+                <span class="text-[11px] text-muted font-mono block">({{ qk.currentBranch.code }})</span>
               }
             </div>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 bg-surface border-b border-line text-xs">
-            <div class="p-2.5 rounded bg-surface-alt border border-line">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-surface border-b border-line text-xs divide-x divide-line">
+            <div class="px-2">
               <span class="text-[11px] uppercase font-semibold text-muted block">Nhà cung cấp</span>
               <span class="font-bold text-foreground truncate block mt-0.5">
                 {{ qk.origin?.supplierName ?? qk.productTemplate.brandName + ' Authorized Dist' }}
               </span>
             </div>
-            <div class="p-2.5 rounded bg-surface-alt border border-line">
+            <div class="px-2">
               <span class="text-[11px] uppercase font-semibold text-muted block">Đơn nhập PO</span>
               <span class="font-bold font-mono text-primary-strong truncate block mt-0.5">
                 {{ qk.origin?.purchaseOrderCode ?? 'PO-GỐC' }}
               </span>
             </div>
-            <div class="p-2.5 rounded bg-surface-alt border border-line">
+            <div class="px-2">
               <span class="text-[11px] uppercase font-semibold text-muted block">Đơn bán liên kết</span>
               <span class="font-bold font-mono text-foreground truncate block mt-0.5">
                 {{ getAssociatedOrderCode(qk) ?? 'Chưa gán đơn bán' }}
               </span>
             </div>
-            <div class="p-2.5 rounded bg-surface-alt border border-line">
-              <span class="text-[11px] uppercase font-semibold text-muted block">Hạn bảo hành còn lại</span>
+            <div class="px-2">
+              <span class="text-[11px] uppercase font-semibold text-muted block">Hạn bảo hành</span>
               <span class="font-bold text-emerald-700 truncate block mt-0.5">
                 {{ getRemainingWarranty(qk.warranty.endDate) }}
               </span>
@@ -254,31 +238,28 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-line">
-            <div class="p-5 space-y-4">
-              <div class="flex items-center justify-between border-b border-line pb-2">
-                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lộ trình luân chuyển thiết bị</span>
-                <span class="text-xs font-mono text-primary-strong">{{ qk.movements.length }} trạm di chuyển</span>
+            <div class="p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-line pb-1.5">
+                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Lộ trình luân chuyển</span>
+                <span class="text-xs font-mono text-muted">{{ qk.movements.length }} trạm</span>
               </div>
 
               @if (qk.movements.length === 0) {
                 <div class="py-6 text-center text-xs text-muted">Chưa có lịch sử di chuyển</div>
               } @else {
-                <div class="relative pl-6 space-y-4 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-line">
+                <div class="border-l border-line ml-2 pl-4 space-y-3 text-xs">
                   @for (mov of qk.movements; track mov.id) {
                     <div class="relative">
-                      <span class="absolute -left-6 top-1 w-3 h-3 rounded-full border border-surface" [ngClass]="getMovementDotClass(mov.resultingStatus)"></span>
-                      <div class="font-bold text-foreground text-xs">{{ mov.summaryText }}</div>
-                      <div class="text-xs text-muted flex items-center gap-2 flex-wrap mt-0.5">
+                      <span class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full ring-2 ring-surface" [ngClass]="getMovementDotClass(mov.resultingStatus)"></span>
+                      <div class="font-bold text-foreground">{{ mov.summaryText }}</div>
+                      <div class="text-[11px] text-muted flex items-center gap-2 flex-wrap mt-0.5 font-mono">
                         <span>{{ formatDateTime(mov.occurredAt) }}</span>
-                        <span>| Phiếu: <strong class="text-primary-strong font-mono">{{ mov.stockMoveCode }}</strong></span>
+                        <span>| Phiếu: <strong class="text-primary-strong">{{ mov.stockMoveCode }}</strong></span>
                         @if (mov.orderCode) {
-                          <span>| Đơn hàng: <strong class="text-foreground font-mono">{{ mov.orderCode }}</strong></span>
-                        }
-                        @if (mov.purchaseOrderCode) {
-                          <span>| PO: <strong class="text-primary-strong font-mono">{{ mov.purchaseOrderCode }}</strong></span>
+                          <span>| Đơn: <strong class="text-foreground">{{ mov.orderCode }}</strong></span>
                         }
                       </div>
-                      <div class="text-xs font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
+                      <div class="text-[11px] font-semibold mt-0.5" [ngClass]="getStatusTextClass(mov.resultingStatus)">
                         Trạng thái: {{ getStatusLabel(mov.resultingStatus) }}
                       </div>
                     </div>
@@ -287,42 +268,28 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               }
             </div>
 
-            <div class="p-5 space-y-4">
-              <div class="flex items-center justify-between border-b border-line pb-2">
-                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Chính sách & Thời hạn bảo hành</span>
-                <span class="text-xs font-mono font-bold text-primary-strong">Chính hãng</span>
+            <div class="p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-line pb-1.5">
+                <span class="font-bold text-foreground uppercase tracking-wider text-xs">Thông tin bảo hành</span>
+                <span class="text-xs font-mono font-bold text-primary-strong">{{ qk.warranty.durationMonths }} Tháng</span>
               </div>
 
-              <div class="space-y-3">
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                  <div class="bg-surface-alt p-2.5 rounded border border-line">
-                    <span class="text-[11px] uppercase font-semibold text-muted block">Thời hạn bảo hành</span>
-                    <strong class="text-foreground text-sm font-bold">{{ qk.warranty.durationMonths }} Tháng</strong>
-                  </div>
-
-                  <div class="bg-surface-alt p-2.5 rounded border border-line">
-                    <span class="text-[11px] uppercase font-semibold text-muted block">Đơn vị tiếp nhận</span>
-                    <strong class="text-foreground text-xs font-bold truncate block">{{ qk.warranty.serviceProvider }}</strong>
-                  </div>
+              <div class="space-y-2 text-xs">
+                <div class="flex items-center justify-between py-1 border-b border-line">
+                  <span class="text-muted">Đơn vị bảo hành:</span>
+                  <span class="font-bold text-foreground truncate max-w-[200px]">{{ qk.warranty.serviceProvider }}</span>
                 </div>
-
-                <div class="p-3 bg-surface-alt rounded border border-line space-y-1.5 text-xs">
-                  <div class="flex items-center justify-between">
-                    <span class="text-muted">Ngày bắt đầu bảo hành:</span>
-                    <span class="font-bold font-mono text-foreground">{{ formatDate(qk.warranty.startDate) }}</span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-muted">Ngày hết hạn dự kiến:</span>
-                    <span class="font-bold font-mono text-primary-strong">{{ formatDate(qk.warranty.endDate) }}</span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-muted">Thời gian còn lại:</span>
-                    <span class="font-bold font-mono text-emerald-700">{{ getRemainingWarranty(qk.warranty.endDate) }}</span>
-                  </div>
-                  <div class="flex items-center justify-between">
-                    <span class="text-muted">Số lần bảo hành đã ghi nhận:</span>
-                    <span class="font-bold text-foreground">{{ qk.warranty.warrantyClaimCount }} lần</span>
-                  </div>
+                <div class="flex items-center justify-between py-1 border-b border-line">
+                  <span class="text-muted">Bắt đầu:</span>
+                  <span class="font-bold font-mono text-foreground">{{ formatDate(qk.warranty.startDate) }}</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-line">
+                  <span class="text-muted">Hết hạn:</span>
+                  <span class="font-bold font-mono text-primary-strong">{{ formatDate(qk.warranty.endDate) }}</span>
+                </div>
+                <div class="flex items-center justify-between py-1 border-b border-line">
+                  <span class="text-muted">Số lần bảo hành:</span>
+                  <span class="font-bold text-foreground">{{ qk.warranty.warrantyClaimCount }} lần</span>
                 </div>
 
                 <div class="pt-2 flex items-center gap-2">
@@ -332,7 +299,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                     appButton
                     variant="primary"
                     size="sm"
-                    class="flex-1 uppercase tracking-wide"
+                    class="flex-1 uppercase tracking-wide text-xs font-bold"
                   >
                     Xem Chi Tiết Vòng Đời
                   </button>
@@ -342,8 +309,9 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                     appButton
                     variant="secondary"
                     size="sm"
+                    class="text-xs"
                   >
-                    Đóng Xem Nhanh
+                    Đóng
                   </button>
                 </div>
               </div>

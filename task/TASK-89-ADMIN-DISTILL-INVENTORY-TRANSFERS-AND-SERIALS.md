@@ -4,7 +4,7 @@
 - Governing Spec: [MASTER.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/design-system/el-tech/MASTER.md), [SKILL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/SKILL.md), [distill.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/reference/distill.md), [admin-portal-screens-and-modals.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/docs/admin-portal-screens-and-modals.md) (SCR-15, SCR-16, SCR-17, SCR-18, SCR-19)
 - Scope: frontend
 - Priority: P2 (Medium)
-- Status: To Do
+- Status: Complete
 
 ## Traceability & Graph Links
 
@@ -71,9 +71,9 @@ Thực hiện tinh gọn giao diện theo nguyên tắc Impeccable Distill cho t
 
 ## Checklist
 
-- [ ] Tinh gọn trang tồn kho chi nhánh và hộp thoại cách ly hàng lỗi.
-- [ ] Tinh gọn bảng sổ cái biến động tồn kho và ngăn kéo chi tiết SKU.
-- [ ] Tinh gọn luồng tạo, xuất và nhận phiếu điều chuyển nội bộ.
-- [ ] Tinh gọn thẻ quét barcode sê-ri và dòng thời gian lịch sử di chuyển linh kiện.
-- [ ] Tinh gọn danh sách và hộp thoại chi nhánh.
-- [ ] Chạy kiểm tra `npm run check:fe` với exit code 0.
+- [x] Tinh gọn trang tồn kho chi nhánh và hộp thoại cách ly hàng lỗi.
+- [x] Tinh gọn bảng sổ cái biến động tồn kho và ngăn kéo chi tiết SKU.
+- [x] Tinh gọn luồng tạo, xuất và nhận phiếu điều chuyển nội bộ.
+- [x] Tinh gọn thẻ quét barcode sê-ri và dòng thời gian lịch sử di chuyển linh kiện.
+- [x] Tinh gọn danh sách và hộp thoại chi nhánh.
+- [x] Chạy kiểm tra `npm run check:fe` với exit code 0.

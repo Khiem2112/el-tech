@@ -71,7 +71,7 @@ const branchFormSchema = z.object({
         [attr.aria-labelledby]="'branch-modal-title'"
       >
         <div
-          class="relative bg-white border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-[13px] text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-6 space-y-4 text-[13px] text-foreground"
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
@@ -230,19 +230,33 @@ const branchFormSchema = z.object({
             </div>
 
             <div>
-              <label for="branch-areas" class="block font-semibold text-muted text-xs uppercase mb-1">
-                Danh sách mã khu vực phục vụ
-              </label>
+              <div class="flex items-center justify-between mb-1">
+                <label for="branch-areas" class="font-semibold text-muted text-xs uppercase">
+                  Danh sách mã khu vực phục vụ
+                </label>
+                <div class="flex items-center gap-1">
+                  <span class="text-[11px] text-muted">Thêm nhanh:</span>
+                  @for (chip of areaCodePresets; track chip) {
+                    <button
+                      type="button"
+                      (click)="appendAreaCode(chip)"
+                      class="px-1.5 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line font-mono text-[10px] text-foreground font-semibold transition-colors"
+                    >
+                      +{{ chip }}
+                    </button>
+                  }
+                </div>
+              </div>
               <input
                 id="branch-areas"
                 type="text"
                 formControlName="deliveryAreaCodes"
-                placeholder="HN-*, VP-*, BN-* (phân cách bằng dấu phẩy)"
+                placeholder="HN-*, HCM-*, DN-* (phân cách bằng dấu phẩy)"
                 class="w-full px-3 py-2 bg-surface border rounded font-mono text-foreground text-[13px] focus:outline-none placeholder:text-muted"
                 [ngClass]="hasError('deliveryAreaCodes') ? 'border-rose-500 focus:border-rose-500' : 'border-line focus:border-primary'"
               />
               <p class="text-xs text-muted mt-1">
-                Các tiền tố mã bưu chính hoặc khu vực chi nhánh sẽ tiếp nhận đơn giao hàng (cách nhau bởi dấu phẩy).
+                Tiền tố mã khu vực tiếp nhận giao hàng (ví dụ: HN-*, HCM-*, DN-*). Để trống nếu phục vụ toàn quốc.
               </p>
             </div>
 
@@ -270,7 +284,7 @@ const branchFormSchema = z.object({
               <button
                 type="submit"
                 [disabled]="isSubmitting()"
-                class="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-primary-foreground font-bold rounded shadow-xs text-[13px] transition-colors"
+                class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded shadow-xs text-[13px] transition-colors"
               >
                 {{ isSubmitting() ? 'Đang lưu...' : (isEditMode() ? 'Lưu Thay Đổi' : 'Tạo Chi Nhánh') }}
               </button>
@@ -294,6 +308,21 @@ export class BranchFormDialogComponent {
 
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly areaCodePresets = ['HN-*', 'HCM-*', 'DN-*', 'BD-*'];
+
+  appendAreaCode(code: string): void {
+    const current = (this.form.get('deliveryAreaCodes')?.value as string) || '';
+    const parts = current
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    if (!parts.includes(code)) {
+      parts.push(code);
+      this.form.patchValue({ deliveryAreaCodes: parts.join(', ') });
+      this.form.get('deliveryAreaCodes')?.markAsDirty();
+    }
+  }
 
   readonly form: FormGroup = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],

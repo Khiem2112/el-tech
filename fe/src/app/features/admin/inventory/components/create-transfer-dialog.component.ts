@@ -70,10 +70,6 @@ type TransferItemDraft = {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-800 text-xs leading-relaxed">
-                Kho xuất và kho nhận phải khác nhau. Số lượng điều chuyển không được vượt quá tồn khả dụng thực tế tại kho xuất.
-              </div>
-
               @if (errorMessage()) {
                 <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
@@ -120,16 +116,23 @@ type TransferItemDraft = {
                   [ngModel]="reason()"
                   (ngModelChange)="reason.set($event)"
                   name="reason"
-                  placeholder="Ví dụ: Bổ sung hàng cho chi nhánh Hà Nội phục vụ đơn Custom PC"
+                  placeholder="Ví dụ: Bổ sung hàng cho chi nhánh phục vụ đơn Custom PC"
                   class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
                 />
               </div>
 
               <div>
                 <div class="flex items-center justify-between mb-2">
-                  <span class="font-semibold text-muted text-xs uppercase">
-                    Danh Sách Linh Kiện Cần Chuyển
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-muted text-xs uppercase">
+                      Danh Sách Linh Kiện Cần Chuyển
+                    </span>
+                    @if (draftLines().length > 0) {
+                      <span class="px-2 py-0.5 rounded bg-surface-alt font-mono text-[11px] font-bold text-foreground border border-line">
+                        {{ totalDraftUnits() }} chiếc ({{ draftLines().length }} SKU)
+                      </span>
+                    }
+                  </div>
                   @if (eligibleSkus().length > 0) {
                     <button
                       type="button"
@@ -204,29 +207,36 @@ type TransferItemDraft = {
               </div>
             </div>
 
-            <div class="p-4 border-t border-line flex items-center justify-end gap-3 flex-shrink-0 bg-surface-alt">
-              <button
-                type="button"
-                (click)="onCancel()"
-                appButton
-                variant="secondary"
-                size="sm"
-              >
-                Hủy bỏ
-              </button>
-              <button
-                type="submit"
-                [disabled]="isSubmitting() || draftLines().length === 0"
-                appButton
-                variant="primary"
-                size="sm"
-              >
-                @if (isSubmitting()) {
-                  Đang lập phiếu...
-                } @else {
-                  Xác nhận lập phiếu
+            <div class="p-4 border-t border-line flex items-center justify-between gap-3 flex-shrink-0 bg-surface-alt">
+              <div class="text-xs text-muted font-mono">
+                @if (draftLines().length > 0) {
+                  Tổng chuyển: <strong class="text-foreground font-bold">{{ totalDraftUnits() }} chiếc</strong>
                 }
-              </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  (click)="onCancel()"
+                  appButton
+                  variant="secondary"
+                  size="sm"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  type="submit"
+                  [disabled]="isSubmitting() || draftLines().length === 0"
+                  appButton
+                  variant="primary"
+                  size="sm"
+                >
+                  @if (isSubmitting()) {
+                    Đang lập phiếu...
+                  } @else {
+                    Xác nhận lập phiếu
+                  }
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -251,6 +261,10 @@ export class CreateTransferDialogComponent implements OnChanges {
   readonly isLoadingSkus = signal<boolean>(false);
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly totalDraftUnits = computed(() =>
+    this.draftLines().reduce((acc, line) => acc + (line.quantity || 0), 0),
+  );
 
   readonly sourceBranchOptions = computed<SelectOption[]>(() =>
     this.branches().map((b) => ({

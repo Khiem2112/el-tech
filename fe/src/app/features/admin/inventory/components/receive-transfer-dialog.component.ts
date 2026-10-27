@@ -57,10 +57,6 @@ import {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-emerald-50 border border-emerald-200 rounded text-emerald-800 text-xs leading-relaxed">
-                Chi nhánh đích xác nhận nhận đủ 100% số lượng linh kiện ({{ transfer.totalQuantity }} chiếc). Hệ thống sẽ tăng tồn kho thực tế onHand tại kho nhận, tính lại giá vốn bình quân gia quyền (WAC), ghi nhận TRANSFER_IN và chuyển sê-ri sang khả dụng tại kho mới.
-              </div>
-
               @if (errorMessage()) {
                 <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
@@ -68,7 +64,10 @@ import {
               }
 
               <div class="space-y-2">
-                <div class="text-muted font-semibold uppercase text-[11px]">Danh sách linh kiện tiếp nhận:</div>
+                <div class="flex items-center justify-between text-[11px] uppercase font-semibold text-muted">
+                  <span>Linh kiện tiếp nhận</span>
+                  <span class="font-mono text-foreground font-bold">{{ transfer.totalQuantity }} chiếc</span>
+                </div>
                 <div class="space-y-1.5 max-h-48 overflow-y-auto">
                   @for (line of transfer.lines; track line.id) {
                     <div class="p-2.5 bg-surface-alt border border-line rounded flex items-center justify-between">
@@ -76,7 +75,7 @@ import {
                         <div class="font-bold text-foreground">{{ line.productName }}</div>
                         <div class="text-[11px] font-mono text-muted">SKU: {{ line.skuCode }}</div>
                       </div>
-                      <div class="font-bold text-foreground font-mono text-sm">
+                      <div class="font-bold text-foreground font-mono text-sm tabular-nums">
                         {{ line.quantity }} chiếc
                       </div>
                     </div>
@@ -94,7 +93,7 @@ import {
                   [ngModel]="note()"
                   (ngModelChange)="note.set($event)"
                   name="receiveNote"
-                  placeholder="Ví dụ: Đã kiểm tra nguyên tem niêm phong, đủ số lượng"
+                  placeholder="Ví dụ: Đã kiểm tra nguyên seal, đủ linh kiện theo phiếu"
                   class="w-full h-9 px-3 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-muted"
                 />
               </div>

@@ -69,10 +69,6 @@ type SkuSerialSelection = {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-sky-50 border border-sky-200 rounded text-sky-800 text-xs leading-relaxed">
-                Giảm tồn kho thực tế tại kho xuất, ghi nhận nhật ký TRANSFER_OUT, chuyển sê-ri sang trạng thái đang vận chuyển (IN_TRANSIT) và cập nhật phiếu sang Đang chuyển.
-              </div>
-
               @if (errorMessage()) {
                 <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
@@ -85,11 +81,11 @@ type SkuSerialSelection = {
                     <div class="flex items-center justify-between">
                       <div>
                         <div class="font-bold text-foreground">{{ item.productName }}</div>
-                        <div class="text-[11px] font-mono text-muted">SKU: {{ item.skuCode }} - Số lượng xuất: {{ item.quantity }} chiếc</div>
+                        <div class="text-[11px] font-mono text-muted">SKU: {{ item.skuCode }} - Số lượng xuất: <strong class="text-foreground">{{ item.quantity }} chiếc</strong></div>
                       </div>
                       @if (item.serialRequired) {
-                        <span class="px-2 py-0.5 rounded bg-warning/15 border border-warning/30 text-warning font-mono text-[10px] font-bold">
-                          Cần {{ item.quantity }} Sê-ri (Đã chọn: {{ item.selectedSerials.length }})
+                        <span class="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-warning font-mono text-[10px] font-bold">
+                          Đã chọn: {{ item.selectedSerials.length }} / {{ item.quantity }}
                         </span>
                       } @else {
                         <span class="px-2 py-0.5 rounded bg-surface border border-line text-muted text-[10px]">
@@ -107,9 +103,18 @@ type SkuSerialSelection = {
                         </div>
                       } @else {
                         <div class="space-y-1.5 pt-1">
-                          <label class="block text-muted text-[11px] font-semibold uppercase">
-                            Chọn danh sách sê-ri xuất kho:
-                          </label>
+                          <div class="flex items-center justify-between">
+                            <label class="block text-muted text-[11px] font-semibold uppercase">
+                              Chọn danh sách sê-ri xuất kho:
+                            </label>
+                            <button
+                              type="button"
+                              (click)="autoSelectSerials(item.skuId)"
+                              class="text-[11px] text-primary-strong hover:underline font-semibold"
+                            >
+                              Chọn đủ {{ item.quantity }} sê-ri
+                            </button>
+                          </div>
                           <div class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto p-2 bg-surface border border-line rounded">
                             @for (serial of item.availableSerials; track serial) {
                               <label class="flex items-center gap-2 cursor-pointer p-1 rounded hover:bg-surface-alt text-foreground">
@@ -254,6 +259,20 @@ export class DispatchTransferDialogComponent implements OnChanges {
           updated = [...g.selectedSerials, serial];
         }
         return { ...g, selectedSerials: updated };
+      }),
+    );
+  }
+
+  autoSelectSerials(skuId: number): void {
+    this.serialGroups.update((groups) =>
+      groups.map((g) => {
+        if (g.skuId !== skuId) {
+          return g;
+        }
+        return {
+          ...g,
+          selectedSerials: g.availableSerials.slice(0, g.quantity),
+        };
       }),
     );
   }

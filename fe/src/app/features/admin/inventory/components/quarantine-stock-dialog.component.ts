@@ -56,10 +56,6 @@ import {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-900 text-xs leading-relaxed font-medium">
-                Linh kiện cách ly sẽ bị trừ khỏi tồn khả dụng bán để tránh xuất nhầm cho khách hàng và được lưu trữ tại khu vực kiểm định.
-              </div>
-
               @if (errorMessage()) {
                 <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
@@ -126,39 +122,50 @@ import {
                 </div>
               }
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-semibold text-muted text-xs uppercase mb-1">
+              <div class="space-y-1.5">
+                <label class="block font-semibold text-muted text-xs uppercase">
+                  Lý do cách ly nhanh
+                </label>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (opt of defectOptions; track opt.value) {
+                    <button
+                      type="button"
+                      (click)="defectClassification = opt.value"
+                      class="px-2.5 py-1.5 rounded text-xs font-semibold border transition-colors"
+                      [ngClass]="defectClassification === opt.value ? 'bg-danger text-white border-danger' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
+                    >
+                      {{ opt.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="font-semibold text-muted text-xs uppercase">
                     Số lượng cách ly
                   </label>
+                  <span class="text-[11px] text-muted font-mono">
+                    Khả dụng: <strong class="text-foreground">{{ maxAvailable() }} chiếc</strong>
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
                   <input
                     type="number"
                     [(ngModel)]="quantity"
                     name="quantity"
                     min="1"
                     [max]="maxAvailable()"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold text-danger tabular-nums focus:outline-none focus:border-danger text-xs"
+                    class="flex-1 px-3 py-2 bg-surface-alt border border-line rounded font-bold text-danger tabular-nums focus:outline-none focus:border-danger text-xs"
                   />
-                  <span class="text-[11px] text-muted mt-0.5 block">
-                    Tối đa: {{ maxAvailable() }} chiếc
-                  </span>
-                </div>
-
-                <div>
-                  <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Phân loại lỗi
-                  </label>
-                  <select
-                    [(ngModel)]="defectClassification"
-                    name="defectClassification"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-primary text-xs"
+                  <button
+                    type="button"
+                    (click)="quantity = maxAvailable()"
+                    [disabled]="maxAvailable() <= 0"
+                    class="px-3 py-2 bg-surface border border-line hover:bg-surface-alt text-xs font-semibold rounded text-muted hover:text-foreground transition-colors disabled:opacity-50"
                   >
-                    <option value="PHYSICAL_DAMAGE">Móp méo vỏ hộp / trầy xước vật lý</option>
-                    <option value="DEFECTIVE_FAN">Lỗi quạt tản nhiệt / không quay</option>
-                    <option value="NO_DISPLAY">Lỗi mạch không xuất hình khi test</option>
-                    <option value="DOA">Lỗi khởi động ban đầu (DOA)</option>
-                    <option value="OTHER">Lý do kiểm định kỹ thuật khác</option>
-                  </select>
+                    Tất cả
+                  </button>
                 </div>
               </div>
 
@@ -182,13 +189,13 @@ import {
 
               <div>
                 <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                  Ghi chú biên bản kiểm định kho
+                  Ghi chú kiểm định kho (tùy chọn)
                 </label>
                 <textarea
                   [(ngModel)]="auditNote"
                   name="auditNote"
                   rows="2"
-                  placeholder="Mô tả chi tiết tình trạng linh kiện và số biên bản..."
+                  placeholder="Mô tả chi tiết tình trạng linh kiện hoặc số biên bản kiểm định..."
                   class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-danger text-xs"
                 ></textarea>
               </div>
@@ -237,6 +244,14 @@ export class QuarantineStockDialogComponent implements OnChanges {
   defectClassification = 'PHYSICAL_DAMAGE';
   auditNote = '';
   serialInput = '';
+
+  readonly defectOptions = [
+    { value: 'PHYSICAL_DAMAGE', label: 'Móp vỏ hộp / trầy xước' },
+    { value: 'DEFECTIVE_FAN', label: 'Lỗi quạt tản nhiệt' },
+    { value: 'NO_DISPLAY', label: 'Không xuất hình' },
+    { value: 'DOA', label: 'Lỗi DOA' },
+    { value: 'OTHER', label: 'Lý do khác' },
+  ];
 
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);

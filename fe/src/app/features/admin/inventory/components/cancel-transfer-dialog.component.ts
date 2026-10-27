@@ -57,19 +57,33 @@ import {
 
           <form (ngSubmit)="onSubmit()" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-5 overflow-y-auto space-y-4 flex-1">
-              <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs leading-relaxed font-medium">
-                Chỉ cho phép hủy khi phiếu điều chuyển đang ở trạng thái Chờ xuất và chưa xuất hàng khỏi kho.
-              </div>
-
               @if (errorMessage()) {
                 <div class="p-3 bg-danger/10 border border-danger/30 rounded text-danger text-xs font-semibold">
                   {{ errorMessage() }}
                 </div>
               }
 
+              <div class="space-y-1.5">
+                <label class="block font-semibold text-muted text-xs uppercase">
+                  Lý do nhanh:
+                </label>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (preset of cancelPresets; track preset) {
+                    <button
+                      type="button"
+                      (click)="reason.set(preset)"
+                      class="px-2.5 py-1 rounded text-xs font-semibold border transition-colors"
+                      [ngClass]="reason() === preset ? 'bg-danger text-white border-danger' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
+                    >
+                      {{ preset }}
+                    </button>
+                  }
+                </div>
+              </div>
+
               <div>
                 <label for="cancel-reason" class="block font-semibold text-muted text-xs uppercase mb-1">
-                  Lý Do Hủy Yêu Cầu Điều Chuyển <span class="text-danger">*</span>
+                  Chi tiết lý do hủy <span class="text-danger">*</span>
                 </label>
                 <textarea
                   id="cancel-reason"
@@ -125,6 +139,13 @@ export class CancelTransferDialogComponent implements OnChanges {
   readonly reason = signal<string>('');
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly cancelPresets = [
+    'Tạo nhầm chi nhánh',
+    'Kho xuất thiếu hàng',
+    'Đã gom sang phiếu khác',
+    'Khách hủy yêu cầu cấu hình',
+  ];
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['isOpen'] && this.isOpen) {
