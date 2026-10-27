@@ -228,6 +228,12 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 79. Task 79: Tinh Chỉnh Chữ Số Có Cột, Độ Tương Phản Và Loại Bỏ Chuyển Động Nảy ([TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH.md))
 80. Task 80: Hoàn Thiện Khung Trạng Thái Rỗng, Bộ Đệm Tải Và Dọn Dẹp Mã Nguồn Dư Thừa ([TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL.md))
 
+#### Phase 10: Đồng Bộ Bản Mẫu UI Template & Xóa Bỏ Nhãn Mã Nội Bộ (Template Alignment & Spec Code Removal)
+81. Task 81: Loại Bỏ Toàn Bộ Nhãn Mã Tài Liệu Nội Bộ (SCR-xx, MOD-xx) Trên Giao Diện Người Dùng ([TASK-81-ADMIN-REMOVE-INTERNAL-SPEC-CODE-BADGES.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-81-ADMIN-REMOVE-INTERNAL-SPEC-CODE-BADGES.md))
+82. Task 82: Khắc Phục Lỗi Double Header Và Chuẩn Hóa Design Tokens Hệ Thống ([TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION.md))
+83. Task 83: Bổ Sung Khối Thẻ Phân Tích BI Và Bảng Điều Chuyển Trên Dashboard ([TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID.md))
+84. Task 84: Hoàn Thiện Nghiệp Vụ Cách Ly Lỗi Kho Và Tra Cứu Máy Quét Barcode Serial ([TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/task/TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP.md))
+
 ### 6.2. Bảng Ánh Xạ Vấn Đề Báo Cáo Sang Task Khắc Phục
 
 | Task ID | Vấn đề báo cáo được giải quyết | Phạm vi kỹ thuật | Mức độ ưu tiên | Trạng thái |
@@ -249,6 +255,10 @@ Kế hoạch gồm 12 task (TASK-64 đến TASK-75) được phân định rõ r
 | TASK-78 | Polish Audit Nhóm 3 (Chuẩn hóa 15 tệp dùng select thô sang app-select; chuyển svg inline sang Lucide) | frontend | P1 | Complete |
 | TASK-79 | Polish Audit Nhóm 4 (Gắn class tabular cho 190 vị trí số tiền; sửa tương phản chữ và xóa bounce animation) | frontend | P1 | Complete |
 | TASK-80 | Polish Audit Nhóm 5 (Bổ sung empty state, skeleton loading cho tra cứu đơn; xóa mã thừa admin/pages) | frontend | P1 | Complete |
+| TASK-81 | Loại bỏ ký hiệu đặc tả nội bộ SCR-xx, MOD-xx trên giao diện người dùng chính thức | frontend | P1 | Ready |
+| TASK-82 | Lỗi lặp Double Header tại Reviews, Outbox; chuẩn hóa mã hex cứng sang token NVIDIA | frontend | P1 | Ready |
+| TASK-83 | Bổ sung 3 thẻ KPI phân tích BI và bảng điều chuyển in-transit trên Dashboard | frontend, backend | P1 | Ready |
+| TASK-84 | Cách ly lỗi kho, gom nhóm vùng miền và tối ưu khối máy quét barcode tra cứu sê-ri | frontend, backend | P2 | Ready |
 
 ---
 
@@ -326,6 +336,28 @@ graph TD
         T73 --> T80["[[TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL]]"]
         T71 --> T80
     end
+
+    subgraph Admin_Template_Alignment["Đồng Bộ Bản Mẫu & Dọn Dẹp UI (Phase 10)"]
+        T71 --> T81["[[TASK-81-ADMIN-REMOVE-INTERNAL-SPEC-CODE-BADGES]]"]
+        T76 --> T81
+        T71 --> T82["[[TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION]]"]
+        T76 --> T82
+        T62["[[TASK-62-ADMIN-OPERATIONAL-DASHBOARD-AND-URGENT-QUEUES]]"] --> T83["[[TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID]]"]
+        T82 --> T83
+        T49 --> T84["[[TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP]]"]
+        T50 --> T84
+        T72 --> T84
+    end
+
+    subgraph Admin_Impeccable_Distillation["Tinh Gọn Phân Hệ Admin Bằng Impeccable Distill (Phase 11)"]
+        T82 --> T85["[[TASK-85-ADMIN-DISTILL-SHELL-AND-SHARED-NAVIGATION]]"]
+        T83 --> T86["[[TASK-86-ADMIN-DISTILL-DASHBOARD-AND-ANALYTICS]]"]
+        T74 --> T87["[[TASK-87-ADMIN-DISTILL-CATALOG-AND-PRODUCT-TEMPLATES]]"]
+        T72 --> T88["[[TASK-88-ADMIN-DISTILL-PROCUREMENT-AND-SUPPLIERS]]"]
+        T84 --> T89["[[TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS]]"]
+        T73 --> T90["[[TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS]]"]
+        T75 --> T91["[[TASK-91-ADMIN-DISTILL-PROMOTIONS-GOVERNANCE-AND-FEEDBACK]]"]
+    end
 ```
 
 ### 7.2. Bảng Tra Cứu Hai Chiều: Task Fix Bug Và Task Gốc
@@ -353,6 +385,19 @@ graph TD
 | [[TASK-78-FRONTEND-SELECT-ATOM-STANDARDIZATION-AND-SVG-CLEANUP]] | UI/UX Polish | Polish Audit Nhóm 3 (Chuẩn hóa 15 tệp dùng select thô sang app-select; chuyển svg inline sang Lucide) | [[TASK-18-SPARTAN-COMBOBOX-AND-CATALOG-SELECTION]], [[TASK-72-ADMIN-INVENTORY-TABLES-AND-TRANSFERS]], [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] |
 | [[TASK-79-FRONTEND-TABULAR-NUMERALS-CONTRAST-AND-MOTION-POLISH]] | UI/UX Polish | Polish Audit Nhóm 4 (Gắn class tabular cho 190 vị trí số tiền; sửa tương phản chữ và xóa bounce animation) | [[TASK-17-TYPOGRAPHY-AND-HEADER-DROPDOWN-CLEANUP]], [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]] |
 | [[TASK-80-FRONTEND-EMPTY-LOADING-STATES-AND-DEAD-CODE-REMOVAL]] | UI/UX Polish | Polish Audit Nhóm 5 (Bổ sung empty state, skeleton loading cho tra cứu đơn; xóa mã thừa admin/pages) | [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]], [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]] |
+| [[TASK-81-ADMIN-REMOVE-INTERNAL-SPEC-CODE-BADGES]] | UI Cleanup | Loại bỏ text mã đặc tả nội bộ SCR-02, SCR-21, SCR-22, SCR-28, SCR-29, SCR-30, MOD-32, MOD-38 | [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]], [[TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL]] |
+| [[TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION]] | UI Fix | Khắc phục thẻ header lặp đôi trên Reviews, Outbox; đổi mã hex sang token NVIDIA | [[TASK-71-ADMIN-SHELL-LIGHT-THEME-AND-CLEANUP]], [[TASK-76-FRONTEND-COLOR-PALETTE-STANDARDIZATION-AND-AI-SLOP-REMOVAL]] |
+| [[TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID]] | Feature Completion | Bổ sung 3 thẻ KPI BI, lưới 2 cột bảng điều chuyển hàng in-transit, nhãn vùng phục vụ chi nhánh | [[TASK-62-ADMIN-OPERATIONAL-DASHBOARD-AND-URGENT-QUEUES]], [[TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION]] |
+| [[TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP]] | Feature Enhancement | Hộp thoại cách ly lỗi kho, gom nhóm vùng miền tồn kho, thẻ máy quét barcode sê-ri trực tiếp | [[TASK-49-ADMIN-INVENTORY-BALANCES-AND-IMMUTABLE-LEDGER]], [[TASK-50-ADMIN-SERIAL-NUMBERS-AND-WARRANTY-LIFECYCLE]], [[TASK-72-ADMIN-INVENTORY-TABLES-AND-TRANSFERS]] |
+| [[TASK-85-ADMIN-DISTILL-SHELL-AND-SHARED-NAVIGATION]] | UI Distill | Tinh gọn khung Shell, Header, Sidebar, Breadcrumb và Login; xóa đường viền và container thừa | [[TASK-82-ADMIN-DOUBLE-HEADER-FIX-AND-THEME-TOKEN-STANDARDIZATION]] |
+| [[TASK-86-ADMIN-DISTILL-DASHBOARD-AND-ANALYTICS]] | UI Distill | Tinh gọn Dashboard, thẻ BI Analytics, hàng đợi khẩn cấp; xóa card-in-card, áp dụng tabular-nums | [[TASK-83-ADMIN-DASHBOARD-BI-CARDS-AND-IN-TRANSIT-TRANSFERS-GRID]] |
+| [[TASK-87-ADMIN-DISTILL-CATALOG-AND-PRODUCT-TEMPLATES]] | UI Distill | Tinh gọn chi tiết mẫu sản phẩm, dynamic-spec-renderer, danh mục, thương hiệu và BOM PC Bundle | [[TASK-74-ADMIN-CATALOG-AND-PC-BUNDLES-UI]] |
+| [[TASK-88-ADMIN-DISTILL-PROCUREMENT-AND-SUPPLIERS]] | UI Distill | Tinh gọn đơn PO chi tiết, nhập sê-ri nghiệm thu, trả hàng nhà cung cấp và danh bạ nhà cung cấp | [[TASK-72-ADMIN-INVENTORY-TABLES-AND-TRANSFERS]] |
+| [[TASK-89-ADMIN-DISTILL-INVENTORY-TRANSFERS-AND-SERIALS]] | UI Distill | Tinh gọn bảng tồn kho theo cụm, sổ cái biến động, luồng điều chuyển nội bộ và thẻ máy quét sê-ri | [[TASK-84-ADMIN-INVENTORY-QUARANTINE-AND-SERIALS-SCANNER-LOOKUP]] |
+| [[TASK-90-ADMIN-DISTILL-ORDERS-AND-FULFILLMENT-MODALS]] | UI Distill | Tinh gọn chi tiết đơn hàng, thanh thao tác 1 Primary CTA và 15 hộp thoại quy trình thực thi đơn | [[TASK-73-ADMIN-ORDERS-OPERATIONS-AND-MODALS]] |
+| [[TASK-91-ADMIN-DISTILL-PROMOTIONS-GOVERNANCE-AND-FEEDBACK]] | UI Distill | Tinh gọn khuyến mãi, coupon, biểu phí giao hàng, khách hàng, duyệt đánh giá và outbox thông báo | [[TASK-75-ADMIN-PROMOTIONS-PAYMENTS-AND-CUSTOMERS]] |
+
+
 
 
 
