@@ -1,104 +1,109 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import { LowStockAlertItem } from '../services/admin-dashboard.service';
 
 @Component({
   selector: 'app-low-stock-alert-card',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
-      <div class="p-5 border-b border-line flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h2 class="text-sm font-bold uppercase tracking-wider text-rose-600">
-            Cảnh Báo Tồn Khả Dụng Thấp Hoặc Bằng 0
-          </h2>
-          <p class="text-[13px] text-muted mt-0.5">
-            Linh kiện cần lập đơn mua nhập hàng hoặc điều chuyển nội bộ gấp
-          </p>
+    <div class="bg-surface border border-line rounded-lg overflow-hidden flex flex-col justify-between">
+      <div>
+        <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-xs font-bold uppercase tracking-wider text-muted">
+              Cảnh Báo Tồn Kho Thấp
+            </h2>
+          </div>
+          <a
+            [routerLink]="['/admin/inventory/balances']"
+            [queryParams]="inventoryQueryParams()"
+            class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+          >
+            <span>Sổ tồn kho</span>
+            <lucide-icon name="arrow-right" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+          </a>
         </div>
-        <a
-          [routerLink]="['/admin/inventory/balances']"
-          [queryParams]="inventoryQueryParams()"
-          class="text-[13px] font-semibold text-primary-strong hover:underline"
-        >
-          Sổ tồn kho &rarr;
-        </a>
-      </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-[13px]">
-          <thead class="bg-surface-alt/80 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
-            <tr>
-              <th class="py-3 px-4">Mã SKU</th>
-              <th class="py-3 px-4">Tên linh kiện</th>
-              <th class="py-3 px-4">Chi nhánh</th>
-              <th class="py-3 px-4 text-right">Tồn thực tế</th>
-              <th class="py-3 px-4 text-right">Đang giữ</th>
-              <th class="py-3 px-4 text-right">Khả dụng</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-line">
-            @if (alerts().length === 0) {
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider">
               <tr>
-                <td colspan="6" class="py-8 text-center text-muted text-[13px]">
-                  Hiện không có linh kiện nào chạm ngưỡng cảnh báo tồn kho
-                </td>
+                <th class="py-2.5 px-3">Mã SKU</th>
+                <th class="py-2.5 px-3">Linh kiện &amp; Chi nhánh</th>
+                <th class="py-2.5 px-3 text-right">Khả dụng</th>
+                <th class="py-2.5 px-3 text-right">Thao tác</th>
               </tr>
-            } @else {
-              @for (item of alerts(); track item.quantId) {
-                <tr class="hover:bg-surface-alt/50 transition-colors">
-                  <td class="py-3 px-4 font-mono text-[13px] font-semibold text-foreground">
-                    {{ item.sku }}
-                  </td>
-                  <td class="py-3 px-4">
-                    <div class="font-medium text-foreground line-clamp-1">{{ item.productName }}</div>
-                    @if (item.variationLabel) {
-                      <div class="text-xs text-muted font-mono">{{ item.variationLabel }}</div>
-                    }
-                  </td>
-                  <td class="py-3 px-4 text-muted text-[13px] whitespace-nowrap">
-                    {{ item.branchCode }} ({{ item.branchName }})
-                  </td>
-                  <td class="py-3 px-4 text-right tabular-nums text-foreground font-medium">
-                    {{ item.onHand }}
-                  </td>
-                  <td class="py-3 px-4 text-right tabular-nums text-amber-700 font-semibold">
-                    {{ item.reserved }}
-                  </td>
-                  <td
-                    class="py-3 px-4 text-right tabular-nums font-bold"
-                    [class.text-rose-600]="item.available <= 0"
-                    [class.text-amber-600]="item.available > 0 && item.available <= 5"
-                    [class.text-primary-strong]="item.available > 5"
-                  >
-                    {{ item.available }}
+            </thead>
+            <tbody class="divide-y divide-line">
+              @if (alerts().length === 0) {
+                <tr>
+                  <td colspan="4" class="py-8 text-center text-muted text-xs">
+                    Mức tồn kho tất cả linh kiện đều trong ngưỡng an toàn
                   </td>
                 </tr>
+              } @else {
+                @for (item of alerts(); track item.quantId) {
+                  <tr class="hover:bg-surface-alt/40 transition-colors">
+                    <td class="py-2.5 px-3 font-mono font-semibold text-foreground whitespace-nowrap">
+                      {{ item.sku }}
+                    </td>
+                    <td class="py-2.5 px-3">
+                      <div class="font-medium text-foreground line-clamp-1">{{ item.productName }}</div>
+                      <div class="text-[11px] text-muted flex items-center gap-1.5 mt-0.5">
+                        <span>{{ item.branchCode }}</span>
+                        @if (item.variationLabel) {
+                          <span>&bull;</span>
+                          <span class="font-mono">{{ item.variationLabel }}</span>
+                        }
+                      </div>
+                    </td>
+                    <td class="py-2.5 px-3 text-right tabular-nums whitespace-nowrap">
+                      <span
+                        class="font-bold"
+                        [class.text-rose-600]="item.available <= 0"
+                        [class.text-amber-600]="item.available > 0 && item.available <= 5"
+                        [class.text-foreground]="item.available > 5"
+                      >
+                        {{ item.available }}
+                      </span>
+                      <span class="text-[11px] text-muted ml-1 font-normal">/ {{ item.onHand }}</span>
+                    </td>
+                    <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                      <a
+                        [routerLink]="['/admin/procurement/purchase-orders/new']"
+                        class="px-2 py-1 text-xs font-medium rounded bg-surface border border-line hover:border-primary/50 text-foreground transition-colors"
+                      >
+                        Lập PO
+                      </a>
+                    </td>
+                  </tr>
+                }
               }
-            }
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="p-4 bg-surface-alt/50 border-t border-line flex items-center justify-between flex-wrap gap-2 text-[13px]">
+      <div class="p-3 bg-surface-alt/30 border-t border-line flex items-center justify-between flex-wrap gap-2 text-xs">
         <span class="text-muted">
-          Đơn hàng COD tiếp theo có chứa các SKU trên sẽ bị chặn xác nhận nếu hết hàng
+          Đơn COD sẽ tạm chặn nếu hết hàng khả dụng
         </span>
         <div class="flex items-center gap-2">
           <a
             [routerLink]="['/admin/inventory/transfers']"
-            class="px-3.5 py-1.5 bg-surface border border-line hover:bg-surface-alt rounded font-semibold text-foreground text-[13px] transition-colors shadow-xs"
+            class="px-3 py-1 bg-surface border border-line hover:bg-surface-alt rounded font-medium text-foreground transition-colors"
           >
-            Điều chuyển &rarr;
+            Điều chuyển
           </a>
           <a
             [routerLink]="['/admin/procurement/purchase-orders/new']"
-            class="px-3.5 py-1.5 bg-primary hover:bg-primary-strong rounded font-semibold text-primary-foreground text-[13px] transition-colors shadow-xs"
+            class="px-3 py-1 bg-primary hover:bg-primary-strong rounded font-semibold text-primary-foreground transition-colors"
           >
-            Lập đơn mua PO &rarr;
+            Tạo đơn PO
           </a>
         </div>
       </div>
