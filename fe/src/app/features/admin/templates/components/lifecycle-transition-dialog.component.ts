@@ -64,18 +64,18 @@ import {
                     [class.border-primary]="selectedState() === state.key"
                     [class.bg-primary/10]="selectedState() === state.key"
                     [class.border-line]="selectedState() !== state.key"
-                    [class.bg-surface-alt]="selectedState() !== state.key"
-                    class="p-2.5 rounded border text-left transition-all"
+                    [class.bg-surface]="selectedState() !== state.key"
+                    class="p-2.5 rounded border text-left transition-all cursor-pointer"
                   >
                     <div class="flex items-center justify-between">
                       <span class="font-bold text-xs" [class.text-primary]="selectedState() === state.key" [class.text-foreground]="selectedState() !== state.key">
                         {{ state.label }}
                       </span>
                       @if (currentState() === state.key) {
-                        <span class="text-xs px-1.5 py-0.5 rounded bg-surface border border-line text-muted">Hiện tại</span>
+                        <span class="text-[10px] px-1.5 py-0.2 rounded bg-surface-alt border border-line text-muted">Hiện tại</span>
                       }
                     </div>
-                    <p class="text-xs text-muted mt-1 line-clamp-1">
+                    <p class="text-xs text-muted mt-0.5 truncate">
                       {{ state.description }}
                     </p>
                   </button>
@@ -84,52 +84,32 @@ import {
             </div>
 
             @if (targetType() === 'template' && selectedState() === 'ACTIVE') {
-              <div class="space-y-2 bg-surface-alt p-3.5 rounded border border-line">
-                <div class="flex items-center justify-between border-b border-line pb-1.5">
-                  <span class="font-bold text-foreground text-xs uppercase tracking-wide">
-                    Kiểm Tra Điều Kiện Kích Hoạt
+              <div class="space-y-2 pt-2 border-t border-line/60">
+                <div class="flex items-center justify-between text-xs font-semibold">
+                  <span class="text-muted uppercase tracking-wide">Điều Kiện Kích Hoạt (ACTIVE)</span>
+                  <span
+                    class="px-2 py-0.5 rounded text-[11px] font-bold"
+                    [class.bg-emerald-500/10]="canTransitionToActive()"
+                    [class.text-emerald-700]="canTransitionToActive()"
+                    [class.bg-destructive/10]="!canTransitionToActive()"
+                    [class.text-destructive]="!canTransitionToActive()"
+                  >
+                    {{ canTransitionToActive() ? 'ĐỦ ĐIỀU KIỆN' : 'CHƯA ĐỦ ĐIỀU KIỆN' }}
                   </span>
-                  @if (canTransitionToActive()) {
-                    <span class="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-xs font-bold">ĐỦ ĐIỀU KIỆN</span>
-                  } @else {
-                    <span class="px-2 py-0.5 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-bold">CHƯA ĐẠT</span>
-                  }
                 </div>
 
-                <div class="space-y-2 pt-1 text-xs">
-                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-500/30]="isSpecComplete()" [class.bg-emerald-500/5]="isSpecComplete()" [class.border-destructive/30]="!isSpecComplete()" [class.bg-destructive/5]="!isSpecComplete()">
-                    <div class="pr-2">
-                      <span class="font-bold text-foreground">100% Thông số kỹ thuật bắt buộc</span>
-                      @if (missingSpecKeys().length > 0) {
-                        <p class="text-destructive text-xs mt-0.5">
-                          Còn thiếu các trường: {{ missingSpecKeys().join(', ') }}
-                        </p>
-                      } @else {
-                        <p class="text-emerald-600 text-xs mt-0.5">
-                          Đã điền đầy đủ tất cả thông số bắt buộc của danh mục.
-                        </p>
-                      }
-                    </div>
-                    <span class="font-bold text-xs" [class.text-emerald-600]="isSpecComplete()" [class.text-destructive]="!isSpecComplete()">
-                      {{ isSpecComplete() ? 'ĐẠT' : 'THIẾU' }}
+                <div class="space-y-1.5 text-xs">
+                  <div class="flex items-center justify-between py-1 px-2.5 rounded bg-surface-alt border border-line/50">
+                    <span class="text-foreground">Thông số kỹ thuật bắt buộc của danh mục</span>
+                    <span class="font-bold tabular-nums" [class.text-emerald-700]="isSpecComplete()" [class.text-destructive]="!isSpecComplete()">
+                      {{ isSpecComplete() ? 'Đầy đủ' : ('Thiếu: ' + missingSpecKeys().join(', ')) }}
                     </span>
                   </div>
 
-                  <div class="flex items-start justify-between p-2 rounded border" [class.border-emerald-500/30]="hasActiveVariant()" [class.bg-emerald-500/5]="hasActiveVariant()" [class.border-destructive/30]="!hasActiveVariant()" [class.bg-destructive/5]="!hasActiveVariant()">
-                    <div class="pr-2">
-                      <span class="font-bold text-foreground">Tối thiểu 1 biến thể SKU hoạt động</span>
-                      @if (activeVariantCount() > 0) {
-                        <p class="text-emerald-600 text-xs mt-0.5">
-                          Có {{ activeVariantCount() }} biến thể đang ở trạng thái ACTIVE.
-                        </p>
-                      } @else {
-                        <p class="text-destructive text-xs mt-0.5">
-                          Chưa có biến thể SKU nào ở trạng thái ACTIVE. Vui lòng kích hoạt ít nhất 1 SKU trước.
-                        </p>
-                      }
-                    </div>
-                    <span class="font-bold text-xs" [class.text-emerald-600]="hasActiveVariant()" [class.text-destructive]="!hasActiveVariant()">
-                      {{ hasActiveVariant() ? 'ĐẠT' : 'THIẾU' }}
+                  <div class="flex items-center justify-between py-1 px-2.5 rounded bg-surface-alt border border-line/50">
+                    <span class="text-foreground">Tối thiểu 1 biến thể SKU đang kinh doanh</span>
+                    <span class="font-bold tabular-nums" [class.text-emerald-700]="hasActiveVariant()" [class.text-destructive]="!hasActiveVariant()">
+                      {{ hasActiveVariant() ? (activeVariantCount() + ' SKU hoạt động') : '0 SKU hoạt động' }}
                     </span>
                   </div>
                 </div>
@@ -138,14 +118,14 @@ import {
 
             <div>
               <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                Lý Do Chuyển Trạng Thái (Tùy chọn)
+                Lý Do Thay Đổi (Tùy chọn)
               </label>
               <textarea
                 [value]="reason()"
                 (input)="reason.set($any($event.target).value)"
                 rows="2"
                 placeholder="Nhập ghi chú lý do thay đổi trạng thái..."
-                class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               ></textarea>
             </div>
           </div>

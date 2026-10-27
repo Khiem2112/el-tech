@@ -4,7 +4,7 @@
 - Governing Spec: [MASTER.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/design-system/el-tech/MASTER.md), [SKILL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/SKILL.md), [distill.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/reference/distill.md), [admin-portal-screens-and-modals.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/docs/admin-portal-screens-and-modals.md) (SCR-03, SCR-04, SCR-05, SCR-06, SCR-07, SCR-08)
 - Scope: frontend
 - Priority: P2 (Medium)
-- Status: To Do
+- Status: Complete
 
 ## Traceability & Graph Links
 
@@ -64,9 +64,9 @@ Thực hiện tinh gọn giao diện theo nguyên tắc Impeccable Distill cho t
 
 ## Checklist
 
-- [ ] Tinh gọn trang chi tiết mẫu sản phẩm: xóa bỏ thông tin lặp và làm phẳng bố cục card.
-- [ ] Tối giản dynamic-spec-renderer thành danh sách thông số gọn đẹp, dễ đọc lướt nhanh.
-- [ ] Tinh gọn biểu mẫu nhập biến thể và hộp thoại chuyển đổi vòng đời sản phẩm.
-- [ ] Đơn giản hóa bộ lọc và bảng dữ liệu trên trang templates và variants.
-- [ ] Tinh gọn các biểu mẫu và ngăn kéo danh mục, thương hiệu, PC Bundle BOM drawer.
-- [ ] Chạy kiểm tra `npm run check:fe` với exit code 0.
+- [x] Tinh gọn trang chi tiết mẫu sản phẩm: xóa bỏ thông tin lặp và làm phẳng bố cục card.
+- [x] Tối giản dynamic-spec-renderer thành danh sách thông số gọn đẹp, dễ đọc lướt nhanh.
+- [x] Tinh gọn biểu mẫu nhập biến thể và hộp thoại chuyển đổi vòng đời sản phẩm.
+- [x] Đơn giản hóa bộ lọc và bảng dữ liệu trên trang templates và variants.
+- [x] Tinh gọn các biểu mẫu và ngăn kéo danh mục, thương hiệu, PC Bundle BOM drawer.
+- [x] Chạy kiểm tra `npm run check:fe` với exit code 0.

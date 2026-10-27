@@ -14,88 +14,87 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
   standalone: true,
   imports: [CommonModule, FormsModule, SelectComponent],
   template: `
-    <div class="space-y-4">
+    <div class="space-y-1">
       @if (schema().length === 0) {
-        <div class="p-4 bg-surface-alt border border-dashed border-line rounded text-xs text-muted text-center">
-          Danh mục này chưa được cấu hình thông số kỹ thuật động hoặc chưa chọn danh mục.
+        <div class="p-6 text-center text-xs text-muted italic bg-surface-alt/40 border border-dashed border-line rounded">
+          Danh mục này chưa cấu hình thông số kỹ thuật động hoặc chưa chọn danh mục.
         </div>
       } @else {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="divide-y divide-line/50">
           @for (attr of schema(); track attr.key) {
-            <div [class.md:col-span-2]="attr.type === 'text' && attr.key.includes('description')">
-              <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                {{ attr.label }}
-                @if (attr.unit) {
-                  <span class="text-muted font-normal">({{ attr.unit }})</span>
-                }
-                @if (attr.required) {
-                  <span class="text-rose-500 ml-0.5">*</span>
-                }
-                @if (attr.isDeprecated) {
-                  <span class="ml-1 px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold">Ngưng dùng</span>
-                }
-              </label>
+            <div class="py-2.5 grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
+              <div class="sm:col-span-4">
+                <label class="block font-semibold text-foreground text-xs">
+                  {{ attr.label }}
+                  @if (attr.unit) {
+                    <span class="text-muted font-normal">({{ attr.unit }})</span>
+                  }
+                  @if (attr.required) {
+                    <span class="text-destructive ml-0.5" title="Bắt buộc">*</span>
+                  }
+                  @if (attr.isDeprecated) {
+                    <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-[10px] font-normal">Ngưng dùng</span>
+                  }
+                </label>
+                <div class="text-[11px] font-mono text-muted/70">{{ attr.key }}</div>
+              </div>
 
-              @switch (attr.type) {
-                @case ('text') {
-                  <input
-                    type="text"
-                    [disabled]="readonly()"
-                    [value]="getSpecValue(attr.key)"
-                    (input)="onTextInput(attr.key, $event)"
-                    [placeholder]="'Nhập ' + attr.label.toLowerCase() + '...'"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm"
-                  />
-                }
-
-                @case ('number') {
-                  <div class="relative">
+              <div class="sm:col-span-8">
+                @switch (attr.type) {
+                  @case ('text') {
                     <input
-                      type="number"
+                      type="text"
                       [disabled]="readonly()"
                       [value]="getSpecValue(attr.key)"
-                      (input)="onNumberInput(attr.key, $event)"
-                      [placeholder]="'0'"
-                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
+                      (input)="onTextInput(attr.key, $event)"
+                      [placeholder]="'Nhập ' + attr.label.toLowerCase() + '...'"
+                      class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground focus:outline-none focus:border-primary text-xs transition-colors"
                     />
-                    @if (attr.unit) {
-                      <span class="absolute right-3 top-2 text-xs text-muted pointer-events-none font-mono">
-                        {{ attr.unit }}
-                      </span>
-                    }
-                  </div>
-                }
+                  }
 
-                @case ('select') {
-                  <app-select
-                    [options]="getSelectOptions(attr)"
-                    [value]="getSelectValue(attr.key)"
-                    (valueChange)="onSelectOptionChange(attr.key, $event)"
-                    [disabled]="readonly()"
-                    size="sm"
-                    [ariaLabel]="attr.label"
-                  />
-                }
+                  @case ('number') {
+                    <div class="relative">
+                      <input
+                        type="number"
+                        [disabled]="readonly()"
+                        [value]="getSpecValue(attr.key)"
+                        (input)="onNumberInput(attr.key, $event)"
+                        placeholder="0"
+                        class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground font-mono tabular-nums focus:outline-none focus:border-primary text-xs transition-colors"
+                      />
+                      @if (attr.unit) {
+                        <span class="absolute right-3 top-1.5 text-xs text-muted pointer-events-none font-mono">
+                          {{ attr.unit }}
+                        </span>
+                      }
+                    </div>
+                  }
 
-                @case ('boolean') {
-                  <div class="pt-2">
-                    <label class="flex items-center gap-2 cursor-pointer select-none">
+                  @case ('select') {
+                    <app-select
+                      [options]="getSelectOptions(attr)"
+                      [value]="getSelectValue(attr.key)"
+                      (valueChange)="onSelectOptionChange(attr.key, $event)"
+                      [disabled]="readonly()"
+                      size="sm"
+                      [ariaLabel]="attr.label"
+                    />
+                  }
+
+                  @case ('boolean') {
+                    <label class="inline-flex items-center gap-2 cursor-pointer select-none py-1">
                       <input
                         type="checkbox"
                         [disabled]="readonly()"
                         [checked]="Boolean(getSpecValue(attr.key))"
                         (change)="onBooleanChange(attr.key, $event)"
-                        class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface-alt border-line"
+                        class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
                       />
-                      <span class="text-xs text-foreground font-medium">Bật / Có hỗ trợ</span>
+                      <span class="text-xs text-foreground font-medium">Có hỗ trợ</span>
                     </label>
-                  </div>
+                  }
                 }
-              }
-
-              @if (attr.required) {
-                <p class="text-xs text-muted mt-1">Trường bắt buộc theo cấu trúc danh mục.</p>
-              }
+              </div>
             </div>
           }
         </div>

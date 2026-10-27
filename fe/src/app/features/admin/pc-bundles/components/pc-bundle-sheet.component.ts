@@ -76,15 +76,6 @@ type EditableBomItem = {
             </button>
           </div>
 
-          <div class="p-3.5 bg-amber-500/10 border-b border-amber-500/20 text-amber-700 text-xs flex items-start gap-2.5">
-            <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div>
-              Bộ PC dựng sẵn là định mức linh kiện ảo (BOM) không lưu tồn kho vật lý riêng. Tồn kho và giá trị cấu hình được tính toán trực tiếp từ các SKU thành phần đang ở trạng thái ACTIVE.
-            </div>
-          </div>
-
           @if (errorMessage()) {
             <div class="m-4 p-3 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
@@ -100,7 +91,7 @@ type EditableBomItem = {
           }
 
           <div class="flex-1 overflow-y-auto p-6 space-y-5">
-            <div class="space-y-3 p-4 bg-surface-alt border border-line rounded-lg">
+            <div class="space-y-3">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label for="bundle-name-input" class="block font-semibold text-muted text-xs uppercase mb-1">
@@ -362,24 +353,23 @@ type EditableBomItem = {
               </div>
             </div>
 
-            <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-3">
-              <div class="font-bold text-foreground text-xs uppercase tracking-wider border-b border-line pb-2 flex items-center justify-between">
-                <span>Cơ Chế Định Giá Bộ Máy Tính</span>
-                <span class="text-muted text-xs font-normal">Tự động tổng hợp thời gian thực</span>
+            <div class="pt-2 border-t border-line/60 space-y-3">
+              <div class="font-bold text-foreground text-xs uppercase tracking-wider flex items-center justify-between">
+                <span>Định Giá Cấu Hình</span>
+                <span class="text-muted text-xs font-normal">Tự động tổng hợp</span>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
-                <div class="bg-surface p-3 rounded border border-line space-y-1">
-                  <span class="block text-muted text-xs uppercase font-semibold">Tổng Giá Linh Kiện</span>
+                <div class="p-3 bg-surface-alt/70 rounded border border-line space-y-1">
+                  <span class="block text-muted text-xs uppercase font-semibold">Tổng Linh Kiện Lẻ</span>
                   <div class="text-base font-bold font-mono text-foreground tabular-nums">
                     {{ formatCurrency(grossTotal()) }}
                   </div>
-                  <p class="text-xs text-muted">Tự động tính từ tổng đơn giá linh kiện</p>
                 </div>
 
-                <div class="bg-surface p-3 rounded border border-line space-y-1">
+                <div class="p-3 bg-surface-alt/70 rounded border border-line space-y-1">
                   <label for="bundle-discount-input" class="block text-xs uppercase font-semibold text-destructive">
-                    Giảm Giá Bộ Máy (VNĐ)
+                    Chiết Khấu Trọn Bộ (VNĐ)
                   </label>
                   <input
                     id="bundle-discount-input"
@@ -388,17 +378,15 @@ type EditableBomItem = {
                     min="0"
                     [ngModel]="discount()"
                     (ngModelChange)="onDiscountChange($event)"
-                    class="w-full px-2.5 py-1.5 bg-surface-alt border border-line rounded font-bold font-mono text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
+                    class="w-full px-2 py-1 bg-surface border border-line rounded font-bold font-mono text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
                   />
-                  <p class="text-xs text-muted">Khoản giảm ưu đãi khi mua trọn bộ</p>
                 </div>
 
-                <div class="bg-primary/10 p-3 rounded border border-primary/30 space-y-1">
+                <div class="p-3 bg-primary/10 rounded border border-primary/30 space-y-1">
                   <span class="block text-xs uppercase font-bold text-primary">Giá Bán Trọn Bộ</span>
-                  <div class="text-lg font-bold font-mono text-primary tabular-nums">
+                  <div class="text-base font-bold font-mono text-primary tabular-nums">
                     {{ formatCurrency(finalPrice()) }}
                   </div>
-                  <p class="text-xs text-primary/80 font-medium">Giá niêm yết áp dụng cho khách hàng</p>
                 </div>
               </div>
             </div>

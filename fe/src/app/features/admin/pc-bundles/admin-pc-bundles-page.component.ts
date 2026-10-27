@@ -95,26 +95,10 @@ type ToastNotification = {
         </div>
       </div>
 
-      <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs text-xs text-muted flex items-center justify-between flex-wrap gap-2">
-        <div class="flex items-center gap-2">
-          <svg class="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>
-            Bộ máy tính dựng sẵn tính theo định mức linh kiện (BOM). Hệ thống tự động kiểm tra tồn kho khả dụng của từng linh kiện thành phần tại chi nhánh phụ trách theo nguyên lý thắt cổ chai.
-          </span>
-        </div>
-        <span class="text-foreground font-bold tabular-nums">Tổng số: {{ bundleService.total() }} cấu hình</span>
-      </div>
-
       <div class="bg-surface border border-line rounded-lg p-4 shadow-xs space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="w-2 h-2 rounded-full bg-primary"></span>
-            <span class="font-bold text-foreground uppercase tracking-wide">Bộ Lọc Danh Mục Cấu Hình</span>
-            <span class="text-muted">
-              | Đang hiển thị <strong class="text-primary tabular-nums">{{ bundleService.bundles().length }}</strong> / {{ bundleService.total() }} bộ
-            </span>
+        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap text-xs">
+          <div class="text-muted">
+            Hiển thị <strong class="text-foreground font-bold tabular-nums">{{ bundleService.bundles().length }}</strong> / <span class="tabular-nums">{{ bundleService.total() }}</span> cấu hình PC Bundle
           </div>
 
           <button

@@ -134,9 +134,6 @@ function slugify(text: string): string {
                   [class.border-rose-500]="isFieldInvalid('slug')"
                 />
               </div>
-              <p class="mt-1 text-xs text-muted">
-                Định danh duy nhất trên URL (chỉ gồm chữ thường không dấu, số và gạch ngang).
-              </p>
               @if (isFieldInvalid('slug')) {
                 <p class="mt-1 text-xs text-rose-500">
                   {{ getFieldError('slug') }}

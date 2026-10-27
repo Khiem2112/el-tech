@@ -52,18 +52,14 @@ type ToastNotification = {
     <div class="space-y-0 text-sm text-foreground">
       <div class="h-9 bg-surface-alt border-b border-line px-4 lg:px-6 flex items-center justify-between text-xs flex-shrink-0">
         <nav class="flex items-center gap-1.5 text-muted">
-          <a routerLink="/admin/catalog/templates" class="hover:text-primary transition-colors">Sản phẩm</a>
+          <a routerLink="/admin/catalog/templates" class="hover:text-primary transition-colors">Mẫu sản phẩm</a>
           <span>/</span>
-          <span>{{ currentCategoryName() }}</span>
-          <span>/</span>
-          <span>{{ currentBrandName() }}</span>
-          <span>/</span>
-          <span class="font-bold text-foreground">{{ isNew() ? 'Thêm mới mẫu sản phẩm' : templateName() }}</span>
+          <span class="font-semibold text-foreground">{{ isNew() ? 'Thêm mới' : templateName() }}</span>
         </nav>
       </div>
 
-      <header class="bg-surface border-b border-line px-4 lg:px-6 py-3 flex items-center justify-between flex-wrap gap-4 flex-shrink-0 shadow-xs">
-        <div class="flex items-center gap-3">
+      <header class="bg-surface border-b border-line px-4 lg:px-6 py-3 flex items-center justify-between flex-wrap gap-3 flex-shrink-0">
+        <div class="flex items-center gap-2.5">
           <button
             type="button"
             appButton
@@ -101,102 +97,29 @@ type ToastNotification = {
               <span>Chuyển Kho Nhanh</span>
             </a>
           }
-
-          @if (!isNew()) {
-            <div class="flex items-center gap-1 bg-surface-alt p-1 rounded border border-line">
-              <span class="text-xs font-bold uppercase text-muted px-1.5">Trạng thái:</span>
-              <button
-                type="button"
-                (click)="openTransitionModal('DRAFT')"
-                [class.bg-surface]="lifecycleState() === 'DRAFT'"
-                [class.text-foreground]="lifecycleState() === 'DRAFT'"
-                [class.border]="lifecycleState() === 'DRAFT'"
-                [class.border-line]="lifecycleState() === 'DRAFT'"
-                class="px-2 py-0.5 rounded text-xs font-semibold text-muted hover:text-foreground"
-              >
-                Bản thảo
-              </button>
-              <button
-                type="button"
-                (click)="openTransitionModal('ACTIVE')"
-                [class.bg-primary]="lifecycleState() === 'ACTIVE'"
-                [class.text-primary-foreground]="lifecycleState() === 'ACTIVE'"
-                [class.font-bold]="lifecycleState() === 'ACTIVE'"
-                class="px-2.5 py-0.5 rounded text-xs font-semibold text-muted hover:text-foreground transition-colors"
-              >
-                Đang bán
-              </button>
-              <button
-                type="button"
-                (click)="openTransitionModal('PAUSED')"
-                [class.bg-amber-500/10]="lifecycleState() === 'PAUSED'"
-                [class.text-amber-700]="lifecycleState() === 'PAUSED'"
-                [class.border]="lifecycleState() === 'PAUSED'"
-                [class.border-amber-500/30]="lifecycleState() === 'PAUSED'"
-                class="px-2 py-0.5 rounded text-xs font-semibold text-muted hover:text-foreground"
-              >
-                Tạm dừng
-              </button>
-              <button
-                type="button"
-                (click)="openTransitionModal('DISCONTINUED')"
-                [class.bg-destructive/10]="lifecycleState() === 'DISCONTINUED'"
-                [class.text-destructive]="lifecycleState() === 'DISCONTINUED'"
-                [class.border]="lifecycleState() === 'DISCONTINUED'"
-                [class.border-destructive/30]="lifecycleState() === 'DISCONTINUED'"
-                class="px-2 py-0.5 rounded text-xs font-semibold text-muted hover:text-foreground"
-              >
-                Ngừng bán
-              </button>
-            </div>
-          }
         </div>
 
         @if (!isNew()) {
-          <div class="flex items-center gap-1 text-xs font-semibold">
-            <span
-              class="px-3 py-1 rounded"
-              [class.bg-surface-alt]="lifecycleState() === 'DRAFT'"
-              [class.text-foreground]="lifecycleState() === 'DRAFT'"
-              [class.text-muted]="lifecycleState() !== 'DRAFT'"
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              (click)="openTransitionModal()"
+              [class]="getLifecycleBadgeClass(lifecycleState()) + ' hover:opacity-85 transition-opacity cursor-pointer inline-flex items-center gap-1.5 py-1 px-3 text-xs'"
+              title="Nhấp để thay đổi trạng thái vòng đời"
             >
-              Bản thảo
-            </span>
-            <span class="text-muted">&gt;</span>
-            <span
-              class="px-3 py-1 rounded"
-              [class.bg-primary]="lifecycleState() === 'ACTIVE'"
-              [class.text-primary-foreground]="lifecycleState() === 'ACTIVE'"
-              [class.font-bold]="lifecycleState() === 'ACTIVE'"
-              [class.text-muted]="lifecycleState() !== 'ACTIVE'"
-            >
-              Đang bán
-            </span>
-            <span class="text-muted">&gt;</span>
-            <span
-              class="px-3 py-1 rounded"
-              [class.bg-amber-500/10]="lifecycleState() === 'PAUSED'"
-              [class.text-amber-700]="lifecycleState() === 'PAUSED'"
-              [class.text-muted]="lifecycleState() !== 'PAUSED'"
-            >
-              Tạm dừng
-            </span>
-            <span class="text-muted">&gt;</span>
-            <span
-              class="px-3 py-1 rounded"
-              [class.bg-destructive/10]="lifecycleState() === 'DISCONTINUED'"
-              [class.text-destructive]="lifecycleState() === 'DISCONTINUED'"
-              [class.text-muted]="lifecycleState() !== 'DISCONTINUED'"
-            >
-              Ngừng bán
-            </span>
+              <span class="font-normal opacity-75">Trạng thái:</span>
+              <span class="font-bold">{{ getLifecycleLabel(lifecycleState()) }}</span>
+              <svg class="w-3 h-3 opacity-60 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
           </div>
         }
       </header>
 
       <div class="bg-surface border-b border-line px-4 lg:px-6 py-4 flex items-center justify-between flex-wrap gap-4 flex-shrink-0">
         <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-md bg-surface-alt border border-line p-1 flex items-center justify-center overflow-hidden">
+          <div class="w-14 h-14 rounded-md bg-surface-alt border border-line p-1 flex items-center justify-center overflow-hidden flex-shrink-0">
             @if (firstCoverMedia()) {
               <img
                 src="/images/products/placeholder.webp"
@@ -211,23 +134,22 @@ type ToastNotification = {
           </div>
 
           <div>
-            <div class="flex items-center gap-2.5">
-              <h1 class="text-xl font-bold tracking-tight text-foreground">
-                {{ isNew() ? 'Tạo Mới Mẫu Sản Phẩm Phần Cứng' : templateName() }}
-              </h1>
-              @if (!isNew()) {
-                <span [class]="getLifecycleBadgeClass(lifecycleState())">
-                  {{ getLifecycleLabel(lifecycleState()) }}
-                </span>
-              }
-            </div>
-            <div class="text-xs text-muted mt-1 flex items-center gap-3">
-              <span>Model: <strong class="font-mono text-foreground">{{ modelCode() || 'Chưa nhập' }}</strong></span>
-              <span>|</span>
-              <span>Thương hiệu: <strong class="text-foreground">{{ currentBrandName() }}</strong></span>
-              <span>|</span>
-              <span>Danh mục: <strong class="text-foreground">{{ currentCategoryName() }}</strong></span>
-            </div>
+            <h1 class="text-lg lg:text-xl font-bold tracking-tight text-foreground">
+              {{ isNew() ? 'Tạo Mới Mẫu Sản Phẩm' : templateName() }}
+            </h1>
+            @if (!isNew() && (modelCode() || chipsetFamily())) {
+              <div class="text-xs text-muted mt-0.5 flex items-center gap-2 flex-wrap">
+                @if (modelCode()) {
+                  <span>Model: <strong class="font-mono text-foreground">{{ modelCode() }}</strong></span>
+                }
+                @if (modelCode() && chipsetFamily()) {
+                  <span class="text-muted/60">•</span>
+                }
+                @if (chipsetFamily()) {
+                  <span>Kiến trúc: <strong class="text-foreground">{{ chipsetFamily() }}</strong></span>
+                }
+              </div>
+            }
           </div>
         </div>
 
@@ -239,7 +161,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để lọc danh sách biến thể SKU của mẫu sản phẩm này"
             >
-              <div class="text-base font-bold text-primary tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-primary tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.skuCount ?? tpl.variants.length }}
               </div>
               <div class="text-xs text-muted font-medium">Biến thể SKU</div>
@@ -251,7 +173,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để kiểm tra tồn kho thực tế tại các chi nhánh"
             >
-              <div class="text-base font-bold text-foreground tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-foreground tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalOnHand ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Tồn thực tế</div>
@@ -263,7 +185,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               [title]="getAvailableBranchTooltip()"
             >
-              <div class="text-base font-bold text-emerald-600 tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-emerald-600 tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalAvailable ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Khả dụng</div>
@@ -275,7 +197,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để tra cứu toàn bộ biến động nhập xuất trong sổ kho bất biến"
             >
-              <div class="text-base font-bold text-muted tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-muted tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.stockMoveCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Biến động kho</div>
@@ -287,7 +209,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để xem lịch sử các đơn mua hàng PO chứa sản phẩm này"
             >
-              <div class="text-base font-bold text-muted tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-muted tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.poCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Lịch sử mua PO</div>
@@ -299,7 +221,7 @@ type ToastNotification = {
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
               title="Nhấp để xem các đơn hàng khách hàng đã đặt có chứa sản phẩm này"
             >
-              <div class="text-base font-bold text-emerald-600 tabular tabular-nums group-hover:scale-105 transition-transform">
+              <div class="text-base font-bold text-emerald-600 tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.orderCount ?? 0 }}
               </div>
               <div class="text-xs text-muted font-medium">Lịch sử bán hàng</div>

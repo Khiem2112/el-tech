@@ -89,7 +89,7 @@ type ToastNotification = {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground">{{ visibleBrands().length }}</strong> thương hiệu
+          Tổng số: <strong class="text-foreground tabular-nums">{{ visibleBrands().length }}</strong> thương hiệu
         </div>
       </div>
 

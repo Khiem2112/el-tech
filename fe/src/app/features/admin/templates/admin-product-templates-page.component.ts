@@ -94,19 +94,15 @@ type ToastNotification = {
       </div>
 
       <div class="bg-surface border border-line rounded-lg p-4 shadow-xs space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="w-2 h-2 rounded-full bg-primary"></span>
-            <span class="font-bold text-foreground uppercase tracking-wide">Bộ Lọc Đa Chiều</span>
-            <span class="text-muted">
-              | Tìm thấy <strong class="text-primary-strong font-bold tabular-nums">{{ total() }}</strong> mẫu sản phẩm
-            </span>
+        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap text-xs">
+          <div class="text-muted">
+            Tổng cộng: <strong class="text-foreground font-bold tabular-nums">{{ total() }}</strong> mẫu sản phẩm
           </div>
 
           <button
             type="button"
             appButton
-            variant="secondary"
+            variant="outline"
             size="sm"
             (click)="resetFilters()"
           >
@@ -116,18 +112,18 @@ type ToastNotification = {
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
-            <label class="block font-semibold text-muted text-xs uppercase mb-1.5">Tìm Kiếm</label>
+            <label class="block font-semibold text-muted text-xs uppercase mb-1">Tìm Kiếm</label>
             <input
               type="text"
               [value]="searchQuery()"
               (input)="onSearchInput($event)"
               placeholder="Tên mẫu, model hoặc slug..."
-              class="w-full px-3.5 py-2 bg-surface-alt border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
             />
           </div>
 
           <div>
-            <label class="block font-semibold text-muted text-xs uppercase mb-1.5">Danh Mục</label>
+            <label class="block font-semibold text-muted text-xs uppercase mb-1">Danh Mục</label>
             <app-select
               [options]="categoryOptions()"
               [value]="categoryFilter() !== null && categoryFilter() !== undefined ? String(categoryFilter()) : ''"
@@ -137,7 +133,7 @@ type ToastNotification = {
           </div>
 
           <div>
-            <label class="block font-semibold text-muted text-xs uppercase mb-1.5">Thương Hiệu</label>
+            <label class="block font-semibold text-muted text-xs uppercase mb-1">Thương Hiệu</label>
             <app-select
               [options]="brandOptions()"
               [value]="brandFilter() !== null && brandFilter() !== undefined ? String(brandFilter()) : ''"
@@ -147,7 +143,7 @@ type ToastNotification = {
           </div>
 
           <div>
-            <label class="block font-semibold text-muted text-xs uppercase mb-1.5">Trạng Thái</label>
+            <label class="block font-semibold text-muted text-xs uppercase mb-1">Trạng Thái</label>
             <app-select
               [options]="statusOptions"
               [value]="statusFilter()"

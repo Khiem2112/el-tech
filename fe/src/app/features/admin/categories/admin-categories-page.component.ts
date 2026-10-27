@@ -104,7 +104,7 @@ type FlattenedCategoryRow = AdminCategory & {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground">{{ visibleCategories().length }}</strong> danh mục
+          Tổng số: <strong class="text-foreground tabular-nums">{{ visibleCategories().length }}</strong> danh mục
         </div>
       </div>
 

@@ -54,105 +54,101 @@ import {
             </div>
           }
 
-          <form (ngSubmit)="onSubmit()" class="space-y-4">
-            <div class="space-y-3 bg-surface-alt p-4 rounded border border-line">
-              <div class="border-b border-line pb-1.5">
+          <form (ngSubmit)="onSubmit()" class="space-y-5">
+            <div>
+              <div class="border-b border-line/60 pb-1.5 mb-3">
                 <span class="font-bold text-foreground text-xs uppercase tracking-wider">Thông Tin Thương Mại</span>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                    Mã SKU <span class="text-destructive">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    [value]="sku()"
-                    (input)="sku.set($any($event.target).value)"
-                    placeholder="VD: VGA-RTX5090-O24G-BLACK"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold focus:outline-none focus:border-primary text-sm"
-                  />
-                  <p class="text-xs text-muted mt-0.5">Duy nhất trên toàn hệ thống.</p>
-                </div>
-
-                <div>
-                  <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                    Mã Vạch Barcode
-                  </label>
-                  <input
-                    type="text"
-                    [value]="barcode()"
-                    (input)="barcode.set($any($event.target).value)"
-                    placeholder="VD: 4711081992011"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
-                  />
-                  <p class="text-xs text-muted mt-0.5">Tùy chọn, duy nhất nếu có nhập.</p>
-                </div>
-              </div>
-
-              <div>
-                <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                  Nhãn Biến Thể / Phiên Bản
-                </label>
-                <input
-                  type="text"
-                  [value]="variationLabel()"
-                  (input)="variationLabel.set($any($event.target).value)"
-                  placeholder="VD: Bản OC Edition - Màu Đen"
-                  class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-sm"
-                />
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                    Giá Bán Niêm Yết (VND) <span class="text-destructive">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min="1"
-                    step="1"
-                    [value]="sellingPrice()"
-                    (input)="sellingPrice.set(+$any($event.target).value)"
-                    placeholder="59990000"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold focus:outline-none focus:border-primary text-sm"
-                  />
-                  <p class="text-xs text-muted mt-0.5">Số nguyên dương VND, đã bao gồm VAT.</p>
-                </div>
-
-                <div>
-                  <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                    Trạng Thái Kinh Doanh
-                  </label>
-                  <app-select
-                    [options]="lifecycleOptions"
-                    [value]="lifecycleState()"
-                    (valueChange)="onLifecycleSelectChange($event)"
-                    placeholder="Chọn trạng thái"
-                  />
-                </div>
-              </div>
-
-              <div class="pt-2">
-                <label class="flex items-center gap-3 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    [checked]="serialRequired()"
-                    (change)="serialRequired.set($any($event.target).checked)"
-                    class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
-                  />
+              <div class="space-y-3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <span class="font-bold text-foreground text-xs">Bắt buộc quản lý số Serial từng chiếc</span>
-                    <p class="text-xs text-muted">Áp dụng cho linh kiện điện tử có số sê-ri bảo hành độc lập.</p>
+                    <label class="block font-semibold text-muted uppercase text-xs mb-1">
+                      Mã SKU <span class="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      [value]="sku()"
+                      (input)="sku.set($any($event.target).value)"
+                      placeholder="VD: VGA-RTX5090-O24G-BLACK"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold focus:outline-none focus:border-primary text-sm"
+                    />
                   </div>
-                </label>
+
+                  <div>
+                    <label class="block font-semibold text-muted uppercase text-xs mb-1">
+                      Mã Vạch Barcode
+                    </label>
+                    <input
+                      type="text"
+                      [value]="barcode()"
+                      (input)="barcode.set($any($event.target).value)"
+                      placeholder="VD: 4711081992011"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-muted uppercase text-xs mb-1">
+                    Nhãn Biến Thể / Phiên Bản
+                  </label>
+                  <input
+                    type="text"
+                    [value]="variationLabel()"
+                    (input)="variationLabel.set($any($event.target).value)"
+                    placeholder="VD: Bản OC Edition - Màu Đen"
+                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-sm"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block font-semibold text-muted uppercase text-xs mb-1">
+                      Giá Bán Niêm Yết (VND) <span class="text-destructive">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      required
+                      min="1"
+                      step="1"
+                      [value]="sellingPrice()"
+                      (input)="sellingPrice.set(+$any($event.target).value)"
+                      placeholder="59990000"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold tabular-nums focus:outline-none focus:border-primary text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-muted uppercase text-xs mb-1">
+                      Trạng Thái Kinh Doanh
+                    </label>
+                    <app-select
+                      [options]="lifecycleOptions"
+                      [value]="lifecycleState()"
+                      (valueChange)="onLifecycleSelectChange($event)"
+                      placeholder="Chọn trạng thái"
+                    />
+                  </div>
+                </div>
+
+                <div class="pt-1">
+                  <label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      [checked]="serialRequired()"
+                      (change)="serialRequired.set($any($event.target).checked)"
+                      class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
+                    />
+                    <span class="font-medium text-foreground text-xs">Quản lý theo dõi số sê-ri từng chiếc (Serial Required)</span>
+                  </label>
+                </div>
               </div>
             </div>
 
-            <div class="space-y-3 bg-surface-alt p-4 rounded border border-line">
-              <div class="border-b border-line pb-1.5">
+            <div>
+              <div class="border-b border-line/60 pb-1.5 mb-3">
                 <span class="font-bold text-foreground text-xs uppercase tracking-wider">Thông Số Kỹ Thuật Riêng Của Biến Thể</span>
               </div>
 
@@ -169,7 +165,7 @@ import {
                 </div>
 
                 <div>
-                  <label class="block font-semibold text-muted uppercase text-xs mb-1">Ghi Chú Thông Số Riêng</label>
+                  <label class="block font-semibold text-muted uppercase text-xs mb-1">Ghi Chú Riêng</label>
                   <input
                     type="text"
                     [value]="specNote()"

@@ -102,48 +102,48 @@ function slugify(text: string): string {
           }
 
           @if (isEditMode() && categoryToEdit(); as cat) {
-            <div class="grid grid-cols-3 gap-2 p-2.5 bg-surface-alt border border-line rounded-lg">
+            <div class="grid grid-cols-3 gap-2 p-2 bg-surface-alt/70 border border-line rounded">
               <button
                 type="button"
                 (click)="navigateToTemplates(cat)"
-                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
+                class="p-1.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem danh sách mẫu sản phẩm thuộc danh mục này"
               >
                 <div class="text-sm font-bold text-foreground group-hover:text-primary tabular-nums transition-colors">
                   {{ cat.productTemplateCount }}
                 </div>
-                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Sản Phẩm</div>
+                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Sản Phẩm</div>
               </button>
 
               <button
                 type="button"
                 (click)="navigateToInventory(cat)"
-                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
+                class="p-1.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem tổng tồn kho linh kiện của danh mục này"
               >
                 <div class="text-sm font-bold text-emerald-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.totalInventory }}
                 </div>
-                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Tổng Tồn Kho</div>
+                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Tồn Kho</div>
               </button>
 
               <button
                 type="button"
                 (click)="navigateToTransfers(cat)"
-                class="p-2 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
+                class="p-1.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
                 title="Xem phiếu điều chuyển kho đang xử lý của danh mục này"
               >
                 <div class="text-sm font-bold text-blue-700 group-hover:scale-105 tabular-nums transition-transform">
                   {{ cat.activeTransfers }}
                 </div>
-                <div class="text-xs text-muted uppercase tracking-wider mt-0.5 font-medium">Phiếu Chuyển Kho</div>
+                <div class="text-[11px] text-muted uppercase mt-0.5 font-medium">Chuyển Kho</div>
               </button>
             </div>
           }
 
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
             <div>
-              <label for="name" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="name" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                 Tên danh mục ngành hàng <span class="text-rose-500">*</span>
               </label>
               <input
@@ -152,7 +152,7 @@ function slugify(text: string): string {
                 formControlName="name"
                 (input)="onNameInput()"
                 placeholder="Ví dụ: Bo Mạch Chủ (Mainboard)"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-[13px] text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('name')"
               />
               @if (isFieldInvalid('name')) {
@@ -161,7 +161,7 @@ function slugify(text: string): string {
             </div>
 
             <div>
-              <label for="slug" class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label for="slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                 Mã đường dẫn (Slug) <span class="text-rose-500">*</span>
               </label>
               <input
@@ -169,19 +169,16 @@ function slugify(text: string): string {
                 type="text"
                 formControlName="slug"
                 placeholder="mainboard-bo-mach-chu"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-[13px] font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('slug')"
               />
-              <p class="text-muted text-xs mt-1">
-                Slug là duy nhất toàn hệ thống, tự động chuẩn hóa chữ thường không dấu và dấu gạch nối.
-              </p>
               @if (isFieldInvalid('slug')) {
                 <p class="text-rose-500 text-xs mt-1">{{ getFieldError('slug') }}</p>
               }
             </div>
 
             <div>
-              <label class="block text-[13px] font-semibold uppercase tracking-wider text-muted mb-1.5">
+              <label class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
                 Danh mục cấp cha (Tùy chọn)
               </label>
               <app-select
@@ -190,9 +187,6 @@ function slugify(text: string): string {
                 (valueChange)="onParentChange($event)"
                 size="sm"
               />
-              <p class="text-muted text-xs mt-1">
-                Không cho phép chọn chính danh mục đó hoặc các danh mục con của nó làm danh mục cha.
-              </p>
             </div>
 
             <div>

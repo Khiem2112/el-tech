@@ -70,109 +70,53 @@ type ToastNotification = {
       </div>
 
       <div class="bg-surface border border-line rounded-lg p-4 shadow-xs space-y-3">
-        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="w-2 h-2 rounded-full bg-primary"></span>
-            <span class="font-bold text-foreground uppercase tracking-wide">Bộ Lọc Tra Cứu</span>
-            <span class="text-muted">
-              | Đang hiển thị <strong class="text-primary tabular tabular-nums">{{ variants().length }}</strong> / <span class="tabular">{{ total() }}</span> SKU
-            </span>
+        <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap text-xs">
+          <div class="text-muted">
+            Hiển thị <strong class="text-foreground font-bold tabular-nums">{{ variants().length }}</strong> / <span class="tabular-nums">{{ total() }}</span> biến thể SKU
           </div>
 
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              appButton
-              variant="outline"
-              size="sm"
-              (click)="onResetFilters()"
-            >
-              Đặt Lại
-            </button>
-          </div>
+          <button
+            type="button"
+            appButton
+            variant="outline"
+            size="sm"
+            (click)="onResetFilters()"
+          >
+            Đặt Lại
+          </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-          <div class="md:col-span-5">
+          <div class="md:col-span-4">
             <label for="barcode-search-input" class="block font-semibold text-muted text-xs uppercase mb-1">
-              Quét Mã Vạch Hoặc Nhập Mã SKU
+              Quét Mã Vạch / Nhập SKU
             </label>
-            <div class="flex items-center gap-1.5">
-              <div class="relative flex-1">
-                <input
-                  #barcodeInput
-                  id="barcode-search-input"
-                  type="text"
-                  [value]="searchQuery()"
-                  (input)="onSearchInput($event)"
-                  (keydown.enter)="onSearchSubmit()"
-                  placeholder="Quét mã vạch hoặc nhập SKU, tên biến thể..."
-                  class="w-full px-3.5 py-2 pl-9 bg-surface border border-line rounded text-sm text-foreground font-mono placeholder:font-sans placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
-                  autocomplete="off"
-                />
-                <svg
-                  class="w-4 h-4 text-muted absolute left-3 top-2.5"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <button
-                type="button"
-                appButton
-                variant="primary"
-                size="sm"
-                (click)="onSearchSubmit()"
-                class="whitespace-nowrap uppercase tracking-wider"
+            <div class="relative">
+              <input
+                #barcodeInput
+                id="barcode-search-input"
+                type="text"
+                [value]="searchQuery()"
+                (input)="onSearchInput($event)"
+                (keydown.enter)="onSearchSubmit()"
+                placeholder="Quét mã vạch hoặc nhập SKU..."
+                class="w-full px-3 py-1.5 pl-8 bg-surface border border-line rounded text-xs text-foreground font-mono focus:outline-none focus:border-primary transition-colors"
+                autocomplete="off"
+              />
+              <svg
+                class="w-3.5 h-3.5 text-muted absolute left-2.5 top-2"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
               >
-                Tìm Kiếm
-              </button>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
           </div>
 
-          <div class="md:col-span-2">
-            <label class="block font-semibold text-muted text-xs uppercase mb-1">
-              Lọc Theo Serial
-            </label>
-            <app-select
-              [options]="serialOptions"
-              [value]="serialFilterString()"
-              (valueChange)="onSerialSelectChange($event)"
-              placeholder="Lọc Serial"
-            />
-          </div>
-
           <div class="md:col-span-3">
-            <label class="block font-semibold text-muted text-xs uppercase mb-1">
-              Tình Trạng Tồn Kho
-            </label>
-            <app-select
-              [options]="stockStatusOptions"
-              [value]="stockStatusFilter()"
-              (valueChange)="onStockStatusSelectChange($event)"
-              placeholder="Tình trạng tồn"
-            />
-          </div>
-
-          <div class="md:col-span-2">
-            <label class="block font-semibold text-muted text-xs uppercase mb-1">
-              Vòng Đời
-            </label>
-            <app-select
-              [options]="lifecycleOptions"
-              [value]="lifecycleFilter()"
-              (valueChange)="onLifecycleSelectChange($event)"
-              placeholder="Vòng đời"
-            />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-line">
-          <div>
             <label class="block font-semibold text-muted text-xs uppercase mb-1">
               Ngành Hàng
             </label>
@@ -181,10 +125,11 @@ type ToastNotification = {
               [value]="categoryFilter() !== null ? String(categoryFilter()) : ''"
               (valueChange)="onCategorySelectChange($event)"
               placeholder="Tất cả ngành hàng"
+              size="sm"
             />
           </div>
 
-          <div>
+          <div class="md:col-span-3">
             <label class="block font-semibold text-muted text-xs uppercase mb-1">
               Thương Hiệu
             </label>
@@ -193,6 +138,20 @@ type ToastNotification = {
               [value]="brandFilter() !== null ? String(brandFilter()) : ''"
               (valueChange)="onBrandSelectChange($event)"
               placeholder="Tất cả thương hiệu"
+              size="sm"
+            />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block font-semibold text-muted text-xs uppercase mb-1">
+              Trạng Thái
+            </label>
+            <app-select
+              [options]="lifecycleOptions"
+              [value]="lifecycleFilter()"
+              (valueChange)="onLifecycleSelectChange($event)"
+              placeholder="Tất cả trạng thái"
+              size="sm"
             />
           </div>
         </div>
@@ -323,20 +282,20 @@ type ToastNotification = {
                     <td class="py-3 px-4 whitespace-nowrap">
                       <div class="flex items-center gap-1.5">
                         @if (item.totalAvailable > 5) {
-                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 tabular-nums">
                             Khả dụng: {{ item.totalAvailable }}
                           </span>
                         } @else if (item.totalAvailable > 0) {
-                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20">
+                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20 tabular-nums">
                             Khả dụng: {{ item.totalAvailable }}
                           </span>
                         } @else {
-                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 text-destructive border border-destructive/20">
+                          <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 text-destructive border border-destructive/20 tabular-nums">
                             Hết hàng (0)
                           </span>
                         }
                       </div>
-                      <div class="text-xs text-muted font-mono mt-0.5">
+                      <div class="text-xs text-muted font-mono mt-0.5 tabular-nums">
                         Thực tế: {{ item.totalOnHand }} | Giữ chỗ: {{ item.totalReserved }} | Lỗi: {{ item.totalQuarantineDamaged }}
                       </div>
                     </td>

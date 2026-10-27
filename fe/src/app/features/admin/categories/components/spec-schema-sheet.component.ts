@@ -63,12 +63,10 @@ type EditableAttribute = SpecAttribute & {
             </button>
           </div>
 
-          <div class="p-4 bg-amber-50 border-b border-amber-200 text-amber-800 text-xs flex items-start gap-2.5">
-            <lucide-icon name="alert-triangle" class="size-4 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
-            <div>
-              <strong class="font-semibold">Lưu ý ràng buộc:</strong>
-              Không cho phép xóa hoặc đổi kiểu dữ liệu đối với các trường thông số kỹ thuật đã có mẫu sản phẩm sử dụng (hiện có {{ hasProducts() ? category()?.productTemplateCount : 0 }} mẫu). Chỉ cho phép đánh dấu ngưng kích hoạt hoặc bổ sung thuộc tính mới.
-            </div>
+          <div class="px-6 py-2.5 bg-surface-alt border-b border-line text-muted text-xs flex items-center justify-between gap-2">
+            <span>
+              Thuộc tính đã có sản phẩm sử dụng (hiện có {{ hasProducts() ? category()?.productTemplateCount : 0 }} mẫu) sẽ tự động khóa để bảo toàn dữ liệu.
+            </span>
           </div>
 
           @if (errorMessage()) {
@@ -107,8 +105,8 @@ type EditableAttribute = SpecAttribute & {
 
             <div class="space-y-3">
               @for (attr of attributes(); track attr.key + '-' + $index; let i = $index) {
-                <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-3">
-                  <div class="flex items-center justify-between gap-3 border-b border-line pb-2.5">
+                <div class="p-3.5 bg-surface border border-line rounded space-y-2.5">
+                  <div class="flex items-center justify-between gap-3 border-b border-line/60 pb-2">
                     <div class="flex items-center gap-2 flex-wrap">
                       <span class="font-bold text-foreground text-sm">
                         {{ attr.label || 'Chưa đặt tên nhãn' }}
