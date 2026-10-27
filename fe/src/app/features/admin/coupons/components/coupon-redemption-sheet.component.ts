@@ -29,7 +29,6 @@ import {
         aria-labelledby="sheet-redemption-title"
       >
         <div
-          data-modal-id="MOD-35"
           class="relative bg-surface border-l border-line shadow-2xl w-full max-w-2xl h-full flex flex-col text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >

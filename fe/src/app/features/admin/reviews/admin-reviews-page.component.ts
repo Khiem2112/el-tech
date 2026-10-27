@@ -27,62 +27,58 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, ReviewDetailDialogComponent, AppIconModule, SelectComponent],
   template: `
-    <div class="p-4 lg:p-6 space-y-4 w-full text-[13px] text-foreground">
+    <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">
             Đánh Giá Sản Phẩm
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Chỉ khách hàng đã mua và hoàn tất đơn mới được đánh giá
+            Kiểm duyệt và quản lý hiển thị đánh giá từ khách hàng
           </p>
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
-          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-3">
-            <span class="text-xs text-muted">
-              Giám sát và kiểm duyệt nhận xét đánh giá từ khách hàng
-            </span>
-
-            <div class="flex items-center flex-wrap gap-2">
-              <div class="relative">
-                <input
-                  type="text"
-                  [(ngModel)]="searchQuery"
-                  (keyup.enter)="onSearch()"
-                  placeholder="Tìm sản phẩm, khách, mã đơn..."
-                  class="px-3 py-1.5 bg-surface border border-line rounded text-foreground placeholder-muted focus:outline-none focus:border-primary text-[13px] w-52"
-                />
-              </div>
-
-              <app-select
-                [options]="ratingOptions"
-                [value]="selectedRating"
-                (valueChange)="selectedRating = $event; onFilterChange()"
-                size="sm"
-                class="w-44"
-                ariaLabel="Lọc theo số sao đánh giá"
+      <div class="bg-surface border border-line rounded overflow-hidden">
+        <div class="p-3 border-b border-line flex items-center justify-between flex-wrap gap-2.5">
+          <div class="flex items-center flex-wrap gap-2 flex-1">
+            <div class="relative min-w-[200px] max-w-xs flex-1">
+              <input
+                type="text"
+                [(ngModel)]="searchQuery"
+                (keyup.enter)="onSearch()"
+                placeholder="Tìm sản phẩm, khách, mã đơn..."
+                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground placeholder-muted focus:outline-none focus:border-primary text-xs"
               />
-
-              <app-select
-                [options]="visibilityOptions"
-                [value]="selectedVisibility"
-                (valueChange)="onVisibilitySelect($event)"
-                size="sm"
-                class="w-40"
-                ariaLabel="Lọc theo trạng thái hiển thị"
-              />
-
-              <button
-                type="button"
-                (click)="onSearch()"
-                class="px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-[13px] transition-colors"
-              >
-                Lọc dữ liệu
-              </button>
             </div>
+
+            <app-select
+              [options]="ratingOptions"
+              [value]="selectedRating"
+              (valueChange)="selectedRating = $event; onFilterChange()"
+              size="sm"
+              class="w-40"
+              ariaLabel="Lọc theo số sao đánh giá"
+            />
+
+            <app-select
+              [options]="visibilityOptions"
+              [value]="selectedVisibility"
+              (valueChange)="onVisibilitySelect($event)"
+              size="sm"
+              class="w-40"
+              ariaLabel="Lọc theo trạng thái hiển thị"
+            />
+
+            <button
+              type="button"
+              (click)="onSearch()"
+              class="px-3 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors cursor-pointer"
+            >
+              Lọc dữ liệu
+            </button>
           </div>
+        </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left">

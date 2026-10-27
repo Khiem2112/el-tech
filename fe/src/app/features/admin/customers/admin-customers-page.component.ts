@@ -37,7 +37,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 shadow-xs grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      <div class="bg-surface border border-line rounded p-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
         <div>
           <label for="customer-search" class="block font-semibold text-muted uppercase text-xs mb-1">
             Tìm Kiếm
@@ -49,10 +49,10 @@ import { AdminCustomerService } from './services/admin-customer.service';
               [ngModel]="customerService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Họ tên, SĐT, Email..."
-              class="w-full pl-9 pr-3 py-2 bg-surface-alt border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
+              class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded text-foreground text-xs placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
-              class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
+              class="w-4 h-4 text-muted absolute left-3 top-2 pointer-events-none"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -71,7 +71,7 @@ import { AdminCustomerService } from './services/admin-customer.service';
             [options]="typeOptions"
             [value]="customerService.typeFilter()"
             (valueChange)="onTypeFilterChange($event)"
-            size="md"
+            size="sm"
           />
         </div>
 
@@ -83,12 +83,12 @@ import { AdminCustomerService } from './services/admin-customer.service';
             [options]="statusOptions"
             [value]="customerService.statusFilter()"
             (valueChange)="onStatusFilterChange($event)"
-            size="md"
+            size="sm"
           />
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
+      <div class="bg-surface border border-line rounded overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left border-collapse min-w-[1000px] text-xs">
             <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">

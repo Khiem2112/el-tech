@@ -26,24 +26,19 @@ import {
       ></div>
 
       <div
-        class="relative bg-white border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-[13px] text-foreground overflow-hidden"
+        class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col z-10 text-xs text-foreground overflow-hidden"
       >
-        <div class="flex items-center justify-between border-b border-line px-6 py-4 flex-shrink-0">
+        <div class="flex items-center justify-between border-b border-line px-5 py-3.5 flex-shrink-0">
           <div>
-            <div class="flex items-center gap-2">
-              <h3 class="font-extrabold text-foreground uppercase tracking-wide text-sm">
-                Chi Tiết Thông Báo Outbox
-              </h3>
-            </div>
-            <p class="text-xs text-muted mt-0.5">
-              Theo dõi dữ liệu phát hành thông báo giao dịch transactional
-            </p>
+            <h3 class="font-bold text-foreground uppercase tracking-wide text-sm">
+              Chi Tiết Thông Báo Outbox
+            </h3>
           </div>
 
           <button
             type="button"
             (click)="onClose()"
-            class="p-1.5 rounded-md hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+            class="p-1 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors cursor-pointer"
             title="Đóng hộp thoại"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -52,29 +47,29 @@ import {
           </button>
         </div>
 
-        <div class="p-6 overflow-y-auto space-y-4 flex-1">
-          <div class="p-4 bg-surface border border-line rounded-lg space-y-3">
+        <div class="p-5 overflow-y-auto space-y-3 flex-1">
+          <div class="p-3 bg-surface-alt border border-line rounded space-y-3">
             <div class="flex items-start justify-between gap-4">
               <div>
                 <div class="text-[11px] font-mono text-muted uppercase tracking-wider">
                   Sự kiện: {{ notification.eventType }}
                 </div>
-                <div class="font-bold text-foreground text-base mt-0.5">
+                <div class="font-bold text-foreground text-sm mt-0.5">
                   {{ notification.title }}
                 </div>
               </div>
 
               <div>
                 @if (notification.status === 'SENT') {
-                  <span class="inline-block px-2.5 py-1 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
+                  <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 uppercase">
                     ĐÃ GỬI
                   </span>
                 } @else if (notification.status === 'PENDING') {
-                  <span class="inline-block px-2.5 py-1 rounded text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 uppercase">
+                  <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 uppercase">
                     CHỜ GỬI
                   </span>
                 } @else {
-                  <span class="inline-block px-2.5 py-1 rounded text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 uppercase">
+                  <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 uppercase">
                     THẤT BẠI
                   </span>
                 }
@@ -83,7 +78,7 @@ import {
 
             <div class="pt-2">
               <div class="text-xs text-muted uppercase mb-1 font-semibold">Nội dung thông báo</div>
-              <p class="text-foreground p-3 bg-white rounded border border-line text-[13px] whitespace-pre-wrap leading-relaxed">
+              <p class="text-foreground p-2.5 bg-surface rounded border border-line text-xs whitespace-pre-wrap leading-relaxed">
                 {{ notification.body }}
               </p>
             </div>
@@ -114,7 +109,7 @@ import {
               <span class="text-muted">Kênh phát:</span>
               <div class="flex items-center gap-1.5">
                 @for (ch of notification.channels; track ch) {
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface-alt border border-line text-foreground uppercase">
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-surface border border-line text-foreground uppercase">
                     {{ ch }}
                   </span>
                 }
@@ -184,11 +179,11 @@ import {
           </div>
         </div>
 
-        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-line bg-surface-alt/40 flex-shrink-0">
+        <div class="flex items-center justify-end gap-3 px-5 py-3.5 border-t border-line bg-surface flex-shrink-0">
           <button
             type="button"
             (click)="onClose()"
-            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface-alt/80 text-foreground rounded-md font-semibold text-[13px] transition-colors"
+            class="px-4 py-2 bg-surface-alt border border-line hover:bg-surface text-foreground rounded font-semibold text-xs transition-colors cursor-pointer"
           >
             Đóng
           </button>
@@ -197,7 +192,7 @@ import {
             type="button"
             (click)="onRetry()"
             [disabled]="isRetrying()"
-            class="px-4 py-2 bg-primary hover:bg-primary-hover disabled:opacity-50 text-primary-foreground font-bold rounded-md text-[13px] shadow-xs transition-colors flex items-center gap-1.5"
+            class="px-4 py-2 bg-primary hover:bg-primary-strong disabled:opacity-50 text-primary-foreground font-bold rounded text-xs shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
           >
             @if (isRetrying()) {
               <span>Đang gửi lại...</span>

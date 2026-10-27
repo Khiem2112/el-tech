@@ -73,28 +73,16 @@ type ToastNotification = {
         </a>
       </nav>
 
-      <div class="p-4 bg-primary/5 border border-primary/20 rounded-lg shadow-xs text-xs text-foreground flex items-start gap-3">
-        <div class="w-2 h-2 rounded-full bg-primary mt-1 shrink-0"></div>
-        <div>
-          <strong class="text-foreground text-xs uppercase tracking-wider block mb-0.5">
-            Chính sách giao hàng toàn quốc
-          </strong>
-          <p class="text-muted leading-relaxed">
-            Áp dụng mức phí giao hàng cố định cho các đơn giao tận nơi. Các đơn hàng có tổng giá trị hàng ròng đạt hoặc vượt ngưỡng miễn phí sẽ được tự động miễn phí vận chuyển 100%.
-          </p>
-        </div>
-      </div>
-
       <section aria-labelledby="active-fee-title" class="space-y-2">
-        <div class="bg-surface border border-line rounded-lg p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between border-b border-line pb-3">
-            <div class="flex items-center gap-2.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/20"></span>
+        <div class="bg-surface border border-line rounded p-4 space-y-3">
+          <div class="flex items-center justify-between border-b border-line pb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-primary"></span>
               <h2 id="active-fee-title" class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Biểu Phí Vận Chuyển Đang Áp Dụng
               </h2>
             </div>
-            <span class="px-2.5 py-1 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/30 uppercase tracking-wide whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/30 uppercase tracking-wide whitespace-nowrap">
               Đang Áp Dụng
             </span>
           </div>
@@ -105,41 +93,35 @@ type ToastNotification = {
               <p>Đang tải cấu hình biểu phí hiện hành...</p>
             </div>
           } @else if (activeConfig()) {
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-1">
-              <div class="space-y-1">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+              <div class="p-3 bg-surface-alt rounded border border-line space-y-1">
                 <span class="text-muted text-xs uppercase font-semibold block">
                   Phí giao hàng cố định toàn quốc
                 </span>
                 <div class="text-2xl font-bold font-mono text-foreground tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.fixedFee) }}
                 </div>
-                <p class="text-xs text-muted">
-                  Đồng giá cho mọi đơn giao tận nơi dưới ngưỡng miễn phí
-                </p>
               </div>
 
-              <div class="space-y-1">
+              <div class="p-3 bg-surface-alt rounded border border-line space-y-1">
                 <span class="text-muted text-xs uppercase font-semibold block">
-                  Ngưỡng đơn hàng miễn phí giao hàng
+                  Ngưỡng miễn phí vận chuyển
                 </span>
                 <div class="text-2xl font-bold font-mono text-primary tabular-nums tracking-tight whitespace-nowrap">
                   {{ formatVnd(activeConfig()?.freeShippingThreshold) }}
                 </div>
-                <p class="text-xs text-muted">
-                  Đơn từ {{ formatVnd(activeConfig()?.freeShippingThreshold) }} trở lên tự động miễn phí ship 100%
-                </p>
               </div>
 
-              <div class="space-y-1">
+              <div class="p-3 bg-surface-alt rounded border border-line space-y-1">
                 <span class="text-muted text-xs uppercase font-semibold block">
-                  Thời điểm bắt đầu hiệu lực
+                  Thời điểm hiệu lực
                 </span>
                 <div class="text-sm font-bold text-foreground tabular-nums mt-1 font-mono whitespace-nowrap">
                   {{ formatDateTime(activeConfig()?.effectiveFrom) }}
                 </div>
-                <p class="text-xs text-muted mt-1">
+                <div class="text-xs text-muted">
                   Người cập nhật: <span class="text-foreground font-semibold">{{ activeConfig()?.createdBy }}</span>
-                </p>
+                </div>
               </div>
             </div>
           } @else {
@@ -157,7 +139,7 @@ type ToastNotification = {
         </div>
       </section>
 
-      <section aria-labelledby="history-table-title" class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
+      <section aria-labelledby="history-table-title" class="bg-surface border border-line rounded overflow-hidden">
         <div class="p-4 border-b border-line flex items-center justify-between bg-surface">
           <div class="flex items-center gap-2">
             <h2 id="history-table-title" class="text-xs font-bold uppercase tracking-wider text-foreground">

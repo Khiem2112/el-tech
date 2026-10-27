@@ -108,18 +108,14 @@ function formatIsoToDateInput(isoString?: string): string {
         aria-labelledby="promo-dialog-title"
       >
         <div
-          data-modal-id="MOD-33"
           class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <header class="p-5 border-b border-line flex items-center justify-between shrink-0 bg-surface">
+          <header class="p-4 border-b border-line flex items-center justify-between shrink-0 bg-surface">
             <div>
               <h2 id="promo-dialog-title" class="font-bold text-foreground uppercase text-base tracking-wide">
-                {{ isEditMode() ? 'Chỉnh Sửa Khuyến Mãi Sản Phẩm' : 'Thêm Mới Khuyến Mãi Sản Phẩm' }}
+                {{ isEditMode() ? 'Chỉnh Sửa Khuyến Mãi' : 'Thêm Mới Khuyến Mãi' }}
               </h2>
-              <p class="text-xs text-muted mt-0.5">
-                Thiết lập chương trình giảm giá tự động theo danh mục hoặc danh sách SKU
-              </p>
             </div>
             <button
               type="button"
@@ -194,7 +190,7 @@ function formatIsoToDateInput(isoString?: string): string {
                 </span>
                 <div class="grid grid-cols-2 gap-3">
                   <label
-                    class="flex items-center gap-2.5 p-3 rounded-md border cursor-pointer transition-colors"
+                    class="flex items-center gap-2.5 p-2.5 rounded-md border cursor-pointer transition-colors"
                     [class.border-primary]="form.get('scope')?.value === 'CATEGORY'"
                     [class.bg-primary/5]="form.get('scope')?.value === 'CATEGORY'"
                     [class.border-line]="form.get('scope')?.value !== 'CATEGORY'"
@@ -206,14 +202,11 @@ function formatIsoToDateInput(isoString?: string): string {
                       value="CATEGORY"
                       class="text-primary focus:ring-primary"
                     />
-                    <div>
-                      <div class="font-bold text-foreground text-sm">Theo danh mục</div>
-                      <div class="text-xs text-muted">Áp dụng toàn bộ linh kiện thuộc ngành hàng</div>
-                    </div>
+                    <span class="font-bold text-foreground text-xs uppercase tracking-wide">Theo danh mục</span>
                   </label>
 
                   <label
-                    class="flex items-center gap-2.5 p-3 rounded-md border cursor-pointer transition-colors"
+                    class="flex items-center gap-2.5 p-2.5 rounded-md border cursor-pointer transition-colors"
                     [class.border-primary]="form.get('scope')?.value === 'SKU'"
                     [class.bg-primary/5]="form.get('scope')?.value === 'SKU'"
                     [class.border-line]="form.get('scope')?.value !== 'SKU'"
@@ -225,10 +218,7 @@ function formatIsoToDateInput(isoString?: string): string {
                       value="SKU"
                       class="text-primary focus:ring-primary"
                     />
-                    <div>
-                      <div class="font-bold text-foreground text-sm">Theo danh sách SKU</div>
-                      <div class="text-xs text-muted">Chỉ định chính xác biến thể phần cứng</div>
-                    </div>
+                    <span class="font-bold text-foreground text-xs uppercase tracking-wide">Theo danh sách SKU</span>
                   </label>
                 </div>
 
@@ -366,33 +356,23 @@ function formatIsoToDateInput(isoString?: string): string {
                 </div>
               </div>
 
-              <div class="space-y-3 pt-1">
-                <label class="flex items-start gap-3 p-3 bg-surface-alt rounded-md border border-line cursor-pointer">
+              <div class="space-y-2 pt-1">
+                <label class="flex items-center gap-2.5 p-2.5 bg-surface-alt rounded-md border border-line cursor-pointer">
                   <input
                     type="checkbox"
                     formControlName="isExclusive"
-                    class="mt-0.5 text-primary focus:ring-primary rounded"
+                    class="text-primary focus:ring-primary rounded"
                   />
-                  <div>
-                    <span class="font-bold text-foreground text-sm">Áp dụng độc quyền</span>
-                    <p class="text-xs text-muted mt-0.5">
-                      Nếu bật, sản phẩm này không được áp dụng đồng thời với bất kỳ mã coupon giảm giá đơn hàng nào khác.
-                    </p>
-                  </div>
+                  <span class="font-semibold text-foreground text-xs">Áp dụng độc quyền (không dùng chung với coupon đơn hàng)</span>
                 </label>
 
-                <label class="flex items-start gap-3 p-3 bg-surface-alt rounded-md border border-line cursor-pointer">
+                <label class="flex items-center gap-2.5 p-2.5 bg-surface-alt rounded-md border border-line cursor-pointer">
                   <input
                     type="checkbox"
                     formControlName="isActive"
-                    class="mt-0.5 text-primary focus:ring-primary rounded"
+                    class="text-primary focus:ring-primary rounded"
                   />
-                  <div>
-                    <span class="font-bold text-foreground text-sm">Kích hoạt chương trình</span>
-                    <p class="text-xs text-muted mt-0.5">
-                      Chương trình sẽ tự động có hiệu lực giảm giá cho khách hàng trong khoảng thời gian đã định.
-                    </p>
-                  </div>
+                  <span class="font-semibold text-foreground text-xs">Kích hoạt chương trình</span>
                 </label>
               </div>
             </form>

@@ -89,35 +89,26 @@ type ToastNotification = {
         </a>
       </nav>
 
-      <div class="p-3.5 bg-primary/5 border border-primary/20 rounded-lg shadow-xs text-xs text-muted flex items-start gap-2.5">
-        <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <div class="leading-relaxed">
-          Quản lý hạn mức sử dụng coupon trên toàn hệ thống và số lần tối đa mỗi khách hàng. Khi đơn hàng hủy hợp lệ, quota của khách sẽ tự động được hoàn trả.
-        </div>
-      </div>
-
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+        <div class="p-3 bg-surface border border-line rounded">
           <div class="text-muted text-xs uppercase font-semibold">Tổng mã coupon</div>
-          <div class="text-2xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
+          <div class="text-xl font-bold font-mono text-foreground tabular-nums mt-0.5">{{ stats().totalCount }}</div>
         </div>
-        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+        <div class="p-3 bg-surface border border-line rounded">
           <div class="text-emerald-700 dark:text-emerald-400 text-xs uppercase font-semibold">Đang hoạt động</div>
-          <div class="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
+          <div class="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums mt-0.5">{{ stats().runningCount }}</div>
         </div>
-        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+        <div class="p-3 bg-surface border border-line rounded">
           <div class="text-sky-700 dark:text-sky-400 text-xs uppercase font-semibold">Sắp diễn ra</div>
-          <div class="text-2xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
+          <div class="text-xl font-bold font-mono text-sky-600 dark:text-sky-400 tabular-nums mt-0.5">{{ stats().upcomingCount }}</div>
         </div>
-        <div class="p-3.5 bg-surface border border-line rounded-lg shadow-xs">
+        <div class="p-3 bg-surface border border-line rounded">
           <div class="text-muted text-xs uppercase font-semibold">Hết hạn / Tạm dừng</div>
-          <div class="text-2xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
+          <div class="text-xl font-bold font-mono text-muted tabular-nums mt-0.5">{{ stats().expiredCount }}</div>
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface p-3.5 rounded-lg border border-line shadow-xs">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-surface p-3 rounded border border-line">
         <div class="flex-1 flex flex-col sm:flex-row items-center gap-2.5">
           <div class="relative w-full sm:w-72">
             <input

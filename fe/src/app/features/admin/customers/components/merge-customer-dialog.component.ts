@@ -39,8 +39,7 @@ import {
         aria-labelledby="merge-modal-title"
       >
         <div
-          data-modal-id="MOD-37"
-          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-6 space-y-4 text-xs text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-xl p-5 space-y-4 text-xs text-foreground"
           (click)="$event.stopPropagation()"
         >
           <div class="flex items-center justify-between border-b border-line pb-3">
@@ -48,14 +47,14 @@ import {
               <h2 id="merge-modal-title" class="font-bold text-foreground uppercase text-sm">
                 Gộp Hồ Sơ Khách Hàng
               </h2>
-              <p class="text-xs text-muted mt-1">
+              <p class="text-xs text-muted mt-0.5">
                 Hồ sơ chính: <strong class="text-foreground">{{ target.name }}</strong> ({{ target.phone }})
               </p>
             </div>
             <button
               type="button"
               (click)="handleClose()"
-              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors cursor-pointer"
               title="Đóng hộp thoại"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +64,7 @@ import {
           </div>
 
           <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded text-amber-800 dark:text-amber-300 text-xs">
-            Toàn bộ các đơn hàng, lượt sử dụng coupon, đánh giá sản phẩm và thông báo của hồ sơ phụ sẽ được chuyển nhượng quyền sở hữu sang hồ sơ chính. Hồ sơ phụ sẽ bị vô hiệu hóa và đánh dấu liên kết.
+            Toàn bộ đơn hàng, voucher và dữ liệu của hồ sơ phụ sẽ được chuyển sang hồ sơ chính. Thao tác này không thể hoàn tác.
           </div>
 
           @if (errorMessage()) {
@@ -76,7 +75,7 @@ import {
 
           @if (selectedCandidate()?.isRegistered) {
             <div class="p-3 bg-red-500/10 border border-red-500/30 rounded text-red-700 dark:text-red-400 text-xs font-medium">
-              Không thể sáp nhập hồ sơ đã có tài khoản thành viên theo quy tắc CUS-003. Chỉ được phép gộp hồ sơ khách vãng lai (chưa có tài khoản đăng ký) vào hồ sơ khách hàng chính.
+              Không thể sáp nhập hồ sơ đã có tài khoản thành viên. Chỉ được phép gộp hồ sơ khách vãng lai vào hồ sơ khách hàng chính.
             </div>
           }
 

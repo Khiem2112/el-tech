@@ -128,100 +128,67 @@ type ToastNotification = {
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <div
-            class="p-4 bg-surface border rounded-lg transition-all hover:border-primary/50 group"
-            [ngClass]="activeTab() === 'orders' ? 'border-primary shadow-sm' : 'border-line'"
-            title="Tổng số đơn hàng khách đã đặt trên hệ thống"
+            class="p-3 bg-surface border rounded transition-colors"
+            [ngClass]="activeTab() === 'orders' ? 'border-primary' : 'border-line'"
           >
-            <div class="flex items-center justify-between">
-              <div (click)="activeTab.set('orders')" class="cursor-pointer flex-1">
-                <div class="text-2xl font-black text-foreground tabular-nums group-hover:text-primary transition-colors">
-                  {{ cust.stats.orderCount }}
-                </div>
-                <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-1">
-                  Đơn Hàng Đã Đặt
-                </div>
+            <div (click)="activeTab.set('orders')" class="cursor-pointer">
+              <div class="text-xl font-bold font-mono text-foreground tabular-nums">
+                {{ cust.stats.orderCount }}
               </div>
-              <a
-                [routerLink]="['/admin/orders']"
-                [queryParams]="{ search: cust.phone || cust.name }"
-                class="p-1 hover:text-primary text-muted transition-colors"
-                title="Mở danh sách đơn hàng toàn màn hình"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
+              <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
+                Đơn Hàng
+              </div>
             </div>
           </div>
 
-          <div
-            class="p-4 bg-surface border border-line rounded-lg"
-            title="Tổng giá trị tích lũy đã hoàn tất thanh toán (LTV)"
-          >
-            <div class="text-2xl font-black text-primary tabular-nums whitespace-nowrap">
+          <div class="p-3 bg-surface border border-line rounded">
+            <div class="text-xl font-bold font-mono text-primary tabular-nums whitespace-nowrap">
               {{ formatCurrency(cust.stats.totalSpent) }}
             </div>
-            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-1">
+            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
               Tổng Chi Tiêu (LTV)
             </div>
           </div>
 
           <div
             (click)="activeTab.set('coupons')"
-            class="p-4 bg-surface border rounded-lg cursor-pointer transition-all hover:border-primary/50 group"
-            [ngClass]="activeTab() === 'coupons' ? 'border-primary shadow-sm' : 'border-line'"
-            title="Số lượng voucher giảm giá đã áp dụng"
+            class="p-3 bg-surface border rounded cursor-pointer transition-colors"
+            [ngClass]="activeTab() === 'coupons' ? 'border-primary' : 'border-line'"
           >
-            <div class="text-2xl font-black text-foreground tabular-nums group-hover:text-primary transition-colors">
+            <div class="text-xl font-bold font-mono text-foreground tabular-nums">
               {{ cust.stats.couponUsageCount }}
             </div>
-            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-1">
+            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
               Voucher Đã Dùng
             </div>
           </div>
 
           <div
-            class="p-4 bg-surface border rounded-lg transition-all hover:border-primary/50 group"
-            [ngClass]="activeTab() === 'reviews' ? 'border-primary shadow-sm' : 'border-line'"
-            title="Số bài đánh giá linh kiện khách đã gửi"
+            class="p-3 bg-surface border rounded transition-colors"
+            [ngClass]="activeTab() === 'reviews' ? 'border-primary' : 'border-line'"
           >
-            <div class="flex items-center justify-between">
-              <div (click)="activeTab.set('reviews')" class="cursor-pointer flex-1">
-                <div class="text-2xl font-black text-foreground tabular-nums group-hover:text-primary transition-colors">
-                  {{ cust.stats.reviewCount }}
-                </div>
-                <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-1">
-                  Đánh Giá Linh Kiện
-                </div>
+            <div (click)="activeTab.set('reviews')" class="cursor-pointer">
+              <div class="text-xl font-bold font-mono text-foreground tabular-nums">
+                {{ cust.stats.reviewCount }}
               </div>
-              <a
-                [routerLink]="['/admin/reviews']"
-                [queryParams]="{ search: cust.phone || cust.name }"
-                class="p-1 hover:text-primary text-muted transition-colors"
-                title="Mở danh sách kiểm duyệt đánh giá"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </a>
+              <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
+                Đánh Giá SP
+              </div>
             </div>
           </div>
 
-          <div
-            class="p-4 bg-surface border border-line rounded-lg"
-            title="Số hồ sơ phụ đã được gộp vào tài khoản này"
-          >
-            <div class="text-2xl font-black text-amber-600 dark:text-amber-400 tabular-nums">
+          <div class="p-3 bg-surface border border-line rounded">
+            <div class="text-xl font-bold font-mono text-amber-600 dark:text-amber-400 tabular-nums">
               {{ cust.stats.mergedCount }}
             </div>
-            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-1">
+            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
               Hồ Sơ Đã Gộp
             </div>
           </div>
         </div>
 
-        <div class="bg-surface border border-line rounded-lg p-5 shadow-sm space-y-4">
-          <div class="flex items-center justify-between border-b border-line pb-2.5">
+        <div class="bg-surface border border-line rounded p-4 space-y-3">
+          <div class="flex items-center justify-between border-b border-line pb-2">
             <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
               Thông Tin Định Danh Khách Hàng
             </h2>
@@ -230,27 +197,25 @@ type ToastNotification = {
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
             <div>
-              <label class="block text-muted font-medium mb-1">Họ và tên</label>
-              <div class="p-2.5 bg-surface-alt border border-line rounded font-semibold text-foreground">
-                {{ cust.name }}
-              </div>
+              <span class="text-muted block text-xs uppercase font-medium">Họ và tên</span>
+              <span class="font-bold text-foreground text-sm mt-0.5 block">{{ cust.name }}</span>
             </div>
 
             <div>
-              <label class="block text-muted font-medium mb-1">Số điện thoại</label>
-              <div class="p-2.5 bg-surface-alt border border-line rounded font-mono font-semibold text-foreground flex items-center justify-between">
-                <span>{{ cust.phone }}</span>
-                <span class="px-1.5 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/25">
+              <span class="text-muted block text-xs uppercase font-medium">Số điện thoại</span>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="font-mono font-bold text-foreground text-sm tabular-nums">{{ cust.phone }}</span>
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/25">
                   Xác thực OTP
                 </span>
               </div>
             </div>
 
             <div>
-              <label class="block text-muted font-medium mb-1">Địa chỉ email</label>
-              <div class="p-2.5 bg-surface-alt border border-line rounded font-semibold text-foreground flex items-center justify-between">
-                <span class="truncate">{{ cust.email }}</span>
-                <span class="px-1.5 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/25 shrink-0 ml-2">
+              <span class="text-muted block text-xs uppercase font-medium">Địa chỉ email</span>
+              <div class="flex items-center gap-2 mt-0.5">
+                <span class="font-semibold text-foreground truncate text-sm">{{ cust.email }}</span>
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary border border-primary/25 shrink-0">
                   Xác thực OTP
                 </span>
               </div>
@@ -258,13 +223,13 @@ type ToastNotification = {
           </div>
 
           @if (cust.mergedCustomers.length > 0) {
-            <div class="mt-4 pt-4 border-t border-line space-y-2">
+            <div class="mt-3 pt-3 border-t border-line space-y-2">
               <h3 class="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                 Các Hồ Sơ Phụ Đã Gộp Vào Tài Khoản Này ({{ cust.mergedCustomers.length }})
               </h3>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                 @for (sub of cust.mergedCustomers; track sub.id) {
-                  <div class="p-3 bg-surface-alt border border-line rounded flex items-center justify-between text-xs">
+                  <div class="p-2.5 bg-surface-alt border border-line rounded flex items-center justify-between text-xs">
                     <div>
                       <div class="font-bold text-foreground">{{ sub.name }}</div>
                       <div class="text-xs text-muted font-mono">{{ sub.phone }} - {{ sub.email }}</div>

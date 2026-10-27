@@ -63,21 +63,15 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
         ></div>
 
         <div
-          data-modal-id="MOD-36"
           class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-lg z-10 overflow-hidden flex flex-col max-h-[90vh] text-foreground text-sm"
           (click)="$event.stopPropagation()"
         >
-          <header class="px-6 py-4 border-b border-line flex items-center justify-between shrink-0 bg-surface">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-primary"></span>
-                <h2 id="dialog-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
-                  Cập Nhật Biểu Phí Vận Chuyển
-                </h2>
-              </div>
-              <p class="text-xs text-muted mt-0.5">
-                Thiết lập mức phí giao hàng cố định và ngưỡng miễn phí vận chuyển toàn hệ thống
-              </p>
+          <header class="px-5 py-3.5 border-b border-line flex items-center justify-between shrink-0 bg-surface">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-primary"></span>
+              <h2 id="dialog-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
+                Cập Nhật Biểu Phí Vận Chuyển
+              </h2>
             </div>
 
             <button
@@ -97,7 +91,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
             [formGroup]="feeForm"
             (ngSubmit)="onSubmit()"
             novalidate
-            class="flex-1 overflow-y-auto p-6 space-y-4 text-sm"
+            class="flex-1 overflow-y-auto p-5 space-y-4 text-sm"
           >
             @if (formError()) {
               <div
@@ -131,8 +125,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                   VND
                 </span>
               </div>
-              <div class="flex items-center justify-between text-xs text-muted mt-1">
-                <span>Đồng giá cho đơn giao tận nơi dưới ngưỡng miễn phí</span>
+              <div class="flex items-center justify-end text-xs mt-1">
                 <span class="text-primary font-mono font-semibold tabular-nums">
                   {{ formatVnd(feeForm.get('fixedFee')?.value) }}
                 </span>
@@ -163,8 +156,7 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                   VND
                 </span>
               </div>
-              <div class="flex items-center justify-between text-xs text-muted mt-1">
-                <span>Đơn hàng có giá trị ròng đạt mức này sẽ được miễn 100% ship</span>
+              <div class="flex items-center justify-end text-xs mt-1">
                 <span class="text-primary font-mono font-semibold tabular-nums">
                   {{ formatVnd(feeForm.get('freeShippingThreshold')?.value) }}
                 </span>
@@ -199,19 +191,9 @@ type DeliveryFeeFormValues = z.infer<typeof deliveryFeeFormSchema>;
                 id="note"
                 rows="2"
                 formControlName="note"
-                placeholder="Ví dụ: Điều chỉnh phụ phí nhiên liệu hoặc chính sách ưu đãi quý mới..."
+                placeholder="Lý do điều chỉnh biểu phí..."
                 class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary transition-colors resize-none"
               ></textarea>
-              <p class="text-xs text-muted mt-1">
-                Ghi chú nội bộ phục vụ kiểm toán và theo dõi lịch sử vận hành.
-              </p>
-            </div>
-
-            <div class="p-3 bg-surface-alt border border-line rounded text-xs text-foreground space-y-1">
-              <strong class="text-foreground uppercase text-xs tracking-wider block font-semibold">Cơ chế hiệu lực đơn nhất:</strong>
-              <p class="text-muted leading-relaxed">
-                Khi áp dụng cấu hình mới, cấu hình đang hoạt động trước đó sẽ được tự động kết thúc hiệu lực và lưu vào bảng lịch sử.
-              </p>
             </div>
 
             <footer class="flex items-center justify-end gap-3 pt-4 border-t border-line shrink-0">

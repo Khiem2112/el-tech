@@ -99,22 +99,18 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
             </div>
           </div>
 
-          <div class="flex items-center justify-between p-3 rounded-lg border" [class]="review.isVisible ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'">
+          <div class="flex items-center justify-between p-2.5 rounded border" [class]="review.isVisible ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-400'">
             <div class="flex items-center gap-2">
-              <span class="text-xs uppercase font-extrabold tracking-wider">Trạng thái hiện tại:</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold uppercase" [class]="review.isVisible ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'">
-                {{ review.isVisible ? 'ĐANG HIỂN THỊ' : 'ĐÃ BỊ ẨN KHỎI GIAN HÀNG' }}
+              <span class="text-xs uppercase font-bold tracking-wider">Trạng thái:</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold uppercase" [class]="review.isVisible ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400' : 'bg-rose-500/20 text-rose-700 dark:text-rose-400'">
+                {{ review.isVisible ? 'ĐANG HIỂN THỊ' : 'ĐÃ BỊ ẨN' }}
               </span>
             </div>
             @if (!review.isVisible && review.hiddenReason) {
-              <div class="text-xs text-rose-800">
-                Lý do ẩn: <strong class="text-foreground">{{ review.hiddenReason }}</strong>
+              <div class="text-xs">
+                Lý do: <strong class="text-foreground">{{ review.hiddenReason }}</strong>
               </div>
             }
-          </div>
-
-          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs leading-relaxed">
-            Hệ thống sẽ lưu vết nhân viên thực hiện ẩn hoặc hiện đánh giá vào lịch sử kiểm toán và không xóa bản ghi gốc trong cơ sở dữ liệu.
           </div>
 
           @if (review.isVisible) {

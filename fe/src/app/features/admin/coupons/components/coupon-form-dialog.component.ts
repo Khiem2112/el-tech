@@ -123,18 +123,14 @@ function formatIsoToDateInput(isoString?: string): string {
         aria-labelledby="coupon-dialog-title"
       >
         <div
-          data-modal-id="MOD-34"
           class="relative bg-surface border border-line rounded-lg shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col text-sm text-foreground"
           (click)="$event.stopPropagation()"
         >
-          <header class="p-5 border-b border-line flex items-center justify-between shrink-0 bg-surface">
+          <header class="p-4 border-b border-line flex items-center justify-between shrink-0 bg-surface">
             <div>
               <h2 id="coupon-dialog-title" class="font-bold text-foreground uppercase text-base tracking-wide">
                 {{ isEditMode() ? 'Chỉnh Sửa Mã Giảm Giá' : 'Thêm Mới Mã Giảm Giá' }}
               </h2>
-              <p class="text-xs text-muted mt-0.5">
-                Thiết lập mã coupon theo chiến dịch và kiểm soát lượt dùng
-              </p>
             </div>
             <button
               type="button"
@@ -312,13 +308,10 @@ function formatIsoToDateInput(isoString?: string): string {
                 </div>
               </div>
 
-              <div class="space-y-3 p-4 bg-surface-alt rounded-md border border-line">
-                <div class="flex items-center justify-between">
-                  <span class="font-semibold text-foreground text-xs uppercase tracking-wider">
-                    Danh mục áp dụng / loại trừ (Tùy chọn)
-                  </span>
-                  <span class="text-xs text-muted">Không bắt buộc nếu áp dụng cho toàn bộ đơn hàng</span>
-                </div>
+              <div class="space-y-3 p-3 bg-surface-alt rounded-md border border-line">
+                <span class="font-semibold text-foreground text-xs uppercase tracking-wider block">
+                  Danh mục áp dụng / loại trừ
+                </span>
 
                 <div class="flex flex-col sm:flex-row gap-2 items-center">
                   <div class="flex-1 w-full">
@@ -381,13 +374,10 @@ function formatIsoToDateInput(isoString?: string): string {
                 }
               </div>
 
-              <div class="space-y-3 p-4 bg-surface-alt rounded-md border border-line">
-                <div class="flex items-center justify-between">
-                  <span class="font-semibold text-foreground text-xs uppercase tracking-wider">
-                    Biến thể SKU áp dụng / loại trừ (Tùy chọn)
-                  </span>
-                  <span class="text-xs text-muted">Không bắt buộc nếu áp dụng cho toàn bộ sản phẩm</span>
-                </div>
+              <div class="space-y-3 p-3 bg-surface-alt rounded-md border border-line">
+                <span class="font-semibold text-foreground text-xs uppercase tracking-wider block">
+                  Biến thể SKU áp dụng / loại trừ
+                </span>
 
                 <div class="flex flex-col sm:flex-row gap-2 items-center">
                   <div class="flex-1 w-full">

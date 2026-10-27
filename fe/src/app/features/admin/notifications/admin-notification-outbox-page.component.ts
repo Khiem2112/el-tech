@@ -27,7 +27,7 @@ type ToastNotification = {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent, AppIconModule, SelectComponent],
   template: `
-    <div class="p-4 lg:p-6 space-y-4 w-full text-[13px] text-foreground">
+    <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold tracking-tight uppercase text-foreground">
@@ -37,15 +37,9 @@ type ToastNotification = {
             Hàng đợi và lịch sử gửi thông báo tự động (In-app, Email, SMS)
           </p>
         </div>
-
-        <div class="flex items-center gap-3">
-          <span class="px-2.5 py-1 rounded text-xs font-bold bg-surface-alt border border-line text-primary uppercase tracking-wider">
-            Hàng đợi thông báo tự động
-          </span>
-        </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 shadow-xs grid grid-cols-1 md:grid-cols-4 gap-3">
+      <div class="bg-surface border border-line rounded p-3 grid grid-cols-1 md:grid-cols-4 gap-3">
           <div>
             <label class="block font-semibold text-muted text-xs uppercase mb-1">
               Mã đơn / Người nhận
@@ -110,7 +104,7 @@ type ToastNotification = {
           </div>
         </div>
 
-        <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
+        <div class="bg-surface border border-line rounded overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left">
               <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">

@@ -4,7 +4,7 @@
 - Governing Spec: [MASTER.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/design-system/el-tech/MASTER.md), [SKILL.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/SKILL.md), [distill.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/.agents/skills/impeccable/reference/distill.md), [admin-portal-screens-and-modals.md](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/docs/admin-portal-screens-and-modals.md) (SCR-22 đến SCR-30, MOD-22 đến MOD-31)
 - Scope: frontend
 - Priority: P2 (Medium)
-- Status: To Do
+- Status: Complete
 
 ## Traceability & Graph Links
 
@@ -75,9 +75,9 @@ Thực hiện tinh gọn giao diện theo nguyên tắc Impeccable Distill cho c
 
 ## Checklist
 
-- [ ] Tinh gọn quản lý khuyến mãi, mã coupon và sheet nhật ký sử dụng.
-- [ ] Tinh gọn trang biểu phí vận chuyển và hộp thoại cấu hình quy tắc.
-- [ ] Tinh gọn trang danh sách/chi tiết khách hàng và hộp thoại hợp nhất tài khoản.
-- [ ] Tinh gọn trang đánh giá sản phẩm và hộp thoại kiểm duyệt.
-- [ ] Tinh gọn trang outbox thông báo và hộp thoại xem chi tiết log.
-- [ ] Chạy kiểm tra `npm run check:fe` với exit code 0.
+- [x] Tinh gọn quản lý khuyến mãi, mã coupon và sheet nhật ký sử dụng.
+- [x] Tinh gọn trang biểu phí vận chuyển và hộp thoại cấu hình quy tắc.
+- [x] Tinh gọn trang danh sách/chi tiết khách hàng và hộp thoại hợp nhất tài khoản.
+- [x] Tinh gọn trang đánh giá sản phẩm và hộp thoại kiểm duyệt.
+- [x] Tinh gọn trang outbox thông báo và hộp thoại xem chi tiết log.
+- [x] Chạy kiểm tra `npm run check:fe` với exit code 0.
