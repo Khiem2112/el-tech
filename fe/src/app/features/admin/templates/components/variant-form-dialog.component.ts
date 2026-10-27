@@ -72,7 +72,7 @@ import {
                       [value]="sku()"
                       (input)="sku.set($any($event.target).value)"
                       placeholder="VD: VGA-RTX5090-O24G-BLACK"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
                     />
                   </div>
 
@@ -85,7 +85,7 @@ import {
                       [value]="barcode()"
                       (input)="barcode.set($any($event.target).value)"
                       placeholder="VD: 4711081992011"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-medium tabular focus:outline-none focus:border-primary text-sm"
                     />
                   </div>
                 </div>
@@ -116,7 +116,7 @@ import {
                       [value]="sellingPrice()"
                       (input)="sellingPrice.set(+$any($event.target).value)"
                       placeholder="59990000"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono font-bold tabular-nums focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
                     />
                   </div>
 

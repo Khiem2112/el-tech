@@ -133,7 +133,7 @@ type ToastNotification = {
                   <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-line text-xs">
+              <tbody class="divide-y divide-line text-sm">
                 @for (brand of visibleBrands(); track brand.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors group">
                     <td class="py-3 px-4 font-semibold text-foreground">
@@ -152,7 +152,7 @@ type ToastNotification = {
                       }
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-xs text-muted whitespace-nowrap">
+                    <td class="py-3 px-4 text-xs text-muted whitespace-nowrap">
                       {{ brand.slug }}
                     </td>
 
@@ -273,7 +273,7 @@ type ToastNotification = {
                                 <div class="p-2.5 rounded bg-surface-alt border border-line flex items-center justify-between">
                                   <div>
                                     <div class="font-semibold text-xs text-foreground">{{ cat.name }}</div>
-                                    <div class="font-mono text-xs text-muted">{{ cat.slug }}</div>
+                                    <div class="text-xs text-muted">{{ cat.slug }}</div>
                                   </div>
                                   <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     Đang phân phối

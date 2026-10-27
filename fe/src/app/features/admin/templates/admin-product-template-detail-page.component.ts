@@ -129,7 +129,7 @@ type ToastNotification = {
                 (error)="onImageError($event)"
               />
             } @else {
-              <span class="text-xs text-muted font-mono">NO IMG</span>
+              <span class="text-xs text-muted">NO IMG</span>
             }
           </div>
 
@@ -140,7 +140,7 @@ type ToastNotification = {
             @if (!isNew() && (modelCode() || chipsetFamily())) {
               <div class="text-xs text-muted mt-0.5 flex items-center gap-2 flex-wrap">
                 @if (modelCode()) {
-                  <span>Model: <strong class="font-mono text-foreground">{{ modelCode() }}</strong></span>
+                  <span>Model: <strong class="text-foreground">{{ modelCode() }}</strong></span>
                 }
                 @if (modelCode() && chipsetFamily()) {
                   <span class="text-muted/60">•</span>
@@ -272,7 +272,7 @@ type ToastNotification = {
                       [value]="slug()"
                       (input)="slug.set($any($event.target).value)"
                       placeholder="asus-rog-strix-geforce-rtx-5090"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
                     />
                   </div>
 
@@ -312,7 +312,7 @@ type ToastNotification = {
                       [value]="modelCode()"
                       (input)="modelCode.set($any($event.target).value)"
                       placeholder="ROG-STRIX-RTX5090"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
                     />
                   </div>
                 </div>
@@ -462,8 +462,8 @@ type ToastNotification = {
             </div>
 
             <div class="overflow-x-auto">
-              <table class="w-full min-w-[1000px] text-left text-xs">
-                <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider">
+              <table class="w-full min-w-[1000px] text-left text-sm">
+                <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                   <tr>
                     <th class="py-3 px-4">Mã SKU</th>
                     <th class="py-3 px-4">Mã Vạch Barcode</th>
@@ -485,16 +485,16 @@ type ToastNotification = {
                   } @else {
                     @for (v of variants(); track v.id) {
                       <tr class="hover:bg-surface-alt/50 transition-colors">
-                        <td class="py-3 px-4 font-mono font-bold text-foreground whitespace-nowrap">
+                        <td class="py-3 px-4 tabular font-bold text-foreground whitespace-nowrap">
                           {{ v.sku }}
                         </td>
-                        <td class="py-3 px-4 font-mono text-muted whitespace-nowrap">
+                        <td class="py-3 px-4 tabular text-muted whitespace-nowrap">
                           {{ v.barcode || '—' }}
                         </td>
                         <td class="py-3 px-4 font-medium text-foreground">
                           {{ v.variationLabel || 'Mặc định' }}
                         </td>
-                        <td class="py-3 px-4 text-right font-bold font-mono tabular tabular-nums text-foreground whitespace-nowrap">
+                        <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
                           {{ formatCurrency(v.sellingPrice) }}
                         </td>
                         <td class="py-3 px-4 text-center whitespace-nowrap">

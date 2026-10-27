@@ -103,7 +103,7 @@ const passwordSchema = z.string().min(1, 'Vui lòng nhập mật khẩu');
 
         <div class="mt-6 pt-4 border-t border-line text-center text-xs text-muted">
           <span>Tài khoản thử nghiệm: </span>
-          <span class="font-mono text-foreground font-medium">admin&#64;eltech.vn</span>
+          <span class="tabular text-foreground font-medium">admin&#64;eltech.vn</span>
         </div>
       </div>
     </div>

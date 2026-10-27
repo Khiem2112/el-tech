@@ -169,7 +169,7 @@ function slugify(text: string): string {
                 type="text"
                 formControlName="slug"
                 placeholder="mainboard-bo-mach-chu"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-xs font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-2 bg-surface-alt border rounded text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('slug')"
               />
               @if (isFieldInvalid('slug')) {

@@ -33,10 +33,10 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
                     <span class="text-destructive ml-0.5" title="Bắt buộc">*</span>
                   }
                   @if (attr.isDeprecated) {
-                    <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-[10px] font-normal">Ngưng dùng</span>
+                    <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs font-normal">Ngưng dùng</span>
                   }
                 </label>
-                <div class="text-[11px] font-mono text-muted/70">{{ attr.key }}</div>
+                <div class="text-xs text-muted/70">{{ attr.key }}</div>
               </div>
 
               <div class="sm:col-span-8">
@@ -48,7 +48,7 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
                       [value]="getSpecValue(attr.key)"
                       (input)="onTextInput(attr.key, $event)"
                       [placeholder]="'Nhập ' + attr.label.toLowerCase() + '...'"
-                      class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground focus:outline-none focus:border-primary text-xs transition-colors"
+                      class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium transition-colors"
                     />
                   }
 
@@ -60,10 +60,10 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
                         [value]="getSpecValue(attr.key)"
                         (input)="onNumberInput(attr.key, $event)"
                         placeholder="0"
-                        class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground font-mono tabular-nums focus:outline-none focus:border-primary text-xs transition-colors"
+                        class="w-full px-3 py-1.5 bg-surface border border-line/70 rounded text-foreground tabular focus:outline-none focus:border-primary text-sm font-medium transition-colors"
                       />
                       @if (attr.unit) {
-                        <span class="absolute right-3 top-1.5 text-xs text-muted pointer-events-none font-mono">
+                        <span class="absolute right-3 top-2 text-xs text-muted pointer-events-none tabular">
                           {{ attr.unit }}
                         </span>
                       }

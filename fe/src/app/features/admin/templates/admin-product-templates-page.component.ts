@@ -175,8 +175,8 @@ type ToastNotification = {
         @if (viewMode() === 'list') {
           <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs border-collapse min-w-[1000px]">
-                <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider">
+              <table class="w-full text-left text-sm border-collapse min-w-[1000px]">
+                <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                   <tr>
                     <th class="py-3 px-4 w-16 text-center whitespace-nowrap">Ảnh</th>
                     <th class="py-3 px-4 whitespace-nowrap">Tên Mẫu Sản Phẩm</th>
@@ -204,7 +204,7 @@ type ToastNotification = {
                               (error)="onImageError($event)"
                             />
                           } @else {
-                            <span class="text-xs text-muted font-mono">NO IMG</span>
+                            <span class="text-xs text-muted">NO IMG</span>
                           }
                         </div>
                       </td>
@@ -215,7 +215,7 @@ type ToastNotification = {
                         >
                           {{ tpl.name }}
                         </a>
-                        <div class="text-xs font-mono text-muted mt-0.5">
+                        <div class="text-xs text-muted mt-0.5">
                           slug: {{ tpl.slug }}
                         </div>
                       </td>
@@ -225,13 +225,13 @@ type ToastNotification = {
                       <td class="py-3 px-4 text-muted whitespace-nowrap">
                         {{ tpl.category.name }}
                       </td>
-                      <td class="py-3 px-4 font-mono text-muted whitespace-nowrap">
+                      <td class="py-3 px-4 text-muted whitespace-nowrap">
                         {{ tpl.model }}
                       </td>
                       <td class="py-3 px-4 text-center tabular-nums font-semibold text-foreground whitespace-nowrap">
                         {{ tpl.variantCount }} SKU
                       </td>
-                      <td class="py-3 px-4 text-right tabular-nums font-bold text-foreground font-mono whitespace-nowrap">
+                      <td class="py-3 px-4 text-right tabular-nums font-bold text-foreground whitespace-nowrap">
                         {{ formatPriceRange(tpl.minSellingPrice, tpl.maxSellingPrice) }}
                       </td>
                       <td class="py-3 px-4 text-right tabular-nums font-semibold whitespace-nowrap" [class.text-emerald-700]="tpl.totalAvailable > 0" [class.text-rose-600]="tpl.totalAvailable <= 0">
@@ -296,7 +296,7 @@ type ToastNotification = {
                       (error)="onImageError($event)"
                     />
                   } @else {
-                    <div class="text-muted font-mono text-xs">NO COVER IMAGE</div>
+                    <div class="text-muted text-xs">NO COVER IMAGE</div>
                   }
                   <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-xs font-bold bg-surface/90 text-foreground border border-line">
                     {{ tpl.brand.name }}
@@ -317,7 +317,7 @@ type ToastNotification = {
                     >
                       {{ tpl.name }}
                     </a>
-                    <div class="text-xs font-bold text-primary-strong mt-1.5 tabular-nums font-mono">
+                    <div class="text-sm font-bold text-primary-strong mt-1.5 tabular-nums">
                       {{ formatPriceRange(tpl.minSellingPrice, tpl.maxSellingPrice) }}
                     </div>
                   </div>

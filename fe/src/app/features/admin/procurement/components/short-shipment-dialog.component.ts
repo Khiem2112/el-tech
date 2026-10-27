@@ -62,7 +62,7 @@ type ShortShipmentLineState = {
 
           <div class="p-4 overflow-y-auto space-y-3 flex-1">
             <div class="space-y-2">
-              <label class="block text-foreground font-semibold uppercase text-[11px] tracking-wider">
+              <label class="block text-foreground font-semibold uppercase text-xs tracking-wider">
                 Số lượng thực nhận từng linh kiện:
               </label>
 
@@ -70,10 +70,10 @@ type ShortShipmentLineState = {
                 @for (line of linesState(); track line.skuId) {
                   <div class="p-3 bg-surface border border-line rounded-lg flex items-center justify-between gap-3">
                     <div class="flex-1 min-w-0">
-                      <div class="font-mono font-bold text-foreground text-xs truncate">{{ line.sku }}</div>
+                      <div class="tabular font-bold text-foreground text-xs truncate">{{ line.sku }}</div>
                       <div class="text-muted text-xs truncate">{{ line.name }}</div>
-                      <div class="text-[11px] text-muted mt-0.5">
-                        Đã đặt: <strong class="text-foreground font-mono tabular-nums">{{ line.orderedQuantity }}</strong> chiếc
+                      <div class="text-xs text-muted mt-0.5">
+                        Đã đặt: <strong class="text-foreground tabular tabular-nums">{{ line.orderedQuantity }}</strong> chiếc
                         @if (line.orderedQuantity > line.actualQuantity) {
                           <span class="text-amber-700 ml-2 font-semibold">
                             (Thiếu: {{ line.orderedQuantity - line.actualQuantity }} chiếc)
@@ -83,14 +83,14 @@ type ShortShipmentLineState = {
                     </div>
 
                     <div class="w-28 flex-shrink-0 text-right">
-                      <label class="block text-[10px] text-muted uppercase mb-1">Thực nhận</label>
+                      <label class="block text-xs text-muted uppercase mb-1">Thực nhận</label>
                       <input
                         type="number"
                         min="0"
                         [max]="line.orderedQuantity"
                         [ngModel]="line.actualQuantity"
                         (ngModelChange)="onActualQuantityChange(line.skuId, $event)"
-                        class="w-full px-2.5 py-1.5 bg-white border border-line rounded text-right font-bold tabular-nums text-foreground text-xs focus:outline-none focus:border-primary"
+                        class="w-full px-2.5 py-1.5 bg-white border border-line rounded text-right font-bold tabular-nums text-foreground text-sm font-medium focus:outline-none focus:border-primary"
                       />
                     </div>
                   </div>
@@ -99,14 +99,14 @@ type ShortShipmentLineState = {
             </div>
 
             <div class="space-y-1">
-              <label class="block text-foreground font-semibold uppercase text-[11px] tracking-wider">
+              <label class="block text-foreground font-semibold uppercase text-xs tracking-wider">
                 Biên bản bàn giao / Lý do thiếu hàng:
               </label>
               <input
                 type="text"
                 [(ngModel)]="memoText"
                 placeholder="Ví dụ: BB-THIEU-NCC hoặc Xe giao thiếu kiện hàng..."
-                class="w-full px-3 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full px-3 py-1.5 bg-white border border-line rounded text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
             </div>
           </div>

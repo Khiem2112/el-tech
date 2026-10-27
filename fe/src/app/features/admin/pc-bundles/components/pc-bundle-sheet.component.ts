@@ -126,7 +126,7 @@ type EditableBomItem = {
                     [ngModel]="slug()"
                     (ngModelChange)="slug.set($event)"
                     placeholder="VD: el-tech-titan-x-9800x3d-rtx5090"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-mono focus:outline-none focus:border-primary text-xs"
+                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
                   />
                 </div>
               </div>
@@ -257,12 +257,12 @@ type EditableBomItem = {
                                 <span class="text-muted text-xs">({{ sku.variationLabel }})</span>
                               }
                             </div>
-                            <div class="text-xs text-muted font-mono mt-0.5 flex items-center gap-3">
-                              <span>SKU: {{ sku.sku }}</span>
+                            <div class="text-xs text-muted mt-0.5 flex items-center gap-3">
+                              <span>SKU: <span class="tabular">{{ sku.sku }}</span></span>
                               <span class="text-primary font-bold tabular-nums">
                                 {{ formatCurrency(parsePrice(sku.sellingPrice)) }}
                               </span>
-                              <span>Tồn khả dụng: {{ sku.totalAvailable }}</span>
+                              <span>Tồn khả dụng: <span class="tabular-nums">{{ sku.totalAvailable }}</span></span>
                             </div>
                           </div>
 
@@ -288,7 +288,7 @@ type EditableBomItem = {
               }
 
               <div class="border border-line rounded-lg overflow-hidden shadow-xs bg-surface">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-sm">
                   <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase text-xs">
                     <tr>
                       <th class="py-2.5 px-3">Ngành Hàng</th>
@@ -314,7 +314,7 @@ type EditableBomItem = {
                           </td>
                           <td class="py-2.5 px-3 min-w-0">
                             <div class="font-medium text-foreground">{{ item.productName }}</div>
-                            <div class="font-mono text-muted text-xs">{{ item.sku }}</div>
+                            <div class="text-muted text-xs tabular">{{ item.sku }}</div>
                           </td>
                           <td class="py-2.5 px-2 text-center">
                             <input
@@ -326,10 +326,10 @@ type EditableBomItem = {
                               class="w-12 px-1 py-1 bg-surface border border-line rounded text-center font-bold tabular-nums text-xs text-foreground focus:outline-none focus:border-primary"
                             />
                           </td>
-                          <td class="py-2.5 px-3 text-right font-mono tabular-nums text-muted whitespace-nowrap">
+                          <td class="py-2.5 px-3 text-right tabular-nums text-muted whitespace-nowrap">
                             {{ formatCurrency(item.sellingPrice) }}
                           </td>
-                          <td class="py-2.5 px-3 text-right font-mono tabular-nums font-bold text-foreground whitespace-nowrap">
+                          <td class="py-2.5 px-3 text-right tabular-nums font-bold text-foreground whitespace-nowrap">
                             {{ formatCurrency(item.lineTotal) }}
                           </td>
                           <td class="py-2.5 px-3 text-center">
@@ -362,7 +362,7 @@ type EditableBomItem = {
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
                 <div class="p-3 bg-surface-alt/70 rounded border border-line space-y-1">
                   <span class="block text-muted text-xs uppercase font-semibold">Tổng Linh Kiện Lẻ</span>
-                  <div class="text-base font-bold font-mono text-foreground tabular-nums">
+                  <div class="text-base font-bold text-foreground tabular-nums">
                     {{ formatCurrency(grossTotal()) }}
                   </div>
                 </div>
@@ -378,13 +378,13 @@ type EditableBomItem = {
                     min="0"
                     [ngModel]="discount()"
                     (ngModelChange)="onDiscountChange($event)"
-                    class="w-full px-2 py-1 bg-surface border border-line rounded font-bold font-mono text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
+                    class="w-full px-2 py-1 bg-surface border border-line rounded font-bold text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
                   />
                 </div>
 
                 <div class="p-3 bg-primary/10 rounded border border-primary/30 space-y-1">
                   <span class="block text-xs uppercase font-bold text-primary">Giá Bán Trọn Bộ</span>
-                  <div class="text-base font-bold font-mono text-primary tabular-nums">
+                  <div class="text-base font-bold text-primary tabular-nums">
                     {{ formatCurrency(finalPrice()) }}
                   </div>
                 </div>
@@ -394,11 +394,11 @@ type EditableBomItem = {
 
           <div class="h-14 px-6 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div class="text-muted text-xs truncate max-w-sm">
-              <span>Tổng linh kiện: <strong class="text-foreground font-mono">{{ formatCurrency(grossTotal()) }}</strong></span>
+              <span>Tổng linh kiện: <strong class="text-foreground tabular">{{ formatCurrency(grossTotal()) }}</strong></span>
               @if (discount() > 0) {
-                <span class="ml-2 text-destructive font-mono">| Giảm: -{{ formatCurrency(discount()) }}</span>
+                <span class="ml-2 text-destructive tabular">| Giảm: -{{ formatCurrency(discount()) }}</span>
               }
-              <span class="ml-2">| Giá bán: <strong class="text-primary font-mono">{{ formatCurrency(finalPrice()) }}</strong></span>
+              <span class="ml-2">| Giá bán: <strong class="text-primary tabular">{{ formatCurrency(finalPrice()) }}</strong></span>
             </div>
 
             <div class="flex items-center gap-2">

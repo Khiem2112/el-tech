@@ -111,7 +111,7 @@ type EditableAttribute = SpecAttribute & {
                       <span class="font-bold text-foreground text-sm">
                         {{ attr.label || 'Chưa đặt tên nhãn' }}
                       </span>
-                      <span class="px-2 py-0.5 rounded font-mono text-xs bg-surface border border-line text-muted">
+                      <span class="px-2 py-0.5 rounded text-xs bg-surface border border-line text-muted">
                         {{ attr.key || 'key-chua-dat' }}
                       </span>
                       @if (isAttributeLocked(attr)) {
@@ -151,7 +151,7 @@ type EditableAttribute = SpecAttribute & {
                         [(ngModel)]="attr.key"
                         [disabled]="isAttributeLocked(attr)"
                         placeholder="vram_capacity"
-                        class="w-full px-2.5 py-1.5 bg-surface border border-line rounded font-mono text-foreground placeholder:text-muted disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:border-primary text-xs"
+                        class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-sm font-medium text-foreground placeholder:text-muted disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:border-primary"
                       />
                     </div>
 

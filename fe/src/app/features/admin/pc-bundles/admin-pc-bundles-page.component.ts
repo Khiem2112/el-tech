@@ -207,7 +207,7 @@ type ToastNotification = {
         @if (currentView() === 'list') {
           <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
-              <table class="w-full min-w-[1000px] text-left text-xs">
+              <table class="w-full min-w-[1000px] text-left text-sm">
                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                   <tr>
                     <th class="py-3 px-4 w-14 text-center">Ảnh</th>
@@ -252,7 +252,7 @@ type ToastNotification = {
                         }
                       </td>
 
-                      <td class="py-3 px-4 font-mono text-muted text-xs whitespace-nowrap">
+                      <td class="py-3 px-4 text-muted text-xs whitespace-nowrap">
                         {{ bundle.slug }}
                       </td>
 
@@ -282,15 +282,15 @@ type ToastNotification = {
                         </div>
                       </td>
 
-                      <td class="py-3 px-4 text-right tabular tabular-nums text-muted font-mono whitespace-nowrap">
+                      <td class="py-3 px-4 text-right tabular tabular-nums text-muted whitespace-nowrap">
                         {{ formatCurrency(bundle.grossTotal) }}
                       </td>
 
-                      <td class="py-3 px-4 text-right tabular tabular-nums font-semibold font-mono whitespace-nowrap text-destructive">
+                      <td class="py-3 px-4 text-right tabular tabular-nums font-semibold whitespace-nowrap text-destructive">
                         {{ bundle.discountAmount > 0 ? ('- ' + formatCurrency(bundle.discountAmount)) : '0 đ' }}
                       </td>
 
-                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums font-mono text-foreground whitespace-nowrap">
+                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
                         {{ formatCurrency(bundle.finalPrice) }}
                       </td>
 
@@ -415,14 +415,14 @@ type ToastNotification = {
                       </p>
 
                       <div class="mt-3 flex items-baseline gap-2 flex-wrap">
-                        <span class="text-base font-bold text-foreground font-mono tabular tabular-nums">
+                        <span class="text-base font-bold text-foreground tabular tabular-nums">
                           {{ formatCurrency(bundle.finalPrice) }}
                         </span>
                         @if (bundle.discountAmount > 0) {
-                          <span class="text-xs text-muted line-through font-mono tabular tabular-nums">
+                          <span class="text-xs text-muted line-through tabular tabular-nums">
                             {{ formatCurrency(bundle.grossTotal) }}
                           </span>
-                          <span class="text-xs font-bold text-destructive bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded font-mono tabular">
+                          <span class="text-xs font-bold text-destructive bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded tabular">
                             -{{ formatCurrency(bundle.discountAmount) }}
                           </span>
                         }
@@ -450,7 +450,7 @@ type ToastNotification = {
                 </div>
 
                 <div class="p-4 pt-0 border-t border-line mt-2 pt-3 flex items-center justify-between">
-                  <span class="text-xs font-mono text-muted truncate max-w-[140px]">
+                  <span class="text-xs text-muted truncate max-w-[140px]">
                     {{ bundle.slug }}
                   </span>
 

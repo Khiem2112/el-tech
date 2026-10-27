@@ -107,8 +107,8 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider">
+        <table class="w-full text-left text-sm">
+          <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
             <tr>
               <th class="py-2.5 px-3">Chi nhánh</th>
               <th class="py-2.5 px-3 text-center">Đã xác nhận</th>
@@ -130,7 +130,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               >
                 <td class="py-2.5 px-3 font-medium text-foreground">
                   <div>{{ branch.branchCode }}: {{ branch.branchName }}</div>
-                  <div class="text-[11px] text-muted font-normal">
+                  <div class="text-xs text-muted font-normal">
                     {{ getPriorityRegion(branch.branchCode, branch.branchName) }}
                   </div>
                 </td>

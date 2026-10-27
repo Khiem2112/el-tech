@@ -65,7 +65,7 @@ import {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground font-mono tabular-nums">{{ visibleReturns().length }}</strong> phiếu xuất trả
+          Tổng số: <strong class="text-foreground tabular tabular-nums">{{ visibleReturns().length }}</strong> phiếu xuất trả
         </div>
       </div>
 
@@ -105,8 +105,8 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-2.5 px-4">Mã Phiếu</th>
                   <th class="py-2.5 px-4">Nhà Cung Cấp</th>
@@ -121,29 +121,29 @@ import {
               <tbody class="divide-y divide-line">
                 @for (item of visibleReturns(); track item.id) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
-                    <td class="py-2.5 px-4 font-mono font-bold text-foreground">
+                    <td class="py-2.5 px-4 tabular font-bold text-foreground">
                       {{ item.code }}
                       @if (item.reason) {
-                        <div class="text-[11px] font-sans font-normal text-muted line-clamp-1 max-w-xs">
+                        <div class="text-xs font-normal text-muted line-clamp-1 max-w-xs">
                           {{ item.reason }}
                         </div>
                       }
                     </td>
                     <td class="py-2.5 px-4">
                       <div class="font-bold text-foreground">{{ item.supplierName ?? 'N/A' }}</div>
-                      <div class="text-muted text-[11px] font-mono">{{ item.supplierCode ?? 'N/A' }}</div>
+                      <div class="text-muted text-xs tabular">{{ item.supplierCode ?? 'N/A' }}</div>
                     </td>
-                    <td class="py-2.5 px-4 font-mono">
+                    <td class="py-2.5 px-4 tabular">
                       <div class="text-primary font-bold">{{ item.purchaseOrderCode ?? 'N/A' }}</div>
-                      <div class="text-muted text-[11px]">{{ item.inboundMoveCode ?? 'N/A' }}</div>
+                      <div class="text-muted text-xs">{{ item.inboundMoveCode ?? 'N/A' }}</div>
                     </td>
                     <td class="py-2.5 px-4">
                       <div class="text-foreground">{{ item.sourceBranchName ?? 'N/A' }}</div>
-                      <div class="text-muted text-[11px] font-mono">{{ item.sourceBranchCode ?? 'N/A' }}</div>
+                      <div class="text-muted text-xs tabular">{{ item.sourceBranchCode ?? 'N/A' }}</div>
                     </td>
                     <td class="py-2.5 px-4 text-center tabular-nums text-foreground font-bold">
                       {{ item.totalQuantity }} chiếc
-                      <div class="text-[10px] font-normal text-muted">
+                      <div class="text-xs font-normal text-muted">
                         {{ formatReturnSources(item.returnSources) }}
                       </div>
                     </td>
@@ -196,7 +196,7 @@ import {
                   Chi Tiết Phiếu Xuất Trả #{{ selectedDetail()!.code }}
                 </h3>
                 <p class="text-xs text-muted mt-0.5">
-                  Ngày xuất: <span class="tabular-nums font-mono">{{ formatDate(selectedDetail()!.validatedAt || selectedDetail()!.createdAt) }}</span>
+                  Ngày xuất: <span class="tabular-nums">{{ formatDate(selectedDetail()!.validatedAt || selectedDetail()!.createdAt) }}</span>
                 </p>
               </div>
               <button
@@ -213,30 +213,30 @@ import {
             <div class="p-4 overflow-y-auto space-y-3 flex-1">
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-surface border border-line rounded-lg text-xs">
                 <div>
-                  <span class="text-muted block text-[10px] uppercase font-semibold">Nhà Cung Cấp</span>
+                  <span class="text-muted block text-xs uppercase font-semibold">Nhà Cung Cấp</span>
                   <strong class="text-foreground block truncate">
                     {{ selectedDetail()!.reversalOfMove?.purchaseOrder?.supplier?.name ?? 'N/A' }}
                   </strong>
-                  <span class="text-muted font-mono text-[11px] block">
+                  <span class="text-muted tabular text-xs block">
                     {{ selectedDetail()!.reversalOfMove?.purchaseOrder?.supplier?.code ?? '' }}
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted block text-[10px] uppercase font-semibold">Kho Xuất Trả</span>
+                  <span class="text-muted block text-xs uppercase font-semibold">Kho Xuất Trả</span>
                   <strong class="text-foreground block truncate">{{ selectedDetail()!.sourceBranch?.name ?? 'N/A' }}</strong>
-                  <span class="text-muted font-mono text-[11px] block">
+                  <span class="text-muted tabular text-xs block">
                     {{ selectedDetail()!.sourceBranch?.code ?? '' }}
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted block text-[10px] uppercase font-semibold">Đơn PO Gốc</span>
-                  <span class="font-mono text-primary font-bold block">
+                  <span class="text-muted block text-xs uppercase font-semibold">Đơn PO Gốc</span>
+                  <span class="tabular text-primary font-bold block">
                     {{ selectedDetail()!.reversalOfMove?.purchaseOrder?.code ?? 'N/A' }}
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted block text-[10px] uppercase font-semibold">Phiếu Nhập Gốc</span>
-                  <span class="font-mono text-foreground font-bold block">
+                  <span class="text-muted block text-xs uppercase font-semibold">Phiếu Nhập Gốc</span>
+                  <span class="tabular text-foreground font-bold block">
                     {{ selectedDetail()!.reversalOfMove?.code ?? 'N/A' }}
                   </span>
                 </div>
@@ -244,16 +244,16 @@ import {
 
               @if (selectedDetail()!.reason) {
                 <div class="p-2.5 bg-surface border border-line rounded-lg text-xs space-y-0.5">
-                  <span class="text-muted font-semibold block uppercase text-[10px]">Lý Do Xuất Trả</span>
+                  <span class="text-muted font-semibold block uppercase text-xs">Lý Do Xuất Trả</span>
                   <p class="text-foreground">{{ selectedDetail()!.reason }}</p>
                 </div>
               }
 
               <div class="space-y-1.5">
-                <span class="text-muted font-semibold uppercase text-[11px] tracking-wider">Danh Sách Dòng Hàng Xuất Trả</span>
+                <span class="text-muted font-semibold uppercase text-xs tracking-wider">Danh Sách Dòng Hàng Xuất Trả</span>
                 <div class="border border-line rounded-lg overflow-hidden">
-                  <table class="w-full text-left border-collapse text-xs">
-                    <thead class="bg-surface-alt/70 border-b border-line text-muted uppercase text-[10px]">
+                  <table class="w-full text-left border-collapse text-sm">
+                    <thead class="bg-surface-alt/70 border-b border-line text-muted uppercase text-xs">
                       <tr>
                         <th class="py-2 px-3">Linh Kiện SKU</th>
                         <th class="py-2 px-3 text-center">Số Lượng</th>
@@ -265,8 +265,8 @@ import {
                       @for (line of selectedDetail()!.lines; track line.id) {
                         <tr>
                           <td class="py-2 px-3">
-                            <div class="font-bold text-foreground font-mono">{{ line.sku.sku }}</div>
-                            <div class="text-[11px] text-muted">
+                            <div class="font-bold text-foreground tabular">{{ line.sku.sku }}</div>
+                            <div class="text-xs text-muted">
                               {{ line.sku.productTemplate?.name }}
                               @if (line.sku.variationLabel) {
                                 ({{ line.sku.variationLabel }})
@@ -280,13 +280,13 @@ import {
                             @if (line.serialMovements && line.serialMovements.length > 0) {
                               <div class="flex flex-wrap gap-1">
                                 @for (sm of line.serialMovements; track sm.id) {
-                                  <span class="px-1.5 py-0.5 rounded bg-surface border border-line font-mono text-[10px] text-primary tabular-nums font-medium">
+                                  <span class="px-1.5 py-0.5 rounded bg-surface border border-line text-xs text-primary tabular-nums font-medium">
                                     {{ sm.serialUnit.serialNumber }}
                                   </span>
                                 }
                               </div>
                             } @else {
-                              <span class="text-muted text-[11px]">Không yêu cầu serial</span>
+                              <span class="text-muted text-xs">Không yêu cầu serial</span>
                             }
                           </td>
                           <td class="py-2 px-3 text-right tabular-nums text-[11px]">

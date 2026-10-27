@@ -130,7 +130,7 @@ function slugify(text: string): string {
                   formControlName="slug"
                   (input)="onSlugManualInput()"
                   placeholder="corsair"
-                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm font-mono text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   [class.border-rose-500]="isFieldInvalid('slug')"
                 />
               </div>

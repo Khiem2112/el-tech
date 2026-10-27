@@ -29,8 +29,8 @@ import { InTransitTransferItem } from '../services/admin-dashboard.service';
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-2.5 px-3">Mã phiếu</th>
                 <th class="py-2.5 px-3">Tuyến điều chuyển</th>
@@ -42,14 +42,14 @@ import { InTransitTransferItem } from '../services/admin-dashboard.service';
             <tbody class="divide-y divide-line">
               @if (transfers().length === 0) {
                 <tr>
-                  <td colspan="5" class="py-8 text-center text-muted text-xs">
+                  <td colspan="5" class="py-8 text-center text-muted text-sm">
                     Không có phiếu điều chuyển nào đang trên đường vận chuyển
                   </td>
                 </tr>
               } @else {
                 @for (item of transfers(); track item.id) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
-                    <td class="py-2.5 px-3 font-mono font-semibold text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 tabular font-semibold text-foreground whitespace-nowrap">
                       {{ item.code }}
                     </td>
                     <td class="py-2.5 px-3 text-muted whitespace-nowrap">
@@ -57,10 +57,10 @@ import { InTransitTransferItem } from '../services/admin-dashboard.service';
                       <span class="mx-1 text-muted">&rarr;</span>
                       <span class="font-medium text-foreground">{{ item.destinationBranchCode }}</span>
                     </td>
-                    <td class="py-2.5 px-3 tabular-nums font-medium whitespace-nowrap text-foreground text-right">
-                      {{ item.totalQuantity }} <span class="text-muted text-[11px] font-normal">({{ item.skuCount }} SKU)</span>
+                    <td class="py-2.5 px-3 tabular font-medium whitespace-nowrap text-foreground text-right">
+                      {{ item.totalQuantity }} <span class="text-muted text-xs font-normal">({{ item.skuCount }} SKU)</span>
                     </td>
-                    <td class="py-2.5 px-3 text-muted tabular-nums whitespace-nowrap">
+                    <td class="py-2.5 px-3 text-muted tabular whitespace-nowrap">
                       {{ formatDispatchedTime(item.dispatchedAt) }}
                     </td>
                     <td class="py-2.5 px-3 text-right whitespace-nowrap">

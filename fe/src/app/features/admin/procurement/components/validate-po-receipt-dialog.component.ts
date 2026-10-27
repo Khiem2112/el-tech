@@ -72,9 +72,9 @@ type ReceiptLineState = {
                   <div class="flex items-center justify-between flex-wrap gap-2">
                     <div>
                       <div class="flex items-center gap-2">
-                        <span class="font-mono font-bold text-foreground text-xs">{{ line.sku }}</span>
+                        <span class="tabular font-bold text-foreground text-xs">{{ line.sku }}</span>
                         @if (line.serialRequired) {
-                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold">
+                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
                             Cần Serial
                           </span>
                         }
@@ -82,19 +82,19 @@ type ReceiptLineState = {
                       <div class="text-muted text-xs mt-0.5">{{ line.name }}</div>
                     </div>
                     <div class="text-right">
-                      <div class="text-[11px] text-muted">Số lượng cần nhập:</div>
+                      <div class="text-xs text-muted">Số lượng cần nhập:</div>
                       <div class="text-foreground font-bold text-xs tabular-nums">{{ line.expectedQuantity }} chiếc</div>
                     </div>
                   </div>
 
                   @if (line.serialRequired) {
                     <div class="space-y-1.5 pt-2 border-t border-line">
-                      <div class="flex items-center justify-between text-[11px]">
+                      <div class="flex items-center justify-between text-xs">
                         <label class="text-muted font-medium">
                           Quét hoặc dán danh sách số sê-ri:
                         </label>
                         <span
-                          class="font-mono text-xs font-bold tabular-nums"
+                          class="tabular text-xs font-bold tabular-nums"
                           [class.text-emerald-700]="line.parsedSerials.length === line.expectedQuantity && line.duplicateSerials.length === 0"
                           [class.text-amber-700]="line.parsedSerials.length !== line.expectedQuantity || line.duplicateSerials.length > 0"
                         >
@@ -107,21 +107,21 @@ type ReceiptLineState = {
                         [ngModel]="line.serialText"
                         (ngModelChange)="onSerialTextChange(line.skuId, $event)"
                         placeholder="Nhập hoặc quét mã vạch (phân tách bởi dấu phẩy, khoảng trắng hoặc xuống dòng)..."
-                        class="w-full px-2.5 py-1.5 bg-white border rounded font-mono text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                        class="w-full px-2.5 py-1.5 bg-white border rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                         [class.border-line]="line.duplicateSerials.length === 0 && line.parsedSerials.length === line.expectedQuantity"
                         [class.border-amber-500]="line.parsedSerials.length !== line.expectedQuantity || line.duplicateSerials.length > 0"
                       ></textarea>
 
                       @if (line.duplicateSerials.length > 0) {
-                        <p class="text-rose-600 text-[11px] font-semibold">
+                        <p class="text-rose-600 text-xs font-semibold">
                           Trùng lặp: {{ line.duplicateSerials.join(', ') }}
                         </p>
                       } @else if (line.parsedSerials.length > line.expectedQuantity) {
-                        <p class="text-amber-700 text-[11px]">
+                        <p class="text-amber-700 text-xs">
                           Vượt quá số lượng: {{ line.parsedSerials.length }} / {{ line.expectedQuantity }}
                         </p>
                       } @else if (line.parsedSerials.length < line.expectedQuantity) {
-                        <p class="text-muted text-[11px]">
+                        <p class="text-muted text-xs">
                           Còn thiếu {{ line.expectedQuantity - line.parsedSerials.length }} mã sê-ri.
                         </p>
                       }

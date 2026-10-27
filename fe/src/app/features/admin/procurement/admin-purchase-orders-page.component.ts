@@ -82,7 +82,7 @@ import {
         </div>
 
         <div class="text-xs text-muted text-right whitespace-nowrap">
-          Tổng số: <strong class="text-foreground font-mono tabular-nums">{{ visibleOrders().length }}</strong> đơn mua hàng
+          Tổng số: <strong class="text-foreground tabular tabular-nums">{{ visibleOrders().length }}</strong> đơn mua hàng
         </div>
       </div>
 
@@ -113,8 +113,8 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[950px] border-collapse text-xs">
-              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left min-w-[950px] border-collapse text-sm">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-2.5 px-4 whitespace-nowrap">Mã PO</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
@@ -126,10 +126,10 @@ import {
                   <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-line text-xs text-foreground">
+              <tbody class="divide-y divide-line text-sm text-foreground">
                 @for (po of visibleOrders(); track po.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors">
-                    <td class="py-2.5 px-4 font-mono font-bold whitespace-nowrap">
+                    <td class="py-2.5 px-4 tabular font-bold whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/procurement/purchase-orders', po.id]"
                         class="text-primary-strong hover:underline inline-flex items-center gap-1.5"
@@ -137,28 +137,28 @@ import {
                         {{ po.code }}
                       </a>
                       @if (po.supersedesCode) {
-                        <div class="text-[10px] text-warning font-mono mt-0.5 whitespace-nowrap">
+                        <div class="text-xs text-warning tabular mt-0.5 whitespace-nowrap">
                           Thay thế: {{ po.supersedesCode }}
                         </div>
                       }
                       @if (po.supersededByCode) {
-                        <div class="text-[10px] text-danger font-mono mt-0.5 whitespace-nowrap">
+                        <div class="text-xs text-danger tabular mt-0.5 whitespace-nowrap">
                           Bị thay thế: {{ po.supersededByCode }}
                         </div>
                       }
                     </td>
                     <td class="py-2.5 px-4 whitespace-nowrap">
                       <div class="font-bold text-foreground">{{ po.supplierName }}</div>
-                      <div class="text-muted text-[11px] font-mono">{{ po.supplierCode }}</div>
+                      <div class="text-muted text-xs tabular">{{ po.supplierCode }}</div>
                     </td>
                     <td class="py-2.5 px-4 whitespace-nowrap">
                       <div class="font-medium text-foreground">{{ po.receivingBranchName }}</div>
-                      <div class="text-muted text-[11px] font-mono">{{ po.receivingBranchCode }}</div>
+                      <div class="text-muted text-xs tabular">{{ po.receivingBranchCode }}</div>
                     </td>
                     <td class="py-2.5 px-4 text-center tabular-nums text-foreground whitespace-nowrap">
                       {{ po.lineCount }} dòng ({{ po.totalQuantity }} chiếc)
                     </td>
-                    <td class="py-2.5 px-4 text-right font-black tabular-nums text-foreground font-mono whitespace-nowrap">
+                    <td class="py-2.5 px-4 text-right font-black tabular-nums text-foreground whitespace-nowrap">
                       {{ formatCurrency(po.totalAmount) }} ₫
                     </td>
                     <td class="py-2.5 px-4 text-muted tabular-nums text-xs whitespace-nowrap">

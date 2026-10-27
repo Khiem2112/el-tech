@@ -61,7 +61,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
             [ngModel]="searchQuery()"
             (ngModelChange)="onSearchChange($event)"
             placeholder="Tìm nhanh chức năng, danh mục..."
-            class="w-full px-3 py-1.5 bg-canvas border border-line rounded text-[13px] text-foreground placeholder:text-muted focus:border-primary focus:outline-none transition-colors"
+            class="w-full px-3 py-1.5 bg-canvas border border-line rounded text-sm font-medium text-foreground placeholder:text-muted focus:border-primary focus:outline-none transition-colors"
           />
           @if (searchQuery()) {
             <button
@@ -93,7 +93,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         }
       </div>
 
-      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1.5 text-[13px]">
+      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1.5 text-sm font-medium">
         @for (group of displayedGroups(); track group.id) {
           <div>
             <button
@@ -117,7 +117,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
                     [routerLink]="item.fullPath"
                     routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
                     (click)="onItemClick()"
-                    class="block px-2.5 py-1.5 rounded text-muted hover:bg-surface-alt hover:text-foreground text-[13px] transition-colors truncate"
+                    class="block px-2.5 py-1.5 rounded text-muted hover:bg-surface-alt hover:text-foreground text-sm transition-colors truncate"
                   >
                     {{ item.title }}
                   </a>
@@ -141,7 +141,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
             <div class="text-foreground font-semibold text-sm leading-tight truncate">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
-            <div class="text-xs text-muted leading-tight font-mono truncate">
+            <div class="text-xs text-muted leading-tight tabular truncate">
               {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
             </div>
           </div>

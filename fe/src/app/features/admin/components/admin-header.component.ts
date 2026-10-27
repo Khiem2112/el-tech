@@ -43,7 +43,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
             <div class="text-foreground font-semibold text-sm leading-tight">
               {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
             </div>
-            <div class="text-xs text-muted leading-tight font-mono">
+            <div class="text-xs text-muted leading-tight tabular">
               {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
             </div>
           </div>
@@ -52,7 +52,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
         <button
           type="button"
           (click)="onLogout()"
-          class="px-2.5 py-1.5 rounded-md text-[13px] text-muted hover:text-rose-600 hover:bg-rose-500/10 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
+          class="px-2.5 py-1.5 rounded-md text-sm text-muted hover:text-rose-600 hover:bg-rose-500/10 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
           title="Đăng xuất khỏi hệ thống"
           aria-label="Đăng xuất khỏi hệ thống"
         >

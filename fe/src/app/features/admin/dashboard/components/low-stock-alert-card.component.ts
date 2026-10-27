@@ -29,8 +29,8 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-2.5 px-3">Mã SKU</th>
                 <th class="py-2.5 px-3">Linh kiện &amp; Chi nhánh</th>
@@ -48,34 +48,34 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
               } @else {
                 @for (item of alerts(); track item.quantId) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
-                    <td class="py-2.5 px-3 font-mono font-semibold text-foreground whitespace-nowrap">
+                    <td class="py-2.5 px-3 tabular font-semibold text-foreground whitespace-nowrap">
                       {{ item.sku }}
                     </td>
                     <td class="py-2.5 px-3">
                       <div class="font-medium text-foreground line-clamp-1">{{ item.productName }}</div>
-                      <div class="text-[11px] text-muted flex items-center gap-1.5 mt-0.5">
+                      <div class="text-xs text-muted flex items-center gap-1.5 mt-0.5">
                         <span>{{ item.branchCode }}</span>
                         @if (item.variationLabel) {
                           <span>&bull;</span>
-                          <span class="font-mono">{{ item.variationLabel }}</span>
+                          <span class="tabular">{{ item.variationLabel }}</span>
                         }
                       </div>
                     </td>
                     <td class="py-2.5 px-3 text-right tabular-nums whitespace-nowrap">
                       <span
-                        class="font-bold"
+                        class="font-bold tabular"
                         [class.text-rose-600]="item.available <= 0"
                         [class.text-amber-600]="item.available > 0 && item.available <= 5"
                         [class.text-foreground]="item.available > 5"
                       >
                         {{ item.available }}
                       </span>
-                      <span class="text-[11px] text-muted ml-1 font-normal">/ {{ item.onHand }}</span>
+                      <span class="text-xs text-muted ml-1 font-normal tabular">/ {{ item.onHand }}</span>
                     </td>
                     <td class="py-2.5 px-3 text-right whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/procurement/purchase-orders/new']"
-                        class="px-2 py-1 text-xs font-medium rounded bg-surface border border-line hover:border-primary/50 text-foreground transition-colors"
+                        class="px-2.5 py-1 text-xs font-semibold rounded bg-surface border border-line hover:border-primary/50 text-foreground transition-colors"
                       >
                         Lập PO
                       </a>

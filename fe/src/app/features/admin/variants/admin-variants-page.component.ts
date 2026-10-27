@@ -100,7 +100,7 @@ type ToastNotification = {
                 (input)="onSearchInput($event)"
                 (keydown.enter)="onSearchSubmit()"
                 placeholder="Quét mã vạch hoặc nhập SKU..."
-                class="w-full px-3 py-1.5 pl-8 bg-surface border border-line rounded text-xs text-foreground font-mono focus:outline-none focus:border-primary transition-colors"
+                class="w-full px-3 py-1.5 pl-8 bg-surface border border-line rounded text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
                 autocomplete="off"
               />
               <svg
@@ -237,16 +237,16 @@ type ToastNotification = {
                             (error)="onImageError($event)"
                           />
                         } @else {
-                          <span class="text-xs font-mono text-muted uppercase">NO IMG</span>
+                          <span class="text-xs text-muted uppercase">NO IMG</span>
                         }
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono font-bold text-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                    <td class="py-3 px-4 tabular font-bold text-foreground group-hover:text-primary transition-colors whitespace-nowrap">
                       {{ item.sku }}
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-muted text-xs whitespace-nowrap">
+                    <td class="py-3 px-4 tabular text-muted text-xs whitespace-nowrap">
                       {{ item.barcode || 'Chưa thiết lập' }}
                     </td>
 
@@ -254,7 +254,7 @@ type ToastNotification = {
                       <div class="font-semibold text-foreground">
                         {{ item.productTemplate.name }}
                       </div>
-                      <div class="text-xs text-muted font-mono">
+                      <div class="text-xs text-muted">
                         {{ item.productTemplate.brand.name }} | Model: {{ item.productTemplate.model }}
                       </div>
                     </td>
@@ -263,7 +263,7 @@ type ToastNotification = {
                       {{ item.variationLabel || 'Biến thể mặc định' }}
                     </td>
 
-                    <td class="py-3 px-4 text-right font-bold font-mono tabular tabular-nums text-foreground whitespace-nowrap">
+                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
                       {{ formatPrice(item.sellingPrice) }}
                     </td>
 
@@ -295,7 +295,7 @@ type ToastNotification = {
                           </span>
                         }
                       </div>
-                      <div class="text-xs text-muted font-mono mt-0.5 tabular-nums">
+                      <div class="text-xs text-muted mt-0.5 tabular-nums">
                         Thực tế: {{ item.totalOnHand }} | Giữ chỗ: {{ item.totalReserved }} | Lỗi: {{ item.totalQuarantineDamaged }}
                       </div>
                     </td>
@@ -371,7 +371,7 @@ type ToastNotification = {
                 Trang Trước
               </button>
 
-              <span class="px-2 font-mono text-foreground">
+              <span class="px-2 tabular-nums text-foreground">
                 Trang {{ page() }} / {{ totalPages() }}
               </span>
 
@@ -398,10 +398,10 @@ type ToastNotification = {
             <div class="h-16 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
               <div>
                 <h3 class="font-bold text-foreground text-base">Phân Bổ Tồn Kho Theo Chi Nhánh</h3>
-                <p class="text-xs text-muted font-mono">
-                  SKU: <strong class="text-primary">{{ variant.sku }}</strong>
+                <p class="text-xs text-muted">
+                  SKU: <strong class="text-primary tabular">{{ variant.sku }}</strong>
                   @if (variant.barcode) {
-                    | Barcode: {{ variant.barcode }}
+                    | Barcode: <span class="tabular">{{ variant.barcode }}</span>
                   }
                 </p>
               </div>

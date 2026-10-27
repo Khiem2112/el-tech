@@ -88,7 +88,7 @@ type ToastNotification = {
         </div>
 
         <div class="text-xs text-muted text-right whitespace-nowrap">
-          Tổng số: <strong class="text-foreground font-mono tabular-nums">{{ visibleSuppliers().length }}</strong> đối tác
+          Tổng số: <strong class="text-foreground tabular tabular-nums">{{ visibleSuppliers().length }}</strong> đối tác
         </div>
       </div>
 
@@ -119,8 +119,8 @@ type ToastNotification = {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[900px] border-collapse text-xs">
-              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left min-w-[900px] border-collapse text-sm">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Thông Tin Liên Hệ</th>
@@ -130,7 +130,7 @@ type ToastNotification = {
                   <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-line text-xs text-foreground">
+              <tbody class="divide-y divide-line text-sm text-foreground">
                 @for (supplier of visibleSuppliers(); track supplier.id) {
                   <tr class="hover:bg-surface-alt/70 transition-colors group">
                     <td class="py-2.5 px-4 whitespace-nowrap">
@@ -141,8 +141,8 @@ type ToastNotification = {
                           [class.bg-muted]="!supplier.isActive"
                         ></span>
                         <div>
-                          <div class="font-bold text-foreground text-xs">{{ supplier.name }}</div>
-                          <div class="font-mono text-[11px] text-muted">{{ supplier.code }}</div>
+                          <div class="font-bold text-foreground text-sm">{{ supplier.name }}</div>
+                          <div class="tabular text-xs text-muted">{{ supplier.code }}</div>
                         </div>
                       </div>
                     </td>
@@ -151,9 +151,9 @@ type ToastNotification = {
                       @if (supplier.contactName) {
                         <div class="font-medium text-foreground">{{ supplier.contactName }}</div>
                       }
-                      <div class="flex items-center gap-2 text-[11px] text-muted">
+                      <div class="flex items-center gap-2 text-xs text-muted">
                         @if (supplier.phone) {
-                          <span class="font-mono">{{ supplier.phone }}</span>
+                          <span class="tabular">{{ supplier.phone }}</span>
                         }
                         @if (supplier.phone && supplier.email) {
                           <span>&bull;</span>
@@ -178,8 +178,8 @@ type ToastNotification = {
                     </td>
 
                     <td class="py-2.5 px-4 text-center tabular-nums whitespace-nowrap">
-                      <strong class="text-foreground font-mono">{{ supplier.purchaseOrderCount }}</strong>
-                      <span class="text-[11px] text-muted ml-1">đơn</span>
+                      <strong class="text-foreground tabular">{{ supplier.purchaseOrderCount }}</strong>
+                      <span class="text-xs text-muted ml-1">đơn</span>
                     </td>
 
                     <td class="py-2.5 px-4 text-center whitespace-nowrap">

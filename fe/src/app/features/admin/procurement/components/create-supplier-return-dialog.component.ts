@@ -98,7 +98,7 @@ import {
                       type="text"
                       readonly
                       [value]="currentReceipt()!.inboundMoveCode"
-                      class="w-full px-2.5 py-1.5 bg-surface border border-line rounded font-mono font-bold text-foreground text-xs"
+                      class="w-full px-2.5 py-1.5 bg-surface border border-line rounded tabular font-bold text-foreground text-sm font-medium"
                     />
                   </div>
                   <div>
@@ -136,7 +136,7 @@ import {
                       <span class="text-muted">Linh kiện:</span>
                       <strong class="text-foreground truncate max-w-xs">{{ currentSku()!.skuCode }} - {{ currentSku()!.skuName }}</strong>
                     </div>
-                    <div class="grid grid-cols-3 gap-2 pt-1 border-t border-line text-[11px]">
+                    <div class="grid grid-cols-3 gap-2 pt-1 border-t border-line text-xs">
                       <div>
                         <span class="text-muted block">Đã nhận gốc</span>
                         <strong class="tabular-nums text-foreground">{{ currentSku()!.receivedQuantity }} chiếc</strong>
@@ -157,8 +157,8 @@ import {
                       <label for="return-quantity-input" class="block font-semibold text-muted text-xs uppercase">
                         Số Lượng Xuất Trả
                       </label>
-                      <span class="text-[11px] text-muted">
-                        Tối đa: <strong class="text-primary font-mono tabular-nums">{{ currentSku()!.maxReturnableQuantity }}</strong> chiếc
+                      <span class="text-xs text-muted">
+                        Tối đa: <strong class="text-primary tabular tabular-nums">{{ currentSku()!.maxReturnableQuantity }}</strong> chiếc
                       </span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -166,7 +166,7 @@ import {
                         type="text"
                         readonly
                         [value]="currentSku()!.skuCode"
-                        class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded font-mono font-bold text-foreground text-xs"
+                        class="flex-1 px-2.5 py-1.5 bg-surface border border-line rounded tabular font-bold text-foreground text-sm font-medium"
                       />
                       <input
                         id="return-quantity-input"
@@ -176,7 +176,7 @@ import {
                         [ngModel]="returnQuantity()"
                         (ngModelChange)="onQuantityChange($event)"
                         name="quantity"
-                        class="w-24 px-2.5 py-1.5 bg-white border rounded text-center font-bold tabular-nums text-foreground focus:outline-none focus:border-primary text-xs"
+                        class="w-24 px-2.5 py-1.5 bg-white border rounded text-center font-bold tabular-nums text-foreground focus:outline-none focus:border-primary text-sm font-medium"
                         [ngClass]="{
                           'border-rose-600 text-rose-600': quantityError(),
                           'border-line': !quantityError()
@@ -185,7 +185,7 @@ import {
                     </div>
 
                     @if (quantityError()) {
-                      <div class="mt-1.5 p-2 bg-rose-50 border border-rose-200 rounded text-rose-700 text-[11px] font-semibold">
+                      <div class="mt-1.5 p-2 bg-rose-50 border border-rose-200 rounded text-rose-700 text-xs font-semibold">
                         {{ quantityError() }}
                       </div>
                     }
@@ -198,7 +198,7 @@ import {
                           Chọn Số Serial Xuất Trả
                         </label>
                         <span class="text-xs" [ngClass]="selectedSerials().length === returnQuantity() ? 'text-primary font-semibold' : 'text-amber-600'">
-                          Đã chọn: <strong class="font-mono tabular-nums">{{ selectedSerials().length }}</strong> / {{ returnQuantity() }} serial
+                          Đã chọn: <strong class="tabular tabular-nums">{{ selectedSerials().length }}</strong> / {{ returnQuantity() }} serial
                         </span>
                       </div>
 
@@ -216,7 +216,7 @@ import {
                                 (change)="toggleSerial(serial)"
                                 class="rounded border-line text-primary focus:ring-0"
                               />
-                              <span class="font-mono text-xs text-foreground">{{ serial }}</span>
+                              <span class="tabular text-xs text-foreground">{{ serial }}</span>
                             </label>
                           }
                         </div>

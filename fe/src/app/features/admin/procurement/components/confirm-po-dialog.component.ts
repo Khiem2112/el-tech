@@ -57,13 +57,13 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
             <div class="flex justify-between items-center text-muted">
               <span>Quy mô đơn:</span>
               <span class="text-foreground">
-                <strong class="font-mono tabular-nums">{{ po.lines.length }}</strong> dòng linh kiện
-                (<strong class="font-mono tabular-nums">{{ po.totalQuantity }}</strong> chiếc)
+                <strong class="tabular tabular-nums">{{ po.lines.length }}</strong> dòng linh kiện
+                (<strong class="tabular tabular-nums">{{ po.totalQuantity }}</strong> chiếc)
               </span>
             </div>
             <div class="flex justify-between items-center text-muted pt-2 border-t border-line">
               <span class="font-semibold text-foreground">Tổng giá trị đơn:</span>
-              <strong class="text-primary text-sm tabular-nums font-mono font-bold">
+              <strong class="text-primary text-sm tabular-nums tabular font-bold">
                 {{ formatCurrency(po.totalAmount) }} ₫
               </strong>
             </div>
@@ -74,7 +74,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               type="button"
               (click)="onCancel()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors"
+              class="px-4 py-2 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-sm text-foreground transition-colors"
             >
               Hủy Bỏ
             </button>
@@ -82,7 +82,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
               type="button"
               (click)="onConfirm()"
               [disabled]="isSubmitting"
-              class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+              class="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-sm transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
             >
               @if (isSubmitting) {
                 <div class="w-3.5 h-3.5 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>

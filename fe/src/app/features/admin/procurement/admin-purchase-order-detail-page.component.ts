@@ -59,14 +59,14 @@ type ToastMessage = {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="flex-1 flex flex-col min-w-0 overflow-hidden text-[13px] text-foreground bg-white w-full">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden text-sm text-foreground bg-white w-full">
       <div class="h-9 bg-white border-b border-line px-6 flex items-center justify-between text-xs flex-shrink-0">
         <nav class="flex items-center gap-1.5 text-muted">
           <a routerLink="/admin/procurement/purchase-orders" class="hover:text-primary transition-colors">
             Đơn Mua Hàng
           </a>
           <span>/</span>
-          <span class="font-mono font-bold text-foreground">
+          <span class="tabular font-bold text-foreground">
             {{ isNew() ? 'Tạo Đơn PO Mới' : (order()?.code || 'Đang tải...') }}
           </span>
           @if (!isNew() && order()?.supplier) {
@@ -214,39 +214,39 @@ type ToastMessage = {
       @if (!isNew() && order(); as po) {
         <div class="bg-surface border-b border-line px-6 py-2.5 flex items-center justify-between flex-wrap gap-2 flex-shrink-0">
           <div class="flex items-center gap-3">
-            <h1 class="text-lg font-black text-foreground font-mono tracking-tight">
+            <h1 class="text-lg font-black text-foreground tabular tracking-tight">
               ĐƠN MUA HÀNG #{{ po.code }}
             </h1>
             @switch (po.status) {
               @case ('DRAFT') {
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-amber-50 text-amber-700 border border-amber-200">
                   Bản thảo
                 </span>
               }
               @case ('CONFIRMED') {
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-blue-50 text-blue-700 border border-blue-200">
                   Đã xác nhận
                 </span>
               }
               @case ('RECEIVED') {
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200">
                   Đã nhập kho
                 </span>
               }
               @case ('CLOSED') {
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-surface-alt text-muted border border-line">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-surface-alt text-muted border border-line">
                   Đã đóng
                 </span>
               }
               @case ('CANCELLED') {
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
+                <span class="px-2 py-0.5 rounded text-xs font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
                   Đã hủy
                 </span>
               }
             }
           </div>
           <div class="text-xs text-muted flex items-center gap-2">
-            <span>Ngày tạo: <strong class="text-foreground font-mono tabular-nums">{{ formatDate(po.createdAt) }}</strong></span>
+            <span>Ngày tạo: <strong class="text-foreground tabular tabular-nums">{{ formatDate(po.createdAt) }}</strong></span>
           </div>
         </div>
       }
@@ -293,77 +293,77 @@ type ToastMessage = {
           } @else if (order(); as po) {
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 text-xs divide-y md:divide-y-0 md:divide-x divide-line">
               <div class="pr-2">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Nhà Cung Cấp</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Nhà Cung Cấp</span>
                 <span class="font-bold text-foreground block truncate mt-0.5">{{ po.supplier.name }}</span>
-                <span class="font-mono text-[11px] text-muted">{{ po.supplier.code }}</span>
+                <span class="tabular text-xs text-muted">{{ po.supplier.code }}</span>
               </div>
 
               <div class="pt-2 md:pt-0 md:px-3">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Kho Nhận Hàng</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Kho Nhận Hàng</span>
                 <span class="font-bold text-foreground block truncate mt-0.5">{{ po.receivingBranch.name }}</span>
-                <span class="font-mono text-[11px] text-muted">{{ po.receivingBranch.code }}</span>
+                <span class="tabular text-xs text-muted">{{ po.receivingBranch.code }}</span>
               </div>
 
               <div class="pt-2 md:pt-0 md:px-3">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Phiếu Nhập Kho</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Phiếu Nhập Kho</span>
                 @if (po.receiptMove) {
                   <a
                     [routerLink]="['/admin/inventory/ledger']"
                     [queryParams]="{ search: po.code }"
-                    class="font-mono font-bold text-emerald-700 hover:underline block truncate mt-0.5"
+                    class="tabular font-bold text-emerald-700 hover:underline block truncate mt-0.5"
                   >
                     {{ po.receiptMove.code }}
                   </a>
-                  <span class="text-[10px] text-emerald-600 font-medium">Đã ghi sổ kho</span>
+                  <span class="text-xs text-emerald-600 font-medium">Đã ghi sổ kho</span>
                 } @else if (po.status === 'CONFIRMED') {
                   <button
                     type="button"
                     (click)="openValidateReceiptModal()"
-                    class="font-mono font-bold text-amber-700 hover:underline text-left block truncate mt-0.5"
+                    class="tabular font-bold text-amber-700 hover:underline text-left block truncate mt-0.5"
                   >
                     Chờ Đối Soát
                   </button>
-                  <span class="text-[10px] text-amber-600 font-medium">Chưa nhập</span>
+                  <span class="text-xs text-amber-600 font-medium">Chưa nhập</span>
                 } @else {
-                  <span class="font-mono text-muted block mt-0.5">Chưa tạo</span>
+                  <span class="text-muted block mt-0.5">Chưa tạo</span>
                 }
               </div>
 
               <div class="pt-2 md:pt-0 md:px-3">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Sê-ri Đã Gán</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Sê-ri Đã Gán</span>
                 <a
                   [routerLink]="['/admin/inventory/serials']"
                   [queryParams]="{ search: po.code }"
-                  class="font-mono font-bold text-foreground hover:text-primary block mt-0.5 tabular-nums"
+                  class="tabular font-bold text-foreground hover:text-primary block mt-0.5 tabular-nums"
                 >
                   {{ totalAssignedSerials() }} / {{ totalSerialRequiredQuantity() }}
                 </a>
-                <span class="text-[10px] text-muted">Định danh sê-ri</span>
+                <span class="text-xs text-muted">Định danh sê-ri</span>
               </div>
 
               <div class="pt-2 md:pt-0 md:px-3">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Đơn Liên Kết</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Đơn Liên Kết</span>
                 @if (po.supersedesPurchaseOrder) {
                   <a
                     [routerLink]="['/admin/procurement/purchase-orders', po.supersedesPurchaseOrder.id]"
-                    class="font-mono font-bold text-amber-800 hover:underline block truncate mt-0.5"
+                    class="tabular font-bold text-amber-800 hover:underline block truncate mt-0.5"
                   >
                     Gốc: {{ po.supersedesPurchaseOrder.code }}
                   </a>
                 } @else if (po.supersededByOrders.length > 0) {
                   <a
                     [routerLink]="['/admin/procurement/purchase-orders', po.supersededByOrders[0].id]"
-                    class="font-mono font-bold text-rose-700 hover:underline block truncate mt-0.5"
+                    class="tabular font-bold text-rose-700 hover:underline block truncate mt-0.5"
                   >
                     Thay thế: {{ po.supersededByOrders[0].code }}
                   </a>
                 } @else {
-                  <span class="text-muted block mt-0.5 font-mono">Đơn gốc</span>
+                  <span class="text-muted block mt-0.5">Đơn gốc</span>
                 }
               </div>
 
               <div class="pt-2 md:pt-0 md:pl-3">
-                <span class="block text-muted uppercase text-[10px] font-semibold">Ghi Chú Đơn</span>
+                <span class="block text-muted uppercase text-xs font-semibold">Ghi Chú Đơn</span>
                 <span class="text-foreground block truncate mt-0.5" [title]="po.note || ''">
                   {{ po.note || 'Không có ghi chú' }}
                 </span>
@@ -379,7 +379,7 @@ type ToastMessage = {
               <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Danh Sách Linh Kiện Đặt Mua
               </h2>
-              <span class="text-xs text-muted tabular-nums font-mono">
+              <span class="text-xs text-muted tabular-nums">
                 ({{ editableLines().length }} dòng hàng)
               </span>
             </div>
@@ -391,7 +391,7 @@ type ToastMessage = {
                   [ngModel]="variantSearchTerm()"
                   (ngModelChange)="onSearchVariants($event)"
                   placeholder="Thêm SKU linh kiện vào đơn..."
-                  class="w-full pl-8 pr-3 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  class="w-full pl-8 pr-3 py-1.5 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 />
                 <lucide-icon
                   name="plus"
@@ -407,15 +407,15 @@ type ToastMessage = {
                         class="p-2 hover:bg-surface-alt cursor-pointer border-b border-line last:border-none flex items-center justify-between gap-2"
                       >
                         <div class="min-w-0 flex-1">
-                          <div class="font-mono font-bold text-foreground text-xs truncate">{{ v.sku }}</div>
-                          <div class="text-[11px] text-muted truncate">{{ v.productTemplate.name }}</div>
+                          <div class="tabular font-bold text-foreground text-sm truncate">{{ v.sku }}</div>
+                          <div class="text-xs text-muted truncate">{{ v.productTemplate.name }}</div>
                         </div>
                         <div class="text-right flex-shrink-0">
-                          <span class="text-primary text-xs font-mono font-bold tabular-nums">
+                          <span class="text-primary text-sm font-bold tabular-nums">
                             {{ formatCurrency(v.sellingPrice) }} ₫
                           </span>
                           @if (v.serialRequired) {
-                            <div class="text-[10px] text-blue-600 font-semibold">Cần Serial</div>
+                            <div class="text-xs text-blue-600 font-semibold">Cần Serial</div>
                           }
                         </div>
                       </div>
@@ -427,8 +427,8 @@ type ToastMessage = {
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-xs">
-              <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left border-collapse text-sm">
+              <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
                   <th class="py-2.5 px-4">Mã SKU</th>
@@ -463,11 +463,11 @@ type ToastMessage = {
                               (error)="onImageError($event)"
                             />
                           } @else {
-                            <span class="text-[10px] text-muted font-mono">PC</span>
+                            <span class="text-xs text-muted">PC</span>
                           }
                         </div>
                       </td>
-                      <td class="py-2.5 px-4 font-mono font-bold text-foreground">
+                      <td class="py-2.5 px-4 tabular font-bold text-foreground">
                         {{ line.sku }}
                       </td>
                       <td class="py-2.5 px-4 font-semibold text-foreground">
@@ -475,11 +475,11 @@ type ToastMessage = {
                       </td>
                       <td class="py-2.5 px-4 text-center">
                         @if (line.serialRequired) {
-                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-semibold">
+                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
                             Bắt buộc Serial
                           </span>
                         } @else {
-                          <span class="text-muted text-[11px]">Không</span>
+                          <span class="text-muted text-xs">Không</span>
                         }
                       </td>
                       <td class="py-2.5 px-4 text-center">
@@ -489,10 +489,10 @@ type ToastMessage = {
                             min="1"
                             [ngModel]="line.quantity"
                             (ngModelChange)="onLineQuantityChange(line.skuId, $event)"
-                            class="w-20 px-2 py-1 bg-white border border-line rounded text-center font-bold text-foreground text-xs focus:outline-none focus:border-primary tabular-nums"
+                            class="w-20 px-2 py-1 bg-white border border-line rounded text-center font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
-                          <span class="font-bold text-foreground tabular-nums text-xs">
+                          <span class="font-bold text-foreground tabular-nums text-sm">
                             {{ line.quantity }} chiếc
                           </span>
                         }
@@ -504,15 +504,15 @@ type ToastMessage = {
                             min="0"
                             [ngModel]="line.agreedUnitCost"
                             (ngModelChange)="onLineCostChange(line.skuId, $event)"
-                            class="w-32 px-2 py-1 bg-white border border-line rounded text-right font-mono font-bold text-foreground text-xs focus:outline-none focus:border-primary tabular-nums"
+                            class="w-32 px-2 py-1 bg-white border border-line rounded text-right font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
-                          <span class="font-mono text-foreground tabular-nums">
+                          <span class="text-foreground tabular-nums tabular">
                             {{ formatCurrency(line.agreedUnitCost) }} ₫
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right font-bold tabular-nums font-mono text-primary text-xs">
+                      <td class="py-2.5 px-4 text-right font-bold tabular-nums text-primary text-sm">
                         {{ formatCurrency(line.lineTotal) }} ₫
                       </td>
                       @if (isNew() || order()?.status === 'DRAFT') {
@@ -538,11 +538,11 @@ type ToastMessage = {
           <!-- Thanh tổng kết chân bảng liền mạch -->
           <div class="px-6 py-3 bg-surface-alt/50 border-t border-line flex items-center justify-between text-xs">
             <div class="text-muted">
-              Tổng số lượng: <strong class="text-foreground font-mono tabular-nums">{{ totalOrderedQuantity() }}</strong> chiếc
+              Tổng số lượng: <strong class="text-foreground tabular tabular-nums">{{ totalOrderedQuantity() }}</strong> chiếc
             </div>
             <div class="flex items-center gap-3">
               <span class="text-muted font-medium">Tổng Giá Trị Đơn PO:</span>
-              <span class="text-base font-black font-mono tabular-nums text-primary">
+              <span class="text-base font-black tabular tabular-nums text-primary">
                 {{ formatCurrency(calculatedTotalAmount()) }} ₫
               </span>
             </div>

@@ -122,7 +122,7 @@ type FlattenedCategoryRow = AdminCategory & {
                 <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-line text-xs">
+            <tbody class="divide-y divide-line text-sm">
               @if (categoryService.isLoading()) {
                 <tr>
                   <td colspan="7" class="py-12 text-center text-muted">
@@ -170,7 +170,7 @@ type FlattenedCategoryRow = AdminCategory & {
                             </svg>
                           </button>
                         } @else if (cat.depth > 0) {
-                          <span class="w-3.5 h-3.5 flex items-center justify-center text-muted font-mono text-xs">
+                          <span class="w-3.5 h-3.5 flex items-center justify-center text-muted text-xs">
                             --
                           </span>
                         } @else {
@@ -190,12 +190,12 @@ type FlattenedCategoryRow = AdminCategory & {
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 font-mono text-muted text-xs whitespace-nowrap">
+                    <td class="py-3 px-4 text-muted text-sm whitespace-nowrap">
                       {{ cat.slug }}
                     </td>
 
                     <td class="py-3 px-4 text-center whitespace-nowrap">
-                      <span class="px-2.5 py-0.5 rounded font-mono font-bold bg-surface-alt text-primary-strong border border-line text-xs">
+                      <span class="px-2.5 py-0.5 rounded font-bold bg-surface-alt text-primary-strong border border-line text-xs tabular">
                         v{{ cat.specificationSchemaVersion }}
                       </span>
                     </td>

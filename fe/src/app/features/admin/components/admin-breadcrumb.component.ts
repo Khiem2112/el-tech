@@ -22,7 +22,7 @@ type BreadcrumbState = {
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-1.5 text-xs sm:text-[13px] min-w-0">
+    <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-1.5 text-sm min-w-0">
       <span class="hidden sm:inline text-muted font-normal truncate max-w-[120px] lg:max-w-none">
         {{ state().module }}
       </span>
