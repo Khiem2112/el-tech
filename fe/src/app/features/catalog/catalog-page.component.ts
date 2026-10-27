@@ -463,8 +463,8 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- Grid View -->
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           @for (product of paginatedProducts(); track product.id) {
-            <article class="bg-surface rounded-lg border border-line overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
-              <div class="p-3.5">
+            <article class="bg-surface rounded-lg border border-line overflow-hidden hover:border-primary/50 transition-all flex flex-col justify-between group shadow-xs">
+              <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="p-3.5 block">
                 <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-2.5">
                   @if (isPreOrder(product)) {
                     <span appBadge variant="warning" class="absolute top-2 left-2 text-[10px] font-bold">ĐẶT TRƯỚC</span>
@@ -474,7 +474,6 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   @if (getDiscountPercent(product); as discount) {
                     <span appBadge variant="danger" class="absolute bottom-2 left-2 text-[10px] font-bold">-{{ discount }}%</span>
                   }
-                  <span appBadge variant="outline" class="absolute top-2 right-2 text-[10px] bg-surface/90">CHÍNH HÃNG</span>
                   <img
                     [src]="product.media | productImage"
                     [alt]="product.name"
@@ -492,20 +491,20 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </h2>
                 <p class="text-xs text-muted mt-1">{{ product.model }}</p>
 
-                <!-- Core Specs Mono Pills -->
+                <!-- Core Specs Pills -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   @for (spec of getCoreSpecPills(product); track spec) {
-                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted tabular">
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                       {{ spec }}
                     </span>
                   }
                 </div>
-              </div>
+              </a>
 
               <div class="p-3.5 pt-0 border-t border-line mt-1">
                 <div class="flex items-baseline justify-between mt-2.5">
                   <div>
-                    <span class="text-lg font-black text-foreground tabular">
+                    <span class="text-base font-black text-foreground tabular">
                       {{ product.variants[0].sellingPrice | vnd }}
                     </span>
                     @if (getOriginalPrice(product); as origPrice) {
@@ -516,38 +515,32 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   </div>
                   <span class="text-[10px] text-muted">Đã gồm VAT</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-2.5">
-                  <a
-                    appButton
-                    variant="outline"
-                    size="sm"
-                    [routerLink]="['/san-pham', product.category.slug, product.slug]"
-                  >
-                    Chi tiết
-                  </a>
+                <div class="flex items-center gap-2 mt-2.5">
                   <button
                     type="button"
                     appButton
                     variant="primary"
                     size="sm"
+                    class="flex-1 cursor-pointer"
                     [disabled]="addingSkuId() === product.variants[0].id"
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ') }}</span>
+                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ hàng') }}</span>
+                  </button>
+                  <button
+                    type="button"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="px-2.5 cursor-pointer text-muted hover:text-primary"
+                    title="Thêm vào cấu hình PC Builder"
+                    aria-label="Thêm vào cấu hình PC Builder"
+                    (click)="addToPcBuild(product, $event)"
+                  >
+                    <lucide-icon name="wrench" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
                   </button>
                 </div>
-                <button
-                  type="button"
-                  appButton
-                  variant="ghost"
-                  size="sm"
-                  class="w-full mt-2 border border-line hover:border-primary text-xs font-semibold text-primary"
-                  (click)="addToPcBuild(product, $event)"
-                >
-                  <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1.5" aria-hidden="true"></lucide-icon>
-                  <span>+ Build PC</span>
-                </button>
               </div>
             </article>
           }
@@ -556,9 +549,9 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- List View -->
         <div class="space-y-3">
           @for (product of paginatedProducts(); track product.id) {
-            <article class="bg-surface rounded-lg border border-line p-4 hover:shadow-card-hover transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group">
-              <div class="flex items-center gap-4 min-w-0 flex-1">
-                <div class="size-24 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
+            <article class="bg-surface rounded-lg border border-line p-4 hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group shadow-xs">
+              <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="flex items-center gap-4 min-w-0 flex-1">
+                <div class="size-20 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
                   <img
                     [src]="product.media | productImage"
                     [alt]="product.name"
@@ -582,18 +575,18 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   <h2 class="font-bold text-sm text-foreground line-clamp-1 mt-0.5 group-hover:text-primary transition-colors">
                     {{ product.name }}
                   </h2>
-                  <p class="text-xs text-muted mt-0.5 line-clamp-1">Model: {{ product.model }} · {{ product.description || 'Linh kiện chính hãng đầy đủ tem serial bảo hành 36 tháng.' }}</p>
+                  <p class="text-xs text-muted mt-0.5 line-clamp-1">Model: {{ product.model }}</p>
 
-                  <!-- Core Specs Mono Pills -->
+                  <!-- Core Specs Pills -->
                   <div class="flex flex-wrap gap-1 mt-1.5">
                     @for (spec of getCoreSpecPills(product); track spec) {
-                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted tabular">
+                      <span class="text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                         {{ spec }}
                       </span>
                     }
                   </div>
                 </div>
-              </div>
+              </a>
 
               <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-line gap-2">
                 <div class="text-left sm:text-right">
@@ -609,32 +602,26 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   <button
                     type="button"
                     appButton
-                    variant="ghost"
-                    size="sm"
-                    class="border border-line hover:border-primary text-xs font-semibold text-primary"
-                    (click)="addToPcBuild(product, $event)"
-                  >
-                    <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>+ Build PC</span>
-                  </button>
-                  <a
-                    appButton
-                    variant="outline"
-                    size="sm"
-                    [routerLink]="['/san-pham', product.category.slug, product.slug]"
-                  >
-                    Chi tiết
-                  </a>
-                  <button
-                    type="button"
-                    appButton
                     variant="primary"
                     size="sm"
+                    class="cursor-pointer"
                     [disabled]="addingSkuId() === product.variants[0].id"
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>Thêm giỏ</span>
+                    <span>Thêm giỏ hàng</span>
+                  </button>
+                  <button
+                    type="button"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="px-2.5 cursor-pointer text-muted hover:text-primary"
+                    title="Thêm vào cấu hình PC Builder"
+                    aria-label="Thêm vào cấu hình PC Builder"
+                    (click)="addToPcBuild(product, $event)"
+                  >
+                    <lucide-icon name="wrench" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
                   </button>
                 </div>
               </div>

@@ -108,10 +108,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
               (click)="toggleGroup(group.id)"
               class="w-full px-2 py-1.5 rounded-md hover:bg-surface-alt text-xs font-bold uppercase tracking-wider text-muted hover:text-foreground flex items-center justify-between transition-colors"
             >
-              <div class="flex items-center gap-1.5 truncate">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#76b900] flex-shrink-0"></span>
-                <span class="truncate">{{ group.label }}</span>
-              </div>
+              <span class="truncate">{{ group.label }}</span>
               <div class="flex items-center gap-1.5 flex-shrink-0">
                 <span class="text-xs text-muted font-normal tabular-nums">
                   {{ group.items.length }}
@@ -133,7 +130,7 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
                 @for (item of group.items; track item.code) {
                   <a
                     [routerLink]="item.fullPath"
-                    routerLinkActive="bg-primary/10 text-primary-strong font-bold border-l-2 border-primary"
+                    routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
                     (click)="onItemClick()"
                     class="flex items-center px-2.5 py-2 rounded-md text-muted hover:bg-surface-alt hover:text-foreground font-medium text-[13px] transition-colors"
                   >

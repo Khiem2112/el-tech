@@ -35,20 +35,15 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">
       <!-- Status & Utility Bar -->
-      <header class="w-full px-4 sm:px-6 lg:px-8 py-4 bg-surface border-b border-line shadow-sm">
+      <header class="w-full px-4 sm:px-6 lg:px-8 py-4 bg-surface border-b border-line shadow-xs">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div class="size-10 rounded-xl bg-surface-alt flex items-center justify-center text-foreground font-bold border border-line">
               <lucide-icon name="cpu" class="size-5 text-primary" aria-hidden="true"></lucide-icon>
             </div>
             <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-base sm:text-lg font-bold text-foreground">Xây Dựng Cấu Hình PC Builder</h1>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/15 text-primary tracking-wide border border-primary/20">
-                  TƯƠNG THÍCH HOÀN TOÀN
-                </span>
-              </div>
-              <p class="text-xs text-muted mt-0.5">Hệ thống kiểm tra điện áp nguồn, chuẩn socket LGA1700 / AM5 và kích thước vỏ case theo thời gian thực.</p>
+              <h1 class="text-base sm:text-lg font-bold text-foreground">Tự Lắp Ráp Cấu Hình PC</h1>
+              <p class="text-xs text-muted mt-0.5">Kiểm tra tương thích socket, công suất nguồn và kích thước linh kiện theo thời gian thực.</p>
             </div>
           </div>
 
@@ -61,27 +56,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               title="Đặt lại toàn bộ danh sách linh kiện"
             >
               <lucide-icon name="rotate-ccw" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
-              <span>Tạo mới</span>
-            </button>
-
-            <button
-              type="button"
-              (click)="togglePreset()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer"
-              title="Đổi giữa các cấu hình PC mẫu"
-            >
-              <lucide-icon name="refresh-cw" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-              <span>{{ activePresetLabel() }}</span>
-            </button>
-
-            <button
-              type="button"
-              (click)="printQuotation()"
-              class="h-9 px-3.5 rounded-lg bg-surface-alt hover:bg-border text-foreground font-bold flex items-center gap-1.5 transition-colors border border-line cursor-pointer"
-              title="In báo giá cấu hình chi tiết"
-            >
-              <lucide-icon name="printer" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
-              <span>Xuất báo giá</span>
+              <span>Làm mới</span>
             </button>
 
             <button
@@ -91,7 +66,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               title="Sao chép liên kết cấu hình"
             >
               <lucide-icon name="share-2" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
-              <span>{{ linkCopied() ? 'Đã sao chép link' : 'Chia sẻ link' }}</span>
+              <span>{{ linkCopied() ? 'Đã sao chép link' : 'Chia sẻ' }}</span>
             </button>
           </div>
         </div>
@@ -102,36 +77,34 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           <!-- Left Section: BOM Slots & Diagnostics (8 cols) -->
           <div class="lg:col-span-8 space-y-4">
-            <!-- Compatibility & Wattage Metric Panel (PCB-006) -->
-            <div class="rounded-xl p-4 sm:p-5 bg-surface shadow-sm border border-line space-y-4">
+            <!-- Compatibility & Wattage Metric Panel -->
+            <div class="rounded-xl p-4 sm:p-5 bg-surface shadow-xs border border-line space-y-3">
               <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-line">
                 <div class="flex items-center gap-2.5">
-                  <lucide-icon name="shield-check" class="size-6 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+                  <lucide-icon name="shield-check" class="size-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
                   <div>
-                    <span class="text-xs sm:text-sm font-bold text-foreground block">Kiểm tra tương thích & Công suất nguồn</span>
+                    <span class="text-xs sm:text-sm font-bold text-foreground block">Độ Tương Thích &amp; Công Suất</span>
                     <p class="text-xs text-muted">
-                      Socket {{ currentSocket() }} khớp với Bo mạch chủ, RAM {{ currentRamType() }} tương thích cấu hình XMP / EXPO.
+                      Socket {{ currentSocket() }} · RAM {{ currentRamType() }}
                     </p>
                   </div>
                 </div>
-                <div class="px-2.5 py-1 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground whitespace-nowrap">
-                  <span>PCIe Bandwidth: </span>
-                  <strong class="text-primary font-bold">Gen 5.0 READY</strong>
+                <div class="text-xs text-muted">
+                  Nguồn đề xuất: <strong class="text-foreground font-bold tabular">{{ minPsuRecommended() }}W</strong>
                 </div>
               </div>
 
               <!-- Wattage Bar -->
               <div class="space-y-1.5 text-xs">
-                <div class="flex items-center justify-between text-[11px] sm:text-xs font-mono flex-wrap gap-2">
-                  <span class="text-muted">Ước tính tiêu thụ tối đa: <strong class="text-foreground">{{ fullLoadTdp() }}W</strong></span>
+                <div class="flex items-center justify-between text-xs">
+                  <span class="text-muted">Tiêu thụ ước tính: <strong class="text-foreground tabular">{{ fullLoadTdp() }}W</strong></span>
                   <span class="text-muted">
-                    PSU đề xuất: <strong class="text-foreground">{{ minPsuRecommended() }}W</strong> | PSU đã chọn:
-                    <strong class="text-primary font-bold">{{ currentPsuWattage() }}W (Margin {{ marginPercent() >= 0 ? '+' : '' }}{{ marginPercent() }}%)</strong>
+                    PSU đã chọn: <strong class="text-primary font-bold tabular">{{ currentPsuWattage() }}W</strong>
                   </span>
                 </div>
 
                 <!-- Progress Bar Graphic -->
-                <div class="w-full h-3 bg-surface-alt rounded-full overflow-hidden flex p-0.5 border border-line">
+                <div class="w-full h-2.5 bg-surface-alt rounded-full overflow-hidden flex border border-line">
                   <div
                     class="h-full rounded-full transition-all duration-500"
                     [class.bg-primary]="wattagePercent() <= 80"
@@ -140,28 +113,17 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                     [style.width.%]="wattagePercent()"
                   ></div>
                 </div>
-
-                <div class="flex justify-between items-center text-[10px] text-muted font-mono pt-0.5 flex-wrap gap-1">
-                  <span>0W (Idle 48W)</span>
-                  <span>{{ fullLoadTdp() }}W (TDP Full Load)</span>
-                  <span>{{ minPsuRecommended() }}W (Min Spec)</span>
-                  <span class="text-primary font-bold">{{ currentPsuWattage() }}W Gold ({{ marginPercent() >= 20 ? 'Đạt chuẩn an toàn' : 'Cần chú ý công suất' }})</span>
-                </div>
               </div>
             </div>
 
-            <!-- BOM Hardware Rows List (8 Core Slots) -->
+            <!-- BOM Hardware Rows List -->
             <div class="space-y-3">
               @for (slot of bomSlots(); track slot.key) {
                 @if (slot.item; as item) {
                   <!-- Configured Slot -->
-                  <div class="rounded-xl bg-surface shadow-sm border border-line p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-primary/50 transition-colors">
+                  <div class="rounded-xl bg-surface shadow-xs border border-line p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-primary/50 transition-colors">
                     <!-- Slot Identity & Hardware Info -->
                     <div class="flex items-start md:items-center gap-3 flex-1 min-w-0">
-                      <div class="size-8 rounded-lg bg-surface-alt flex items-center justify-center shrink-0 border border-line font-bold text-xs text-muted">
-                        {{ slot.number }}
-                      </div>
-
                       <div class="size-12 rounded-lg bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
                         <img
                           [src]="item.imageUrl || '/images/products/placeholder.webp'"
@@ -173,17 +135,17 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface-alt text-muted border border-line">
+                          <span class="text-[11px] font-bold uppercase tracking-wider text-primary">
                             {{ slot.categoryName }}
                           </span>
                           @if (item.tag) {
-                            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono text-primary font-bold bg-primary/10">
+                            <span class="px-1.5 py-0.5 rounded text-[10px] text-muted bg-surface-alt border border-line">
                               {{ item.tag }}
                             </span>
                           }
                         </div>
 
-                        <h2 class="text-xs sm:text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h2>
+                        <h2 class="text-xs sm:text-sm font-bold text-foreground truncate mt-0.5">{{ item.name }}</h2>
                         <p class="text-[11px] text-muted truncate mt-0.5">{{ item.specs }}</p>
                       </div>
                     </div>
@@ -219,20 +181,17 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                     </div>
                   </div>
                 } @else {
-                  <!-- Empty Dashed Slot (PB-02) -->
-                  <div class="rounded-xl border-2 border-dashed border-line hover:border-primary/60 bg-surface-alt/10 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
+                  <!-- Empty Dashed Slot -->
+                  <div class="rounded-xl border border-dashed border-line hover:border-primary/60 bg-surface/50 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
-                      <div class="size-8 rounded-lg bg-surface border border-dashed border-line flex items-center justify-center shrink-0 font-bold text-xs text-muted">
-                        {{ slot.number }}
-                      </div>
                       <div class="min-w-0">
                         <div class="flex items-center gap-2">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-surface text-muted border border-line">
+                          <span class="text-xs font-bold uppercase tracking-wider text-foreground">
                             {{ slot.categoryName }}
                           </span>
-                          <span class="text-[10px] text-muted font-mono">{{ slot.defaultSpecTag }}</span>
+                          <span class="text-[11px] text-muted">({{ slot.defaultSpecTag }})</span>
                         </div>
-                        <p class="text-xs text-muted italic mt-1">Chưa chọn linh kiện cho vị trí này (Tùy chọn tương thích chuẩn)</p>
+                        <p class="text-xs text-muted mt-0.5">Chưa chọn linh kiện cho vị trí này</p>
                       </div>
                     </div>
 
@@ -244,7 +203,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                         title="Chọn linh kiện cho ô này"
                       >
                         <lucide-icon name="plus" class="size-3.5" aria-hidden="true"></lucide-icon>
-                        <span>+ Chọn {{ slot.categoryName }}</span>
+                        <span>Chọn {{ slot.categoryName }}</span>
                       </button>
                     </div>
                   </div>
