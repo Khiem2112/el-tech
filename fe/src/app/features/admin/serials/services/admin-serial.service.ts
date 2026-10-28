@@ -137,13 +137,13 @@ export class AdminSerialService {
 
   private readonly baseUrl =
     typeof window !== 'undefined' && window.location.port === '4200'
-      ? 'http://localhost:3000/api/admin/serials'
-      : '/api/admin/serials';
+      ? 'http://localhost:3000/v1/admin/serials'
+      : '/v1/admin/serials';
 
   private readonly branchesUrl =
     typeof window !== 'undefined' && window.location.port === '4200'
-      ? 'http://localhost:3000/api/admin/branches'
-      : '/api/admin/branches';
+      ? 'http://localhost:3000/v1/admin/branches'
+      : '/v1/admin/branches';
 
   readonly serials = signal<SerialListItem[]>([]);
   readonly total = signal<number>(0);

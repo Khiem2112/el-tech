@@ -86,8 +86,8 @@ export class AdminVariantService {
 
   private readonly baseUrl =
     typeof window !== 'undefined' && window.location.port === '4200'
-      ? 'http://localhost:3000/api/admin/catalog/variants'
-      : '/api/admin/catalog/variants';
+      ? 'http://localhost:3000/v1/admin/catalog/variants'
+      : '/v1/admin/catalog/variants';
 
   readonly variants = signal<AdminVariantCatalogItem[]>([]);
   readonly isLoading = signal<boolean>(false);
