@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { z } from 'zod';
 import { success } from '../../contracts/api.js';
 import { DomainError } from '../../contracts/domain-error.js';
@@ -10,6 +10,13 @@ const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1).optional(),
   rememberMe: z.boolean().optional(),
+});
+
+const resetAdminSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1).optional(),
+  password: z.string().min(6).optional().default('admin123'),
+  resetSessions: z.boolean().optional().default(false),
 });
 
 export const adminAuthRouter = Router();
@@ -123,3 +130,86 @@ adminAuthRouter.post('/logout', adminAuthMiddleware, async (request, response, n
     next(error);
   }
 });
+
+const handleCreateOrResetAdmin = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const input = parseBody(resetAdminSchema, request.body);
+    const correlationId = response.locals.correlationId as string;
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: input.email },
+    });
+
+    const isNewUser = !existingUser;
+    const resolvedName = input.name?.trim() || existingUser?.name || 'Quản Trị Viên EL-TECH';
+
+    const user = await prisma.user.upsert({
+      where: { email: input.email },
+      update: {
+        role: 'ADMIN',
+        emailVerified: true,
+        ...(input.name ? { name: input.name.trim() } : {}),
+      },
+      create: {
+        email: input.email,
+        name: resolvedName,
+        role: 'ADMIN',
+        emailVerified: true,
+      },
+    });
+
+    await prisma.account.upsert({
+      where: {
+        providerId_accountId: {
+          providerId: 'credential',
+          accountId: input.email,
+        },
+      },
+      update: {
+        password: input.password,
+        userId: user.id,
+      },
+      create: {
+        userId: user.id,
+        providerId: 'credential',
+        accountId: input.email,
+        password: input.password,
+      },
+    });
+
+    let sessionsDeletedCount = 0;
+    if (input.resetSessions) {
+      const deleteResult = await prisma.session.deleteMany({
+        where: { userId: user.id },
+      });
+      sessionsDeletedCount = deleteResult.count;
+    }
+
+    response.json(
+      success(
+        {
+          action: isNewUser ? 'created' : 'reset',
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          },
+          sessionsReset: input.resetSessions,
+          sessionsRemoved: sessionsDeletedCount,
+        },
+        correlationId,
+      ),
+    );
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+adminAuthRouter.post('/reset-admin', handleCreateOrResetAdmin);
+adminAuthRouter.post('/create-admin', handleCreateOrResetAdmin);
+
