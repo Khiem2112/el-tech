@@ -29,8 +29,8 @@ export class AdminApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl =
     typeof window !== 'undefined' && window.location.port === '4200'
-      ? 'http://localhost:3000/api/admin/auth'
-      : '/api/admin/auth';
+      ? 'http://localhost:3000/v1/admin/auth'
+      : '/v1/admin/auth';
 
   readonly currentAdmin = signal<AdminUser | null>(this.loadStoredUser());
   readonly adminToken = signal<string | null>(this.loadStoredToken());
