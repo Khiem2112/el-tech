@@ -83,3 +83,9 @@ Không tự suy diễn `Approved` từ trạng thái của tài liệu trong `pl
 Chưa tạo design/spec cho bốn flow trên vì approval đang `Pending`. Sau khi
 project owner duyệt flow, tạo UI design cần thiết trước rồi mới tạo spec; không
 chuyển nguyên nội dung kế hoạch cũ thành file kỹ thuật.
+
+## Phân hệ quản trị (Admin Portal)
+
+- [Hướng dẫn và kiến trúc triển khai phân hệ Admin](admin-portal-implementation-guide.md)
+- [Danh mục chi tiết các màn hình và hộp thoại phân hệ Admin](admin-portal-screens-and-modals.md)
+- [Bộ giao diện mẫu UI Templates phân hệ Admin (30 màn hình, 39 hộp thoại)](../ui-templates/admin-portal/README.md)

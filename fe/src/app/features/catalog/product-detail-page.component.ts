@@ -149,8 +149,8 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                 <div class="grid grid-cols-3 gap-2.5 pt-1">
                   @for (qs of quickSpecs(); track qs.label) {
                     <div class="p-2.5 rounded-lg border border-line bg-surface-alt">
-                      <div class="text-[10px] uppercase font-bold text-muted truncate">{{ qs.label }}</div>
-                      <div class="text-xs font-black text-foreground truncate mt-0.5">{{ qs.value }}</div>
+                      <div class="text-xs uppercase font-bold text-muted truncate">{{ qs.label }}</div>
+                      <div class="text-sm font-black text-foreground truncate mt-0.5">{{ qs.value }}</div>
                     </div>
                   }
                 </div>
@@ -162,7 +162,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <div class="bg-surface-alt p-4 rounded-lg border border-line space-y-1.5">
                 <div class="flex items-baseline gap-3 flex-wrap">
                   <span class="text-2xl sm:text-3xl font-black text-foreground tabular">{{ variant.sellingPrice | vnd }}</span>
-                  <span class="text-xs text-muted">Mã SKU: {{ variant.sku }}</span>
+                  <span class="text-xs text-muted">Mã SKU: <span class="font-bold tabular text-foreground">{{ variant.sku }}</span></span>
                 </div>
                 <p class="text-xs text-muted">Giá đã bao gồm thuế VAT. Tồn kho và giá bán sẽ được xác nhận lại khi bạn tạo báo giá ở bước checkout.</p>
               </div>
@@ -178,7 +178,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                 <p class="text-muted leading-relaxed">
                   Sản phẩm có kích thước lớn (~336mm card VGA / Radiator 360mm). Yêu cầu vỏ case hỗ trợ chiều dài VGA tối thiểu 350mm hoặc khoang nóc hỗ trợ Radiator 360mm để đảm bảo không bị cấn quạt tản nhiệt.
                 </p>
-                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-primary pt-0.5">
+                <div class="flex items-center gap-1.5 text-xs font-semibold text-primary pt-0.5">
                   <lucide-icon name="Check" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   <span>Tương thích hoàn hảo với các mẫu case ATX Mid-Tower và Full-Tower tại EL-TECH</span>
                 </div>
@@ -202,7 +202,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                     (click)="selected.set(variant)"
                   >
                     <div>{{ variant.variationLabel ?? variant.sku }}</div>
-                    <div class="text-[11px] opacity-80 mt-0.5">{{ variant.sellingPrice | vnd }}</div>
+                    <div class="text-xs opacity-80 mt-0.5 tabular">{{ variant.sellingPrice | vnd }}</div>
                   </button>
                 }
               </div>
@@ -224,7 +224,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   >
                     <lucide-icon name="Minus" class="size-3.5" aria-hidden="true"></lucide-icon>
                   </button>
-                  <span class="px-3 py-1 text-xs font-bold text-foreground min-w-[2.5rem] text-center">{{ quantity() }}</span>
+                  <span class="px-3 py-1 text-xs font-bold text-foreground min-w-[2.5rem] text-center tabular">{{ quantity() }}</span>
                   <button
                     type="button"
                     appButton
@@ -294,24 +294,24 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>HN: 45 Thái Hà</span>
                   </div>
-                  <div class="text-[11px] text-muted truncate">Q. Đống Đa, Hà Nội</div>
-                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
+                  <div class="text-xs text-muted truncate">Q. Đống Đa, Hà Nội</div>
+                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
                 <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
                   <div class="flex items-center gap-1.5 font-bold">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>HCM: 280 Đường 3/2</span>
                   </div>
-                  <div class="text-[11px] text-muted truncate">P. 12, Q. 10, TP. HCM</div>
-                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
+                  <div class="text-xs text-muted truncate">P. 12, Q. 10, TP. HCM</div>
+                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
                 <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
                   <div class="flex items-center gap-1.5 font-bold">
                     <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>ĐN: 112 Hàm Nghi</span>
                   </div>
-                  <div class="text-[11px] text-muted truncate">Q. Thanh Khê, Đà Nẵng</div>
-                  <div class="font-bold text-[11px] text-primary">Sẵn hàng (Giao 2h)</div>
+                  <div class="text-xs text-muted truncate">Q. Thanh Khê, Đà Nẵng</div>
+                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
                 </div>
               </div>
             </div>
@@ -383,7 +383,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                       @for (row of formattedSpecs(); track row.label) {
                         <tr class="hover:bg-surface-alt/50 transition-colors">
                           <td class="px-4 py-2.5 font-semibold text-muted w-1/3">{{ row.label }}</td>
-                          <td class="px-4 py-2.5 font-bold text-foreground">{{ row.value }}</td>
+                          <td class="px-4 py-2.5 font-bold text-foreground tabular">{{ row.value }}</td>
                         </tr>
                       }
                     </tbody>
@@ -525,7 +525,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                     (error)="onImageError($event)"
                   >
                   <div class="min-w-0 flex-1">
-                    <span class="text-[10px] font-bold text-primary uppercase">{{ item.category.name }}</span>
+                    <span class="text-xs font-bold text-primary uppercase">{{ item.category.name }}</span>
                     <div class="font-bold text-foreground truncate">{{ item.name }}</div>
                     <div class="font-black text-foreground tabular mt-0.5">{{ (selected()?.sellingPrice || '0') | vnd }}</div>
                   </div>

@@ -146,13 +146,13 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- Dynamic Category Specification Filters -->
         @if (filterableSpecs().length > 0) {
           <div class="space-y-3 pt-2 border-t border-line">
-            <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
             @for (spec of filterableSpecs(); track spec.stable_key) {
               <div>
                 <label class="block text-xs font-semibold text-foreground mb-1">
                   {{ spec.label }}
                   @if (spec.unit) {
-                    <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                    <span class="text-muted text-xs">({{ spec.unit }})</span>
                   }
                 </label>
                 <app-select
@@ -463,18 +463,17 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- Grid View -->
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           @for (product of paginatedProducts(); track product.id) {
-            <article class="bg-surface rounded-lg border border-line overflow-hidden hover:shadow-card-hover transition-all flex flex-col justify-between group">
-              <div class="p-3.5">
+            <article class="bg-surface rounded-lg border border-line overflow-hidden hover:border-primary/50 transition-all flex flex-col justify-between group shadow-xs">
+              <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="p-3.5 block">
                 <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-2.5">
                   @if (isPreOrder(product)) {
-                    <span appBadge variant="warning" class="absolute top-2 left-2 text-[10px] font-bold">ĐẶT TRƯỚC</span>
+                    <span appBadge variant="warning" size="sm" class="absolute top-2 left-2 font-bold">ĐẶT TRƯỚC</span>
                   } @else {
-                    <span appBadge variant="success" class="absolute top-2 left-2 text-[10px] font-bold">SẴN HÀNG</span>
+                    <span appBadge variant="success" size="sm" class="absolute top-2 left-2 font-bold">SẴN HÀNG</span>
                   }
                   @if (getDiscountPercent(product); as discount) {
-                    <span appBadge variant="danger" class="absolute bottom-2 left-2 text-[10px] font-bold">-{{ discount }}%</span>
+                    <span appBadge variant="danger" size="sm" class="absolute bottom-2 left-2 font-bold">-{{ discount }}%</span>
                   }
-                  <span appBadge variant="outline" class="absolute top-2 right-2 text-[10px] bg-surface/90">CHÍNH HÃNG</span>
                   <img
                     [src]="product.media | productImage"
                     [alt]="product.name"
@@ -484,7 +483,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                   >
                 </div>
                 
-                <div class="text-[11px] font-bold text-primary uppercase tracking-wide">
+                <div class="text-xs font-bold text-primary uppercase tracking-wide">
                   {{ product.brand.name }} · {{ product.category.name }}
                 </div>
                 <h2 class="font-bold text-sm text-foreground line-clamp-2 mt-1 group-hover:text-primary transition-colors">
@@ -492,20 +491,20 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </h2>
                 <p class="text-xs text-muted mt-1">{{ product.model }}</p>
 
-                <!-- Core Specs Mono Pills -->
+                <!-- Core Specs Pills -->
                 <div class="flex flex-wrap gap-1 mt-2">
                   @for (spec of getCoreSpecPills(product); track spec) {
-                    <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                    <span class="text-xs px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                       {{ spec }}
                     </span>
                   }
                 </div>
-              </div>
+              </a>
 
               <div class="p-3.5 pt-0 border-t border-line mt-1">
                 <div class="flex items-baseline justify-between mt-2.5">
                   <div>
-                    <span class="text-lg font-black text-foreground tabular">
+                    <span class="text-base font-black text-foreground tabular">
                       {{ product.variants[0].sellingPrice | vnd }}
                     </span>
                     @if (getOriginalPrice(product); as origPrice) {
@@ -514,40 +513,34 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                       </span>
                     }
                   </div>
-                  <span class="text-[10px] text-muted">Đã gồm VAT</span>
+                  <span class="text-xs text-muted">Đã gồm VAT</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-2.5">
-                  <a
-                    appButton
-                    variant="outline"
-                    size="sm"
-                    [routerLink]="['/san-pham', product.category.slug, product.slug]"
-                  >
-                    Chi tiết
-                  </a>
+                <div class="flex items-center gap-2 mt-2.5">
                   <button
                     type="button"
                     appButton
                     variant="primary"
                     size="sm"
+                    class="flex-1 cursor-pointer"
                     [disabled]="addingSkuId() === product.variants[0].id"
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ') }}</span>
+                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ hàng') }}</span>
+                  </button>
+                  <button
+                    type="button"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="px-2.5 cursor-pointer text-muted hover:text-primary"
+                    title="Thêm vào cấu hình PC Builder"
+                    aria-label="Thêm vào cấu hình PC Builder"
+                    (click)="addToPcBuild(product, $event)"
+                  >
+                    <lucide-icon name="wrench" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
                   </button>
                 </div>
-                <button
-                  type="button"
-                  appButton
-                  variant="ghost"
-                  size="sm"
-                  class="w-full mt-2 border border-line hover:border-primary text-xs font-semibold text-primary"
-                  (click)="addToPcBuild(product, $event)"
-                >
-                  <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1.5" aria-hidden="true"></lucide-icon>
-                  <span>+ Build PC</span>
-                </button>
               </div>
             </article>
           }
@@ -556,9 +549,9 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <!-- List View -->
         <div class="space-y-3">
           @for (product of paginatedProducts(); track product.id) {
-            <article class="bg-surface rounded-lg border border-line p-4 hover:shadow-card-hover transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group">
-              <div class="flex items-center gap-4 min-w-0 flex-1">
-                <div class="size-24 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
+            <article class="bg-surface rounded-lg border border-line p-4 hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group shadow-xs">
+              <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="flex items-center gap-4 min-w-0 flex-1">
+                <div class="size-20 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
                   <img
                     [src]="product.media | productImage"
                     [alt]="product.name"
@@ -569,31 +562,31 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-2">
-                    <span class="text-[11px] font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</span>
+                    <span class="text-xs font-bold text-primary uppercase">{{ product.brand.name }} · {{ product.category.name }}</span>
                     @if (isPreOrder(product)) {
-                      <span appBadge variant="warning" size="sm" class="text-[10px]">ĐẶT TRƯỚC</span>
+                      <span appBadge variant="warning" size="sm">ĐẶT TRƯỚC</span>
                     } @else {
-                      <span appBadge variant="success" size="sm" class="text-[10px]">SẴN HÀNG</span>
+                      <span appBadge variant="success" size="sm">SẴN HÀNG</span>
                     }
                     @if (getDiscountPercent(product); as discount) {
-                      <span appBadge variant="danger" size="sm" class="text-[10px]">-{{ discount }}%</span>
+                      <span appBadge variant="danger" size="sm">-{{ discount }}%</span>
                     }
                   </div>
                   <h2 class="font-bold text-sm text-foreground line-clamp-1 mt-0.5 group-hover:text-primary transition-colors">
                     {{ product.name }}
                   </h2>
-                  <p class="text-xs text-muted mt-0.5 line-clamp-1">Model: {{ product.model }} · {{ product.description || 'Linh kiện chính hãng đầy đủ tem serial bảo hành 36 tháng.' }}</p>
+                  <p class="text-xs text-muted mt-0.5 line-clamp-1">Model: {{ product.model }}</p>
 
-                  <!-- Core Specs Mono Pills -->
+                  <!-- Core Specs Pills -->
                   <div class="flex flex-wrap gap-1 mt-1.5">
                     @for (spec of getCoreSpecPills(product); track spec) {
-                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
+                      <span class="text-xs px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted">
                         {{ spec }}
                       </span>
                     }
                   </div>
                 </div>
-              </div>
+              </a>
 
               <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-line gap-2">
                 <div class="text-left sm:text-right">
@@ -603,38 +596,32 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                       <span class="text-xs text-muted line-through tabular">{{ origPrice | vnd }}</span>
                     }
                   </div>
-                  <div class="text-[10px] text-muted">Đã bao gồm VAT</div>
+                  <div class="text-xs text-muted">Đã bao gồm VAT</div>
                 </div>
                 <div class="flex items-center gap-2">
                   <button
                     type="button"
                     appButton
-                    variant="ghost"
-                    size="sm"
-                    class="border border-line hover:border-primary text-xs font-semibold text-primary"
-                    (click)="addToPcBuild(product, $event)"
-                  >
-                    <lucide-icon name="wrench" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>+ Build PC</span>
-                  </button>
-                  <a
-                    appButton
-                    variant="outline"
-                    size="sm"
-                    [routerLink]="['/san-pham', product.category.slug, product.slug]"
-                  >
-                    Chi tiết
-                  </a>
-                  <button
-                    type="button"
-                    appButton
                     variant="primary"
                     size="sm"
+                    class="cursor-pointer"
                     [disabled]="addingSkuId() === product.variants[0].id"
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>Thêm giỏ</span>
+                    <span>Thêm giỏ hàng</span>
+                  </button>
+                  <button
+                    type="button"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="px-2.5 cursor-pointer text-muted hover:text-primary"
+                    title="Thêm vào cấu hình PC Builder"
+                    aria-label="Thêm vào cấu hình PC Builder"
+                    (click)="addToPcBuild(product, $event)"
+                  >
+                    <lucide-icon name="wrench" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
                   </button>
                 </div>
               </div>
@@ -647,9 +634,9 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       @if (totalPages() > 1) {
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
           <div class="text-xs text-muted">
-            Hiển thị <span class="font-bold text-foreground">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
-            <span class="font-bold text-foreground">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
-            trong tổng số <span class="font-bold text-foreground">{{ filteredProducts().length }}</span> linh kiện
+            Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
+            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
+            trong tổng số <span class="font-bold text-foreground tabular">{{ filteredProducts().length }}</span> linh kiện
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -669,7 +656,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 <button
                   type="button"
                   (click)="setPage(page)"
-                  class="min-w-8 h-8 px-2 rounded-md border text-xs font-bold transition-colors cursor-pointer"
+                  class="min-w-8 h-8 px-2 rounded-md border text-xs font-bold transition-colors cursor-pointer tabular"
                   [class.border-primary]="currentPage() === page"
                   [class.bg-primary]="currentPage() === page"
                   [class.text-primary-foreground]="currentPage() === page"
@@ -733,27 +720,26 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       <!-- Mobile Brand Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Thương hiệu</label>
-        <select
-          [(ngModel)]="tempBrand"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả thương hiệu</option>
-          @for (item of brands(); track item.id) {
-            <option [value]="item.slug">{{ item.name }}</option>
-          }
-        </select>
+        <app-select
+          [options]="mobileBrandOptions()"
+          [value]="tempBrand"
+          (valueChange)="tempBrand = $event"
+          placeholder="Tất cả thương hiệu"
+          size="sm"
+          ariaLabel="Thương hiệu"
+        />
       </div>
 
       <!-- Mobile Category Specification Filters -->
       @if (filterableSpecs().length > 0) {
         <div class="space-y-3 pt-2 border-t border-line">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
+          <div class="text-xs font-bold uppercase tracking-wider text-primary">Thông số kỹ thuật</div>
           @for (spec of filterableSpecs(); track spec.stable_key) {
             <div>
               <label class="block text-xs font-bold text-foreground mb-1">
                 {{ spec.label }}
                 @if (spec.unit) {
-                  <span class="text-muted text-[10px]">({{ spec.unit }})</span>
+                  <span class="text-muted text-xs">({{ spec.unit }})</span>
                 }
               </label>
               <app-select
@@ -772,43 +758,40 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       <!-- Mobile Branch Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Chi nhánh sẵn hàng</label>
-        <select
-          [(ngModel)]="tempBranch"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả showroom</option>
-          <option value="hn">Hà Nội (45 Thái Hà)</option>
-          <option value="hcm">TP.HCM (280 Ba Tháng Hai)</option>
-          <option value="dn">Đà Nẵng (112 Hàm Nghi)</option>
-        </select>
+        <app-select
+          [options]="mobileBranchOptions"
+          [value]="tempBranch"
+          (valueChange)="tempBranch = $event"
+          placeholder="Tất cả showroom"
+          size="sm"
+          ariaLabel="Chi nhánh sẵn hàng"
+        />
       </div>
 
       <!-- Mobile Stock Status Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Tình trạng kho hàng</label>
-        <select
-          [(ngModel)]="tempStockStatus"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả tình trạng</option>
-          <option value="in_stock">Sẵn hàng ngay</option>
-          <option value="pre_order">Đặt trước (Pre-order)</option>
-        </select>
+        <app-select
+          [options]="mobileStockStatusOptions"
+          [value]="tempStockStatus"
+          (valueChange)="tempStockStatus = $event"
+          placeholder="Tất cả tình trạng"
+          size="sm"
+          ariaLabel="Tình trạng kho hàng"
+        />
       </div>
 
       <!-- Mobile Price Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Khoảng giá</label>
-        <select
-          [(ngModel)]="tempPricePreset"
-          class="w-full text-xs p-2 rounded border border-line bg-surface-alt"
-        >
-          <option value="">Tất cả mức giá</option>
-          <option value="under-5m">Dưới 5 triệu</option>
-          <option value="5m-15m">5 - 15 triệu</option>
-          <option value="15m-30m">15 - 30 triệu</option>
-          <option value="over-30m">Trên 30 triệu</option>
-        </select>
+        <app-select
+          [options]="mobilePricePresetOptions"
+          [value]="tempPricePreset"
+          (valueChange)="tempPricePreset = $event"
+          placeholder="Tất cả mức giá"
+          size="sm"
+          ariaLabel="Khoảng giá"
+        />
       </div>
 
       <div class="mt-auto pt-4 border-t border-line space-y-2">
@@ -845,11 +828,11 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </div>
         <div>
           <p class="text-xs font-bold text-foreground">Đã thêm vào PC Builder</p>
-          <p class="text-[11px] text-muted line-clamp-1">{{ msg }}</p>
+          <p class="text-xs text-muted line-clamp-1">{{ msg }}</p>
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm" class="text-xs">
+        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm">
           Đến PC Builder
         </a>
         <button type="button" (click)="buildNotification.set(null)" class="text-muted hover:text-foreground p-1 cursor-pointer">
@@ -911,6 +894,35 @@ export class CatalogPageComponent {
       label: c.name,
     })),
   ]);
+
+  protected readonly mobileBrandOptions = computed<readonly SelectOption[]>(() => [
+    { value: '', label: 'Tất cả thương hiệu' },
+    ...this.brands().map((b) => ({
+      value: b.slug,
+      label: b.name,
+    })),
+  ]);
+
+  protected readonly mobileBranchOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả showroom' },
+    { value: 'hn', label: 'Hà Nội (45 Thái Hà)' },
+    { value: 'hcm', label: 'TP.HCM (280 Ba Tháng Hai)' },
+    { value: 'dn', label: 'Đà Nẵng (112 Hàm Nghi)' },
+  ];
+
+  protected readonly mobileStockStatusOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả tình trạng' },
+    { value: 'in_stock', label: 'Sẵn hàng ngay' },
+    { value: 'pre_order', label: 'Đặt trước (Pre-order)' },
+  ];
+
+  protected readonly mobilePricePresetOptions: readonly SelectOption[] = [
+    { value: '', label: 'Tất cả mức giá' },
+    { value: 'under-5m', label: 'Dưới 5 triệu' },
+    { value: '5m-15m', label: '5 - 15 triệu' },
+    { value: '15m-30m', label: '15 - 30 triệu' },
+    { value: 'over-30m', label: 'Trên 30 triệu' },
+  ];
 
   protected readonly filteredProducts = computed(() => {
     let list = this.products();

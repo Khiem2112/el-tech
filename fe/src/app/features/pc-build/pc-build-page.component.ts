@@ -46,7 +46,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
             <article class="rounded-xl border border-line bg-surface p-6 shadow-sm flex flex-col justify-between hover:border-primary/50 transition-all">
               <div>
                 <div class="flex items-center justify-between">
-                  <span appBadge variant="primary" class="text-[10px]">ELT BUNDLE</span>
+                  <span appBadge variant="primary" size="sm">ELT BUNDLE</span>
                   <span class="text-xs text-muted">BOM CHÍNH HÃNG</span>
                 </div>
                 <h2 class="text-lg font-bold text-foreground mt-2">{{ bundle.name }}</h2>

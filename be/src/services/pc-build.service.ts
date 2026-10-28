@@ -16,7 +16,7 @@ type BuildLine = {
   tdp?: number;
   wattage?: number;
 };
-type BuildPreview = { lines: readonly BuildLine[]; total: string };
+type BuildPreview = { lines: readonly BuildLine[]; total: string; discountAmount?: string; finalTotal?: string };
 
 export type ComponentItemDto = {
   id: string;
@@ -96,7 +96,7 @@ export type GetComponentsInput = {
 };
 
 export const pcBuildService = {
-  async listBundles(): Promise<readonly { id: number; name: string; slug: string; description: string | null; build: BuildPreview }[]> {
+  async listBundles(): Promise<readonly { id: number; name: string; slug: string; description: string | null; discountAmount: string; build: BuildPreview }[]> {
     const bundles = await prisma.pcBundle.findMany({
       where: { isActive: true, lifecycleState: 'ACTIVE' },
       include: {
@@ -117,13 +117,22 @@ export const pcBuildService = {
       orderBy: { id: 'asc' },
     });
 
-    return bundles.map((bundle) => ({
-      id: bundle.id,
-      name: bundle.name,
-      slug: bundle.slug,
-      description: bundle.description,
-      build: serializeLines(bundle.items),
-    }));
+    return bundles.map((bundle) => {
+      const build = serializeLines(bundle.items);
+      const discount = Number(bundle.discountAmount);
+      return {
+        id: bundle.id,
+        name: bundle.name,
+        slug: bundle.slug,
+        description: bundle.description,
+        discountAmount: discount.toFixed(0),
+        build: {
+          ...build,
+          discountAmount: discount.toFixed(0),
+          finalTotal: Math.max(0, Number(build.total) - discount).toFixed(0),
+        },
+      };
+    });
   },
 
   async getComponents(input?: string | GetComponentsInput): Promise<readonly ComponentItemDto[]> {

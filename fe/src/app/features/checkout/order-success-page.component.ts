@@ -57,7 +57,7 @@ type StoredOrderData = {
             </div>
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
+                <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/30">
                   HỆ THỐNG ĐÃ XÁC NHẬN
                 </span>
                 <span class="text-xs text-muted">Đang chuẩn bị linh kiện xuất kho</span>
@@ -108,9 +108,9 @@ type StoredOrderData = {
             <div class="bg-surface rounded-xl p-5 shadow-sm border border-line space-y-4">
               <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-line">
                 <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-muted">Mã đơn hàng chính thức</span>
+                  <span class="text-xs font-bold uppercase tracking-wider text-muted">Mã đơn hàng chính thức</span>
                   <div class="flex items-center gap-2 mt-0.5">
-                    <span class="text-xl sm:text-2xl font-black text-foreground tracking-tight">
+                    <span class="text-xl sm:text-2xl font-black text-foreground tracking-tight tabular">
                       #{{ orderCode() }}
                     </span>
                     <button
@@ -123,15 +123,15 @@ type StoredOrderData = {
                       <lucide-icon name="copy" class="size-3.5" aria-hidden="true"></lucide-icon>
                     </button>
                     @if (codeCopied()) {
-                      <span class="text-[10px] font-bold text-primary">Đã sao chép</span>
+                      <span class="text-xs font-bold text-primary">Đã sao chép</span>
                     }
                   </div>
                 </div>
 
                 <div class="flex items-center gap-3">
                   <div class="px-3.5 py-1.5 rounded-lg bg-surface-alt border border-line text-right">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-muted block">Mã OTP nhận máy</span>
-                    <span class="text-sm sm:text-base font-black text-primary tracking-widest">{{ otpCode() }}</span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-muted block">Mã OTP nhận máy</span>
+                    <span class="text-sm sm:text-base font-black text-primary tracking-widest tabular">{{ otpCode() }}</span>
                   </div>
                 </div>
               </div>
@@ -139,15 +139,15 @@ type StoredOrderData = {
               <!-- Logistics Status Grid -->
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-lg bg-surface-alt text-xs">
                 <div>
-                  <span class="text-[10px] font-bold uppercase text-muted">Thời gian đặt</span>
-                  <p class="font-bold text-foreground mt-0.5">{{ orderDate() }}</p>
+                  <span class="text-xs font-bold uppercase text-muted">Thời gian đặt</span>
+                  <p class="font-bold text-foreground mt-0.5 tabular">{{ orderDate() }}</p>
                 </div>
                 <div>
-                  <span class="text-[10px] font-bold uppercase text-muted">Dự kiến hoàn tất</span>
+                  <span class="text-xs font-bold uppercase text-muted">Dự kiến hoàn tất</span>
                   <p class="font-bold text-primary mt-0.5">Hôm nay - Sẵn sàng sau 2H</p>
                 </div>
                 <div>
-                  <span class="text-[10px] font-bold uppercase text-muted">Hình thức nhận</span>
+                  <span class="text-xs font-bold uppercase text-muted">Hình thức nhận</span>
                   <p class="font-bold text-foreground mt-0.5 flex items-center gap-1">
                     <lucide-icon name="store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                     <span>{{ fulfillmentLabel() }}</span>
@@ -171,15 +171,15 @@ type StoredOrderData = {
                   <div class="py-3 flex items-center justify-between gap-4">
                     <div class="min-w-0 flex-1">
                       <div class="flex items-center gap-2">
-                        <span class="px-1.5 py-0.2 rounded bg-surface-alt text-muted text-[10px] font-bold uppercase border border-line">
+                        <span class="px-2 py-0.5 rounded bg-surface-alt text-muted text-xs font-bold uppercase border border-line tabular">
                           {{ item.sku || 'HARDWARE' }}
                         </span>
-                        <span class="text-[10px] text-primary font-bold">Bảo hành 36T</span>
+                        <span class="text-xs text-primary font-bold">Bảo hành 36T</span>
                       </div>
-                      <h3 class="text-xs font-bold text-foreground truncate mt-1">{{ item.name }}</h3>
+                      <h3 class="text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h3>
                     </div>
                     <div class="text-right shrink-0">
-                      <span class="text-muted text-[11px] block">SL: {{ item.quantity }}</span>
+                      <span class="text-muted text-xs block tabular">SL: {{ item.quantity }}</span>
                       <span class="font-bold text-foreground tabular">{{ item.unitPrice | vnd }}</span>
                     </div>
                   </div>
@@ -193,15 +193,15 @@ type StoredOrderData = {
                     </div>
                     <div>
                       <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-foreground text-xs">Lắp ráp & Stress Test FurMark 24h</span>
-                        <span class="px-1.5 py-0.2 rounded bg-primary text-primary-foreground font-bold text-[9px]">TẶNG KÈM</span>
+                        <span class="font-bold text-foreground text-sm">Lắp ráp & Stress Test FurMark 24h</span>
+                        <span class="px-1.5 py-0.5 rounded bg-primary text-primary-foreground font-bold text-xs">TẶNG KÈM</span>
                       </div>
-                      <p class="text-[11px] text-muted">Đi dây giấu cáp thẩm mỹ, cập nhật BIOS bo mạch mới nhất.</p>
+                      <p class="text-xs text-muted">Đi dây giấu cáp thẩm mỹ, cập nhật BIOS bo mạch mới nhất.</p>
                     </div>
                   </div>
                   <div class="text-right shrink-0">
-                    <span class="text-xs line-through text-muted block">500.000 đ</span>
-                    <span class="text-xs font-bold text-primary">0 đ</span>
+                    <span class="text-xs line-through text-muted block tabular">500.000 đ</span>
+                    <span class="text-xs font-bold text-primary tabular">0 đ</span>
                   </div>
                 </div>
               </div>
@@ -216,17 +216,17 @@ type StoredOrderData = {
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div class="p-3.5 rounded-lg bg-surface-alt border border-line space-y-1">
-                  <span class="text-[10px] font-bold uppercase text-primary">Địa điểm nhận bàn giao</span>
-                  <h4 class="font-bold text-foreground text-xs">{{ branchLocationName() }}</h4>
-                  <p class="text-muted text-[11px] leading-relaxed">{{ branchAddress() }}</p>
-                  <p class="text-muted text-[11px] pt-1">Hotline showroom: 1900.6868 (08:30 - 21:30)</p>
+                  <span class="text-xs font-bold uppercase text-primary">Địa điểm nhận bàn giao</span>
+                  <h4 class="font-bold text-foreground text-sm">{{ branchLocationName() }}</h4>
+                  <p class="text-muted text-xs leading-relaxed">{{ branchAddress() }}</p>
+                  <p class="text-muted text-xs pt-1">Hotline showroom: 1900.6868 (08:30 - 21:30)</p>
                 </div>
 
                 <div class="p-3.5 rounded-lg bg-surface-alt border border-line space-y-1">
-                  <span class="text-[10px] font-bold uppercase text-muted">Thông tin người nhận</span>
-                  <h4 class="font-bold text-foreground text-xs">{{ receiverName() }}</h4>
-                  <p class="text-muted text-[11px]">Số điện thoại: {{ receiverPhone() }}</p>
-                  <p class="text-muted text-[11px]">Email nhận hóa đơn: {{ receiverEmail() }}</p>
+                  <span class="text-xs font-bold uppercase text-muted">Thông tin người nhận</span>
+                  <h4 class="font-bold text-foreground text-sm">{{ receiverName() }}</h4>
+                  <p class="text-muted text-xs">Số điện thoại: {{ receiverPhone() }}</p>
+                  <p class="text-muted text-xs">Email nhận hóa đơn: {{ receiverEmail() }}</p>
                 </div>
               </div>
             </div>
@@ -252,7 +252,7 @@ type StoredOrderData = {
                     <lucide-icon name="qr-code" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                     <h3 class="text-xs font-bold uppercase text-foreground">Thanh Toán Chuyển Khoản VietQR</h3>
                   </div>
-                  <span class="text-[11px] font-mono text-warning font-bold">
+                  <span class="text-xs text-warning font-bold tabular">
                     Còn {{ formattedTimer() }}
                   </span>
                 </div>
@@ -264,7 +264,7 @@ type StoredOrderData = {
                     alt="VietQR Chuyển Khoản"
                     class="size-44 object-contain rounded-lg border border-line bg-white p-2"
                   >
-                  <p class="text-[10px] text-muted text-center mt-2">
+                  <p class="text-xs text-muted text-center mt-2">
                     Mở ứng dụng Mobile Banking bất kỳ để quét mã QR thanh toán nhanh
                   </p>
                 </div>
@@ -272,13 +272,13 @@ type StoredOrderData = {
                 <!-- Payment Reference & Amount Boxes -->
                 <div class="space-y-2 text-xs">
                   <div class="p-2.5 rounded-lg bg-surface-alt border border-line">
-                    <span class="text-[10px] text-muted block">Nội dung chuyển khoản (bắt buộc chính xác):</span>
+                    <span class="text-xs text-muted block">Nội dung chuyển khoản (bắt buộc chính xác):</span>
                     <div class="flex items-center justify-between mt-0.5">
-                      <strong class="text-primary font-mono text-xs">{{ paymentReference() }}</strong>
+                      <strong class="text-primary text-sm font-bold tabular">{{ paymentReference() }}</strong>
                       <button
                         type="button"
                         (click)="copyRef()"
-                        class="text-[10px] text-muted hover:text-foreground font-bold underline cursor-pointer"
+                        class="text-xs text-muted hover:text-foreground font-bold underline cursor-pointer"
                       >
                         Sao chép
                       </button>
@@ -286,20 +286,20 @@ type StoredOrderData = {
                   </div>
 
                   <div class="p-2.5 rounded-lg bg-surface-alt border border-line">
-                    <span class="text-[10px] text-muted block">Số tiền thanh toán:</span>
+                    <span class="text-xs text-muted block">Số tiền thanh toán:</span>
                     <strong class="text-foreground text-sm font-black tabular mt-0.5 block">
                       {{ (expectedAmount() || grandTotal()) | vnd }}
                     </strong>
                   </div>
 
-                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line text-[11px] text-muted space-y-0.5">
+                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line text-xs text-muted space-y-0.5">
                     <div class="text-foreground font-bold">Ngân hàng Quân Đội (MB Bank)</div>
                     <div>Số tài khoản: <strong>0988234567</strong></div>
                     <div>Chủ TK: <strong>CONG TY TNHH CONG NGHE EL-TECH</strong></div>
                   </div>
                 </div>
 
-                <div class="p-2 rounded bg-emerald-950/20 border border-emerald-800/30 text-primary text-[11px]">
+                <div class="p-2 rounded bg-emerald-950/20 border border-emerald-800/30 text-primary text-xs">
                   Hệ thống tự động kiểm tra sao kê ngân hàng và kích hoạt trạng thái ĐÃ THANH TOÁN sau 30-60 giây.
                 </div>
               </div>
@@ -316,11 +316,11 @@ type StoredOrderData = {
                   HL
                 </div>
                 <div>
-                  <h4 class="font-bold text-foreground text-xs">KTV Hoàng Long</h4>
-                  <p class="text-[11px] text-muted">Chuyên viên Lắp ráp & Stress Test PC</p>
+                  <h4 class="font-bold text-foreground text-sm">KTV Hoàng Long</h4>
+                  <p class="text-xs text-muted">Chuyên viên Lắp ráp & Stress Test PC</p>
                 </div>
               </div>
-              <p class="text-[11px] text-muted leading-relaxed">
+              <p class="text-xs text-muted leading-relaxed">
                 Kỹ thuật viên sẽ liên hệ với bạn qua số điện thoại để chốt chi tiết đi dây và cập nhật BIOS trước khi đóng gói.
               </p>
             </div>

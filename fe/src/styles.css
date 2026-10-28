@@ -67,7 +67,7 @@ body {
   font-size: 14px;
   line-height: 1.6;
 }
-button, input, select, textarea { font: inherit; }
+button, input, select, textarea, code, pre, kbd { font: inherit; }
 .tabular { font-variant-numeric: tabular-nums; }
 .bg-hero {
   background-image: radial-gradient(circle at 86% 15%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 35%), linear-gradient(135deg, var(--canvas), var(--surface-alt));

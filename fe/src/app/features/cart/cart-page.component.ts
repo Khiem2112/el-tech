@@ -75,10 +75,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   @if (amountLeftForFreeShipping() === 0) {
                     <span>Đơn hàng đạt điều kiện MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC!</span>
                   } @else {
-                    <span>Mua thêm {{ amountLeftForFreeShipping() | vnd }} để được MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
+                    <span>Mua thêm <strong class="tabular font-bold">{{ amountLeftForFreeShipping() | vnd }}</strong> để được MIỄN PHÍ VẬN CHUYỂN TOÀN QUỐC</span>
                   }
                 </span>
-                <span class="text-primary font-mono font-bold">{{ freeShippingPercent() }}%</span>
+                <span class="text-primary font-bold tabular">{{ freeShippingPercent() }}%</span>
               </div>
               <div class="w-full h-2 rounded-full bg-surface-alt border border-line overflow-hidden">
                 <div
@@ -86,7 +86,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   [style.width.%]="freeShippingPercent()"
                 ></div>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-muted">
+              <div class="flex items-center justify-between text-xs text-muted">
                 <span>Miễn phí vận chuyển cho đơn hàng linh kiện từ 5.000.000 đ</span>
                 <span class="text-primary font-medium">Bảo hiểm linh kiện 100%</span>
               </div>
@@ -97,10 +97,10 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <div class="bg-surface rounded-xl border-2 border-primary/40 shadow-sm p-4 sm:p-5 flex flex-col gap-3">
                 <div class="flex items-center justify-between pb-2 border-b border-line text-xs">
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-[10px]">
+                    <span class="px-2 py-0.5 rounded bg-primary text-primary-foreground font-bold uppercase tracking-wider text-xs">
                       Bộ PC Hoàn Chỉnh
                     </span>
-                    <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-foreground font-mono text-[10px] font-bold">
+                    <span class="px-2 py-0.5 rounded bg-surface-alt border border-line text-foreground text-xs font-bold tabular">
                       {{ build.buildType }}
                     </span>
                     <span class="text-xs text-primary font-bold flex items-center gap-1">
@@ -135,7 +135,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <div class="min-w-0 flex-1">
                       <h3 class="font-bold text-sm sm:text-base text-foreground truncate">{{ build.buildName }}</h3>
                       <div class="flex flex-wrap items-center gap-2 text-xs text-muted mt-1">
-                        <span>Mã: <strong class="font-mono text-foreground">{{ getBuildCode(build.key) }}</strong></span>
+                        <span>Mã: <strong class="font-bold text-foreground tabular">{{ getBuildCode(build.key) }}</strong></span>
                         <span>•</span>
                         <span>{{ build.componentCount }} linh kiện chính</span>
                         <span>•</span>
@@ -157,7 +157,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       >
                         <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
                       </button>
-                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ build.quantity }}</span>
+                      <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center tabular">{{ build.quantity }}</span>
                       <button
                         type="button"
                         appButton
@@ -194,7 +194,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <span class="flex items-center gap-2">
                       <lucide-icon name="list" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                       <span>{{ isBuildExpanded(build.key) ? 'Thu gọn chi tiết linh kiện' : 'Xem chi tiết ' + build.componentCount + ' linh kiện trong bộ PC' }}</span>
-                      <span class="px-1.5 py-0.2 rounded-full bg-primary/10 text-primary border border-primary/20 font-mono text-[10px] font-bold">
+                      <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-xs font-bold tabular">
                         {{ build.componentCount }} món
                       </span>
                     </span>
@@ -213,19 +213,19 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     @for (hw of build.hardwareItems; track hw.id) {
                       <div class="flex items-center justify-between gap-3 py-1.5 border-b border-line last:border-b-0 text-xs">
                         <div class="flex items-center gap-2 min-w-0">
-                          <span class="px-1.5 py-0.5 rounded bg-surface border border-line text-primary font-mono text-[9px] font-bold shrink-0">
+                          <span class="px-2 py-0.5 rounded bg-surface border border-line text-primary text-xs font-bold shrink-0">
                             {{ getComponentBadge(hw.name, hw.sku) }}
                           </span>
                           <span class="font-bold text-foreground truncate">{{ hw.name }}</span>
                         </div>
                         <div class="flex items-center gap-3 shrink-0">
-                          <span class="font-mono text-muted tabular">{{ hw.unitPrice | vnd }}</span>
-                          <span class="text-muted">x{{ hw.quantity }}</span>
-                          <span class="font-mono font-bold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
+                          <span class="text-muted tabular">{{ hw.unitPrice | vnd }}</span>
+                          <span class="text-muted tabular">x{{ hw.quantity }}</span>
+                          <span class="font-bold text-foreground tabular">{{ hw.lineTotal | vnd }}</span>
                           <a
                             [routerLink]="['/tu-lap-pc']"
                             [queryParams]="{ swapSlot: getSlotKey(hw.name, hw.sku) }"
-                            class="text-[11px] text-primary hover:underline font-bold"
+                            class="text-xs text-primary hover:underline font-bold"
                           >
                             Đổi món
                           </a>
@@ -237,7 +237,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         <lucide-icon name="wrench" class="size-3.5" aria-hidden="true"></lucide-icon>
                         <span>Miễn phí gói lắp ráp, giấu dây thẩm mỹ và stress test 24h</span>
                       </div>
-                      <span class="font-bold uppercase text-[10px]">0 đ</span>
+                      <span class="font-bold uppercase text-xs">0 đ</span>
                     </div>
                   </div>
                 }
@@ -259,9 +259,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         >
                       </div>
                       <div class="min-w-0 flex-1">
-                        <span class="text-[10px] font-bold text-primary uppercase">LINH KIỆN ĐƠN LẺ</span>
-                        <h3 class="font-bold text-xs sm:text-sm text-foreground mt-0.5 truncate">{{ item.name }}</h3>
-                        <p class="text-xs text-muted mt-0.5">Mã SKU: {{ item.sku }} · Đơn giá: {{ item.unitPrice | vnd }}</p>
+                        <span class="text-xs font-bold text-primary uppercase">LINH KIỆN ĐƠN LẺ</span>
+                        <h3 class="font-bold text-sm text-foreground mt-0.5 truncate">{{ item.name }}</h3>
+                        <p class="text-xs text-muted mt-0.5">Mã SKU: <span class="tabular font-medium text-foreground">{{ item.sku }}</span> · Đơn giá: <span class="tabular font-semibold text-foreground">{{ item.unitPrice | vnd }}</span></p>
                         <span appBadge variant="success" size="sm" class="mt-1">Sẵn sàng giao</span>
                       </div>
                     </div>
@@ -279,7 +279,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                         >
                           <lucide-icon name="minus" class="size-3" aria-hidden="true"></lucide-icon>
                         </button>
-                        <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center">{{ item.quantity }}</span>
+                        <span class="px-2.5 py-1 text-xs font-bold text-foreground min-w-[2rem] text-center tabular">{{ item.quantity }}</span>
                         <button
                           type="button"
                           appButton
@@ -340,7 +340,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                   <span>Tổng tiền tạm tính:</span>
                   <span class="text-primary tabular text-base">{{ cart.subtotal() | vnd }}</span>
                 </div>
-                <p class="text-[11px] text-muted text-right">Đã bao gồm thuế giá trị gia tăng (VAT 10%)</p>
+                <p class="text-xs text-muted text-right">Đã bao gồm thuế giá trị gia tăng (VAT 10%)</p>
               </div>
 
               <!-- Checkout CTA Button -->
@@ -356,7 +356,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </a>
 
               <!-- Trust Assurances -->
-              <div class="pt-2 text-[11px] text-muted space-y-1.5 border-t border-line">
+              <div class="pt-2 text-xs text-muted space-y-1.5 border-t border-line">
                 <p>· Khách vãng lai không cần đăng nhập vẫn có thể đặt mua.</p>
                 <p>· Hỗ trợ thanh toán chuyển khoản VietQR tự động khóa linh kiện.</p>
                 <p>· Đổi mới trong 30 ngày nếu phát sinh lỗi kỹ thuật phần cứng.</p>

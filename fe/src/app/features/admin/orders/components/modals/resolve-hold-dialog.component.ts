@@ -1,0 +1,224 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+  SelectComponent,
+  SelectOption,
+} from '../../../../../components/atoms/select/select.component';
+import {
+  AdminOrderDetail,
+  AdminOrderDetailService,
+} from '../../services/admin-order-detail.service';
+
+@Component({
+  selector: 'app-resolve-hold-dialog',
+  standalone: true,
+  imports: [CommonModule, FormsModule, SelectComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    @if (isOpen()) {
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+        <div data-modal-id="MOD-18" class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-lg p-5 space-y-4 text-sm text-foreground max-h-[90vh] flex flex-col">
+          <div class="flex items-center justify-between border-b border-line pb-3">
+            <div>
+              <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
+                {{ isCurrentlyOnHold() ? 'Xử Lý Đơn Tạm Giữ' : 'Tạm Giữ Đơn Hàng' }}
+              </h3>
+            </div>
+            <button
+              type="button"
+              (click)="onClose()"
+              class="px-2 py-1 rounded bg-surface hover:bg-surface-alt text-muted hover:text-foreground border border-line text-xs transition-colors cursor-pointer"
+              title="Đóng hộp thoại"
+            >
+              Đóng
+            </button>
+          </div>
+
+          @if (isCurrentlyOnHold()) {
+            <div class="p-2.5 bg-warning/10 border border-warning/20 rounded text-warning text-xs space-y-0.5">
+              <div>Lý do tạm giữ: <strong class="text-foreground">{{ order().holdReason }}</strong></div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block font-medium text-muted text-xs">Phương án xử lý:</label>
+              <div class="space-y-1.5">
+                <label class="flex items-start gap-2 p-2 bg-surface-alt border border-line rounded cursor-pointer hover:border-primary">
+                  <input
+                    type="radio"
+                    name="resolveAction"
+                    value="CONFIRM_RESUME"
+                    [(ngModel)]="selectedAction"
+                    class="mt-0.5 text-primary"
+                  />
+                  <div>
+                    <div class="font-medium text-foreground text-sm">Tiếp tục xử lý đơn (CONFIRMED)</div>
+                    <div class="text-xs text-muted">Đã thỏa thuận xong, tiếp tục quy trình chuẩn.</div>
+                  </div>
+                </label>
+
+                @if (order().holdReason === 'PICKUP_EXPIRED') {
+                  <label class="flex items-start gap-2 p-2 bg-surface-alt border border-line rounded cursor-pointer hover:border-primary">
+                    <input
+                      type="radio"
+                      name="resolveAction"
+                      value="EXTEND_PICKUP"
+                      [(ngModel)]="selectedAction"
+                      class="mt-0.5 text-primary"
+                    />
+                    <div>
+                      <div class="font-medium text-foreground text-sm">Gia hạn thời gian nhận hàng tại showroom</div>
+                      <div class="text-xs text-muted">Khách hẹn lại ngày nhận, tiếp tục lưu kho.</div>
+                    </div>
+                  </label>
+                }
+
+                <label class="flex items-start gap-2 p-2 bg-surface-alt border border-destructive/20 rounded cursor-pointer hover:border-destructive">
+                  <input
+                    type="radio"
+                    name="resolveAction"
+                    value="CANCEL_REFUND"
+                    [(ngModel)]="selectedAction"
+                    class="mt-0.5 text-destructive"
+                  />
+                  <div>
+                    <div class="font-medium text-destructive text-sm">Hủy đơn & Hoàn tiền</div>
+                    <div class="text-xs text-muted">Hủy đơn, giải phóng tồn kho và tạo lệnh hoàn tiền.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          } @else {
+            <div class="space-y-2">
+              <label class="block font-medium text-muted text-xs">Nguyên nhân tạm giữ:</label>
+              <app-select
+                [options]="holdReasonOptions"
+                [value]="selectedHoldReason"
+                (valueChange)="onHoldReasonChange($event)"
+                placeholder="Chọn nguyên nhân tạm giữ"
+              />
+            </div>
+          }
+
+          <div class="space-y-1">
+            <label class="block font-medium text-muted text-xs">
+              {{ isCurrentlyOnHold() ? 'Phương án giải quyết:' : 'Ghi chú lý do tạm giữ:' }}
+            </label>
+            <textarea
+              rows="2"
+              [(ngModel)]="note"
+              [placeholder]="isCurrentlyOnHold() ? 'Ghi nhận chi tiết thỏa thuận với khách...' : 'Nhập chi tiết lý do phát sinh tạm giữ...'"
+              class="w-full px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm focus:outline-none focus:border-primary resize-none"
+            ></textarea>
+          </div>
+
+          @if (errorMessage()) {
+            <div class="p-2 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
+              {{ errorMessage() }}
+            </div>
+          }
+
+          <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
+            <button
+              type="button"
+              (click)="onClose()"
+              [disabled]="isSubmitting()"
+              class="px-4 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-sm text-foreground cursor-pointer disabled:opacity-50 transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              (click)="onSubmit()"
+              [disabled]="isSubmitting() || !note.trim()"
+              class="px-4 py-2 bg-primary hover:opacity-90 text-primary-foreground font-semibold rounded text-sm transition-opacity cursor-pointer disabled:opacity-50"
+            >
+              {{ isSubmitting() ? 'Đang Xử Lý...' : (isCurrentlyOnHold() ? 'Xác Nhận Giải Quyết' : 'Xác Nhận Tạm Giữ') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  `,
+})
+export class ResolveHoldDialogComponent {
+  private readonly detailService = inject(AdminOrderDetailService);
+
+  readonly order = input.required<AdminOrderDetail>();
+  readonly isOpen = input<boolean>(false);
+
+  readonly closed = output<void>();
+  readonly confirmed = output<void>();
+
+  readonly isSubmitting = signal<boolean>(false);
+  readonly errorMessage = signal<string | null>(null);
+
+  readonly holdReasonOptions: SelectOption[] = [
+    { value: 'PAYMENT_REVIEW', label: 'PAYMENT_REVIEW - Đối soát thanh toán / VietQR nghi vấn' },
+    { value: 'PAID_BUT_OUT_OF_STOCK', label: 'PAID_BUT_OUT_OF_STOCK - Trả tiền trễ dẫn đến hết hàng' },
+    { value: 'PICKUP_EXPIRED', label: 'PICKUP_EXPIRED - Đơn nhận tại showroom quá hạn 14 ngày' },
+  ];
+
+  selectedAction: 'CONFIRM_RESUME' | 'CANCEL_REFUND' | 'EXTEND_PICKUP' = 'CONFIRM_RESUME';
+  selectedHoldReason: 'PAYMENT_REVIEW' | 'PAID_BUT_OUT_OF_STOCK' | 'PICKUP_EXPIRED' = 'PAYMENT_REVIEW';
+  note = '';
+
+  readonly isCurrentlyOnHold = computed<boolean>(() => {
+    return this.order().status === 'ON_HOLD';
+  });
+
+  onHoldReasonChange(val: string): void {
+    if (val === 'PAYMENT_REVIEW' || val === 'PAID_BUT_OUT_OF_STOCK' || val === 'PICKUP_EXPIRED') {
+      this.selectedHoldReason = val;
+    }
+  }
+
+  onClose(): void {
+    if (this.isSubmitting()) {
+      return;
+    }
+    this.errorMessage.set(null);
+    this.note = '';
+    this.closed.emit();
+  }
+
+  async onSubmit(): Promise<void> {
+    if (!this.note.trim()) {
+      this.errorMessage.set('Vui lòng nhập ghi chú xử lý');
+      return;
+    }
+
+    this.isSubmitting.set(true);
+    this.errorMessage.set(null);
+
+    try {
+      if (this.isCurrentlyOnHold()) {
+        await this.detailService.resolveHold(this.order().id, {
+          action: this.selectedAction,
+          reason: this.note.trim(),
+        });
+      } else {
+        await this.detailService.holdOrder(this.order().id, {
+          holdReason: this.selectedHoldReason,
+          note: this.note.trim(),
+        });
+      }
+
+      this.note = '';
+      this.confirmed.emit();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Khong the xu ly ngoai le tam giu';
+      this.errorMessage.set(msg);
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+}

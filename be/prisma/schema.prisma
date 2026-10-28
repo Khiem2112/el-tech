@@ -436,6 +436,7 @@ model PcBundle {
   name           String
   slug           String           @unique
   description    String?          @db.Text
+  discountAmount Decimal          @default(0) @map("discount_amount") @db.Decimal(12, 0)
   lifecycleState ProductLifecycle @default(DRAFT) @map("lifecycle_state")
 
   items      PcBundleItem[]

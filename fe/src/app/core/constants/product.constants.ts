@@ -1,4 +1,4 @@
-export const DEFAULT_PRODUCT_IMAGE_PATH = '/image.png';
+export const DEFAULT_PRODUCT_IMAGE_PATH = '/images/products/placeholder.webp';
 
 export function resolveProductImageUrl(media: unknown): string {
   if (!media) {
@@ -40,7 +40,11 @@ export function resolveProductImageUrl(media: unknown): string {
 
 export function handleProductImageError(event: Event): void {
   const target = event.target;
-  if (target instanceof HTMLImageElement && !target.src.endsWith(DEFAULT_PRODUCT_IMAGE_PATH)) {
+  if (
+    target instanceof HTMLImageElement &&
+    !target.src.endsWith(DEFAULT_PRODUCT_IMAGE_PATH) &&
+    !target.src.endsWith('/image.png')
+  ) {
     target.src = DEFAULT_PRODUCT_IMAGE_PATH;
   }
 }

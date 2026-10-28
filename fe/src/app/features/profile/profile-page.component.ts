@@ -97,12 +97,12 @@ type StatusBadgeConfig = {
           </nav>
           <div class="flex items-center gap-3">
             @if (user()) {
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-[10px] border border-primary/20">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold text-xs border border-primary/20">
                 <span class="size-1.5 rounded-full bg-primary animate-pulse"></span>
                 Phiên đăng nhập đã xác thực
               </span>
             } @else {
-              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-warning/10 text-warning font-bold text-[10px] border border-amber-500/20">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-warning/10 text-warning font-bold text-xs border border-amber-500/20">
                 Chưa đăng nhập
               </span>
             }
@@ -167,17 +167,17 @@ type StatusBadgeConfig = {
                   <div class="min-w-0 flex-1">
                     <h2 class="text-sm font-bold text-foreground truncate">{{ user()?.name || 'Khách hàng' }}</h2>
                     <p class="text-xs text-muted truncate">{{ user()?.email }}</p>
-                    <p class="text-[11px] text-primary font-bold mt-0.5">{{ user()?.phone || 'Chưa cập nhật SĐT' }}</p>
+                    <p class="text-xs text-primary font-bold mt-0.5 tabular">{{ user()?.phone || 'Chưa cập nhật SĐT' }}</p>
                   </div>
                 </div>
 
                 <!-- Membership Status Badge -->
                 <div class="bg-surface-alt rounded-lg p-3 border border-line flex items-center justify-between">
                   <div>
-                    <span class="text-[10px] text-muted uppercase font-bold tracking-wider block">Hạng tài khoản</span>
+                    <span class="text-xs text-muted uppercase font-bold tracking-wider block">Hạng tài khoản</span>
                     <span class="text-xs font-bold text-foreground">{{ user()?.role === 'pro_builder' ? 'Pro Builder VIP' : 'Khách hàng thân thiết' }}</span>
                   </div>
-                  <span appBadge variant="success" class="text-[10px] font-bold">Đã kích hoạt</span>
+                  <span appBadge variant="success" class="text-xs font-bold">Đã kích hoạt</span>
                 </div>
               </div>
 
@@ -200,7 +200,7 @@ type StatusBadgeConfig = {
                     <span>Đơn hàng của tôi</span>
                   </div>
                   <span
-                    class="px-2 py-0.5 rounded-full text-[10px] font-bold"
+                    class="px-2 py-0.5 rounded-full text-xs font-bold tabular"
                     [class.bg-black/10]="activeTab() === 'orders'"
                     [class.text-slate-950]="activeTab() === 'orders'"
                     [class.bg-surface-alt]="activeTab() !== 'orders'"
@@ -268,12 +268,12 @@ type StatusBadgeConfig = {
               <!-- Showroom Hub Telemetry Widget -->
               <div class="bg-surface-dark text-white rounded-xl p-4 border border-line-dark shadow-xs space-y-1.5 text-xs">
                 <div class="flex items-center justify-between">
-                  <span class="text-[10px] text-primary uppercase tracking-wider font-bold">Trung tâm hỗ trợ Hub</span>
+                  <span class="text-xs text-primary uppercase tracking-wider font-bold">Trung tâm hỗ trợ Hub</span>
                   <span class="size-2 rounded-full bg-primary animate-pulse"></span>
                 </div>
                 <p class="font-bold text-white">EL-TECH Service Desk</p>
-                <p class="text-[11px] text-muted">Hotline kỹ thuật: 1900.6868</p>
-                <div class="pt-2 border-t border-line-dark flex items-center justify-between text-[10px] text-muted">
+                <p class="text-xs text-muted">Hotline kỹ thuật: 1900.6868</p>
+                <div class="pt-2 border-t border-line-dark flex items-center justify-between text-xs text-muted">
                   <span>Hỗ trợ: 08:30 - 21:30</span>
                   <span class="text-primary font-bold">Trực tuyến</span>
                 </div>
@@ -299,7 +299,7 @@ type StatusBadgeConfig = {
                       <span class="px-2.5 py-1 rounded-md bg-primary text-slate-950 text-xs font-black uppercase tracking-wider">
                         ĐƠN HÀNG ĐANG XỬ LÝ
                       </span>
-                      <span class="font-mono text-xs font-bold text-foreground">#{{ activeOrder.code }}</span>
+                      <span class="text-xs font-bold text-foreground tabular">#{{ activeOrder.code }}</span>
                       <span class="text-xs text-muted">Đặt ngày {{ activeOrder.createdAt | date:'dd/MM/yyyy' }}</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -319,28 +319,28 @@ type StatusBadgeConfig = {
                   <div class="grid sm:grid-cols-12 gap-5 items-center">
                     <!-- Large Pickup OTP Code Box -->
                     <div class="sm:col-span-5 bg-surface-dark border border-line-dark rounded-xl p-4 text-center space-y-1.5 text-white shadow-inner">
-                      <span class="text-[10px] text-muted uppercase tracking-wider font-bold block">MÃ OTP NHẬN MÁY TẠI SHOWROOM</span>
-                      <div class="text-3xl sm:text-4xl font-mono font-black text-primary tracking-widest py-1 tabular select-all">
+                      <span class="text-xs text-muted uppercase tracking-wider font-bold block">MÃ OTP NHẬN MÁY TẠI SHOWROOM</span>
+                      <div class="text-3xl sm:text-4xl font-black text-primary tracking-widest py-1 tabular select-all">
                         {{ getPickupOtp(activeOrder) }}
                       </div>
-                      <p class="text-[10px] text-muted leading-tight">Xuất trình mã này cho nhân viên kỹ thuật khi đến nhận máy</p>
+                      <p class="text-xs text-muted leading-tight">Xuất trình mã này cho nhân viên kỹ thuật khi đến nhận máy</p>
                     </div>
 
                     <!-- 4-Step Mini Timeline -->
                     <div class="sm:col-span-7 space-y-2.5">
                       <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-foreground">Tiến độ lắp ráp &amp; bàn giao</span>
-                        <span class="text-[11px] text-primary font-bold">120 phút SLA</span>
+                        <span class="text-xs text-primary font-bold tabular">120 phút SLA</span>
                       </div>
 
-                      <div class="grid grid-cols-4 gap-1.5 text-center text-[10px]">
+                      <div class="grid grid-cols-4 gap-1.5 text-center text-xs">
                         <!-- Step 1: Đã tiếp nhận -->
                         <div class="space-y-1">
                           <div class="size-7 mx-auto rounded-full bg-primary text-slate-950 font-bold flex items-center justify-center text-xs">
                             <lucide-icon name="Check" class="size-3.5" aria-hidden="true"></lucide-icon>
                           </div>
                           <span class="font-bold text-foreground block leading-tight">Đã tiếp nhận</span>
-                          <span class="text-[9px] text-muted">Xác nhận</span>
+                          <span class="text-xs text-muted">Xác nhận</span>
                         </div>
 
                         <!-- Step 2: Đang lắp ráp -->
@@ -363,7 +363,7 @@ type StatusBadgeConfig = {
                           <span class="font-bold block leading-tight" [class.text-foreground]="isStepActiveOrPassed(activeOrder.status, 2)" [class.text-muted]="!isStepActiveOrPassed(activeOrder.status, 2)">
                             Đang lắp ráp
                           </span>
-                          <span class="text-[9px] text-muted">Đi dây Pro</span>
+                          <span class="text-xs text-muted">Đi dây Pro</span>
                         </div>
 
                         <!-- Step 3: Kiểm thử -->
@@ -386,7 +386,7 @@ type StatusBadgeConfig = {
                           <span class="font-bold block leading-tight" [class.text-foreground]="isStepActiveOrPassed(activeOrder.status, 3)" [class.text-muted]="!isStepActiveOrPassed(activeOrder.status, 3)">
                             Kiểm thử
                           </span>
-                          <span class="text-[9px] text-muted">FurMark 64°C</span>
+                          <span class="text-xs text-muted">FurMark 64°C</span>
                         </div>
 
                         <!-- Step 4: Sẵn sàng bàn giao -->
@@ -405,7 +405,7 @@ type StatusBadgeConfig = {
                           <span class="font-bold block leading-tight" [class.text-foreground]="isStepActiveOrPassed(activeOrder.status, 4)" [class.text-muted]="!isStepActiveOrPassed(activeOrder.status, 4)">
                             Bàn giao
                           </span>
-                          <span class="text-[9px] text-muted">Tại Hub / Ship</span>
+                          <span class="text-xs text-muted">Tại Hub / Ship</span>
                         </div>
                       </div>
                     </div>
@@ -458,12 +458,12 @@ type StatusBadgeConfig = {
                           <span
                             appBadge
                             [variant]="getStatusBadge(selectedOrderDetail()!.status).variant"
-                            class="text-[10px] font-bold"
+                            class="font-bold"
                           >
                             {{ getStatusBadge(selectedOrderDetail()!.status).label }}
                           </span>
                         </div>
-                        <h2 class="text-2xl font-black text-foreground tracking-tight">#{{ selectedOrderDetail()!.code }}</h2>
+                        <h2 class="text-2xl font-black text-foreground tracking-tight tabular">#{{ selectedOrderDetail()!.code }}</h2>
                         <p class="text-xs text-muted mt-1">
                           Hình thức nhận hàng:
                           <strong class="text-foreground">
@@ -477,7 +477,7 @@ type StatusBadgeConfig = {
                         <span class="text-2xl font-black text-primary tabular">
                           {{ parseAmount(selectedOrderDetail()!.grandTotal) | vnd }}
                         </span>
-                        <span class="text-[11px] text-muted block mt-0.5">
+                        <span class="text-xs text-muted block mt-0.5">
                           Trạng thái thanh toán: <strong class="text-foreground">{{ selectedOrderDetail()!.payment?.state || 'UNPAID' }}</strong>
                         </span>
                       </div>
@@ -496,7 +496,7 @@ type StatusBadgeConfig = {
                               Vui lòng quét mã QR hoặc chuyển khoản đúng số tiền và nội dung bên dưới để hệ thống tự động xác nhận đơn trong 1 phút.
                             </p>
                           </div>
-                          <span appBadge variant="warning" class="text-[10px] font-bold">Chờ thanh toán</span>
+                          <span appBadge variant="warning" class="font-bold">Chờ thanh toán</span>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-line text-xs">
@@ -511,7 +511,7 @@ type StatusBadgeConfig = {
                             </div>
                             <div class="flex justify-between py-1 border-b border-line/60">
                               <span class="text-muted">Số tài khoản:</span>
-                              <strong class="text-foreground font-mono font-bold">0388234567</strong>
+                              <strong class="text-foreground font-bold tabular">0388234567</strong>
                             </div>
                             <div class="flex justify-between py-1 border-b border-line/60">
                               <span class="text-muted">Số tiền cần chuyển:</span>
@@ -519,7 +519,7 @@ type StatusBadgeConfig = {
                             </div>
                             <div class="flex justify-between py-1">
                               <span class="text-muted">Nội dung chuyển khoản:</span>
-                              <strong class="text-primary font-mono font-bold">{{ selectedOrderDetail()!.payment?.paymentReference || selectedOrderDetail()!.code }}</strong>
+                              <strong class="text-primary font-bold tabular">{{ selectedOrderDetail()!.payment?.paymentReference || selectedOrderDetail()!.code }}</strong>
                             </div>
                           </div>
 
@@ -529,7 +529,7 @@ type StatusBadgeConfig = {
                               alt="Mã QR thanh toán đơn hàng"
                               class="size-40 object-contain rounded"
                             >
-                            <span class="text-[10px] text-muted mt-2">Quét bằng ứng dụng ngân hàng bất kỳ</span>
+                            <span class="text-xs text-muted mt-2">Quét bằng ứng dụng ngân hàng bất kỳ</span>
                           </div>
                         </div>
                       </div>
@@ -547,10 +547,10 @@ type StatusBadgeConfig = {
                               </div>
                               <div class="min-w-0">
                                 <p class="font-bold text-foreground truncate">{{ line.name }}</p>
-                                <p class="text-[11px] text-muted mt-0.5">
-                                  Số lượng: <strong class="text-foreground">{{ line.quantity }}</strong>
+                                <p class="text-xs text-muted mt-0.5">
+                                  Số lượng: <strong class="text-foreground tabular">{{ line.quantity }}</strong>
                                   <span class="mx-1.5">·</span>
-                                  Đơn giá: <strong class="text-foreground">{{ parseAmount(line.unitPrice) | vnd }}</strong>
+                                  Đơn giá: <strong class="text-foreground tabular">{{ parseAmount(line.unitPrice) | vnd }}</strong>
                                 </p>
                               </div>
                             </div>
@@ -605,10 +605,10 @@ type StatusBadgeConfig = {
                               <div class="flex-1 space-y-0.5">
                                 <div class="flex items-center justify-between">
                                   <span class="font-bold text-foreground">{{ getStatusBadge(entry.status).label }}</span>
-                                  <span class="text-[10px] text-muted">{{ entry.occurredAt | date:'HH:mm - dd/MM/yyyy' }}</span>
+                                  <span class="text-xs text-muted tabular">{{ entry.occurredAt | date:'HH:mm - dd/MM/yyyy' }}</span>
                                 </div>
                                 @if (entry.reason) {
-                                  <p class="text-[11px] text-muted">{{ entry.reason }}</p>
+                                  <p class="text-xs text-muted">{{ entry.reason }}</p>
                                 }
                               </div>
                             </div>
@@ -705,7 +705,7 @@ type StatusBadgeConfig = {
                     <!-- Loading / Error / Empty / List States -->
                     @if (isLoadingOrders()) {
                       <div class="py-12 flex flex-col items-center justify-center gap-3 text-muted">
-                        <lucide-icon name="RefreshCw" class="size-6 animate-spin text-primary" aria-hidden="true"></lucide-icon>
+                        <lucide-icon name="loader-2" class="size-6 animate-spin text-primary" aria-hidden="true"></lucide-icon>
                         <span class="text-xs">Đang tải danh sách đơn hàng của bạn...</span>
                       </div>
                     } @else if (ordersError()) {
@@ -762,14 +762,14 @@ type StatusBadgeConfig = {
                             <!-- Order Card Header -->
                             <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-line text-xs">
                               <div class="flex items-center gap-2">
-                                <span class="font-black text-foreground text-sm">#{{ order.code }}</span>
+                                <span class="font-bold text-foreground text-sm tabular">#{{ order.code }}</span>
                                 <span class="text-muted">·</span>
-                                <span class="text-muted">{{ order.createdAt | date:'HH:mm dd/MM/yyyy' }}</span>
+                                <span class="text-muted tabular">{{ order.createdAt | date:'HH:mm dd/MM/yyyy' }}</span>
                               </div>
                               <span
                                 appBadge
                                 [variant]="getStatusBadge(order.status).variant"
-                                class="text-[10px] font-bold"
+                                class="font-bold"
                               >
                                 {{ getStatusBadge(order.status).label }}
                               </span>
@@ -782,13 +782,13 @@ type StatusBadgeConfig = {
                                   <div class="flex items-center gap-2 truncate">
                                     <span class="size-1.5 rounded-full bg-primary shrink-0"></span>
                                     <span class="text-foreground font-medium truncate">{{ line.name }}</span>
-                                    <span class="text-[11px] text-muted shrink-0">x{{ line.quantity }}</span>
+                                    <span class="text-xs text-muted shrink-0 tabular">x{{ line.quantity }}</span>
                                   </div>
                                   <span class="tabular font-medium text-foreground shrink-0">{{ (line.unitPrice * line.quantity) | vnd }}</span>
                                 </div>
                               }
                               @if (order.lines.length > 3) {
-                                <p class="text-[11px] text-muted italic">
+                                <p class="text-xs text-muted italic">
                                   + {{ order.lines.length - 3 }} linh kiện khác trong đơn hàng
                                 </p>
                               }
@@ -797,7 +797,7 @@ type StatusBadgeConfig = {
                             <!-- Order Card Footer -->
                             <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-line text-xs">
                               <div>
-                                <span class="text-muted text-[11px] block">Tổng thanh toán:</span>
+                                <span class="text-muted text-xs block">Tổng thanh toán:</span>
                                 <span class="text-base font-black text-primary tabular">{{ order.grandTotal | vnd }}</span>
                               </div>
 
@@ -867,41 +867,41 @@ type StatusBadgeConfig = {
                       </h4>
 
                       <div class="space-y-1">
-                        <label class="block font-bold text-muted text-[11px] uppercase" for="profileName">Họ và tên</label>
+                        <label class="block font-bold text-muted text-xs uppercase" for="profileName">Họ và tên</label>
                         <input
                           id="profileName"
                           appInput
-                          class="w-full text-xs font-bold"
+                          class="w-full text-sm font-medium"
                           [(ngModel)]="fullName"
                         >
                       </div>
 
                       <div class="space-y-1">
-                        <label class="block font-bold text-muted text-[11px] uppercase" for="profileEmail">Email liên hệ & Hóa đơn VAT</label>
+                        <label class="block font-bold text-muted text-xs uppercase" for="profileEmail">Email liên hệ & Hóa đơn VAT</label>
                         <input
                           id="profileEmail"
                           appInput
-                          class="w-full text-xs"
+                          class="w-full text-sm font-medium"
                           [(ngModel)]="email"
                         >
                       </div>
 
                       <div class="space-y-1">
-                        <label class="block font-bold text-muted text-[11px] uppercase" for="profilePhone">Số điện thoại nhận OTP</label>
+                        <label class="block font-bold text-muted text-xs uppercase" for="profilePhone">Số điện thoại nhận OTP</label>
                         <input
                           id="profilePhone"
                           appInput
-                          class="w-full text-xs font-mono font-bold"
+                          class="w-full text-sm font-medium tabular"
                           [(ngModel)]="phone"
                         >
                       </div>
 
                       <div class="space-y-1">
-                        <label class="block font-bold text-muted text-[11px] uppercase" for="profileAddress">Địa chỉ giao hàng mặc định</label>
+                        <label class="block font-bold text-muted text-xs uppercase" for="profileAddress">Địa chỉ giao hàng mặc định</label>
                         <textarea
                           id="profileAddress"
                           appInput
-                          class="w-full text-xs resize-none"
+                          class="w-full text-sm font-medium resize-none"
                           rows="3"
                           [(ngModel)]="deliveryAddress"
                         ></textarea>
@@ -929,9 +929,9 @@ type StatusBadgeConfig = {
                           <div>
                             <div class="flex items-center gap-1.5">
                               <span class="font-bold text-foreground">Google OAuth</span>
-                              <span appBadge variant="success" class="text-[9px]">ĐÃ LIÊN KẾT</span>
+                              <span appBadge variant="success" class="font-bold">ĐÃ LIÊN KẾT</span>
                             </div>
-                            <span class="text-[11px] text-muted">{{ email }}</span>
+                            <span class="text-xs text-muted">{{ email }}</span>
                           </div>
                         </div>
                       </div>
@@ -943,14 +943,14 @@ type StatusBadgeConfig = {
                           <input
                             appInput
                             type="password"
-                            class="w-full text-xs"
+                            class="w-full text-sm font-medium"
                             placeholder="Mật khẩu hiện tại"
                             [(ngModel)]="currentPass"
                           >
                           <input
                             appInput
                             type="password"
-                            class="w-full text-xs"
+                            class="w-full text-sm font-medium"
                             placeholder="Mật khẩu mới (tối thiểu 6 ký tự)"
                             [(ngModel)]="newPass"
                           >

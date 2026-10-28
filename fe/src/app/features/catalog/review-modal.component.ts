@@ -24,8 +24,8 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
             <div>
               <div class="flex items-center gap-2 flex-wrap">
                 <h2 class="text-base font-bold text-white tracking-tight">Đánh Giá Linh Kiện Đã Mua</h2>
-                <span class="text-xs font-mono text-muted">#{{ orderCode || 'ELT-87119' }}</span>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider">
+                <span class="text-xs font-semibold text-muted tabular">#{{ orderCode || 'ELT-87119' }}</span>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
                   <lucide-icon name="shield-check" class="w-3 h-3" aria-hidden="true"></lucide-icon>
                   Verified Purchase
                 </span>
@@ -98,7 +98,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
             <div class="space-y-1 text-xs">
               <div class="flex justify-between items-center">
                 <label for="review-content" class="font-bold text-foreground-dark/70">Nhận xét chi tiết trải nghiệm thực tế</label>
-                <span class="text-[11px] text-slate-500">{{ reviewText.length }}/1000 ký tự</span>
+                <span class="text-xs text-slate-500">{{ reviewText.length }}/1000 ký tự</span>
               </div>
               <textarea
                 id="review-content"
@@ -106,7 +106,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 rows="3"
                 [(ngModel)]="reviewText"
                 placeholder="Chia sẻ nhiệt độ stress test Furmark, độ ổn định khi render hoặc chơi game..."
-                class="w-full bg-surface-elevated border-line-dark text-white placeholder:text-slate-500 text-xs"
+                class="w-full bg-surface-elevated border-line-dark text-white placeholder:text-slate-500 text-sm"
               ></textarea>
             </div>
 
@@ -116,9 +116,9 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
               <div class="flex items-center gap-2">
                 <div class="size-16 rounded-lg border border-dashed border-line-dark bg-surface-elevated flex flex-col items-center justify-center text-slate-500 hover:text-foreground-dark/70 cursor-pointer">
                   <lucide-icon name="camera" class="w-5 h-5" aria-hidden="true"></lucide-icon>
-                  <span class="text-[9px] mt-0.5">Thêm ảnh</span>
+                  <span class="text-xs mt-0.5">Thêm ảnh</span>
                 </div>
-                <div class="size-16 rounded-lg border border-line-dark bg-surface-dark p-1 flex items-center justify-center text-[10px] text-primary font-bold text-center">
+                <div class="size-16 rounded-lg border border-line-dark bg-surface-dark p-1 flex items-center justify-center text-xs text-primary font-bold text-center">
                   Tem Serial Đã Xác Thực
                 </div>
               </div>
@@ -127,7 +127,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
 
           <!-- Footer Actions -->
           <div class="p-4 bg-surface-elevated border-t border-line-dark flex items-center justify-between gap-3">
-            <span class="text-[11px] text-slate-500 hidden sm:inline">
+            <span class="text-xs text-slate-500 hidden sm:inline">
               Bảo mật: 4 số cuối Serial sẽ được mã hóa khi hiển thị công khai.
             </span>
             <div class="flex items-center gap-2 ml-auto">
@@ -148,6 +148,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 class="min-w-[140px]"
               >
                 @if (isSubmitting()) {
+                  <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
                   <span>Đang mã hóa...</span>
                 } @else if (isSubmittedState()) {
                   <span>Đã gửi thành công!</span>

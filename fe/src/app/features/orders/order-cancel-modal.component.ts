@@ -5,6 +5,7 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 
 export type CancelOrderPayload = {
   reason: string;
@@ -18,7 +19,7 @@ export type CancelOrderPayload = {
 
 @Component({
   selector: 'app-order-cancel-modal',
-  imports: [FormsModule, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule],
+  imports: [FormsModule, VndPipe, ButtonDirective, BadgeDirective, InputDirective, AppIconModule, SelectComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div
@@ -61,7 +62,7 @@ export type CancelOrderPayload = {
             <div class="bg-warning/10 border border-amber-500/30 p-3.5 rounded-lg flex items-start gap-3">
               <lucide-icon name="ShieldCheck" class="size-5 text-warning shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
               <div class="space-y-1">
-                <span class="font-bold text-warning uppercase tracking-wide text-[11px] block">
+                <span class="font-bold text-warning uppercase tracking-wide text-xs block">
                   Quy định hủy đơn trực tuyến (ORD-012)
                 </span>
                 <p class="text-muted leading-relaxed">
@@ -76,11 +77,11 @@ export type CancelOrderPayload = {
             <div class="bg-primary/10 border border-primary/30 p-3.5 rounded-lg flex items-start gap-3">
               <lucide-icon name="CreditCard" class="size-5 text-primary shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
               <div class="space-y-1">
-                <span class="font-bold text-primary uppercase tracking-wide text-[11px] block">
+                <span class="font-bold text-primary uppercase tracking-wide text-xs block">
                   Chính sách hoàn tiền 100% (ORD-014)
                 </span>
                 <p class="text-muted leading-relaxed">
-                  Số tiền đã thanh toán hoặc tiền cọc sẽ được hoàn trả 100% (<strong class="text-foreground">{{ totalAmount() | vnd }}</strong>)
+                  Số tiền đã thanh toán hoặc tiền cọc sẽ được hoàn trả 100% (<strong class="text-foreground tabular">{{ totalAmount() | vnd }}</strong>)
                   vào tài khoản gốc trong vòng 24 giờ làm việc theo quy trình đối soát không thu phí giao dịch.
                 </p>
               </div>
@@ -94,12 +95,12 @@ export type CancelOrderPayload = {
                 <lucide-icon name="Package" class="size-5" aria-hidden="true"></lucide-icon>
               </div>
               <div>
-                <span class="text-[10px] text-muted uppercase font-bold tracking-wider">Mã đơn hàng</span>
+                <span class="text-xs text-muted uppercase font-bold tracking-wider">Mã đơn hàng</span>
                 <p class="font-bold text-sm text-foreground">#{{ orderCode() }}</p>
               </div>
             </div>
             <div class="text-right">
-              <span class="text-[10px] text-muted uppercase font-bold tracking-wider">Tổng giá trị đơn</span>
+              <span class="text-xs text-muted uppercase font-bold tracking-wider">Tổng giá trị đơn</span>
               <p class="font-bold text-sm text-primary tabular">{{ totalAmount() | vnd }}</p>
             </div>
           </div>
@@ -110,21 +111,14 @@ export type CancelOrderPayload = {
               <label class="font-bold text-foreground block" for="cancelReason">
                 Lý do hủy đơn hàng <span class="text-danger">*</span>
               </label>
-              <select
-                id="cancelReason"
-                appInput
-                class="w-full text-xs"
-                [ngModel]="selectedReason()"
-                (ngModelChange)="selectedReason.set($event)"
-                name="cancelReason"
-                required
-              >
-                <option value="" disabled selected>Chọn lý do phù hợp...</option>
-                <option value="hardware_change">Thay đổi nhu cầu cấu hình linh kiện PC</option>
-                <option value="shipping_address">Muốn đổi phương thức nhận hàng hoặc địa chỉ</option>
-                <option value="lead_time">Thời gian lắp ráp và bàn giao chưa phù hợp</option>
-                <option value="other">Lý do cá nhân khác</option>
-              </select>
+              <app-select
+                [options]="cancelReasonOptions"
+                [value]="selectedReason()"
+                (valueChange)="selectedReason.set($event)"
+                placeholder="Chọn lý do phù hợp..."
+                size="sm"
+                ariaLabel="Lý do hủy đơn hàng"
+              />
             </div>
 
             <div class="space-y-1.5">
@@ -134,7 +128,7 @@ export type CancelOrderPayload = {
               <textarea
                 id="cancelDetailNote"
                 appInput
-                class="w-full text-xs"
+                class="w-full text-sm"
                 rows="2"
                 [ngModel]="detailNote()"
                 (ngModelChange)="detailNote.set($event)"
@@ -150,15 +144,15 @@ export type CancelOrderPayload = {
                   <lucide-icon name="CreditCard" class="size-4 text-primary" aria-hidden="true"></lucide-icon>
                   Thông tin tài khoản nhận hoàn tiền
                 </span>
-                <span class="text-[11px] text-primary font-bold">Khớp giao dịch đối soát</span>
+                <span class="text-xs text-primary font-bold">Khớp giao dịch đối soát</span>
               </div>
               <div class="grid sm:grid-cols-2 gap-3">
                 <div class="space-y-1">
-                  <label class="text-[10px] text-muted uppercase font-bold" for="bankName">Ngân hàng thụ hưởng</label>
+                  <label class="text-xs text-muted uppercase font-bold" for="bankName">Ngân hàng thụ hưởng</label>
                   <input
                     id="bankName"
                     appInput
-                    class="w-full text-xs font-semibold"
+                    class="w-full text-sm font-medium"
                     [ngModel]="refundBankName()"
                     (ngModelChange)="refundBankName.set($event)"
                     name="bankName"
@@ -166,11 +160,11 @@ export type CancelOrderPayload = {
                   >
                 </div>
                 <div class="space-y-1">
-                  <label class="text-[10px] text-muted uppercase font-bold" for="bankAccount">Số tài khoản / VietQR</label>
+                  <label class="text-xs text-muted uppercase font-bold" for="bankAccount">Số tài khoản / VietQR</label>
                   <input
                     id="bankAccount"
                     appInput
-                    class="w-full text-xs font-semibold"
+                    class="w-full text-sm font-medium tabular"
                     [ngModel]="refundAccount()"
                     (ngModelChange)="refundAccount.set($event)"
                     name="bankAccount"
@@ -216,8 +210,13 @@ export type CancelOrderPayload = {
             [disabled]="!canSubmit()"
             (click)="handleConfirmCancel()"
           >
-            <lucide-icon name="RotateCcw" class="size-4" aria-hidden="true"></lucide-icon>
-            <span>Xác nhận hủy đơn & Yêu cầu hoàn tiền</span>
+            @if (isSubmitting()) {
+              <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+              <span>Đang xử lý hủy đơn...</span>
+            } @else {
+              <lucide-icon name="RotateCcw" class="size-4" aria-hidden="true"></lucide-icon>
+              <span>Xác nhận hủy đơn & Yêu cầu hoàn tiền</span>
+            }
           </button>
         </div>
       </div>
@@ -232,6 +231,13 @@ export class OrderCancelModalComponent {
 
   readonly cancelled = output<CancelOrderPayload>();
   readonly closed = output<void>();
+
+  protected readonly cancelReasonOptions: readonly SelectOption[] = [
+    { value: 'hardware_change', label: 'Thay đổi nhu cầu cấu hình linh kiện PC' },
+    { value: 'shipping_address', label: 'Muốn đổi phương thức nhận hàng hoặc địa chỉ' },
+    { value: 'lead_time', label: 'Thời gian lắp ráp và bàn giao chưa phù hợp' },
+    { value: 'other', label: 'Lý do cá nhân khác' },
+  ];
 
   protected readonly selectedReason = signal('');
   protected readonly detailNote = signal('');

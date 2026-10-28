@@ -55,16 +55,16 @@
 ### Typography Scale
 
 - Font Family:
-  - Unified Primary UI: `Inter, ui-sans-serif, system-ui, -apple-system, sans-serif` (applied universally across all headers, navigation, labels, badges, buttons, cards, and body text).
+  - Unified Primary UI: `Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` (applied universally across all headers, navigation, labels, badges, buttons, cards, table cells, and body text). Monospace fonts (`font-mono`, `monospace`) are strictly prohibited across the entire design system.
   - Tabular Numerals: `font-variant-numeric: tabular-nums` (`tabular`) applied on the unified sans-serif font for prices, SKU, specs, and quantities to ensure aligned columnar numbers without fragmenting into monospace font.
 - Scale:
   - `display`: `32px` / `2rem`, line-height `1.2`, font-weight `800`
   - `heading-xl`: `24px` / `1.5rem`, line-height `1.25`, font-weight `700`
   - `heading-lg`: `20px` / `1.25rem`, line-height `1.3`, font-weight `700`
   - `heading-md`: `16px` / `1rem`, line-height `1.4`, font-weight `600`
-  - `body-md`: `14px` / `0.875rem`, line-height `1.5`, font-weight `400`
-  - `body-sm`: `12px` / `0.75rem`, line-height `1.4`, font-weight `400`
-  - `caption`: `11px` / `0.6875rem`, line-height `1.3`, font-weight `600`, uppercase
+  - `body-md` (Standard Normal Text): `14px` / `0.875rem`, line-height `1.5`, font-weight `400` (universal default for inputs, buttons, tables, badges, cards, labels, and specs)
+  - `body-sm` (Secondary Helper Text): `12px` / `0.75rem`, line-height `1.4`, font-weight `400` (strictly reserved for non-critical secondary descriptions, timestamps, and footer notes)
+  - Text sizes below 12px (`text-[9px]`, `text-[10px]`, `text-[11px]`) are strictly prohibited.
 
 ---
 

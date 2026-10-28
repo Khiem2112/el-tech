@@ -1,0 +1,692 @@
+import { CommonModule } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { QuarantineStockDialogComponent } from './components/quarantine-stock-dialog.component';
+import { StockLedgerSheetComponent } from './components/stock-ledger-sheet.component';
+import {
+  AdminInventoryService,
+  InventoryBalanceItem,
+} from './services/admin-inventory.service';
+
+export type InventoryRegionCluster = {
+  name: string;
+  regionKey: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'OTHER';
+  branchCodes: string;
+  totalSkus: number;
+  totalAvailable: number;
+  totalValue: number;
+  items: InventoryBalanceItem[];
+};
+
+@Component({
+  selector: 'app-admin-inventory-balances-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    SelectComponent,
+    StockLedgerSheetComponent,
+    QuarantineStockDialogComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Tồn Kho Chi Nhánh
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Giám sát số dư tồn kho đa trạng thái và giá vốn WAC theo từng chi nhánh
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a
+            routerLink="/admin/inventory/ledger"
+            appButton
+            variant="secondary"
+            size="sm"
+            class="uppercase tracking-wide"
+          >
+            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            </svg>
+            <span>Sổ Kho Bất Biến</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="p-4 bg-surface border border-line rounded-lg">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-8 flex-1">
+            <div class="space-y-1">
+              <span class="text-xs font-semibold text-muted uppercase tracking-wider block">Tồn Khả Dụng Bán</span>
+              <div class="text-2xl font-bold text-primary-strong tabular tabular-nums">{{ summary().totalAvailable }}</div>
+              <p class="text-xs text-muted">Sẵn sàng điều phối giao đơn</p>
+            </div>
+
+            <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
+              <span class="text-xs font-semibold text-warning uppercase tracking-wider block">Đang Giữ Cho Đơn</span>
+              <div class="text-2xl font-bold text-warning tabular tabular-nums">{{ summary().totalReserved }}</div>
+              <p class="text-xs text-muted">Đang khóa trong các đơn hàng</p>
+            </div>
+
+            <div class="space-y-1 sm:border-l sm:border-line sm:pl-6">
+              <span class="text-xs font-semibold text-danger uppercase tracking-wider block">Cách Ly Lỗi Kho</span>
+              <div class="text-2xl font-bold text-danger tabular tabular-nums">{{ summary().totalQuarantine }}</div>
+              <p class="text-xs text-muted">Hàng móp hộp, chờ kiểm định</p>
+            </div>
+          </div>
+
+          <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs text-muted">
+            <div>Tổng tồn thực tế: <strong class="text-foreground tabular tabular-nums">{{ summary().totalOnHand }}</strong></div>
+            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
+            <div>Giá trị ước tính: <strong class="text-foreground tabular tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface border border-line rounded-lg p-4 space-y-3 shadow-card">
+        <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="text-muted">
+            Công thức chuẩn: <strong class="text-foreground">Khả dụng = Thực tế - Đang giữ - Cách ly lỗi</strong>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button
+              type="button"
+              (click)="openQuarantineModal()"
+              class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-danger border border-rose-200 rounded font-semibold text-xs whitespace-nowrap shadow-xs transition-colors"
+            >
+              + Cách ly lỗi
+            </button>
+            <button
+              type="button"
+              (click)="toggleGroupByRegion()"
+              class="px-3 py-1.5 border rounded font-semibold text-xs whitespace-nowrap shadow-xs transition-colors"
+              [ngClass]="isGroupByRegion() ? 'bg-primary text-primary-foreground border-primary font-bold' : 'bg-surface hover:bg-surface-alt text-foreground border-line'"
+            >
+              {{ isGroupByRegion() ? 'Chế độ xem phẳng' : 'Gom nhóm vùng miền' }}
+            </button>
+            <span class="inline-flex items-center gap-1.5 text-xs text-muted ml-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Còn hàng (>5)
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-muted ml-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Sắp hết (1-5)
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs text-muted ml-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Hết hàng (0)
+            </span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+          <div class="relative">
+            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+            <div class="relative">
+              <input
+                id="search-input"
+                type="text"
+                [ngModel]="searchQuery()"
+                (ngModelChange)="onSearchChange($event)"
+                placeholder="Tìm SKU, tên linh kiện, mã vạch..."
+                class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+              />
+              <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+
+          <div>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
+            <app-select
+              [options]="branchOptions()"
+              [value]="selectedBranchFilterId()"
+              (valueChange)="onBranchFilterChange($event)"
+              [searchable]="true"
+              searchPlaceholder="Tìm chi nhánh..."
+              size="md"
+            />
+          </div>
+
+          <div>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Danh mục</span>
+            <app-select
+              [options]="categoryOptions()"
+              [value]="selectedCategoryFilterId()"
+              (valueChange)="onCategoryFilterChange($event)"
+              [searchable]="true"
+              searchPlaceholder="Tìm danh mục..."
+              size="md"
+            />
+          </div>
+
+          <div>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Mức tồn</span>
+            <app-select
+              [options]="stockStatusOptions"
+              [value]="selectedStockStatus()"
+              (valueChange)="onStockStatusChange($event)"
+              size="md"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface border border-line rounded-lg shadow-card overflow-hidden">
+        @if (inventoryService.isBalancesLoading()) {
+          <div class="p-12 text-center text-muted space-y-3">
+            <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
+            <p class="text-xs">Đang tải ma trận tồn kho...</p>
+          </div>
+        } @else if (inventoryService.balancesError(); as error) {
+          <div class="p-8 text-center text-danger space-y-3">
+            <p class="text-xs">{{ error }}</p>
+            <button
+              type="button"
+              (click)="loadBalances()"
+              appButton
+              variant="secondary"
+              size="sm"
+            >
+              Tải lại dữ liệu
+            </button>
+          </div>
+        } @else if (inventoryService.balances().length === 0) {
+          <div class="p-12 text-center text-muted space-y-2">
+            <svg class="w-12 h-12 mx-auto text-muted/60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+            <p class="text-sm font-semibold text-foreground">Không tìm thấy bản ghi tồn kho phù hợp</p>
+            <p class="text-xs text-muted">Thử thay đổi từ khóa tìm kiếm hoặc bỏ chọn các bộ lọc.</p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[1000px] border-collapse text-sm">
+              <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
+                <tr>
+                  <th class="py-3 px-4 whitespace-nowrap">Mã SKU</th>
+                  <th class="py-3 px-4">Tên linh kiện</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Chi nhánh</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Thực tế</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Đang giữ</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Cách ly</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Khả dụng</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Giá vốn WAC</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Giá bán</th>
+                  <th class="py-3 px-4 text-right whitespace-nowrap">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-line text-sm text-foreground">
+                @if (isGroupByRegion()) {
+                  @for (cluster of regionClusters(); track cluster.regionKey) {
+                    <tr class="bg-surface-alt/90 border-y border-line">
+                      <td colspan="10" class="py-2.5 px-4">
+                        <div class="flex items-center justify-between text-xs flex-wrap gap-2">
+                          <span class="font-bold text-foreground uppercase tracking-wider">
+                            {{ cluster.name }} ({{ cluster.branchCodes }})
+                          </span>
+                          <div class="flex items-center gap-4 text-xs text-muted">
+                            <span>{{ cluster.totalSkus }} SKU</span>
+                            <span>Khả dụng: <strong class="text-emerald-700 font-bold">{{ cluster.totalAvailable }} chiếc</strong></span>
+                            <span>Giá trị tồn: <strong class="text-foreground font-bold">{{ formatCurrency(cluster.totalValue) }}</strong></span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    @for (item of cluster.items; track item.id) {
+                      <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"></ng-container>
+                    }
+                  }
+                } @else {
+                  @for (item of inventoryService.balances(); track item.id) {
+                    <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"></ng-container>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #rowTemplate let-item>
+            <tr class="hover:bg-surface-alt/70 transition-colors">
+              <td class="py-3 px-4 font-bold text-foreground whitespace-nowrap tabular">
+                {{ item.sku }}
+                @if (item.serialRequired) {
+                  <span class="ml-1.5 px-1.5 py-0.5 rounded bg-primary/10 text-primary-strong border border-primary/20 text-xs font-semibold uppercase">
+                    SN
+                  </span>
+                }
+              </td>
+
+              <td class="py-3 px-4 max-w-xs">
+                <div class="font-semibold text-foreground truncate" [title]="item.productName">
+                  {{ item.productName }}
+                </div>
+                <div class="text-xs text-muted truncate">
+                  {{ item.categoryName }} &bull; {{ item.brandName }}
+                  @if (item.variationLabel) {
+                    &bull; <span class="text-foreground">{{ item.variationLabel }}</span>
+                  }
+                </div>
+              </td>
+
+              <td class="py-3 px-4 whitespace-nowrap">
+                <div class="font-semibold text-foreground">{{ item.branchName }}</div>
+                <div class="text-xs text-muted tabular">{{ item.branchCode }}</div>
+              </td>
+
+              <td class="py-3 px-4 text-right font-bold text-foreground tabular tabular-nums whitespace-nowrap">
+                {{ item.onHand }}
+              </td>
+
+              <td class="py-3 px-4 text-right font-semibold text-warning tabular tabular-nums whitespace-nowrap">
+                {{ item.reserved }}
+              </td>
+
+              <td class="py-3 px-4 text-right font-semibold text-danger tabular tabular-nums whitespace-nowrap">
+                {{ item.quarantineDamaged }}
+              </td>
+
+              <td class="py-3 px-4 text-right font-black tabular tabular-nums whitespace-nowrap">
+                <span [class]="getAvailableBadgeClass(item.available)">
+                  {{ item.available }}
+                </span>
+              </td>
+
+              <td class="py-3 px-4 text-right text-muted tabular tabular-nums whitespace-nowrap">
+                {{ formatCurrency(item.weightedAverageCost) }}
+              </td>
+
+              <td class="py-3 px-4 text-right text-foreground font-semibold tabular tabular-nums whitespace-nowrap">
+                {{ formatCurrency(item.sellingPrice) }}
+              </td>
+
+              <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
+                <div class="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
+                  <a
+                    [routerLink]="['/admin/inventory/transfers']"
+                    [queryParams]="{ action: 'create', skuId: item.skuId, sourceBranchId: item.branchId }"
+                    appButton
+                    variant="secondary"
+                    size="sm"
+                    class="h-8 px-2 text-xs font-semibold inline-flex items-center gap-1 text-primary-strong hover:border-primary/50"
+                    title="Tạo yêu cầu chuyển kho cho linh kiện này"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M1 11h7V7H4L1 9.5V11z"/>
+                      <circle cx="3" cy="13" r="1"/>
+                      <circle cx="6.5" cy="13" r="1"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M23 16h-7v-4h3l3 2v2z"/>
+                      <circle cx="17.5" cy="18" r="1"/>
+                      <circle cx="21" cy="18" r="1"/>
+                    </svg>
+                    <span>Chuyển kho</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    (click)="openQuarantineModal(item)"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="h-8 px-2 text-xs font-semibold text-danger border-rose-200 hover:bg-rose-50"
+                    title="Cách ly lỗi linh kiện này"
+                  >
+                    <span>Cách ly</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    (click)="openSheet(item)"
+                    appButton
+                    variant="secondary"
+                    size="sm"
+                    class="h-8 px-2.5 text-xs font-semibold inline-flex items-center gap-1"
+                    title="Xem nhanh sổ kho của SKU"
+                  >
+                    <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>Biến động</span>
+                  </button>
+
+                  <a
+                    [routerLink]="['/admin/inventory/ledger']"
+                    [queryParams]="{ search: item.sku, branchId: item.branchId }"
+                    appButton
+                    variant="outline"
+                    size="sm"
+                    class="h-8 w-8 p-0"
+                    title="Mở trong Sổ kho"
+                  >
+                    <svg class="w-3.5 h-3.5 text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
+            <div class="text-muted">
+              Hiển thị <strong class="text-foreground">{{ (inventoryService.balancesPage() - 1) * inventoryService.balancesLimit() + 1 }}</strong>
+              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
+              trong tổng số <strong class="text-foreground">{{ inventoryService.balancesTotal() }}</strong> bản ghi
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                [disabled]="inventoryService.balancesPage() <= 1"
+                (click)="onPageChange(inventoryService.balancesPage() - 1)"
+                appButton
+                variant="outline"
+                size="sm"
+              >
+                Trước
+              </button>
+
+              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
+                Trang {{ inventoryService.balancesPage() }} / {{ inventoryService.balancesTotalPages() }}
+              </span>
+
+              <button
+                type="button"
+                [disabled]="inventoryService.balancesPage() >= inventoryService.balancesTotalPages()"
+                (click)="onPageChange(inventoryService.balancesPage() + 1)"
+                appButton
+                variant="outline"
+                size="sm"
+              >
+                Sau
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <app-stock-ledger-sheet
+      [isOpen]="isSheetOpen()"
+      [detail]="inventoryService.selectedQuantLedger()"
+      [isLoading]="inventoryService.isSheetLoading()"
+      [error]="inventoryService.sheetError()"
+      (closeSheet)="closeSheet()"
+      (retryRequested)="retryLoadSheet()"
+    />
+
+    <app-quarantine-stock-dialog
+      [isOpen]="isQuarantineModalOpen()"
+      [quant]="selectedQuarantineQuant()"
+      [branches]="inventoryService.branches()"
+      [skus]="inventoryService.balances()"
+      (closeDialog)="closeQuarantineModal()"
+      (quarantineSuccess)="onQuarantineSuccess($event)"
+    />
+
+    @if (toastMessage()) {
+      <div class="fixed bottom-4 right-4 z-50 p-4 bg-surface border border-emerald-500 text-emerald-700 rounded-lg shadow-lg text-xs font-semibold">
+        {{ toastMessage() }}
+      </div>
+    }
+  `,
+})
+export class AdminInventoryBalancesPageComponent implements OnInit {
+  readonly inventoryService = inject(AdminInventoryService);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly searchQuery = signal<string>('');
+  readonly selectedBranchFilterId = signal<string>('');
+  readonly selectedCategoryFilterId = signal<string>('');
+  readonly selectedStockStatus = signal<string>('ALL');
+
+  readonly isSheetOpen = signal<boolean>(false);
+  readonly activeQuantId = signal<string | null>(null);
+
+  readonly isQuarantineModalOpen = signal<boolean>(false);
+  readonly selectedQuarantineQuant = signal<InventoryBalanceItem | null>(null);
+  readonly isGroupByRegion = signal<boolean>(false);
+  readonly toastMessage = signal<string | null>(null);
+
+  readonly summary = computed(() => this.inventoryService.balancesSummary());
+
+  readonly regionClusters = computed<InventoryRegionCluster[]>(() => {
+    const items = this.inventoryService.balances();
+    const northItems: InventoryBalanceItem[] = [];
+    const centralItems: InventoryBalanceItem[] = [];
+    const southItems: InventoryBalanceItem[] = [];
+    const otherItems: InventoryBalanceItem[] = [];
+
+    for (const item of items) {
+      const text = `${item.branchCode} ${item.branchName} ${item.branchAddress}`.toUpperCase();
+      if (text.includes('HN') || text.includes('HÀ NỘI') || text.includes('HA NOI')) {
+        northItems.push(item);
+      } else if (text.includes('DN') || text.includes('ĐÀ NẴNG') || text.includes('DA NANG')) {
+        centralItems.push(item);
+      } else if (
+        text.includes('HCM') ||
+        text.includes('SG') ||
+        text.includes('HỒ CHÍ MINH') ||
+        text.includes('HO CHI MINH')
+      ) {
+        southItems.push(item);
+      } else {
+        otherItems.push(item);
+      }
+    }
+
+    const clusters: InventoryRegionCluster[] = [];
+
+    const buildCluster = (
+      name: string,
+      regionKey: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'OTHER',
+      clusterItems: InventoryBalanceItem[],
+    ): InventoryRegionCluster => {
+      const codes = Array.from(new Set(clusterItems.map((i) => i.branchCode))).join(', ');
+      const totalAvailable = clusterItems.reduce((acc, i) => acc + i.available, 0);
+      const totalValue = clusterItems.reduce(
+        (acc, i) => acc + (parseFloat(i.weightedAverageCost) || 0) * i.onHand,
+        0,
+      );
+      return {
+        name,
+        regionKey,
+        branchCodes: codes || 'Toàn vùng',
+        totalSkus: clusterItems.length,
+        totalAvailable,
+        totalValue,
+        items: clusterItems,
+      };
+    };
+
+    if (northItems.length > 0) {
+      clusters.push(buildCluster('Cụm Miền Bắc', 'NORTH', northItems));
+    }
+    if (centralItems.length > 0) {
+      clusters.push(buildCluster('Cụm Miền Trung', 'CENTRAL', centralItems));
+    }
+    if (southItems.length > 0) {
+      clusters.push(buildCluster('Cụm Miền Nam', 'SOUTH', southItems));
+    }
+    if (otherItems.length > 0) {
+      clusters.push(buildCluster('Khu Vực Khác', 'OTHER', otherItems));
+    }
+
+    return clusters;
+  });
+
+  openQuarantineModal(quant?: InventoryBalanceItem): void {
+    this.selectedQuarantineQuant.set(quant ?? null);
+    this.isQuarantineModalOpen.set(true);
+  }
+
+  closeQuarantineModal(): void {
+    this.isQuarantineModalOpen.set(false);
+    this.selectedQuarantineQuant.set(null);
+  }
+
+  onQuarantineSuccess(event: { message: string }): void {
+    this.showToast(event.message);
+    void this.loadBalances();
+  }
+
+  toggleGroupByRegion(): void {
+    this.isGroupByRegion.update((v) => !v);
+  }
+
+  showToast(msg: string): void {
+    this.toastMessage.set(msg);
+    setTimeout(() => {
+      this.toastMessage.set(null);
+    }, 4000);
+  }
+
+  readonly branchOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Tất cả chi nhánh' },
+    ...this.inventoryService.branches().map((b) => ({
+      value: String(b.id),
+      label: `${b.name} (${b.code})`,
+    })),
+  ]);
+
+  readonly categoryOptions = computed<SelectOption[]>(() => [
+    { value: '', label: 'Tất cả danh mục' },
+    ...this.inventoryService.categories().map((c) => ({
+      value: String(c.id),
+      label: c.name,
+    })),
+  ]);
+
+  readonly stockStatusOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả mức tồn' },
+    { value: 'IN_STOCK', label: 'Còn hàng dồi dào (>5)' },
+    { value: 'LOW_STOCK', label: 'Sắp hết hàng (1-5)' },
+    { value: 'OUT_OF_STOCK', label: 'Hết hàng (0)' },
+  ];
+
+  ngOnInit(): void {
+    const stockStatusParam =
+      this.route.snapshot.queryParams['stockStatus'] ||
+      (this.route.snapshot.queryParams['filter'] === 'zero' ? 'OUT_OF_STOCK' : null);
+    const branchIdParam = this.route.snapshot.queryParams['branchId'];
+    const categoryIdParam = this.route.snapshot.queryParams['categoryId'];
+    const searchParam = this.route.snapshot.queryParams['search'];
+    if (
+      stockStatusParam === 'OUT_OF_STOCK' ||
+      stockStatusParam === 'LOW_STOCK' ||
+      stockStatusParam === 'IN_STOCK'
+    ) {
+      this.selectedStockStatus.set(stockStatusParam);
+    }
+    if (branchIdParam) {
+      const branchId = Number(branchIdParam);
+      if (!Number.isNaN(branchId) && branchId > 0) {
+        this.selectedBranchFilterId.set(String(branchId));
+      }
+    }
+    if (categoryIdParam) {
+      const categoryId = Number(categoryIdParam);
+      if (!Number.isNaN(categoryId) && categoryId > 0) {
+        this.selectedCategoryFilterId.set(String(categoryId));
+      }
+    }
+    if (searchParam) {
+      this.searchQuery.set(searchParam);
+    }
+
+    void this.inventoryService.loadBranches();
+    void this.inventoryService.loadCategories();
+    void this.loadBalances();
+  }
+
+  async loadBalances(page = 1): Promise<void> {
+    const branchVal = this.selectedBranchFilterId();
+    const categoryVal = this.selectedCategoryFilterId();
+    await this.inventoryService.loadBalances({
+      search: this.searchQuery(),
+      branchId: branchVal ? Number(branchVal) : undefined,
+      categoryId: categoryVal ? Number(categoryVal) : undefined,
+      stockStatus: this.selectedStockStatus() as 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK',
+      page,
+      limit: 50,
+    });
+  }
+
+  onSearchChange(term: string): void {
+    this.searchQuery.set(term);
+    void this.loadBalances(1);
+  }
+
+  onBranchFilterChange(val: string): void {
+    this.selectedBranchFilterId.set(val);
+    void this.loadBalances(1);
+  }
+
+  onCategoryFilterChange(val: string): void {
+    this.selectedCategoryFilterId.set(val);
+    void this.loadBalances(1);
+  }
+
+  onStockStatusChange(status: string): void {
+    this.selectedStockStatus.set(status);
+    void this.loadBalances(1);
+  }
+
+  onPageChange(page: number): void {
+    void this.loadBalances(page);
+  }
+
+  openSheet(quant: InventoryBalanceItem): void {
+    this.activeQuantId.set(quant.id);
+    this.isSheetOpen.set(true);
+    void this.inventoryService.loadQuantLedger(quant.id);
+  }
+
+  closeSheet(): void {
+    this.isSheetOpen.set(false);
+    this.activeQuantId.set(null);
+  }
+
+  retryLoadSheet(): void {
+    const quantId = this.activeQuantId();
+    if (quantId) {
+      void this.inventoryService.loadQuantLedger(quantId);
+    }
+  }
+
+  getEndIndex(): number {
+    const page = this.inventoryService.balancesPage();
+    const limit = this.inventoryService.balancesLimit();
+    const total = this.inventoryService.balancesTotal();
+    return Math.min(page * limit, total);
+  }
+
+  formatCurrency(value: string | number): string {
+    const num = Number(value) || 0;
+    return `${num.toLocaleString('vi-VN')} đ`;
+  }
+
+  getAvailableBadgeClass(available: number): string {
+    if (available > 5) {
+      return 'text-primary-strong font-bold';
+    }
+    if (available > 0) {
+      return 'text-warning font-bold';
+    }
+    return 'text-danger font-bold';
+  }
+}

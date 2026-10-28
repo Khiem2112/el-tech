@@ -1,0 +1,35 @@
+{
+  "customerIdentityAmbiguous": {
+    "success": false,
+    "error": {
+      "code": "CUSTOMER_IDENTITY_AMBIGUOUS",
+      "ruleId": "CUS-016",
+      "messageKey": "error.identityAmbiguous",
+      "details": {},
+      "retryable": false,
+      "correlationId": "f0a4c445-df4f-47ea-a4fd-e793c2945f40"
+    }
+  },
+  "priceQuoteStale": {
+    "success": false,
+    "error": {
+      "code": "PRICE_QUOTE_STALE",
+      "ruleId": "PRC-002",
+      "messageKey": "error.quoteStale",
+      "details": { "quoteVersion": "new-version" },
+      "retryable": true,
+      "correlationId": "e21bbc07-79fb-4544-829c-3eb5105d3061"
+    }
+  },
+  "noSingleBranchCanFulfill": {
+    "success": false,
+    "error": {
+      "code": "NO_SINGLE_BRANCH_CAN_FULFILL",
+      "ruleId": "CHK-012",
+      "messageKey": "error.noSingleBranchCanFulfill",
+      "details": { "unavailableSkuIds": ["sku-example"] },
+      "retryable": false,
+      "correlationId": "864b2d0a-8fdf-422f-b23b-aeb331e43a9e"
+    }
+  }
+}
