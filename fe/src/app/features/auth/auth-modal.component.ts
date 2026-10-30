@@ -313,37 +313,39 @@ export class AuthModalComponent {
     this.isSubmitting.set(true);
 
     try {
+      const currentUrl = this.router.url;
+      const queryParams = currentUrl && currentUrl !== '/' && !currentUrl.startsWith('/dang-nhap-thanh-cong') && !currentUrl.startsWith('/login-success')
+        ? { returnUrl: currentUrl }
+        : undefined;
+
       if (this.authMode() === 'login') {
         await this.auth.login({
           emailOrPhone: this.identifier.trim(),
           password: this.password,
         });
-        this.auth.openAuthModal();
-        this.successMessage.set('Đăng nhập thành công! Đang chuyển hướng...');
       } else {
         await this.auth.register({
           name: this.name.trim(),
           emailOrPhone: this.identifier.trim(),
           password: this.password,
         });
-        this.auth.openAuthModal();
-        this.successMessage.set('Đăng ký tài khoản thành công! Đang chuyển hướng...');
       }
-      this.closeTimer = setTimeout(() => {
-        this.closeModal();
-      }, 2000);
+      this.closeModal();
+      void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
   protected async handleGoogleAuth(): Promise<void> {
+    const currentUrl = this.router.url;
+    const queryParams = currentUrl && currentUrl !== '/' && !currentUrl.startsWith('/dang-nhap-thanh-cong') && !currentUrl.startsWith('/login-success')
+      ? { returnUrl: currentUrl }
+      : undefined;
+
     await this.auth.loginWithGoogle();
-    this.auth.openAuthModal();
-    this.successMessage.set('Đăng nhập Google thành công! Đang chuyển hướng...');
-    this.closeTimer = setTimeout(() => {
-      this.closeModal();
-    }, 2000);
+    this.closeModal();
+    void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
   }
 
   protected handleForgotPassword(): void {
