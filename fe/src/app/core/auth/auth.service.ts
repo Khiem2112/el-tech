@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiResponse } from '../api/api.types';
@@ -36,6 +36,26 @@ export type AuthResponseData = {
 
 const STORAGE_KEY = 'el_tech_user_profile';
 const TOKEN_KEY = 'el_tech_user_token';
+
+function extractErrorMessageKey(error: unknown): string {
+  if (error instanceof HttpErrorResponse) {
+    if (error.error && typeof error.error === 'object' && 'error' in error.error) {
+      const serverErr = (error.error as { error?: { messageKey?: string; code?: string } }).error;
+      if (serverErr?.messageKey) return serverErr.messageKey;
+      if (serverErr?.code) return serverErr.code;
+    }
+    if (error.status === 401) {
+      return 'error.invalidCredentials';
+    }
+    if (error.status === 409) {
+      return 'error.emailAlreadyExists';
+    }
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'error.unknown';
+}
 
 @Injectable({
   providedIn: 'root',
@@ -135,58 +155,73 @@ export class AuthService {
   }
 
   async login(payload: LoginPayload): Promise<boolean> {
-    const response = await firstValueFrom(
-      this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/login`, {
-        identifier: payload.emailOrPhone,
-        password: payload.password,
-        rememberMe: payload.rememberMe,
-      }),
-    );
+    try {
+      const response = await firstValueFrom(
+        this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/login`, {
+          identifier: payload.emailOrPhone,
+          password: payload.password,
+          rememberMe: payload.rememberMe,
+        }),
+      );
 
-    if (!response.success) {
-      throw new Error(response.error.messageKey || 'Đăng nhập không thành công');
+      if (!response.success) {
+        throw new Error(response.error.messageKey || 'error.invalidCredentials');
+      }
+
+      this.saveSession(response.data.token, response.data.user);
+      this.closeAuthModal();
+      return true;
+    } catch (err: unknown) {
+      const messageKey = extractErrorMessageKey(err);
+      throw new Error(messageKey);
     }
-
-    this.saveSession(response.data.token, response.data.user);
-    this.closeAuthModal();
-    return true;
   }
 
   async register(payload: RegisterPayload): Promise<boolean> {
-    const response = await firstValueFrom(
-      this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/register`, {
-        name: payload.name,
-        email: payload.email,
-        phone: payload.phone,
-        password: payload.password,
-      }),
-    );
+    try {
+      const response = await firstValueFrom(
+        this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/register`, {
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          password: payload.password,
+        }),
+      );
 
-    if (!response.success) {
-      throw new Error(response.error.messageKey || 'Đăng ký không thành công');
+      if (!response.success) {
+        throw new Error(response.error.messageKey || 'error.registrationFailed');
+      }
+
+      this.saveSession(response.data.token, response.data.user);
+      this.closeAuthModal();
+      return true;
+    } catch (err: unknown) {
+      const messageKey = extractErrorMessageKey(err);
+      throw new Error(messageKey);
     }
-
-    this.saveSession(response.data.token, response.data.user);
-    this.closeAuthModal();
-    return true;
   }
 
   async loginWithGoogle(): Promise<boolean> {
-    const response = await firstValueFrom(
-      this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/google`, {
-        email: 'hoangnam.tech@gmail.com',
-        name: 'Nguyễn Hoàng Nam',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-      }),
-    );
+    try {
+      const response = await firstValueFrom(
+        this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/google`, {
+          email: 'hoangnam.tech@gmail.com',
+          name: 'Nguyễn Hoàng Nam',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        }),
+      );
 
-    if (!response.success) {
-      throw new Error(response.error.messageKey || 'Đăng nhập Google không thành công');
+      if (!response.success) {
+        throw new Error(response.error.messageKey || 'error.googleAuthFailed');
+      }
+
+      this.saveSession(response.data.token, response.data.user);
+      this.closeAuthModal();
+      return true;
+    } catch (err: unknown) {
+      const messageKey = extractErrorMessageKey(err);
+      throw new Error(messageKey);
     }
-
-    this.saveSession(response.data.token, response.data.user);
-    this.closeAuthModal();
-    return true;
   }
 
   async updateProfile(updates: Partial<UserProfile>): Promise<void> {

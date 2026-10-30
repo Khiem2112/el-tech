@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -404,17 +405,30 @@ export class AuthModalComponent {
       this.closeModal();
       void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : '';
+      let message = err instanceof Error ? err.message : '';
+      if (err instanceof HttpErrorResponse) {
+        if (err.status === 401) {
+          message = 'error.invalidCredentials';
+        } else if (err.status === 409) {
+          message = 'error.emailAlreadyExists';
+        }
+      }
+
       if (message.includes('emailAlreadyExists') || message.includes('EMAIL_ALREADY_EXISTS')) {
         this.errorMessage.set('Email này đã được sử dụng. Vui lòng đăng nhập hoặc sử dụng email khác.');
-      } else if (message.includes('invalidCredentials') || message.includes('INVALID_CREDENTIALS')) {
-        this.errorMessage.set('Email/Số điện thoại hoặc mật khẩu không chính xác.');
+      } else if (
+        message.includes('invalidCredentials') ||
+        message.includes('INVALID_CREDENTIALS') ||
+        message.includes('401') ||
+        this.authMode() === 'login'
+      ) {
+        this.errorMessage.set('Email hoặc mật khẩu sai.');
       } else if (message.includes('invalidPhone') || message.includes('INVALID_PHONE')) {
         this.errorMessage.set('Số điện thoại không hợp lệ (tối thiểu 9 số).');
       } else if (message.includes('invalidEmail') || message.includes('INVALID_EMAIL')) {
         this.errorMessage.set('Địa chỉ email không đúng định dạng.');
       } else {
-        this.errorMessage.set('Đã xảy ra lỗi trong quá trình xác thực. Vui lòng kiểm tra lại thông tin.');
+        this.errorMessage.set('Đã xảy ra lỗi trong quá trình đăng ký. Vui lòng kiểm tra lại thông tin.');
       }
     } finally {
       this.isSubmitting.set(false);
