@@ -2,17 +2,6 @@
 
 <!-- Top Header Navigation Shell (Light Theme Alignment) -->
 <header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-xl border-b border-line text-foreground select-none shadow-xs">
-  <!-- Top Utility Telemetry Strip -->
-  <div class="bg-surface-alt px-4 sm:px-6 lg:px-8 py-1.5 text-xs border-b border-line/60 text-muted flex flex-wrap justify-between items-center gap-2">
-    <div class="flex items-center gap-2 text-foreground/85">
-      <lucide-icon name="phone" class="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
-      <span>Hotline kỹ thuật: <strong class="text-foreground font-bold">1900.6868</strong></span>
-    </div>
-    <div class="flex items-center gap-4 text-xs">
-      <a routerLink="/tra-cuu-don" class="hover:text-primary transition-colors text-muted hover:text-foreground">Tra cứu đơn hàng</a>
-      <a routerLink="/chinh-sach" class="hover:text-primary transition-colors text-muted hover:text-foreground">Bảo hành &amp; Đổi trả</a>
-    </div>
-  </div>
 
   <!-- Main Navigation Row -->
   <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -179,18 +168,17 @@
       }
 
       <!-- Cart Button with Counter -->
-      <button
-        type="button"
-        (click)="openCart()"
+      <a
+        routerLink="/gio-hang"
         class="relative h-9 px-3 rounded-lg border border-line bg-surface-alt hover:bg-secondary-container text-foreground flex items-center gap-1.5 text-xs font-bold transition-colors cursor-pointer"
-        aria-label="Mở giỏ hàng"
+        aria-label="Xem giỏ hàng"
       >
         <lucide-icon name="shopping-cart" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
         <span class="hidden sm:inline">Giỏ hàng</span>
         <span appBadge variant="success" class="text-xs font-bold py-0.5 px-1.5 rounded-sm tabular">
           {{ cart.itemCount() }}
         </span>
-      </button>
+      </a>
     </div>
   </div>
 

@@ -364,27 +364,15 @@ function calculateAvailableTransitions(
         });
       }
       transitions.push({
-        targetStatus: OrderStatus.RETURNING,
-        label: 'Chuyen Hoan Ve Kho',
-        actionKey: 'RETURNING',
-        modalId: 'MOD-14',
-      });
-      break;
-
-    case OrderStatus.RETURNING:
-      transitions.push({
-        targetStatus: OrderStatus.RETURNED_TO_BRANCH,
-        label: 'Xac Nhan Hang Ve Kho',
-        actionKey: 'RETURNED_TO_BRANCH',
-        modalId: 'MOD-15',
+        targetStatus: OrderStatus.SHIPPING,
+        label: 'Len Lich Giao Lai',
+        actionKey: 'REDELIVERY',
+        modalId: 'MOD-13',
         isPrimary: true,
       });
-      break;
-
-    case OrderStatus.RETURNED_TO_BRANCH:
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Va Nhap Kho',
+        label: 'Huy Don Hang',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,

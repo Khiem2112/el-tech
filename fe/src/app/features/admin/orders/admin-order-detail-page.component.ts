@@ -442,10 +442,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
         return 'Đang giao hàng';
       case 'DELIVERY_FAILED':
         return 'Giao thất bại';
-      case 'RETURNING':
-        return 'Đang chuyển hoàn';
-      case 'RETURNED_TO_BRANCH':
-        return 'Đã về kho';
+      
       case 'COMPLETED':
         return 'Hoàn tất';
       case 'ON_HOLD':
@@ -475,7 +472,6 @@ export class AdminOrderDetailPageComponent implements OnInit {
       case 'ON_HOLD':
         return 'bg-warning/10 text-warning border border-warning/30';
       case 'CANCELLED':
-      case 'RETURNING':
       case 'DELIVERY_FAILED':
         return 'bg-destructive/10 text-destructive border border-destructive/20';
       default:

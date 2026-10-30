@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiClientService } from '../../core/api/api-client.service';
 import { createIdempotencyKey } from '../../core/api/idempotency';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
@@ -222,38 +223,24 @@ type SubmitResult = {
               @if (fulfillment === 'PICKUP') {
                 <div class="space-y-3 pt-1">
                   <label class="block text-xs font-bold text-foreground">
-                    Chọn Showroom bàn giao máy:
+                    Địa điểm nhận bàn giao máy:
                   </label>
-                  <div class="grid gap-2">
-                    @for (branch of showroomBranches; track branch.id) {
-                      <label
-                        class="p-3 rounded-lg border cursor-pointer flex items-center justify-between transition-all"
-                        [class.border-primary]="selectedBranchId === branch.id"
-                        [class.bg-primary/5]="selectedBranchId === branch.id"
-                        [class.border-line]="selectedBranchId !== branch.id"
-                      >
-                        <div class="flex items-center gap-3">
-                          <input
-                            type="radio"
-                            name="showroomBranch"
-                            [value]="branch.id"
-                            [(ngModel)]="selectedBranchId"
-                            class="text-primary focus:ring-primary"
-                          >
-                          <div>
-                            <span class="text-xs font-bold text-foreground block">{{ branch.name }}</span>
-                            <span class="text-xs text-muted">{{ branch.address }}</span>
-                          </div>
-                        </div>
-                        <span appBadge variant="outline" class="text-xs text-primary border-primary/30">
-                          SẴN HÀNG
-                        </span>
-                      </label>
-                    }
+                  <div class="p-4 rounded-lg border border-primary/30 bg-primary/5 flex items-start justify-between">
+                    <div class="space-y-1">
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-foreground block">Showroom EL-TECH</span>
+                        <span appBadge variant="outline" class="text-xs text-primary border-primary/30">SHOWROOM CHÍNH</span>
+                      </div>
+                      <p class="text-xs text-muted">280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh</p>
+                      <p class="text-xs text-muted">Thời gian phục vụ: 08:30 - 21:30 hàng ngày</p>
+                    </div>
+                    <span appBadge variant="outline" class="text-xs text-primary border-primary/30 shrink-0">
+                      SẴN HÀNG
+                    </span>
                   </div>
                   <p class="text-xs text-muted flex items-center gap-1.5 pt-1">
                     <lucide-icon name="ShieldCheck" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                    <span>Nhận tại cửa hàng không yêu cầu nhập địa chỉ nhà, được hỗ trợ unbox và test tại chỗ.</span>
+                    <span>Nhận tại showroom được hỗ trợ unbox và kiểm tra linh kiện trực tiếp cùng kỹ thuật viên.</span>
                   </p>
                 </div>
               }
@@ -595,10 +582,10 @@ type SubmitResult = {
                   <div class="bg-surface-dark text-foreground-dark p-3 rounded-lg flex items-center justify-between text-xs border border-line-dark">
                     <div class="flex items-center gap-1.5 text-slate-300">
                       <lucide-icon name="Clock" class="size-4 text-warning" aria-hidden="true"></lucide-icon>
-                      <span>Giữ đơn & mã QR trong:</span>
+                      <span>Thời gian giữ đơn VietQR:</span>
                     </div>
-                    <span class="text-sm font-bold text-primary tabular">
-                      {{ formattedCountdown() }}
+                    <span class="text-xs font-bold text-primary">
+                      20 phút sau khi tạo đơn
                     </span>
                   </div>
                 </div>
@@ -632,21 +619,21 @@ type SubmitResult = {
     </section>
   `,
 })
-export class CheckoutPageComponent implements OnInit, OnDestroy {
+export class CheckoutPageComponent implements OnInit {
   private readonly api = inject(ApiClientService);
   protected readonly cart = inject(CartService);
   private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
 
-  protected name = 'Nguyễn Hoàng Nam';
-  protected phone = '0988 234 567';
-  protected email = 'hoangnam.tech@gmail.com';
+  protected name = '';
+  protected phone = '';
+  protected email = '';
   protected fulfillment: 'PICKUP' | 'DELIVERY' = 'PICKUP';
   protected paymentMethod: 'QR' | 'COD' = 'QR';
-  protected selectedBranchId = 1;
 
-  protected province = 'TP. Hồ Chí Minh';
-  protected district = 'Quận 10';
-  protected streetAddress = '280 Ba Tháng Hai, Phường 12';
+  protected province = '';
+  protected district = '';
+  protected streetAddress = '';
   protected technicalNotes = '';
 
   protected readonly appliedCoupon = signal(true);
@@ -656,28 +643,12 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   protected readonly expandedBuilds = signal<Record<string, boolean>>({});
   protected readonly copiedAccount = signal(false);
   protected readonly copiedMemo = signal(false);
-  protected readonly countdownSeconds = signal(1200);
   protected readonly quoteResult = signal<Quote | null>(null);
   protected readonly orderResult = signal<SubmitResult | null>(null);
   protected readonly submitting = signal(false);
 
-  private countdownTimerId: ReturnType<typeof setInterval> | null = null;
-
-  protected readonly showroomBranches = [
-    { id: 1, name: 'Hà Nội: 45 Thái Hà, Q. Đống Đa', address: '45 Thái Hà, Trung Liệt, Đống Đa, Hà Nội' },
-    { id: 2, name: 'TP.HCM: 280 Ba Tháng Hai, Quận 10', address: '280 Ba Tháng Hai, Phường 12, Quận 10, TP.HCM' },
-    { id: 3, name: 'Đà Nẵng: 112 Hàm Nghi, Q. Thanh Khê', address: '112 Hàm Nghi, Thạc Gián, Thanh Khê, Đà Nẵng' },
-  ];
-
   protected readonly standaloneItems = computed(() => {
     return this.cart.items().filter((item) => !item.pcBuildKey && !item.pcBuildName);
-  });
-
-  protected readonly formattedCountdown = computed(() => {
-    const total = this.countdownSeconds();
-    const minutes = Math.floor(total / 60);
-    const seconds = total % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   });
 
   protected readonly computedGrandTotal = computed(() => {
@@ -689,15 +660,18 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    void this.initCheckout();
-    this.startCountdown();
-  }
-
-  ngOnDestroy(): void {
-    if (this.countdownTimerId) {
-      clearInterval(this.countdownTimerId);
-      this.countdownTimerId = null;
+    if (this.auth.isLoggedIn()) {
+      const user = this.auth.currentUser();
+      if (user) {
+        this.name = user.name || '';
+        this.phone = user.phone || '';
+        this.email = user.email || '';
+        if (user.address) {
+          this.streetAddress = user.address;
+        }
+      }
     }
+    void this.initCheckout();
   }
 
   private async initCheckout(): Promise<void> {
@@ -706,12 +680,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       await this.cart.load();
     }
     await this.fetchQuote();
-  }
-
-  private startCountdown(): void {
-    this.countdownTimerId = setInterval(() => {
-      this.countdownSeconds.update((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
   }
 
   protected setFulfillment(method: 'PICKUP' | 'DELIVERY'): void {
@@ -729,10 +697,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       });
       if (response.success) {
         this.quoteResult.set(response.data);
-        const availableBranch = response.data.branches.find((b) => b.available);
-        if (availableBranch) {
-          this.selectedBranchId = availableBranch.id;
-        }
       }
     } catch {
       // Keep existing calculated values on network or background quote failure
@@ -793,7 +757,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
           receiverEmail: this.email,
           receiverPhone: this.phone,
           fulfillmentMethod: this.fulfillment,
-          branchId: this.fulfillment === 'PICKUP' ? this.selectedBranchId : undefined,
           paymentMethod: this.paymentMethod,
           deliveryAddress,
         },

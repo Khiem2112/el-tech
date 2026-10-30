@@ -221,10 +221,11 @@ async function seedDemoData(): Promise<void> {
     seededBundles.push(bundle);
   }
 
-  // Get branches for orders
-  const branches = await prisma.branch.findMany({ take: 2 });
-  const branchHn = branches[0] || { id: 1, name: 'Chi nhanh Ha Noi - Cau Giay' };
-  const branchHcm = branches[1] || { id: 2, name: 'Chi nhanh TP. Ho Chi Minh - Quan 10' };
+  // Get branch for orders (concentrated on single showroom)
+  const branches = await prisma.branch.findMany({ take: 1 });
+  const branchMain = branches[0] || { id: 1, name: 'Showroom EL-TECH' };
+  const branchHn = branchMain;
+  const branchHcm = branchMain;
 
   // Seed 6 Orders across Kanban pipeline
   console.log('Seed 6 don hang trai dai 5 giai doan Kanban...');

@@ -52,7 +52,7 @@ export class StorefrontShellComponent {
   protected readonly navigation: readonly NavItem[] = [
     { label: 'Trang chủ', path: '/' },
     { label: 'Linh kiện PC', path: '/san-pham' },
-    { label: 'Build PC', path: '/tu-lap-pc' },
+    { label: 'PC Builder', path: '/tu-lap-pc' },
     { label: 'Tra cứu đơn', path: '/tra-cuu-don' },
     { label: 'Chính sách', path: '/chinh-sach' },
   ];

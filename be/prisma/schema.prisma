@@ -81,8 +81,6 @@ enum OrderStatus {
   READY_FOR_PICKUP
   SHIPPING
   DELIVERY_FAILED
-  RETURNING
-  RETURNED_TO_BRANCH
   COMPLETED
   ON_HOLD
   CANCELLED
@@ -135,7 +133,6 @@ enum DepositDisposition {
 
 enum PaymentChargeType {
   INITIAL_ORDER
-  CUSTOM_BUILD_DEPOSIT
   AMENDMENT
 }
 
@@ -1178,22 +1175,23 @@ model PurchaseOrderLine {
 
 model Review {
   id                String  @id @default(uuid()) @db.Uuid
-  customerId        String  @map("customer_id") @db.Uuid
+  customerId        String? @map("customer_id") @db.Uuid
+  authorName        String? @map("author_name")
   productTemplateId Int     @map("product_template_id")
   skuId             Int     @map("sku_id")
-  orderId           String  @map("order_id") @db.Uuid
-  orderLineId       String  @unique @map("order_line_id") @db.Uuid
+  orderId           String? @map("order_id") @db.Uuid
+  orderLineId       String? @unique @map("order_line_id") @db.Uuid
   rating            Int
   text              String  @db.Text
   isVisible         Boolean @default(true) @map("is_visible")
   hiddenReason      String? @map("hidden_reason")
   revisionHistory   Json    @default("[]") @map("revision_history") @db.JsonB
 
-  customer        Customer        @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  customer        Customer?       @relation(fields: [customerId], references: [id], onDelete: Restrict)
   productTemplate ProductTemplate @relation(fields: [productTemplateId], references: [id], onDelete: Restrict)
   sku             ProductVariant  @relation(fields: [skuId], references: [id], onDelete: Restrict)
-  order           Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
-  orderLine       OrderLine       @relation(fields: [orderLineId], references: [id], onDelete: Restrict)
+  order           Order?          @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  orderLine       OrderLine?      @relation(fields: [orderLineId], references: [id], onDelete: Restrict)
 
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)

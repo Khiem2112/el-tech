@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgCpu" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="ihsMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e2e8f0"/>
+      <stop offset="40%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="am5Pcb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgCpu)"/>
+  <!-- Substrate PCB -->
+  <rect x="110" y="50" width="180" height="180" rx="6" fill="url(#am5Pcb)" stroke="#22c55e" stroke-width="2"/>
+  <!-- Gold alignment triangle -->
+  <polygon points="116,56 128,56 116,68" fill="#eab308"/>
+  <!-- Heatspreader IHS AM5 Octagonal Cuts -->
+  <path d="M 140,75 L 260,75 L 275,90 L 275,190 L 260,205 L 140,205 L 125,190 L 125,90 Z" fill="url(#ihsMetal)" stroke="#334155" stroke-width="2"/>
+  <!-- Laser engraved AMD Ryzen branding -->
+  <circle cx="200" cy="120" r="24" fill="none" stroke="#ea580c" stroke-width="4" stroke-dasharray="80 15"/>
+  <text x="200" y="156" font-family="Inter, sans-serif" font-size="14" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">AMD RYZEN</text>
+  <text x="200" y="174" font-family="monospace" font-size="11" font-weight="bold" fill="#ea580c" text-anchor="middle">7 9800X3D</text>
+  <text x="200" y="190" font-family="monospace" font-size="8" fill="#cbd5e1" text-anchor="middle">AM5 | 8-CORE 16-THREAD 3D V-CACHE</text>
+  <text x="200" y="260" font-family="Inter, sans-serif" font-size="12" font-weight="bold" fill="#f8fafc" text-anchor="middle">AMD Ryzen 7 9800X3D Processor</text>
+</svg>

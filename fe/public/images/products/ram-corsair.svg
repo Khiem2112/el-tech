@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgRam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#161b26"/>
+    </linearGradient>
+    <linearGradient id="rgbBar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#76b900"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <linearGradient id="heatsinkMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgRam)"/>
+  <!-- Module 1 -->
+  <rect x="50" y="90" width="300" height="60" rx="4" fill="url(#heatsinkMetal)" stroke="#475569" stroke-width="1.5"/>
+  <rect x="55" y="92" width="290" height="10" rx="3" fill="url(#rgbBar)"/>
+  <g fill="#eab308">
+    <rect x="70" y="150" width="4" height="10"/>
+    <rect x="78" y="150" width="4" height="10"/>
+    <rect x="86" y="150" width="4" height="10"/>
+    <rect x="94" y="150" width="4" height="10"/>
+    <rect x="102" y="150" width="4" height="10"/>
+    <rect x="110" y="150" width="4" height="10"/>
+    <rect x="118" y="150" width="4" height="10"/>
+    <rect x="126" y="150" width="4" height="10"/>
+    <rect x="134" y="150" width="4" height="10"/>
+    <rect x="142" y="150" width="4" height="10"/>
+    <rect x="150" y="150" width="4" height="10"/>
+    <rect x="158" y="150" width="4" height="10"/>
+    <rect x="166" y="150" width="4" height="10"/>
+    <rect x="174" y="150" width="4" height="10"/>
+    <rect x="182" y="150" width="4" height="10"/>
+    <rect x="200" y="150" width="4" height="10"/>
+    <rect x="208" y="150" width="4" height="10"/>
+    <rect x="216" y="150" width="4" height="10"/>
+    <rect x="224" y="150" width="4" height="10"/>
+    <rect x="232" y="150" width="4" height="10"/>
+    <rect x="240" y="150" width="4" height="10"/>
+    <rect x="248" y="150" width="4" height="10"/>
+    <rect x="256" y="150" width="4" height="10"/>
+    <rect x="264" y="150" width="4" height="10"/>
+    <rect x="272" y="150" width="4" height="10"/>
+    <rect x="280" y="150" width="4" height="10"/>
+    <rect x="288" y="150" width="4" height="10"/>
+    <rect x="296" y="150" width="4" height="10"/>
+    <rect x="304" y="150" width="4" height="10"/>
+    <rect x="312" y="150" width="4" height="10"/>
+    <rect x="320" y="150" width="4" height="10"/>
+  </g>
+  <text x="70" y="125" font-family="Inter, sans-serif" font-size="11" font-weight="900" fill="#f8fafc" letter-spacing="1">CORSAIR DOMINATOR TITANIUM</text>
+  <text x="70" y="140" font-family="monospace" font-size="9" fill="#76b900">DDR5 64GB (2x32GB) 6000MHz CL30 EXPO/XMP</text>
+
+  <!-- Module 2 Lower Shadow -->
+  <rect x="60" y="165" width="300" height="60" rx="4" fill="url(#heatsinkMetal)" stroke="#475569" stroke-width="1.5"/>
+  <rect x="65" y="167" width="290" height="10" rx="3" fill="url(#rgbBar)"/>
+  <text x="80" y="200" font-family="Inter, sans-serif" font-size="11" font-weight="900" fill="#f8fafc" letter-spacing="1">CORSAIR DOMINATOR TITANIUM</text>
+  <text x="80" y="215" font-family="monospace" font-size="9" fill="#38bdf8">DDR5 64GB (2x32GB) 6000MHz CL30 EXPO/XMP</text>
+
+  <text x="200" y="270" font-family="Inter, sans-serif" font-size="11" font-weight="bold" fill="#f8fafc" text-anchor="middle">Corsair Dominator Titanium RGB DDR5 64GB Kit</text>
+</svg>

@@ -233,11 +233,14 @@ type StatusBadgeConfig = {
                   routerLink="/tra-cuu-don"
                   class="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-muted hover:text-foreground hover:bg-surface-alt transition-colors"
                 >
-                  <div class="flex items-center gap-2.5">
-                    <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
-                    <span>Tra cứu đơn lẻ (Khách)</span>
+                  <div class="flex items-center gap-2.5 min-w-0">
+                    <lucide-icon name="Search" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                    <div class="min-w-0">
+                      <div class="text-xs font-medium text-foreground">Tra cứu đơn vãng lai khác</div>
+                      <div class="text-xs text-muted truncate">Dành cho đơn hàng đặt không đăng nhập</div>
+                    </div>
                   </div>
-                  <lucide-icon name="ChevronRight" class="size-4 text-muted" aria-hidden="true"></lucide-icon>
+                  <lucide-icon name="ChevronRight" class="size-4 text-muted shrink-0" aria-hidden="true"></lucide-icon>
                 </a>
 
                 <a
@@ -246,7 +249,7 @@ type StatusBadgeConfig = {
                 >
                   <div class="flex items-center gap-2.5">
                     <lucide-icon name="ShieldCheck" class="size-4" aria-hidden="true"></lucide-icon>
-                    <span>Bảo hành & Đổi trả</span>
+                    <span>Chính sách & Hỗ trợ</span>
                   </div>
                   <lucide-icon name="ChevronRight" class="size-4 text-muted" aria-hidden="true"></lucide-icon>
                 </a>
@@ -1129,26 +1132,8 @@ export class ProfilePageComponent implements OnInit {
       const res = await this.api.get<readonly CustomerOrderDto[]>(
         `/orders/customer?${paramName}=${encodeURIComponent(identifier)}`
       );
-      if (res.success && res.data.length > 0) {
-        this.customerOrders.set(res.data);
-      } else if (res.success && res.data.length === 0) {
-        this.customerOrders.set([
-          {
-            id: 'ord-demo-01',
-            code: 'ELT-2026-94821',
-            status: 'ASSEMBLING',
-            grandTotal: 48500000,
-            subtotal: 48500000,
-            receiverName: currentUser.name || 'Khách hàng EL-TECH',
-            receiverPhone: currentUser.phone || '0912345678',
-            receiverAddress: '280 Ba Tháng Hai, Phường 12, Quận 10, TP.HCM',
-            createdAt: new Date().toISOString(),
-            otpCode: '489-102',
-            lines: [
-              { id: '1', name: 'PC Pro Creator i7-14700K / RTX 4070 Ti Super', quantity: 1, unitPrice: 48500000 },
-            ],
-          },
-        ]);
+      if (res.success) {
+        this.customerOrders.set(res.data && res.data.length > 0 ? res.data : []);
       } else {
         this.ordersError.set('Không thể tải danh sách đơn hàng.');
       }

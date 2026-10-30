@@ -39,20 +39,21 @@ export type AdminReviewRevisionHistoryItemDto = {
 
 export type AdminReviewItemDto = {
   readonly id: string;
-  readonly customerId: string;
+  readonly customerId: string | null;
+  readonly authorName: string | null;
   readonly productTemplateId: number;
   readonly skuId: number;
-  readonly orderId: string;
-  readonly orderLineId: string;
+  readonly orderId: string | null;
+  readonly orderLineId: string | null;
   readonly rating: number;
   readonly text: string;
   readonly isVisible: boolean;
   readonly hiddenReason: string | null;
   readonly revisionHistory: readonly AdminReviewRevisionHistoryItemDto[];
-  readonly customer: AdminReviewCustomerDto;
+  readonly customer: AdminReviewCustomerDto | null;
   readonly productTemplate: AdminReviewProductDto;
   readonly sku: AdminReviewSkuDto;
-  readonly order: AdminReviewOrderDto;
+  readonly order: AdminReviewOrderDto | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
@@ -82,11 +83,12 @@ function parseRevisionHistory(history: unknown): readonly AdminReviewRevisionHis
 
 function mapReviewToDto(review: {
   id: string;
-  customerId: string;
+  customerId: string | null;
+  authorName?: string | null;
   productTemplateId: number;
   skuId: number;
-  orderId: string;
-  orderLineId: string;
+  orderId: string | null;
+  orderLineId: string | null;
   rating: number;
   text: string;
   isVisible: boolean;
@@ -94,14 +96,15 @@ function mapReviewToDto(review: {
   revisionHistory: unknown;
   createdAt: Date;
   updatedAt: Date;
-  customer: { id: string; name: string; email: string; phone: string };
+  customer: { id: string; name: string; email: string; phone: string } | null;
   productTemplate: { id: number; name: string; slug: string };
   sku: { id: number; sku: string; variationLabel: string | null };
-  order: { id: string; code: string };
+  order: { id: string; code: string } | null;
 }): AdminReviewItemDto {
   return {
     id: review.id,
     customerId: review.customerId,
+    authorName: review.authorName ?? null,
     productTemplateId: review.productTemplateId,
     skuId: review.skuId,
     orderId: review.orderId,
@@ -111,12 +114,14 @@ function mapReviewToDto(review: {
     isVisible: review.isVisible,
     hiddenReason: review.hiddenReason,
     revisionHistory: parseRevisionHistory(review.revisionHistory),
-    customer: {
-      id: review.customer.id,
-      name: review.customer.name,
-      email: review.customer.email,
-      phone: review.customer.phone,
-    },
+    customer: review.customer
+      ? {
+          id: review.customer.id,
+          name: review.customer.name,
+          email: review.customer.email,
+          phone: review.customer.phone,
+        }
+      : null,
     productTemplate: {
       id: review.productTemplate.id,
       name: review.productTemplate.name,
@@ -127,10 +132,12 @@ function mapReviewToDto(review: {
       sku: review.sku.sku,
       variationLabel: review.sku.variationLabel,
     },
-    order: {
-      id: review.order.id,
-      code: review.order.code,
-    },
+    order: review.order
+      ? {
+          id: review.order.id,
+          code: review.order.code,
+        }
+      : null,
     createdAt: review.createdAt.toISOString(),
     updatedAt: review.updatedAt.toISOString(),
   };

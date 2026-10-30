@@ -907,7 +907,7 @@ export class OrderFulfillmentShippingService {
       await tx.order.update({
         where: { id: order.id },
         data: {
-          status: OrderStatus.RETURNING,
+          status: OrderStatus.DELIVERY_FAILED,
         },
       });
 
@@ -915,7 +915,7 @@ export class OrderFulfillmentShippingService {
         data: {
           orderId: order.id,
           previousStatus: order.status,
-          nextStatus: OrderStatus.RETURNING,
+          nextStatus: OrderStatus.DELIVERY_FAILED,
           reason: historyReason,
           actorType: ActorType.ADMIN,
           actorId: adminId,
@@ -944,7 +944,7 @@ export class OrderFulfillmentShippingService {
       success: true,
       orderId: order.id,
       orderCode: order.code,
-      status: OrderStatus.RETURNING,
+      status: OrderStatus.DELIVERY_FAILED,
       message: 'Da xac nhan kien hang dang tren duong chuyen hoan ve chi nhanh',
     };
   }
@@ -993,15 +993,15 @@ export class OrderFulfillmentShippingService {
       });
     }
 
-    if (order.status !== OrderStatus.RETURNING) {
+    if (order.status !== OrderStatus.DELIVERY_FAILED) {
       throw new DomainError('INVALID_ORDER_STATE', {
         ruleId: 'ORD-025',
         messageKey: 'error.invalidOrderState',
         status: 409,
         details: {
           currentStatus: order.status,
-          requiredStatus: OrderStatus.RETURNING,
-          message: 'Don hang phai o trang thai RETURNING de xac nhan da ve kho chi nhanh',
+          requiredStatus: OrderStatus.DELIVERY_FAILED,
+          message: 'Don hang phai o trang thai DELIVERY_FAILED de xac nhan nhap lai kho',
         },
       });
     }
@@ -1168,7 +1168,7 @@ export class OrderFulfillmentShippingService {
       await tx.order.update({
         where: { id: order.id },
         data: {
-          status: OrderStatus.RETURNED_TO_BRANCH,
+          status: OrderStatus.CANCELLED,
         },
       });
 
@@ -1178,7 +1178,7 @@ export class OrderFulfillmentShippingService {
         data: {
           orderId: order.id,
           previousStatus: order.status,
-          nextStatus: OrderStatus.RETURNED_TO_BRANCH,
+          nextStatus: OrderStatus.CANCELLED,
           reason: historyReason,
           actorType: ActorType.ADMIN,
           actorId: adminId,
@@ -1208,7 +1208,7 @@ export class OrderFulfillmentShippingService {
       success: true,
       orderId: order.id,
       orderCode: order.code,
-      status: OrderStatus.RETURNED_TO_BRANCH,
+      status: OrderStatus.CANCELLED,
       message: 'Da doi soat 100% linh kien, phuc hoi ton kho thuc te onHand va chuyen don ve RETURNED_TO_BRANCH',
       stockMoveCode: reversalCode,
     };

@@ -645,10 +645,7 @@ export class OrderExceptionService {
         });
 
         if (order.payment) {
-          const nextPaymentState =
-            reviewCharge.chargeType === PaymentChargeType.CUSTOM_BUILD_DEPOSIT
-              ? PaymentState.PARTIALLY_PAID
-              : PaymentState.PAID;
+          const nextPaymentState = PaymentState.PAID;
 
           await tx.payment.update({
             where: { id: order.payment.id },

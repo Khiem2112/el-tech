@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgMb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="100%" stop-color="#161b26"/>
+    </linearGradient>
+    <linearGradient id="armorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bgMb)"/>
+  <!-- Motherboard PCB -->
+  <rect x="70" y="30" width="260" height="240" rx="4" fill="#090d16" stroke="#272f3d" stroke-width="2"/>
+  <!-- Rear IO Armor -->
+  <rect x="75" y="35" width="45" height="110" rx="4" fill="url(#armorGrad)" stroke="#475569" stroke-width="1.5"/>
+  <text x="82" y="75" font-family="monospace" font-size="8" fill="#38bdf8" transform="rotate(-90 82 75)">AORUS MASTER</text>
+  <!-- VRM Top Heatsink -->
+  <rect x="125" y="35" width="80" height="30" rx="2" fill="url(#armorGrad)" stroke="#475569" stroke-width="1.5"/>
+  <!-- CPU Socket LGA 1851 -->
+  <rect x="135" y="75" width="60" height="60" rx="3" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+  <circle cx="165" cy="105" r="15" fill="#0f172a" stroke="#94a3b8" stroke-width="1"/>
+  <!-- 4 DDR5 RAM Slots -->
+  <rect x="215" y="55" width="6" height="90" fill="#334155" rx="1"/>
+  <rect x="225" y="55" width="6" height="90" fill="#334155" rx="1"/>
+  <rect x="235" y="55" width="6" height="90" fill="#334155" rx="1"/>
+  <rect x="245" y="55" width="6" height="90" fill="#334155" rx="1"/>
+  <!-- M.2 Thermal Armor -->
+  <rect x="125" y="145" width="125" height="30" rx="3" fill="url(#armorGrad)" stroke="#475569" stroke-width="1.5"/>
+  <text x="135" y="165" font-family="monospace" font-size="8" font-weight="bold" fill="#76b900">PCIe 5.0 M.2 THERMAL GUARD</text>
+  <!-- PCIe x16 Slot with Shield -->
+  <rect x="120" y="185" width="130" height="8" rx="2" fill="#cbd5e1" stroke="#475569"/>
+  <!-- Lower Chipset Armor -->
+  <rect x="180" y="200" width="85" height="60" rx="4" fill="url(#armorGrad)" stroke="#475569" stroke-width="1.5"/>
+  <text x="195" y="235" font-family="Inter, sans-serif" font-size="10" font-weight="bold" fill="#f8fafc">Z890</text>
+  <!-- Label -->
+  <text x="200" y="285" font-family="Inter, sans-serif" font-size="11" font-weight="bold" fill="#f8fafc" text-anchor="middle">GIGABYTE Z890 AORUS MASTER</text>
+</svg>

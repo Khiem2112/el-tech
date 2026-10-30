@@ -46,7 +46,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               size="lg"
             >
               <lucide-icon name="Wrench" class="size-4" aria-hidden="true"></lucide-icon>
-              <span>Tự lắp ráp PC</span>
+              <span>Đến PC Builder</span>
             </a>
           </div>
         </div>
@@ -56,7 +56,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <div class="bg-surface-elevated p-6 rounded-2xl border border-line-dark shadow-xl space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-line-dark">
               <span class="text-xs font-bold text-primary uppercase tracking-wider">EL-TITAN WORKSTATION</span>
-              <span class="text-xs text-muted">Lắp sẵn &amp; kiểm định</span>
+              <span class="text-xs text-muted">Dựng sẵn &amp; kiểm định</span>
             </div>
             
             <div class="space-y-2">
@@ -96,7 +96,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 size="md"
                 class="font-bold"
               >
-                <span>Tùy biến cấu hình</span>
+                <span>Tùy chỉnh cấu hình</span>
                 <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
               </a>
             </div>
@@ -163,7 +163,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
         <div>
           <h2 class="text-xl sm:text-2xl font-black text-foreground tracking-tight">
-            Cấu Hình PC Dựng Sẵn
+            Khám Phá Cấu Hình PC Dựng Sẵn
           </h2>
           <p class="text-xs text-muted mt-0.5">Lắp ráp tiêu chuẩn, cài sẵn hệ điều hành và kiểm tra xung nhịp ổn định trước khi bàn giao</p>
         </div>
@@ -184,7 +184,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
             <div class="space-y-1">
               <h3 class="font-bold text-sm text-foreground">PC EL-CREATOR Studio 4K</h3>
-              <p class="text-xs text-muted">Đồ họa Premiere, DaVinci &amp; Render 3D</p>
+              <p class="text-xs text-muted">Tối ưu Premiere, DaVinci &amp; Render 3D</p>
             </div>
 
             <div class="space-y-1.5 text-xs text-muted pt-2 border-t border-line">
@@ -220,7 +220,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               class="w-full font-bold"
             >
               <lucide-icon name="Wrench" class="size-3.5" aria-hidden="true"></lucide-icon>
-              <span>Tùy biến cấu hình này</span>
+              <span>Tùy chỉnh cấu hình</span>
             </a>
           </div>
         </article>
@@ -235,7 +235,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
             <div class="space-y-1">
               <h3 class="font-bold text-sm text-foreground">PC EL-GAMING Apex Predator</h3>
-              <p class="text-xs text-muted">Gaming 4K Esports, Ray Tracing &amp; DLSS</p>
+              <p class="text-xs text-muted">Chiến mượt Game 4K, Ray Tracing &amp; DLSS</p>
             </div>
 
             <div class="space-y-1.5 text-xs text-muted pt-2 border-t border-line">
@@ -271,7 +271,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               class="w-full font-bold"
             >
               <lucide-icon name="Wrench" class="size-3.5" aria-hidden="true"></lucide-icon>
-              <span>Tùy biến cấu hình này</span>
+              <span>Tùy chỉnh cấu hình</span>
             </a>
           </div>
         </article>
@@ -322,7 +322,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               class="w-full font-bold"
             >
               <lucide-icon name="Wrench" class="size-3.5" aria-hidden="true"></lucide-icon>
-              <span>Tùy biến cấu hình này</span>
+              <span>Tùy chỉnh cấu hình</span>
             </a>
           </div>
         </article>
@@ -376,7 +376,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <span class="text-base font-black text-foreground tabular">
                       {{ product.variants[0].sellingPrice | vnd }}
                     </span>
-                    <span class="text-xs text-muted">Đã gồm VAT</span>
+                    <span class="text-xs text-muted">Đã bao gồm VAT</span>
                   </div>
                   <div class="mt-3">
                     <button
@@ -389,7 +389,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                       (click)="addToCart(product)"
                     >
                       <lucide-icon name="ShoppingCart" class="size-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                      <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ hàng') }}</span>
+                      <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ hàng') }}</span>
                     </button>
                   </div>
                 </div>
