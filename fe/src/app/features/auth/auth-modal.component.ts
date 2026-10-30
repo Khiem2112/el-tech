@@ -103,6 +103,14 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               </span>
             </div>
 
+            <!-- Error Message Banner -->
+            @if (errorMessage(); as err) {
+              <div class="p-3 rounded-lg bg-rose-500/10 border border-rose-500/30 text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                <lucide-icon name="AlertTriangle" class="size-4 shrink-0 text-rose-500" aria-hidden="true"></lucide-icon>
+                <span>{{ err }}</span>
+              </div>
+            }
+
             <!-- Success Message Banner -->
             @if (successMessage(); as msg) {
               <div class="p-3 rounded-lg bg-primary/10 border border-primary/30 text-xs font-bold text-primary flex items-center gap-2 animate-in fade-in duration-200">
@@ -116,7 +124,9 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
               <!-- Name (Register mode only) -->
               @if (authMode() === 'register') {
                 <div class="space-y-1">
-                  <label class="block text-xs font-bold text-foreground" for="regName">Họ và tên</label>
+                  <label class="block text-xs font-bold text-foreground" for="regName">
+                    Họ và tên <span class="text-rose-500 font-bold">*</span>
+                  </label>
                   <div class="relative flex items-center">
                     <input
                       id="regName"
@@ -130,28 +140,72 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     <lucide-icon name="User" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
                   </div>
                 </div>
-              }
 
-              <!-- Email / Phone field -->
-              <div class="space-y-1">
-                <label class="block text-xs font-bold text-foreground" for="authIdentifier">Email hoặc Số điện thoại</label>
-                <div class="relative flex items-center">
-                  <input
-                    id="authIdentifier"
-                    appInput
-                    class="w-full text-sm font-medium pl-8"
-                    [(ngModel)]="identifier"
-                    name="identifier"
-                    placeholder="name@example.com hoặc 0912xxxxxx"
-                    required
-                  >
-                  <lucide-icon name="Mail" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
+                <!-- Email (Register mode only) -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-bold text-foreground" for="regEmail">
+                    Email <span class="text-rose-500 font-bold">*</span>
+                  </label>
+                  <div class="relative flex items-center">
+                    <input
+                      id="regEmail"
+                      type="email"
+                      appInput
+                      class="w-full text-sm font-medium pl-8"
+                      [(ngModel)]="email"
+                      name="email"
+                      placeholder="name@example.com"
+                      required
+                    >
+                    <lucide-icon name="Mail" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
+                  </div>
                 </div>
-              </div>
+
+                <!-- Phone (Register mode only) -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-bold text-foreground" for="regPhone">
+                    Số điện thoại <span class="text-rose-500 font-bold">*</span>
+                  </label>
+                  <div class="relative flex items-center">
+                    <input
+                      id="regPhone"
+                      type="tel"
+                      appInput
+                      class="w-full text-sm font-medium pl-8"
+                      [(ngModel)]="phone"
+                      name="phone"
+                      placeholder="0912xxxxxx"
+                      required
+                    >
+                    <lucide-icon name="Phone" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
+                  </div>
+                </div>
+              } @else {
+                <!-- Email / Phone field (Login mode) -->
+                <div class="space-y-1">
+                  <label class="block text-xs font-bold text-foreground" for="authIdentifier">
+                    Email hoặc Số điện thoại <span class="text-rose-500 font-bold">*</span>
+                  </label>
+                  <div class="relative flex items-center">
+                    <input
+                      id="authIdentifier"
+                      appInput
+                      class="w-full text-sm font-medium pl-8"
+                      [(ngModel)]="identifier"
+                      name="identifier"
+                      placeholder="name@example.com hoặc 0912xxxxxx"
+                      required
+                    >
+                    <lucide-icon name="Mail" class="size-3.5 text-muted absolute left-2.5 pointer-events-none" aria-hidden="true"></lucide-icon>
+                  </div>
+                </div>
+              }
 
               <!-- Password field with Show/Hide toggle -->
               <div class="space-y-1">
-                <label class="block text-xs font-bold text-foreground" for="authPassword">Mật khẩu</label>
+                <label class="block text-xs font-bold text-foreground" for="authPassword">
+                  Mật khẩu <span class="text-rose-500 font-bold">*</span>
+                </label>
                 <div class="relative flex items-center">
                   <input
                     id="authPassword"
@@ -179,7 +233,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 </div>
               </div>
 
-              <!-- Remember me and Forgot password (Login mode only - AU-01) -->
+              <!-- Remember me and Forgot password (Login mode only) -->
               @if (authMode() === 'login') {
                 <div class="flex items-center justify-between text-xs pt-0.5">
                   <label class="flex items-center gap-1.5 cursor-pointer select-none text-muted hover:text-foreground">
@@ -264,8 +318,11 @@ export class AuthModalComponent {
   protected readonly isSubmitting = signal(false);
   protected readonly forgotPasswordSent = signal(false);
   protected readonly successMessage = signal<string | null>(null);
+  protected readonly errorMessage = signal<string | null>(null);
 
   protected name = '';
+  protected email = '';
+  protected phone = '';
   protected identifier = '';
   protected password = '';
   protected rememberMe = true;
@@ -274,12 +331,15 @@ export class AuthModalComponent {
 
   protected resetForm(): void {
     this.name = '';
+    this.email = '';
+    this.phone = '';
     this.identifier = '';
     this.password = '';
     this.rememberMe = true;
     this.showPassword.set(false);
     this.forgotPasswordSent.set(false);
     this.successMessage.set(null);
+    this.errorMessage.set(null);
     if (this.closeTimer) {
       clearTimeout(this.closeTimer);
       this.closeTimer = null;
@@ -302,8 +362,12 @@ export class AuthModalComponent {
     if (this.successMessage()) {
       return false;
     }
-    if (this.authMode() === 'register' && this.name.trim().length === 0) {
-      return false;
+    if (this.authMode() === 'register') {
+      const hasName = this.name.trim().length > 0;
+      const hasEmail = this.email.trim().includes('@') && this.email.trim().length >= 5;
+      const hasPhone = this.phone.trim().replace(/[\s.-]/g, '').length >= 9;
+      const hasPassword = this.password.trim().length >= 4;
+      return hasName && hasEmail && hasPhone && hasPassword;
     }
     return this.identifier.trim().length > 0 && this.password.trim().length >= 4;
   }
@@ -311,41 +375,70 @@ export class AuthModalComponent {
   protected async handleSubmit(): Promise<void> {
     if (!this.canSubmit() || this.isSubmitting()) return;
     this.isSubmitting.set(true);
+    this.errorMessage.set(null);
 
     try {
       const currentUrl = this.router.url;
-      const queryParams = currentUrl && currentUrl !== '/' && !currentUrl.startsWith('/dang-nhap-thanh-cong') && !currentUrl.startsWith('/login-success')
-        ? { returnUrl: currentUrl }
-        : undefined;
+      const queryParams =
+        currentUrl &&
+        currentUrl !== '/' &&
+        !currentUrl.startsWith('/dang-nhap-thanh-cong') &&
+        !currentUrl.startsWith('/login-success')
+          ? { returnUrl: currentUrl }
+          : undefined;
 
       if (this.authMode() === 'login') {
         await this.auth.login({
           emailOrPhone: this.identifier.trim(),
           password: this.password,
+          rememberMe: this.rememberMe,
         });
       } else {
         await this.auth.register({
           name: this.name.trim(),
-          emailOrPhone: this.identifier.trim(),
+          email: this.email.trim(),
+          phone: this.phone.trim(),
           password: this.password,
         });
       }
       this.closeModal();
       void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : '';
+      if (message.includes('emailAlreadyExists') || message.includes('EMAIL_ALREADY_EXISTS')) {
+        this.errorMessage.set('Email này đã được sử dụng. Vui lòng đăng nhập hoặc sử dụng email khác.');
+      } else if (message.includes('invalidCredentials') || message.includes('INVALID_CREDENTIALS')) {
+        this.errorMessage.set('Email/Số điện thoại hoặc mật khẩu không chính xác.');
+      } else if (message.includes('invalidPhone') || message.includes('INVALID_PHONE')) {
+        this.errorMessage.set('Số điện thoại không hợp lệ (tối thiểu 9 số).');
+      } else if (message.includes('invalidEmail') || message.includes('INVALID_EMAIL')) {
+        this.errorMessage.set('Địa chỉ email không đúng định dạng.');
+      } else {
+        this.errorMessage.set('Đã xảy ra lỗi trong quá trình xác thực. Vui lòng kiểm tra lại thông tin.');
+      }
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
   protected async handleGoogleAuth(): Promise<void> {
+    this.errorMessage.set(null);
     const currentUrl = this.router.url;
-    const queryParams = currentUrl && currentUrl !== '/' && !currentUrl.startsWith('/dang-nhap-thanh-cong') && !currentUrl.startsWith('/login-success')
-      ? { returnUrl: currentUrl }
-      : undefined;
+    const queryParams =
+      currentUrl &&
+      currentUrl !== '/' &&
+      !currentUrl.startsWith('/dang-nhap-thanh-cong') &&
+      !currentUrl.startsWith('/login-success')
+        ? { returnUrl: currentUrl }
+        : undefined;
 
-    await this.auth.loginWithGoogle();
-    this.closeModal();
-    void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
+    try {
+      await this.auth.loginWithGoogle();
+      this.closeModal();
+      void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
+    } catch {
+      this.errorMessage.set('Đăng nhập nhanh với Google không thành công. Vui lòng thử lại.');
+    }
   }
 
   protected handleForgotPassword(): void {
