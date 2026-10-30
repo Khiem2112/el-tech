@@ -1265,8 +1265,8 @@ export class ProfilePageComponent implements OnInit {
     }
   }
 
-  protected saveProfileChanges(): void {
-    this.auth.updateProfile({
+  protected async saveProfileChanges(): Promise<void> {
+    await this.auth.updateProfile({
       name: this.fullName.trim(),
       email: this.email.trim(),
       phone: this.phone.trim(),
@@ -1287,8 +1287,8 @@ export class ProfilePageComponent implements OnInit {
     setTimeout(() => this.saveSuccessMessage.set(null), 3000);
   }
 
-  protected handleLogout(): void {
-    this.auth.logout();
+  protected async handleLogout(): Promise<void> {
+    await this.auth.logout();
     void this.router.navigate(['/']);
   }
 }

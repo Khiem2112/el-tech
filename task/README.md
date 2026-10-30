@@ -440,6 +440,8 @@ graph TD
 | [[TASK-114-FRONTEND-PROFILE-MOCK-REMOVAL-AND-LOOKUP-NAVIGATION]] | Frontend UI | Xóa bỏ dữ liệu đơn hàng giả lập khi tài khoản mới tạo chưa có đơn, làm rõ nhãn điều hướng tra cứu đơn vãng lai | [[TASK-15-FRONTEND-PROFILE-MY-ORDERS-AND-DIRECT-DETAIL]], Sheet REVIEW UI USER Lỗi 3.0, R29 |
 | [[TASK-115-FRONTEND-ORDER-LOOKUP-FLEXIBLE-THREE-CRITERIA-AND-OTP]] | Frontend UI | Nâng cấp giao diện tra cứu đơn hàng vãng lai linh hoạt theo 3 tiêu chí riêng biệt (Mã đơn / SĐT / Email) kèm OTP | [[TASK-07-ORDER-TRACKING-KANBAN-AND-CANCEL]], [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], Sheet PHAN CONG Task 9.0 |
 | [[TASK-116-FRONTEND-COMPLAINT-HUB-AND-OFFLINE-PROCESSING-POLICY]] | Frontend UI | Chính sách & Khiếu nại: Đổi sang Tạo đơn khiếu nại, Việt hóa trạng thái và gộp quy trình xử lý ngoại tuyến | [[TASK-08-WARRANTY-RMA-AND-RETURN-FLOW]], Sheet REVIEW UI USER Lỗi R30, R35, R36, Sheet PHAN CONG Task 8.0 |
+| [[TASK-117-CUSTOMER-AUTH-DB-PERSISTENCE-AND-REQUIRED-FIELDS]] | Fullstack | Lưu trữ Database cho tính năng Đăng nhập/Đăng ký khách hàng, bắt buộc SĐT và Email, gắn sao đỏ trường bắt buộc | [[TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE]], [[TASK-106-AUTH-MODAL-RESET-AND-SUCCESS-NOTIFICATION]] |
+
 
 
 
