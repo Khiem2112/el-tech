@@ -439,6 +439,7 @@ graph TD
 | [[TASK-113-CHECKOUT-AUTOFILL-BRANCH-AND-DEPOSIT-REMOVAL]] | Frontend UI | Điền đúng thông tin tài khoản đăng nhập thay vì dữ liệu cứng, bỏ chọn chi nhánh nhận hàng, bỏ quy định cọc COD | [[TASK-06-CHECKOUT-AND-ORDER-SUCCESS]], Sheet REVIEW UI USER Lỗi 10.0 |
 | [[TASK-114-FRONTEND-PROFILE-MOCK-REMOVAL-AND-LOOKUP-NAVIGATION]] | Frontend UI | Xóa bỏ dữ liệu đơn hàng giả lập khi tài khoản mới tạo chưa có đơn, làm rõ nhãn điều hướng tra cứu đơn vãng lai | [[TASK-15-FRONTEND-PROFILE-MY-ORDERS-AND-DIRECT-DETAIL]], Sheet REVIEW UI USER Lỗi 3.0, R29 |
 | [[TASK-115-FRONTEND-ORDER-LOOKUP-FLEXIBLE-THREE-CRITERIA-AND-OTP]] | Frontend UI | Nâng cấp giao diện tra cứu đơn hàng vãng lai linh hoạt theo 3 tiêu chí riêng biệt (Mã đơn / SĐT / Email) kèm OTP | [[TASK-07-ORDER-TRACKING-KANBAN-AND-CANCEL]], [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], Sheet PHAN CONG Task 9.0 |
+| [[TASK-116-FRONTEND-COMPLAINT-HUB-AND-OFFLINE-PROCESSING-POLICY]] | Frontend UI | Chính sách & Khiếu nại: Đổi sang Tạo đơn khiếu nại, Việt hóa trạng thái và gộp quy trình xử lý ngoại tuyến | [[TASK-08-WARRANTY-RMA-AND-RETURN-FLOW]], Sheet REVIEW UI USER Lỗi R30, R35, R36, Sheet PHAN CONG Task 8.0 |
 
 
 
