@@ -106,41 +106,19 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
           />
         </div>
 
-        <!-- Brand Chips -->
+        <!-- Brand Select -->
         <div>
           <label class="block text-xs font-bold text-foreground mb-1.5">Thương hiệu</label>
-          <div class="flex flex-wrap gap-1.5 text-xs">
-            <button
-              type="button"
-              (click)="setBrand('')"
-              class="px-2.5 py-1 rounded-md border text-left text-xs transition-colors cursor-pointer"
-              [class.border-primary]="!brand()"
-              [class.bg-primary]="!brand()"
-              [class.text-primary-foreground]="!brand()"
-              [class.font-bold]="!brand()"
-              [class.border-line]="brand()"
-              [class.bg-surface]="brand()"
-              [class.text-muted]="brand()"
-            >
-              Tất cả
-            </button>
-            @for (item of brands(); track item.id) {
-              <button
-                type="button"
-                (click)="setBrand(item.slug)"
-                class="px-2.5 py-1 rounded-md border text-left text-xs transition-colors cursor-pointer"
-                [class.border-primary]="brand() === item.slug"
-                [class.bg-primary]="brand() === item.slug"
-                [class.text-primary-foreground]="brand() === item.slug"
-                [class.font-bold]="brand() === item.slug"
-                [class.border-line]="brand() !== item.slug"
-                [class.bg-surface]="brand() !== item.slug"
-                [class.text-muted]="brand() !== item.slug"
-              >
-                {{ item.name }}
-              </button>
-            }
-          </div>
+          <app-select
+            [options]="brandOptions()"
+            [value]="brand()"
+            (valueChange)="setBrand($event)"
+            placeholder="Tất cả thương hiệu"
+            searchPlaceholder="Tìm thương hiệu..."
+            [searchable]="true"
+            size="sm"
+            ariaLabel="Chọn thương hiệu linh kiện"
+          />
         </div>
 
         <!-- Dynamic Category Specification Filters -->
@@ -168,56 +146,9 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
           </div>
         }
 
-        <!-- Branch Availability -->
-        <div class="pt-2 border-t border-line">
-          <label class="block text-xs font-bold text-foreground mb-1.5">Chi nhánh sẵn hàng</label>
-          <div class="space-y-1.5 text-xs">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="branch_filter"
-                [checked]="!branch()"
-                (change)="setBranch('')"
-                class="accent-primary"
-              >
-              <span [class.font-bold]="!branch()">Tất cả showroom</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="branch_filter"
-                [checked]="branch() === 'hn'"
-                (change)="setBranch('hn')"
-                class="accent-primary"
-              >
-              <span [class.font-bold]="branch() === 'hn'">Hà Nội (45 Thái Hà)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="branch_filter"
-                [checked]="branch() === 'hcm'"
-                (change)="setBranch('hcm')"
-                class="accent-primary"
-              >
-              <span [class.font-bold]="branch() === 'hcm'">TP.HCM (280 3/2)</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                name="branch_filter"
-                [checked]="branch() === 'dn'"
-                (change)="setBranch('dn')"
-                class="accent-primary"
-              >
-              <span [class.font-bold]="branch() === 'dn'">Đà Nẵng (112 Hàm Nghi)</span>
-            </label>
-          </div>
-        </div>
-
         <!-- Stock Status Filter -->
         <div class="pt-2 border-t border-line">
-          <label class="block text-xs font-bold text-foreground mb-1.5">Tình trạng kho hàng</label>
+          <label class="block text-xs font-bold text-foreground mb-1.5">Tình trạng</label>
           <div class="space-y-1.5 text-xs">
             <label class="flex items-center gap-2 cursor-pointer">
               <input
@@ -254,7 +185,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
 
         <!-- Price Range Options -->
         <div class="pt-2 border-t border-line">
-          <label class="block text-xs font-bold text-foreground mb-1.5">Khoảng giá ngân sách</label>
+          <label class="block text-xs font-bold text-foreground mb-1.5">Mức giá</label>
           <div class="space-y-1.5 text-xs">
             <label class="flex items-center gap-2 cursor-pointer">
               <input
@@ -348,14 +279,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                 </button>
               </span>
             }
-            @if (branch(); as branchCode) {
-              <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
-                Kho: {{ branchCode.toUpperCase() }}
-                <button type="button" class="text-muted hover:text-danger cursor-pointer p-0.5" (click)="removeBranch()" aria-label="Xóa kho">
-                  <lucide-icon name="x" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
-                </button>
-              </span>
-            }
+
             @if (stockStatus(); as st) {
               <span class="inline-flex items-center gap-1.5 rounded-md border border-line bg-surface-alt px-2 py-0.5 text-xs font-semibold text-foreground">
                 Tình trạng: {{ st === 'in_stock' ? 'Sẵn hàng ngay' : 'Đặt trước' }}
@@ -513,7 +437,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                       </span>
                     }
                   </div>
-                  <span class="text-xs text-muted">Đã gồm VAT</span>
+                  <span class="text-xs text-muted">Đã bao gồm VAT</span>
                 </div>
                 <div class="flex items-center gap-2 mt-2.5">
                   <button
@@ -526,7 +450,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm' : 'Thêm giỏ hàng') }}</span>
+                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ hàng') }}</span>
                   </button>
                   <button
                     type="button"
@@ -609,7 +533,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
                     (click)="addToCart(product)"
                   >
                     <lucide-icon name="shopping-cart" class="w-3.5 h-3.5 mr-1" aria-hidden="true"></lucide-icon>
-                    <span>Thêm giỏ hàng</span>
+                    <span>{{ addingSkuId() === product.variants[0].id ? 'Đang thêm…' : (addedSkuId() === product.variants[0].id ? 'Đã thêm vào giỏ' : 'Thêm vào giỏ hàng') }}</span>
                   </button>
                   <button
                     type="button"
@@ -755,19 +679,6 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </div>
       }
 
-      <!-- Mobile Branch Select -->
-      <div>
-        <label class="block text-xs font-bold text-foreground mb-1">Chi nhánh sẵn hàng</label>
-        <app-select
-          [options]="mobileBranchOptions"
-          [value]="tempBranch"
-          (valueChange)="tempBranch = $event"
-          placeholder="Tất cả showroom"
-          size="sm"
-          ariaLabel="Chi nhánh sẵn hàng"
-        />
-      </div>
-
       <!-- Mobile Stock Status Select -->
       <div>
         <label class="block text-xs font-bold text-foreground mb-1">Tình trạng kho hàng</label>
@@ -875,8 +786,7 @@ export class CatalogPageComponent {
 
   protected tempCategory = '';
   protected tempBrand = '';
-  protected tempBranch = '';
-  protected tempStockStatus = '';
+    protected tempStockStatus = '';
   protected tempPricePreset = '';
 
   protected readonly sortOptions: readonly SelectOption[] = [
@@ -895,6 +805,11 @@ export class CatalogPageComponent {
     })),
   ]);
 
+  protected readonly brandOptions = computed<readonly SelectOption[]>(() => [
+    { value: '', label: 'Tất cả thương hiệu' },
+    ...this.brands().map((b) => ({ value: b.slug, label: b.name })),
+  ]);
+
   protected readonly mobileBrandOptions = computed<readonly SelectOption[]>(() => [
     { value: '', label: 'Tất cả thương hiệu' },
     ...this.brands().map((b) => ({
@@ -903,13 +818,7 @@ export class CatalogPageComponent {
     })),
   ]);
 
-  protected readonly mobileBranchOptions: readonly SelectOption[] = [
-    { value: '', label: 'Tất cả showroom' },
-    { value: 'hn', label: 'Hà Nội (45 Thái Hà)' },
-    { value: 'hcm', label: 'TP.HCM (280 Ba Tháng Hai)' },
-    { value: 'dn', label: 'Đà Nẵng (112 Hàm Nghi)' },
-  ];
-
+  
   protected readonly mobileStockStatusOptions: readonly SelectOption[] = [
     { value: '', label: 'Tất cả tình trạng' },
     { value: 'in_stock', label: 'Sẵn hàng ngay' },
@@ -997,8 +906,7 @@ export class CatalogPageComponent {
     return Boolean(
       this.category() ||
       this.brand() ||
-      this.branch() ||
-      this.stockStatus() ||
+            this.stockStatus() ||
       this.pricePreset() ||
       this.sort() ||
       this.query.trim() ||
@@ -1098,6 +1006,28 @@ export class CatalogPageComponent {
       void this.load();
     });
     void this.loadMetadata();
+  }
+
+  protected setPricePreset(preset: string): void {
+    this.pricePreset.set(preset);
+    this.currentPage.set(1);
+    if (!preset) {
+      this.minPrice.set(null);
+      this.maxPrice.set(null);
+    } else if (preset === 'under-5m') {
+      this.minPrice.set(null);
+      this.maxPrice.set(5000000);
+    } else if (preset === '5m-15m') {
+      this.minPrice.set(5000000);
+      this.maxPrice.set(15000000);
+    } else if (preset === '15m-30m') {
+      this.minPrice.set(15000000);
+      this.maxPrice.set(30000000);
+    } else if (preset === 'over-30m') {
+      this.minPrice.set(30000000);
+      this.maxPrice.set(null);
+    }
+    this.search();
   }
 
   protected setStockStatus(status: string): void {
@@ -1266,8 +1196,7 @@ export class CatalogPageComponent {
         q: this.query.trim() || null,
         category: this.category() || null,
         brand: this.brand() || null,
-        branch: this.branch() || null,
-        stockStatus: this.stockStatus() || null,
+                stockStatus: this.stockStatus() || null,
         minPrice: this.minPrice() !== null ? this.minPrice() : null,
         maxPrice: this.maxPrice() !== null ? this.maxPrice() : null,
         sort: this.sort() || null,
@@ -1293,54 +1222,18 @@ export class CatalogPageComponent {
     this.search();
   }
 
-  protected setBranch(branch: string): void {
-    this.currentPage.set(1);
-    this.branch.set(branch);
-    this.search();
+  
+  protected removeCategory(): void {
+    this.setCategory('');
+  }
+
+  protected removeBrand(): void {
+    this.setBrand('');
   }
 
   protected setSort(sort: string): void {
     this.currentPage.set(1);
     this.sort.set(sort);
-    this.search();
-  }
-
-  protected setPricePreset(preset: string): void {
-    this.currentPage.set(1);
-    this.pricePreset.set(preset);
-    let min: number | null = null;
-    let max: number | null = null;
-    if (preset === 'under-5m') {
-      max = 5000000;
-    } else if (preset === '5m-15m') {
-      min = 5000000;
-      max = 15000000;
-    } else if (preset === '15m-30m') {
-      min = 15000000;
-      max = 30000000;
-    } else if (preset === 'over-30m') {
-      min = 30000000;
-    }
-    this.minPrice.set(min);
-    this.maxPrice.set(max);
-    this.search();
-  }
-
-  protected removeCategory(): void {
-    this.currentPage.set(1);
-    this.category.set('');
-    this.search();
-  }
-
-  protected removeBrand(): void {
-    this.currentPage.set(1);
-    this.brand.set('');
-    this.search();
-  }
-
-  protected removeBranch(): void {
-    this.currentPage.set(1);
-    this.branch.set('');
     this.search();
   }
 
@@ -1382,8 +1275,7 @@ export class CatalogPageComponent {
   protected applyMobileFilters(): void {
     this.category.set(this.tempCategory);
     this.brand.set(this.tempBrand);
-    this.branch.set(this.tempBranch);
-    this.stockStatus.set(this.tempStockStatus);
+        this.stockStatus.set(this.tempStockStatus);
     this.currentPage.set(1);
     if (this.tempPricePreset) {
       this.setPricePreset(this.tempPricePreset);

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AppIconModule, ButtonDirective, SelectComponent, SelectOption } from '../../components/atoms';
+import { AppIconModule, ButtonDirective } from '../../components/atoms';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { handleProductImageError } from '../../core/constants/product.constants';
 import { CartService } from '../../services/cart.service';
@@ -30,7 +30,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
 
 @Component({
   selector: 'app-custom-build-page',
-  imports: [VndPipe, AppIconModule, ButtonDirective, SelectComponent, ComponentSwapModalComponent],
+  imports: [VndPipe, AppIconModule, ButtonDirective, ComponentSwapModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="w-full bg-canvas min-h-screen pb-16">
@@ -42,7 +42,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               <lucide-icon name="cpu" class="size-5 text-primary" aria-hidden="true"></lucide-icon>
             </div>
             <div>
-              <h1 class="text-base sm:text-lg font-bold text-foreground">Tự Lắp Ráp Cấu Hình PC</h1>
+              <h1 class="text-base sm:text-lg font-bold text-foreground">Tùy chỉnh cấu hình PC</h1>
               <p class="text-xs text-muted mt-0.5">Kiểm tra tương thích socket, công suất nguồn và kích thước linh kiện theo thời gian thực.</p>
             </div>
           </div>
@@ -230,7 +230,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   >
                   <div class="space-y-0.5 min-w-0">
                     <div class="font-bold text-foreground flex items-center justify-between">
-                      <span>Lắp ráp &amp; đi dây chuyên nghiệp</span>
+                      <span>Lắp đặt và nối dây</span>
                       <span class="text-primary font-bold">0 đ</span>
                     </div>
                     <p class="text-muted text-xs leading-relaxed">Kỹ thuật viên bóc seal, đi dây nẹp thẩm mỹ, luồn dây âm thân case.</p>
@@ -264,50 +264,27 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <h3 class="text-sm font-bold text-foreground mt-0.5">Báo Giá Chi Tiết PC Tự Ráp</h3>
               </div>
 
-              <!-- Showroom Branch Selector & Inventory Telemetry (PB-01) -->
-              <div class="space-y-2 pb-2 border-b border-line">
-                <label for="branch-selector" class="block text-xs font-bold text-foreground uppercase tracking-wider">
-                  Chi nhánh lắp ráp / nhận máy
-                </label>
-                <app-select
-                  [options]="branchOptions"
-                  [value]="selectedBranch()"
-                  (valueChange)="onBranchSelect($event)"
-                  size="sm"
-                  ariaLabel="Chi nhánh lắp ráp / nhận máy"
-                />
-
-                <!-- Stock readiness badge -->
-                <div class="p-2.5 rounded-lg bg-surface-alt border border-line flex items-center gap-2 text-xs">
-                  @if (isAllInStockAtBranch()) {
-                    <span class="size-2 rounded-full bg-primary shrink-0 inline-block"></span>
-                    <div class="min-w-0">
-                      <span class="text-primary font-bold block text-xs">Đủ linh kiện tại chi nhánh</span>
-                      <p class="text-xs text-muted">Sẵn sàng lắp ráp ngay trong 120 phút.</p>
-                    </div>
-                  } @else {
-                    <span class="size-2 rounded-full bg-amber-400 shrink-0 inline-block"></span>
-                    <div class="min-w-0">
-                      <span class="text-amber-400 font-bold block text-xs">Cần điều chuyển 1-2 món từ kho tổng</span>
-                      <p class="text-xs text-muted">Thời gian lắp ráp và kiểm tra dự kiến 24h.</p>
-                    </div>
-                  }
-                </div>
-              </div>
-
               <!-- Price Breakdown -->
               <div class="space-y-2 text-xs">
                 <div class="flex items-center justify-between text-muted">
-                  <span>Tổng tiền linh kiện ({{ activeItemCount() }} món):</span>
+                  <span>Tổng giá trị linh kiện ({{ activeItemCount() }} món):</span>
                   <span class="text-foreground font-bold tabular">{{ totalHardwarePrice() | vnd }}</span>
                 </div>
                 <div class="flex items-center justify-between text-muted">
-                  <span>Công lắp ráp &amp; stress test:</span>
-                  <span class="text-primary font-bold">0 đ (Miễn phí)</span>
+                  <span>Chi phí lắp đặt và test:</span>
+                  @if (activeItemCount() === 0) {
+                    <span class="text-foreground font-bold tabular">0 đ</span>
+                  } @else {
+                    <span class="text-primary font-bold">0 đ (Miễn phí)</span>
+                  }
                 </div>
                 <div class="flex items-center justify-between text-muted">
-                  <span>Phí vận chuyển bọc xốp cẩn thận:</span>
-                  <span class="text-primary font-bold">MIỄN PHÍ</span>
+                  <span>Chi phí vận chuyển:</span>
+                  @if (activeItemCount() === 0) {
+                    <span class="text-foreground font-bold tabular">0 đ</span>
+                  } @else {
+                    <span class="text-primary font-bold">MIỄN PHÍ</span>
+                  }
                 </div>
                 <div class="w-full h-px bg-border my-1"></div>
                 <div class="flex items-baseline justify-between pt-1">
@@ -317,28 +294,9 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   </div>
                   <div class="text-right">
                     <div class="text-xl sm:text-2xl font-black text-primary tabular">{{ totalHardwarePrice() | vnd }}</div>
-                    <div class="text-xs text-primary font-bold tabular">Tiết kiệm trọn gói 1.800.000 đ</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Custom COD Regulations Policy (PAY-011) -->
-              <div class="p-3 rounded-lg bg-surface-alt border border-line space-y-1.5 text-xs text-muted">
-                <div class="flex items-center gap-1.5 text-foreground font-bold text-xs">
-                  <lucide-icon name="shield-check" class="size-4 text-warning" aria-hidden="true"></lucide-icon>
-                  <span>Quy định đặt cọc máy ráp (COD - PAY-011)</span>
-                </div>
-                <p class="text-xs leading-relaxed">
-                  Máy tính ráp theo yêu cầu áp dụng quy tắc đặt cọc: Tối thiểu <strong class="text-foreground">10%</strong> để kỹ thuật bóc seal và lắp đặt an toàn.
-                </p>
-                <div class="grid grid-cols-2 gap-2 text-xs pt-1">
-                  <div class="bg-surface p-2 rounded border border-line">
-                    <div class="text-muted text-xs">Cọc trước (VietQR):</div>
-                    <div class="font-bold text-primary tabular text-xs mt-0.5">{{ depositAmount() | vnd }}</div>
-                  </div>
-                  <div class="bg-surface p-2 rounded border border-line">
-                    <div class="text-muted text-xs">Còn lại COD khi nhận:</div>
-                    <div class="font-bold text-foreground tabular text-xs mt-0.5">{{ remainingCodAmount() | vnd }}</div>
+                    @if (activeItemCount() > 0) {
+                      <div class="text-xs text-primary font-bold tabular">Tiết kiệm trọn gói 1.800.000 đ</div>
+                    }
                   </div>
                 </div>
               </div>
@@ -433,7 +391,6 @@ export class CustomBuildPageComponent implements OnInit {
   private readonly pcBuildService = inject(PcBuildService);
 
   protected readonly onImageError = handleProductImageError;
-  protected readonly selectedBranch = signal<'hcm' | 'hanoi' | 'danang'>('hcm');
   protected readonly serviceAssembly = signal(true);
   protected readonly serviceStressTest = signal(true);
 
@@ -442,24 +399,6 @@ export class CustomBuildPageComponent implements OnInit {
   protected readonly currentBundleIndex = signal<number>(0);
   protected readonly linkCopied = signal(false);
   protected readonly adding = signal(false);
-
-  protected readonly isAllInStockAtBranch = computed<boolean>(() => {
-    const branch = this.selectedBranch();
-    if (branch === 'danang') {
-      return this.activeItemCount() <= 4;
-    }
-    return true;
-  });
-
-  protected readonly branchOptions: readonly SelectOption[] = [
-    { value: 'hcm', label: 'TP.HCM - 280 Ba Tháng Hai, Quận 10' },
-    { value: 'hanoi', label: 'Hà Nội - 45 Thái Hà, Đống Đa' },
-    { value: 'danang', label: 'Đà Nẵng - 112 Hàm Nghi, Thanh Khê' },
-  ];
-
-  protected onBranchSelect(value: string): void {
-    this.selectedBranch.set(value as 'hcm' | 'hanoi' | 'danang');
-  }
 
   protected readonly activePresetLabel = computed<string>(() => {
     const list = this.bundles();
@@ -530,8 +469,16 @@ export class CustomBuildPageComponent implements OnInit {
       }
       this.liveCatalog.set(catalogMap);
 
-      if (bundles.length > 0) {
-        this.applyBundle(bundles[0], components);
+      const bundleParam = this.route.snapshot.queryParamMap.get('bundle') || this.route.snapshot.queryParamMap.get('bundleId');
+      if (bundleParam && bundles.length > 0) {
+        const matched = bundles.find(
+          (b) => String(b.id) === bundleParam || b.slug === bundleParam
+        );
+        if (matched) {
+          const matchedIndex = bundles.indexOf(matched);
+          this.currentBundleIndex.set(matchedIndex >= 0 ? matchedIndex : 0);
+          this.applyBundle(matched, components);
+        }
       }
     } catch (error) {
       console.error('Failed to load PC builder data from backend API', error);
@@ -579,14 +526,6 @@ export class CustomBuildPageComponent implements OnInit {
     return this.bomSlots().reduce((acc, slot) => acc + (slot.item?.price ?? 0), 0);
   });
 
-  protected readonly depositAmount = computed<number>(() => {
-    return Math.round(this.totalHardwarePrice() * 0.1);
-  });
-
-  protected readonly remainingCodAmount = computed<number>(() => {
-    return this.totalHardwarePrice() - this.depositAmount();
-  });
-
   protected readonly currentSocket = computed<string>(() => {
     const cpu = this.bomSlots().find((s) => s.key === 'cpu')?.item;
     return cpu?.socket || 'LGA1700';
@@ -630,12 +569,7 @@ export class CustomBuildPageComponent implements OnInit {
 
   protected resetBuild(): void {
     this.currentBundleIndex.set(0);
-    const list = this.bundles();
-    if (list.length > 0) {
-      this.applyBundle(list[0]);
-    } else {
-      this.bomSlots.set(DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null })));
-    }
+    this.bomSlots.set(DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null })));
   }
 
   protected togglePreset(): void {

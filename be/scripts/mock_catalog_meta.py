@@ -2,18 +2,11 @@
 
 BRANCHES_DATA = [
     {
-        "code": "BRANCH-HN",
-        "name": "Chi nhánh Hà Nội - Cầu Giấy",
+        "code": "STORE-MAIN",
+        "name": "Showroom EL-TECH",
         "address": "Số 123 Cầu Giấy, Phường Dịch Vọng, Quận Cầu Giấy, TP. Hà Nội",
         "opening_hours": {"mon_fri": "08:00 - 21:30", "sat_sun": "08:00 - 22:00"},
         "delivery_priority": 1,
-    },
-    {
-        "code": "BRANCH-HCM",
-        "name": "Chi nhánh TP. Hồ Chí Minh - Quận 10",
-        "address": "Số 456 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh",
-        "opening_hours": {"mon_fri": "08:00 - 21:30", "sat_sun": "08:00 - 22:00"},
-        "delivery_priority": 2,
     },
 ]
 
@@ -115,16 +108,6 @@ CATEGORIES_DATA = [
         "slug": "tan-nhiet",
         "description": "Tản nhiệt khí tháp đôi và tản nhiệt nước all-in-one làm mát bộ vi xử lý hiệu quả.",
     },
-    {
-        "name": "Laptop",
-        "slug": "laptop",
-        "description": "Máy tính xách tay gaming cấu hình mạnh, laptop mỏng nhẹ doanh nhân và đồ họa chuyên nghiệp.",
-    },
-    {
-        "name": "Điện thoại di động",
-        "slug": "dien-thoai",
-        "description": "Điện thoại thông minh flagship và tầm trung chính hãng từ Apple, Samsung, Xiaomi.",
-    },
 ]
 
 SPEC_DEFINITIONS_DATA = {
@@ -224,23 +207,5 @@ SPEC_DEFINITIONS_DATA = {
         {"stable_key": "fan_size", "label": "Kích thước quạt", "data_type": "NUMBER", "unit": "mm", "is_required": False, "is_filterable": False, "is_comparable": True, "allowed_values": []},
         {"stable_key": "rgb", "label": "Đèn LED", "data_type": "ENUM", "unit": None, "is_required": False, "is_filterable": True, "is_comparable": True, "allowed_values": ["ARGB", "RGB", "Không LED"]},
         {"stable_key": "tdp_support", "label": "Công suất tản nhiệt (TDP)", "data_type": "NUMBER", "unit": "W", "is_required": False, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-    ],
-    "laptop": [
-        {"stable_key": "cpu", "label": "Bộ vi xử lý (CPU)", "data_type": "STRING", "unit": None, "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "ram_capacity", "label": "Dung lượng RAM", "data_type": "NUMBER", "unit": "GB", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "storage_capacity", "label": "Dung lượng ổ cứng", "data_type": "NUMBER", "unit": "GB", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "screen_size", "label": "Kích thước màn hình", "data_type": "NUMBER", "unit": "inch", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "gpu", "label": "Card đồ họa", "data_type": "STRING", "unit": None, "is_required": False, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "weight", "label": "Trọng lượng", "data_type": "NUMBER", "unit": "kg", "is_required": False, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "battery_capacity", "label": "Dung lượng pin", "data_type": "NUMBER", "unit": "Wh", "is_required": False, "is_filterable": False, "is_comparable": True, "allowed_values": []},
-    ],
-    "dien-thoai": [
-        {"stable_key": "screen_size", "label": "Kích thước màn hình", "data_type": "NUMBER", "unit": "inch", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "storage_capacity", "label": "Bộ nhớ trong", "data_type": "NUMBER", "unit": "GB", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "ram", "label": "Dung lượng RAM", "data_type": "NUMBER", "unit": "GB", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "battery_capacity", "label": "Dung lượng pin", "data_type": "NUMBER", "unit": "mAh", "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "camera_resolution", "label": "Độ phân giải camera chính", "data_type": "NUMBER", "unit": "MP", "is_required": False, "is_filterable": False, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "chip", "label": "Chip xử lý", "data_type": "STRING", "unit": None, "is_required": True, "is_filterable": True, "is_comparable": True, "allowed_values": []},
-        {"stable_key": "connectivity_5g", "label": "Hỗ trợ 5G", "data_type": "BOOLEAN", "unit": None, "is_required": False, "is_filterable": True, "is_comparable": True, "allowed_values": []},
     ],
 }

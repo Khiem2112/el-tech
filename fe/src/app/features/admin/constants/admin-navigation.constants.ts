@@ -105,13 +105,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         fullPath: '/admin/inventory/ledger',
         module: 'Kho Hàng & Thiết Bị',
       },
-      {
-        code: 'SCR-18',
-        title: 'Điều Chuyển Kho',
-        route: 'inventory/transfers',
-        fullPath: '/admin/inventory/transfers',
-        module: 'Kho Hàng & Thiết Bị',
-      },
+      
     ],
   },
   {

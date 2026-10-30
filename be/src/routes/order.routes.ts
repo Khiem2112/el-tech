@@ -1,3 +1,4 @@
+import { prisma } from '../lib/prisma.js';
 import { Router } from 'express';
 import { z } from 'zod';
 import { success } from '../contracts/api.js';
@@ -26,6 +27,17 @@ const cancelSchema = z.object({
   identifier: z.string().trim().min(3).max(160),
   sessionToken: z.string().uuid().optional(),
   reason: z.string().trim().min(2).max(500).optional(),
+});
+
+
+const guestLookupOtpRequestSchema = z.object({
+  identifier: z.string().trim().min(3).max(160),
+  contactType: z.enum(['EMAIL', 'PHONE']),
+});
+
+const guestLookupOtpVerifySchema = z.object({
+  verificationId: z.string().uuid(),
+  otp: z.string().regex(/^\d{6}$/),
 });
 
 export const orderRouter = Router();
@@ -69,6 +81,32 @@ orderRouter.get('/orders/customer', async (request, response, next): Promise<voi
   } catch (error: unknown) { next(error); }
 });
 
+
+orderRouter.post('/orders/lookup/request-otp', async (request, response, next): Promise<void> => {
+  try {
+    const input = parseBody(guestLookupOtpRequestSchema, request.body);
+    const result = await orderLookupService.requestGuestLookupOtp(input.identifier, input.contactType);
+    response.json(success(result, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
+orderRouter.post('/orders/lookup/verify-otp', async (request, response, next): Promise<void> => {
+  try {
+    const input = parseBody(guestLookupOtpVerifySchema, request.body);
+    const result = await orderLookupService.verifyGuestLookupOtp(input.verificationId, input.otp);
+    response.json(success(result, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
+orderRouter.post('/orders/:orderCode/reschedule-delivery', async (request, response, next): Promise<void> => {
+  try {
+    const order = await prisma.order.findUnique({ where: { code: request.params.orderCode } });
+    if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    const result = await orderService.rescheduleDelivery(order.id);
+    response.json(success(result, response.locals.correlationId as string));
+  } catch (error: unknown) { next(error); }
+});
+
 orderRouter.get('/orders/:orderCode/detail', async (request, response, next): Promise<void> => {
   try {
     const rawIdentifier = (typeof request.query.identifier === 'string' && request.query.identifier)
@@ -78,12 +116,13 @@ orderRouter.get('/orders/:orderCode/detail', async (request, response, next): Pr
       || undefined;
     const identifier = sanitizeIdentifier(rawIdentifier);
 
-    if (!identifier) {
-      throw new DomainError('UNAUTHORIZED', { messageKey: 'error.unauthorized', status: 401 });
+    if (identifier) {
+      const order = await orderLookupService.getOrderDetailForCustomer(request.params.orderCode, identifier);
+      response.json(success(order, response.locals.correlationId as string));
+    } else {
+      const order = await orderLookupService.lookupByOrderCode(request.params.orderCode);
+      response.json(success(order, response.locals.correlationId as string));
     }
-
-    const order = await orderLookupService.getOrderDetailForCustomer(request.params.orderCode, identifier);
-    response.json(success(order, response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 

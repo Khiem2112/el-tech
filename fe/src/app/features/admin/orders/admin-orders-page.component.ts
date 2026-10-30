@@ -518,8 +518,8 @@ export class AdminOrdersPageComponent implements OnInit {
     { key: 'READY_FOR_PICKUP', label: 'Sẵn sàng nhận tại shop' },
     { key: 'SHIPPING', label: 'Đang giao hàng' },
     { key: 'DELIVERY_FAILED', label: 'Giao thất bại', isUrgent: true },
-    { key: 'RETURNING', label: 'Đang chuyển hoàn' },
-    { key: 'RETURNED_TO_BRANCH', label: 'Đã hoàn kho' },
+    
+    
     { key: 'COMPLETED', label: 'Hoàn tất' },
     { key: 'ON_HOLD', label: 'Treo ngoại lệ ON_HOLD', isUrgent: true },
     { key: 'CANCELLED', label: 'Đã hủy' },
@@ -694,9 +694,7 @@ export class AdminOrdersPageComponent implements OnInit {
         return 'bg-surface-alt text-foreground border border-line';
       case 'DELIVERY_FAILED':
         return 'bg-destructive/10 text-destructive border border-destructive/20';
-      case 'RETURNING':
-        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
-      case 'RETURNED_TO_BRANCH':
+      
       case 'CANCELLED':
         return 'bg-surface-alt text-muted border border-line';
       case 'COMPLETED':
@@ -726,10 +724,7 @@ export class AdminOrdersPageComponent implements OnInit {
         return 'Đang giao hàng';
       case 'DELIVERY_FAILED':
         return 'Giao thất bại';
-      case 'RETURNING':
-        return 'Đang chuyển hoàn';
-      case 'RETURNED_TO_BRANCH':
-        return 'Đã hoàn về kho';
+      
       case 'COMPLETED':
         return 'Hoàn tất';
       case 'ON_HOLD':

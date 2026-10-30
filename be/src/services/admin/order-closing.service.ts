@@ -65,8 +65,7 @@ export class OrderClosingService {
 
     if (
       order.status === OrderStatus.SHIPPING ||
-      order.status === OrderStatus.DELIVERY_FAILED ||
-      order.status === OrderStatus.RETURNING
+      order.status === OrderStatus.DELIVERY_FAILED
     ) {
       return {
         orderId: order.id,
@@ -109,7 +108,6 @@ export class OrderClosingService {
       OrderStatus.PREPARING_COMPONENTS,
       OrderStatus.ASSEMBLING,
       OrderStatus.READY_FOR_PICKUP,
-      OrderStatus.RETURNED_TO_BRANCH,
     ];
 
     const hasPreparedComponents =
@@ -457,8 +455,7 @@ export class OrderClosingService {
 
     if (
       order.status === OrderStatus.SHIPPING ||
-      order.status === OrderStatus.DELIVERY_FAILED ||
-      order.status === OrderStatus.RETURNING
+      order.status === OrderStatus.DELIVERY_FAILED
     ) {
       throw new DomainError('CANNOT_CANCEL_SHIPPED_ORDER', {
         ruleId: 'ORD-012',
@@ -491,7 +488,6 @@ export class OrderClosingService {
       OrderStatus.PREPARING_COMPONENTS,
       OrderStatus.ASSEMBLING,
       OrderStatus.READY_FOR_PICKUP,
-      OrderStatus.RETURNED_TO_BRANCH,
     ];
 
     const hasPreparedComponents =

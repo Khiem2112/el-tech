@@ -393,7 +393,15 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 <span>Tiến hành đặt hàng (Checkout)</span>
                 <lucide-icon name="arrow-right" class="w-4 h-4" aria-hidden="true"></lucide-icon>
               </a>
-              <div class="flex items-center justify-between text-xs pt-0.5">
+              <a
+                routerLink="/gio-hang"
+                (click)="cart.closeDrawer()"
+                class="w-full h-10 rounded-lg border border-line bg-surface-alt hover:bg-secondary-container text-foreground font-bold text-sm flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <lucide-icon name="shopping-bag" class="w-4 h-4 text-primary" aria-hidden="true"></lucide-icon>
+                <span>Xem chi tiết giỏ hàng</span>
+              </a>
+              <div class="flex items-center justify-center text-xs pt-0.5">
                 <button
                   type="button"
                   (click)="cart.closeDrawer()"
@@ -401,13 +409,6 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 >
                   « Tiếp tục xem linh kiện
                 </button>
-                <a
-                  routerLink="/gio-hang"
-                  (click)="cart.closeDrawer()"
-                  class="text-primary hover:underline font-bold"
-                >
-                  Xem trang giỏ hàng chi tiết
-                </a>
               </div>
             </div>
           </div>

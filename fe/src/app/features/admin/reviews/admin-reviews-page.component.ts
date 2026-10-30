@@ -120,8 +120,8 @@ type ToastNotification = {
                       </td>
 
                       <td class="py-3 px-4">
-                        <div class="font-semibold text-foreground">{{ rev.customer.name }}</div>
-                        <div class="text-xs text-muted mt-0.5">{{ rev.customer.email }}</div>
+                        <div class="font-semibold text-foreground">{{ rev.customer?.name || rev.authorName || 'Khách vãng lai' }}</div>
+                        <div class="text-xs text-muted mt-0.5">{{ rev.customer?.email || 'Chưa liên kết tài khoản' }}</div>
                       </td>
 
                       <td class="py-3 px-4 text-center font-bold text-amber-600 tabular-nums">
@@ -133,12 +133,16 @@ type ToastNotification = {
                       </td>
 
                       <td class="py-3 px-4 font-bold text-primary tabular-nums">
-                        <a
-                          [routerLink]="['/admin/orders', rev.order.id]"
-                          class="hover:underline"
-                        >
-                          {{ rev.order.code }}
-                        </a>
+                        @if (rev.order) {
+                          <a
+                            [routerLink]="['/admin/orders', rev.order.id]"
+                            class="hover:underline"
+                          >
+                            {{ rev.order.code }}
+                          </a>
+                        } @else {
+                          <span class="text-xs text-muted font-normal">Đánh giá tự do</span>
+                        }
                       </td>
 
                       <td class="py-3 px-4 text-center">

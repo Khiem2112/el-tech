@@ -77,14 +77,14 @@ import { AdminReviewItem, AdminReviewService } from '../services/admin-review.se
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t border-line text-xs">
               <div>
                 <span class="text-muted">Người đánh giá:</span>
-                <span class="font-semibold text-foreground ml-1">{{ review.customer.name }}</span>
+                <span class="font-semibold text-foreground ml-1">{{ review.customer?.name || review.authorName || 'Khách vãng lai' }}</span>
                 <div class="text-muted text-xs mt-0.5">
-                  {{ review.customer.email }} - {{ review.customer.phone }}
+                  {{ review.customer?.email || 'Không có email' }} - {{ review.customer?.phone || 'Không có SĐT' }}
                 </div>
               </div>
               <div class="md:text-right">
                 <span class="text-muted">Đơn hàng hoàn tất:</span>
-                <span class="font-bold text-primary ml-1 tabular-nums">{{ review.order.code }}</span>
+                <span class="font-bold text-primary ml-1 tabular-nums">{{ review.order?.code || 'Đánh giá tự do' }}</span>
                 <div class="text-muted text-xs mt-0.5">
                   Ngày gửi: {{ review.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                 </div>

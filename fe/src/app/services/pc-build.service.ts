@@ -47,6 +47,11 @@ export class PcBuildService {
     return res.data;
   }
 
+  async getBundleById(idOrSlug: string | number): Promise<BundleResponse | null> {
+    const bundles = await this.getBundles();
+    return bundles.find((b) => String(b.id) === String(idOrSlug) || b.slug === String(idOrSlug)) ?? null;
+  }
+
   async getComponents(categoryOrFilters?: string | ComponentFilterParams): Promise<readonly SwapItem[]> {
     const params: ComponentFilterParams =
       typeof categoryOrFilters === 'string' ? { category: categoryOrFilters } : categoryOrFilters || {};

@@ -23,15 +23,10 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
           <div class="p-5 bg-surface-elevated border-b border-line-dark flex items-start justify-between gap-4">
             <div>
               <div class="flex items-center gap-2 flex-wrap">
-                <h2 class="text-base font-bold text-white tracking-tight">Đánh Giá Linh Kiện Đã Mua</h2>
-                <span class="text-xs font-semibold text-muted tabular">#{{ orderCode || 'ELT-87119' }}</span>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider">
-                  <lucide-icon name="shield-check" class="w-3 h-3" aria-hidden="true"></lucide-icon>
-                  Verified Purchase
-                </span>
+                <h2 class="text-base font-bold text-white tracking-tight">Viết Đánh Giá Sản Phẩm</h2>
               </div>
               <p class="text-xs text-muted mt-1">
-                Linh kiện: <strong class="text-slate-200">{{ productName || 'Linh kiện phần cứng EL-TECH' }}</strong>
+                Sản phẩm: <strong class="text-slate-200">{{ productName || 'Linh kiện phần cứng EL-TECH' }}</strong>
               </p>
             </div>
             <button
@@ -44,14 +39,21 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
             </button>
           </div>
 
-          <!-- Compliance Notice REV-004 -->
-          <div class="px-5 py-2.5 bg-black/40 border-b border-line-dark/80 flex items-center gap-2 text-xs text-muted">
-            <lucide-icon name="shield-check" class="w-4 h-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
-            <span>Quy định REV-004: Mỗi Serial Number chỉ được cấp quyền đánh giá hiệu năng 1 lần duy nhất để bảo đảm dữ liệu benchmark công bằng.</span>
-          </div>
-
           <!-- Modal Body -->
           <div class="p-5 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            <!-- Author Name for Guest -->
+            <div class="space-y-1 text-xs">
+              <label for="author-name" class="font-bold text-foreground-dark/70">Họ tên của bạn</label>
+              <input
+                id="author-name"
+                type="text"
+                appInput
+                [(ngModel)]="authorName"
+                placeholder="Nhập họ tên (hoặc để trống nếu hiển thị Khách hàng)..."
+                class="w-full bg-surface-elevated border-line-dark text-white placeholder:text-slate-500 text-sm"
+              >
+            </div>
+
             <!-- 5-Star Rating -->
             <div class="p-4 rounded-xl bg-surface-elevated border border-line-dark flex flex-col items-center justify-center text-center">
               <span class="text-xs font-bold uppercase tracking-wider text-muted">Mức độ hài lòng tổng quan</span>
@@ -105,30 +107,16 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 appInput
                 rows="3"
                 [(ngModel)]="reviewText"
-                placeholder="Chia sẻ nhiệt độ stress test Furmark, độ ổn định khi render hoặc chơi game..."
+                placeholder="Chia sẻ cảm nhận về hiệu năng, nhiệt độ, độ ồn hoặc độ hoàn thiện của sản phẩm..."
                 class="w-full bg-surface-elevated border-line-dark text-white placeholder:text-slate-500 text-sm"
               ></textarea>
-            </div>
-
-            <!-- Pre-attached Media Mock -->
-            <div class="space-y-1.5 text-xs">
-              <span class="font-bold text-foreground-dark/70">Hình ảnh / Benchmark thực tế (Tùy chọn)</span>
-              <div class="flex items-center gap-2">
-                <div class="size-16 rounded-lg border border-dashed border-line-dark bg-surface-elevated flex flex-col items-center justify-center text-slate-500 hover:text-foreground-dark/70 cursor-pointer">
-                  <lucide-icon name="camera" class="w-5 h-5" aria-hidden="true"></lucide-icon>
-                  <span class="text-xs mt-0.5">Thêm ảnh</span>
-                </div>
-                <div class="size-16 rounded-lg border border-line-dark bg-surface-dark p-1 flex items-center justify-center text-xs text-primary font-bold text-center">
-                  Tem Serial Đã Xác Thực
-                </div>
-              </div>
             </div>
           </div>
 
           <!-- Footer Actions -->
           <div class="p-4 bg-surface-elevated border-t border-line-dark flex items-center justify-between gap-3">
             <span class="text-xs text-slate-500 hidden sm:inline">
-              Bảo mật: 4 số cuối Serial sẽ được mã hóa khi hiển thị công khai.
+              Đánh giá của bạn sẽ được hiển thị công khai ngay sau khi gửi.
             </span>
             <div class="flex items-center gap-2 ml-auto">
               <button
@@ -136,24 +124,24 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 (click)="close()"
                 class="px-4 py-2 rounded-lg border border-line-dark text-xs font-semibold text-foreground-dark/70 hover:bg-line-dark transition-colors cursor-pointer"
               >
-                Để sau
+                Hủy
               </button>
               <button
                 type="button"
                 appButton
                 variant="primary"
                 size="sm"
-                [disabled]="isSubmitting() || isSubmittedState()"
+                [disabled]="isSubmitting() || isSubmittedState() || !reviewText.trim()"
                 (click)="submitReview()"
                 class="min-w-[140px]"
               >
                 @if (isSubmitting()) {
                   <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
-                  <span>Đang mã hóa...</span>
+                  <span>Đang gửi...</span>
                 } @else if (isSubmittedState()) {
                   <span>Đã gửi thành công!</span>
                 } @else {
-                  <span>Gửi đánh giá xác thực</span>
+                  <span>Gửi đánh giá</span>
                 }
               </button>
             </div>
@@ -165,17 +153,16 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
 })
 export class ReviewModalComponent {
   @Input() isOpen = false;
-  @Input() orderCode = '';
-  @Input() serialNumber = '';
   @Input() productName = '';
   @Output() closed = new EventEmitter<void>();
   @Output() closeModal = new EventEmitter<void>();
-  @Output() submitted = new EventEmitter<{ rating: number; content: string }>();
+  @Output() submitted = new EventEmitter<{ rating: number; content: string; authorName?: string }>();
 
   protected readonly rating = signal(5);
-  protected readonly selectedPills = signal<string[]>(['Nhiệt độ mát < 60°C', 'Êm ái không ồn']);
+  protected readonly selectedPills = signal<string[]>(['Hiệu năng vượt kỳ vọng', 'Hoàn thiện cao cấp']);
   protected readonly isSubmitting = signal(false);
   protected readonly isSubmittedState = signal(false);
+  protected authorName = '';
   protected reviewText = '';
 
   protected readonly criteriaList = [
@@ -229,6 +216,7 @@ export class ReviewModalComponent {
   }
 
   protected submitReview(): void {
+    if (!this.reviewText.trim()) return;
     this.isSubmitting.set(true);
     setTimeout(() => {
       this.isSubmitting.set(false);
@@ -236,11 +224,14 @@ export class ReviewModalComponent {
       this.submitted.emit({
         rating: this.rating(),
         content: this.reviewText.trim(),
+        authorName: this.authorName.trim() || undefined,
       });
       setTimeout(() => {
         this.isSubmittedState.set(false);
+        this.reviewText = '';
+        this.authorName = '';
         this.close();
       }, 1200);
-    }, 800);
+    }, 600);
   }
 }

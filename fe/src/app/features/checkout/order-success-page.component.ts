@@ -338,7 +338,7 @@ export class OrderSuccessPageComponent implements OnInit, OnDestroy {
   protected readonly codeCopied = signal(false);
   protected readonly orderDate = signal<string>('Hôm nay');
   protected readonly fulfillmentLabel = signal<string>('Nhận tại Showroom');
-  protected readonly branchLocationName = signal<string>('EL-TECH TP.HCM (Quận 10)');
+  protected readonly branchLocationName = signal<string>('Showroom EL-TECH TP.HCM');
   protected readonly branchAddress = signal<string>('280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh');
   protected readonly receiverName = signal<string>('Nguyễn Hoàng Nam');
   protected readonly receiverPhone = signal<string>('0988 234 567');

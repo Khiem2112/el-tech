@@ -153,8 +153,6 @@ export class OrderStatusBarComponent {
       s === 'ON_HOLD' ||
       s === 'CANCELLED' ||
       s === 'DELIVERY_FAILED' ||
-      s === 'RETURNING' ||
-      s === 'RETURNED_TO_BRANCH' ||
       s === 'PENDING_COD_CONFIRMATION'
     );
   });
@@ -168,10 +166,6 @@ export class OrderStatusBarComponent {
         return `ĐÃ HỦY (${ord.cancellationReason || 'Theo yêu cầu'})`;
       case 'DELIVERY_FAILED':
         return `GIAO THẤT BẠI (Lần ${ord.redeliveryAttemptCount})`;
-      case 'RETURNING':
-        return 'ĐANG CHUYỂN HOÀN KHO';
-      case 'RETURNED_TO_BRANCH':
-        return 'HÀNG ĐÃ VỀ KHO CHI NHÁNH';
       case 'PENDING_COD_CONFIRMATION':
         return 'CHỜ XÁC NHẬN ĐƠN COD';
       default:

@@ -90,7 +90,7 @@ export type CustomerReviewDto = {
   readonly order: {
     readonly id: string;
     readonly code: string;
-  };
+  } | null;
 };
 
 export type CustomerMergedProfileDto = {
@@ -455,10 +455,7 @@ export class AdminCustomerService {
         id: review.productTemplate.id,
         name: review.productTemplate.name,
       },
-      order: {
-        id: review.order.id,
-        code: review.order.code,
-      },
+      order: review.order ? { id: review.order.id, code: review.order.code } : null,
     }));
 
     const mergedCustomersDto: readonly CustomerMergedProfileDto[] =

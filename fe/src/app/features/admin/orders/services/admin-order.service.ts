@@ -13,8 +13,6 @@ export type AdminOrderStatus =
   | 'READY_FOR_PICKUP'
   | 'SHIPPING'
   | 'DELIVERY_FAILED'
-  | 'RETURNING'
-  | 'RETURNED_TO_BRANCH'
   | 'COMPLETED'
   | 'ON_HOLD'
   | 'CANCELLED';

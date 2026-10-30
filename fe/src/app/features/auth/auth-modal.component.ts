@@ -17,8 +17,12 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
+        (click)="closeModal()"
       >
-        <div class="relative w-full max-w-[440px] my-auto bg-surface rounded-2xl shadow-2xl border border-line overflow-hidden transition-all duration-200">
+        <div
+          class="relative w-full max-w-[440px] my-auto bg-surface rounded-2xl shadow-2xl border border-line overflow-hidden transition-all duration-200"
+          (click)="$event.stopPropagation()"
+        >
           <!-- Top NVIDIA Green Gradient Line -->
           <div class="h-1.5 w-full bg-gradient-to-r from-primary via-primary-pale to-primary-fixed"></div>
 
@@ -26,8 +30,8 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
           <button
             type="button"
             aria-label="Đóng cửa sổ"
-            class="absolute top-4 right-4 size-8 rounded-full bg-surface-alt hover:bg-slate-200 text-muted hover:text-foreground flex items-center justify-center transition-colors z-10"
-            (click)="auth.closeAuthModal()"
+            class="absolute top-4 right-4 size-8 rounded-full bg-surface-alt hover:bg-slate-200 text-muted hover:text-foreground flex items-center justify-center transition-colors z-10 cursor-pointer"
+            (click)="closeModal()"
           >
             <lucide-icon name="X" class="size-4" aria-hidden="true"></lucide-icon>
           </button>
@@ -52,24 +56,24 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             <div class="grid grid-cols-2 p-1 bg-surface-alt rounded-lg border border-line">
               <button
                 type="button"
-                class="py-2 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
+                class="py-2 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer"
                 [class.bg-surface]="authMode() === 'login'"
                 [class.text-foreground]="authMode() === 'login'"
                 [class.shadow-xs]="authMode() === 'login'"
                 [class.text-muted]="authMode() !== 'login'"
-                (click)="authMode.set('login')"
+                (click)="switchMode('login')"
               >
                 <lucide-icon name="User" class="size-3.5" [class.text-primary]="authMode() === 'login'" aria-hidden="true"></lucide-icon>
                 <span>Đăng nhập</span>
               </button>
               <button
                 type="button"
-                class="py-2 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5"
+                class="py-2 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center gap-1.5 cursor-pointer"
                 [class.bg-surface]="authMode() === 'register'"
                 [class.text-foreground]="authMode() === 'register'"
                 [class.shadow-xs]="authMode() === 'register'"
                 [class.text-muted]="authMode() !== 'register'"
-                (click)="authMode.set('register')"
+                (click)="switchMode('register')"
               >
                 <lucide-icon name="Plus" class="size-3.5" [class.text-primary]="authMode() === 'register'" aria-hidden="true"></lucide-icon>
                 <span>Đăng ký</span>
@@ -98,6 +102,14 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                 Hoặc với Email / SĐT
               </span>
             </div>
+
+            <!-- Success Message Banner -->
+            @if (successMessage(); as msg) {
+              <div class="p-3 rounded-lg bg-primary/10 border border-primary/30 text-xs font-bold text-primary flex items-center gap-2 animate-in fade-in duration-200">
+                <lucide-icon name="Check" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                <span>{{ msg }}</span>
+              </div>
+            }
 
             <!-- Auth Input Form -->
             <form class="flex flex-col gap-3.5" (ngSubmit)="handleSubmit()">
@@ -251,13 +263,45 @@ export class AuthModalComponent {
   protected readonly showPassword = signal(false);
   protected readonly isSubmitting = signal(false);
   protected readonly forgotPasswordSent = signal(false);
+  protected readonly successMessage = signal<string | null>(null);
 
   protected name = '';
   protected identifier = '';
   protected password = '';
   protected rememberMe = true;
 
+  private closeTimer: ReturnType<typeof setTimeout> | null = null;
+
+  protected resetForm(): void {
+    this.name = '';
+    this.identifier = '';
+    this.password = '';
+    this.rememberMe = true;
+    this.showPassword.set(false);
+    this.forgotPasswordSent.set(false);
+    this.successMessage.set(null);
+    if (this.closeTimer) {
+      clearTimeout(this.closeTimer);
+      this.closeTimer = null;
+    }
+  }
+
+  protected closeModal(): void {
+    this.resetForm();
+    this.auth.closeAuthModal();
+  }
+
+  protected switchMode(mode: 'login' | 'register'): void {
+    if (this.authMode() !== mode) {
+      this.resetForm();
+      this.authMode.set(mode);
+    }
+  }
+
   protected canSubmit(): boolean {
+    if (this.successMessage()) {
+      return false;
+    }
     if (this.authMode() === 'register' && this.name.trim().length === 0) {
       return false;
     }
@@ -274,13 +318,20 @@ export class AuthModalComponent {
           emailOrPhone: this.identifier.trim(),
           password: this.password,
         });
+        this.auth.openAuthModal();
+        this.successMessage.set('Đăng nhập thành công! Đang chuyển hướng...');
       } else {
         await this.auth.register({
           name: this.name.trim(),
           emailOrPhone: this.identifier.trim(),
           password: this.password,
         });
+        this.auth.openAuthModal();
+        this.successMessage.set('Đăng ký tài khoản thành công! Đang chuyển hướng...');
       }
+      this.closeTimer = setTimeout(() => {
+        this.closeModal();
+      }, 2000);
     } finally {
       this.isSubmitting.set(false);
     }
@@ -288,6 +339,11 @@ export class AuthModalComponent {
 
   protected async handleGoogleAuth(): Promise<void> {
     await this.auth.loginWithGoogle();
+    this.auth.openAuthModal();
+    this.successMessage.set('Đăng nhập Google thành công! Đang chuyển hướng...');
+    this.closeTimer = setTimeout(() => {
+      this.closeModal();
+    }, 2000);
   }
 
   protected handleForgotPassword(): void {
@@ -295,7 +351,7 @@ export class AuthModalComponent {
   }
 
   protected navigateToGuestLookup(): void {
-    this.auth.closeAuthModal();
+    this.closeModal();
     void this.router.navigate(['/tra-cuu-don']);
   }
 }

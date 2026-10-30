@@ -136,6 +136,89 @@ const serialize = (order: OrderRecord): SerializedOrder => {
 };
 
 export const orderLookupService = {
+  async lookupByOrderCode(code: string): Promise<SerializedOrder> {
+    const order = await prisma.order.findFirst({
+      where: { code, isActive: true },
+      include: {
+        payment: { include: { charges: true } },
+        lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
+        statusHistories: { orderBy: { occurredAt: 'asc' } },
+      },
+    });
+    if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    await orderService.expireOrderIfOverdue(order.id);
+    return serialize(order);
+  },
+
+  async requestGuestLookupOtp(identifier: string, contactType: 'EMAIL' | 'PHONE'): Promise<{ verificationId: string; expiresAt: string }> {
+    const trimmed = identifier.trim();
+    const guestOrders = await prisma.order.findMany({
+      where: {
+        isActive: true,
+        customer: { userId: null },
+        ...(contactType === 'EMAIL'
+          ? { receiverEmail: trimmed.toLowerCase() }
+          : { receiverPhone: trimmed }),
+      },
+      take: 1,
+    });
+    if (guestOrders.length === 0) {
+      throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    }
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    const verification = await prisma.verification.create({
+      data: {
+        identifier: trimmed.toLowerCase(),
+        value: otp,
+        purpose: 'GUEST_ORDER_ACCESS',
+        contactType,
+        expiresAt: new Date(Date.now() + 5 * 60_000),
+      },
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      console.info({ guestLookup: trimmed, verificationId: verification.id, otp });
+    }
+    return { verificationId: verification.id, expiresAt: verification.expiresAt.toISOString() };
+  },
+
+  async verifyGuestLookupOtp(verificationId: string, otp: string): Promise<{ verificationId: string; sessionToken: string; orders: SerializedOrder[] }> {
+    const verification = await prisma.verification.findFirst({
+      where: {
+        id: verificationId,
+        purpose: 'GUEST_ORDER_ACCESS',
+        consumedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+    });
+    if (!verification || verification.value !== otp) {
+      throw new DomainError('OTP_INVALID', { messageKey: 'error.otpInvalid', status: 403 });
+    }
+    await prisma.verification.update({ where: { id: verification.id }, data: { consumedAt: new Date() } });
+
+    const isEmail = verification.contactType === 'EMAIL' || verification.identifier.includes('@');
+    const guestOrders = await prisma.order.findMany({
+      where: {
+        isActive: true,
+        customer: { userId: null },
+        ...(isEmail
+          ? { receiverEmail: verification.identifier.toLowerCase() }
+          : { receiverPhone: verification.identifier }),
+      },
+      include: {
+        payment: { include: { charges: true } },
+        lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
+        statusHistories: { orderBy: { occurredAt: 'asc' } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return {
+      verificationId: verification.id,
+      sessionToken: verification.id,
+      orders: guestOrders.map(serialize),
+    };
+  },
+
   async request(code: string, identifier: string): Promise<{ verificationId: string; expiresAt: string }> {
     const order = await prisma.order.findFirst({ where: { code, isActive: true, OR: [{ receiverEmail: identifier.trim().toLowerCase() }, { receiverPhone: identifier.trim() }] } });
     if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });

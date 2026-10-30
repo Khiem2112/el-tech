@@ -57,8 +57,6 @@ type Order = {
   readonly timeline: readonly { readonly status: string; readonly reason: string | null; readonly occurredAt: string }[];
 };
 
-type Otp = { readonly verificationId: string; readonly expiresAt: string; readonly channel: string; readonly code?: string };
-
 @Component({
   selector: 'app-order-lookup-page',
   imports: [
@@ -85,8 +83,8 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
         </nav>
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight">Tra Cứu & Theo Dõi Đơn Hàng</h1>
-            <p class="text-xs text-muted mt-1">Nhập mã đơn hàng và số điện thoại hoặc email đã dùng khi đặt hàng để xem tiến độ đóng gói và thông tin thanh toán.</p>
+            <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight">Tra Cứu &amp; Theo Dõi Đơn Hàng</h1>
+            <p class="text-xs text-muted mt-1">Nhập mã đơn hàng hoặc sử dụng số điện thoại / email đã đặt hàng để xem tiến độ đóng gói và thông tin thanh toán.</p>
           </div>
         </div>
       </div>
@@ -114,7 +112,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
             appButton
             variant="primary"
             size="sm"
-            class="shrink-0"
+            class="shrink-0 font-bold"
           >
             <lucide-icon name="Package" class="size-3.5" aria-hidden="true"></lucide-icon>
             <span>Đơn hàng của tôi</span>
@@ -122,70 +120,191 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
         </div>
       }
 
-      <!-- Order Lookup Input Box -->
-      <div class="max-w-2xl mx-auto bg-surface-alt p-5 sm:p-6 rounded-xl border border-line shadow-sm space-y-4">
-        <div class="grid sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-foreground mb-1" for="lookupCode">Mã đơn hàng</label>
-            <input
-              id="lookupCode"
-              appInput
-              class="w-full text-xs font-bold uppercase"
-              [(ngModel)]="code"
-              placeholder="Ví dụ: ELT-2026-..."
-            >
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-foreground mb-1" for="lookupIdentifier">Email hoặc Số điện thoại</label>
-            <input
-              id="lookupIdentifier"
-              appInput
-              class="w-full text-xs"
-              [(ngModel)]="identifier"
-              placeholder="0912345678 hoặc email@..."
-            >
-          </div>
+      <!-- 3-Tab Order Lookup Card -->
+      <div class="max-w-2xl mx-auto bg-surface-alt p-5 sm:p-6 rounded-xl border border-line shadow-sm space-y-5">
+        <!-- Tabs Navigation -->
+        <div class="grid grid-cols-3 gap-1 bg-surface p-1 rounded-xl border border-line">
+          <button
+            type="button"
+            (click)="switchTab('code')"
+            class="py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+            [class.bg-surface-alt]="activeTab() === 'code'"
+            [class.text-foreground]="activeTab() === 'code'"
+            [class.shadow-xs]="activeTab() === 'code'"
+            [class.text-muted]="activeTab() !== 'code'"
+            [class.hover:text-foreground]="activeTab() !== 'code'"
+          >
+            <lucide-icon name="Package" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+            <span>Mã đơn hàng</span>
+          </button>
+          <button
+            type="button"
+            (click)="switchTab('phone')"
+            class="py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+            [class.bg-surface-alt]="activeTab() === 'phone'"
+            [class.text-foreground]="activeTab() === 'phone'"
+            [class.shadow-xs]="activeTab() === 'phone'"
+            [class.text-muted]="activeTab() !== 'phone'"
+            [class.hover:text-foreground]="activeTab() !== 'phone'"
+          >
+            <lucide-icon name="Phone" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+            <span>Số điện thoại</span>
+          </button>
+          <button
+            type="button"
+            (click)="switchTab('email')"
+            class="py-2.5 px-3 rounded-lg text-xs font-bold transition-all text-center cursor-pointer flex items-center justify-center gap-1.5"
+            [class.bg-surface-alt]="activeTab() === 'email'"
+            [class.text-foreground]="activeTab() === 'email'"
+            [class.shadow-xs]="activeTab() === 'email'"
+            [class.text-muted]="activeTab() !== 'email'"
+            [class.hover:text-foreground]="activeTab() !== 'email'"
+          >
+            <lucide-icon name="Mail" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+            <span>Email</span>
+          </button>
         </div>
 
-        <button
-          type="button"
-          appButton
-          variant="secondary"
-          size="lg"
-          class="w-full"
-          [disabled]="isRequestingOtp() || !code.trim() || !identifier.trim()"
-          (click)="request()"
-        >
-          @if (isRequestingOtp()) {
-            <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
-            <span>Đang gửi mã xác thực OTP...</span>
-          } @else {
-            <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
-            <span>Gửi mã xác thực OTP tra cứu</span>
-          }
-        </button>
+        <!-- Tab 1: Tra cứu theo Mã đơn hàng -->
+        @if (activeTab() === 'code') {
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-foreground mb-1" for="lookupOrderCode">Mã đơn hàng</label>
+              <input
+                id="lookupOrderCode"
+                appInput
+                class="w-full text-xs font-bold uppercase"
+                [(ngModel)]="orderCode"
+                (keydown.enter)="searchByCode()"
+                placeholder="Ví dụ: ELT-2026-0001"
+              >
+              <p class="text-xs text-muted mt-1">Mã đơn hàng được hiển thị sau khi đặt hàng thành công hoặc trong tin nhắn / email biên nhận.</p>
+            </div>
 
-        @if (requestError()) {
-          <div class="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger flex items-start gap-2 animate-in fade-in">
+            <button
+              type="button"
+              appButton
+              variant="primary"
+              size="lg"
+              class="w-full font-bold"
+              [disabled]="isSearching() || !orderCode.trim()"
+              (click)="searchByCode()"
+            >
+              @if (isSearching()) {
+                <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                <span>Đang tra cứu đơn hàng...</span>
+              } @else {
+                <lucide-icon name="Search" class="size-4" aria-hidden="true"></lucide-icon>
+                <span>Tra cứu đơn hàng</span>
+              }
+            </button>
+          </div>
+        }
+
+        <!-- Tab 2: Tra cứu theo Số điện thoại -->
+        @if (activeTab() === 'phone') {
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-foreground mb-1" for="lookupPhone">Số điện thoại đặt hàng</label>
+              <input
+                id="lookupPhone"
+                appInput
+                class="w-full text-xs font-bold"
+                [(ngModel)]="phoneNumber"
+                (keydown.enter)="requestPhoneOtp()"
+                placeholder="Ví dụ: 0912345678"
+                type="tel"
+              >
+              <p class="text-xs text-muted mt-1">Hệ thống sẽ gửi mã xác thực OTP 6 chữ số đến số điện thoại này để bảo mật thông tin đơn hàng.</p>
+            </div>
+
+            <button
+              type="button"
+              appButton
+              variant="primary"
+              size="lg"
+              class="w-full font-bold"
+              [disabled]="isRequestingOtp() || !phoneNumber.trim()"
+              (click)="requestPhoneOtp()"
+            >
+              @if (isRequestingOtp()) {
+                <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                <span>Đang gửi mã xác thực...</span>
+              } @else {
+                <lucide-icon name="Phone" class="size-4" aria-hidden="true"></lucide-icon>
+                <span>Gửi mã xác thực</span>
+              }
+            </button>
+          </div>
+        }
+
+        <!-- Tab 3: Tra cứu theo Email -->
+        @if (activeTab() === 'email') {
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-foreground mb-1" for="lookupEmail">Email đặt hàng</label>
+              <input
+                id="lookupEmail"
+                appInput
+                class="w-full text-xs font-bold"
+                [(ngModel)]="emailAddress"
+                (keydown.enter)="requestEmailOtp()"
+                placeholder="Ví dụ: customer@example.com"
+                type="email"
+              >
+              <p class="text-xs text-muted mt-1">Hệ thống sẽ gửi mã xác thực OTP 6 chữ số đến địa chỉ email này để bảo mật thông tin đơn hàng.</p>
+            </div>
+
+            <button
+              type="button"
+              appButton
+              variant="primary"
+              size="lg"
+              class="w-full font-bold"
+              [disabled]="isRequestingOtp() || !emailAddress.trim()"
+              (click)="requestEmailOtp()"
+            >
+              @if (isRequestingOtp()) {
+                <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
+                <span>Đang gửi mã xác thực...</span>
+              } @else {
+                <lucide-icon name="Mail" class="size-4" aria-hidden="true"></lucide-icon>
+                <span>Gửi mã xác thực</span>
+              }
+            </button>
+          </div>
+        }
+
+        <!-- Search Error Notification -->
+        @if (searchError()) {
+          <div class="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger flex items-start gap-2">
             <lucide-icon name="AlertTriangle" class="size-4 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
             <div class="flex-1 space-y-1">
-              <span class="font-bold block">Không tìm thấy đơn hàng</span>
-              <p class="text-foreground/80 text-xs leading-relaxed">{{ requestError() }}</p>
+              <span class="font-bold block">Thông báo</span>
+              <p class="text-foreground/80 text-xs leading-relaxed">{{ searchError() }}</p>
             </div>
           </div>
         }
 
-        <!-- OTP Input Step -->
-        @if (verificationId()) {
-          <div class="border-t border-line pt-4 space-y-2">
-            <label class="block text-xs font-bold text-foreground" for="lookupOtp">Nhập mã OTP 6 chữ số vừa nhận được</label>
+        <!-- OTP Input Dialog/Card (for Phone & Email lookups) -->
+        @if (verificationId() && (activeTab() === 'phone' || activeTab() === 'email')) {
+          <div class="border-t border-line pt-4 space-y-3 bg-surface p-4 rounded-lg border border-line">
+            <div>
+              <label class="block text-xs font-bold text-foreground" for="lookupOtp">
+                Nhập mã OTP 6 chữ số vừa gửi đến {{ otpTarget() }}
+              </label>
+              <p class="text-xs text-muted mt-0.5">Mã OTP có hiệu lực trong 5 phút.</p>
+            </div>
+
             <div class="flex gap-2">
               <input
                 id="lookupOtp"
                 appInput
-                class="flex-1 text-xs font-bold"
+                class="flex-1 text-xs font-bold tracking-widest text-center"
                 [(ngModel)]="otp"
+                (keydown.enter)="verifyOtp()"
                 inputmode="numeric"
+                maxlength="6"
                 placeholder="6 chữ số (ví dụ: 123456)"
               >
               <button
@@ -193,27 +312,32 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
                 appButton
                 variant="primary"
                 size="md"
+                class="font-bold shrink-0"
                 [disabled]="isVerifyingOtp() || !otp.trim()"
-                (click)="verify()"
+                (click)="verifyOtp()"
               >
                 @if (isVerifyingOtp()) {
                   <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
                   <span>Đang xác thực...</span>
                 } @else {
-                  <span>Xem chi tiết đơn</span>
+                  <span>Xác thực &amp; Xem đơn</span>
                   <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
                 }
               </button>
             </div>
+
             @if (verifyError()) {
-              <p class="text-xs text-danger font-medium pt-1">{{ verifyError() }}</p>
+              <div class="p-2.5 rounded bg-danger/10 border border-danger/30 text-xs text-danger flex items-center gap-1.5">
+                <lucide-icon name="AlertTriangle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                <span>{{ verifyError() }}</span>
+              </div>
             }
           </div>
         }
       </div>
 
       <!-- SKELETON LOADING STATE -->
-      @if (isVerifyingOtp()) {
+      @if (isSearching() || isVerifyingOtp()) {
         <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm animate-pulse space-y-4" aria-busy="true">
           <!-- Header Bar Skeleton -->
           <div class="bg-surface-dark p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-line">
@@ -276,8 +400,87 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
         </div>
       }
 
+      <!-- Back to Guest Orders List Button -->
+      @if (!isSearching() && !isVerifyingOtp() && guestOrders().length > 1 && order()) {
+        <div class="max-w-7xl mx-auto flex items-center justify-start">
+          <button
+            type="button"
+            appButton
+            variant="outline"
+            size="sm"
+            (click)="order.set(null)"
+          >
+            <lucide-icon name="ChevronLeft" class="size-3.5" aria-hidden="true"></lucide-icon>
+            <span>Quay lại danh sách đơn hàng ({{ guestOrders().length }} đơn)</span>
+          </button>
+        </div>
+      }
+
+      <!-- Guest Orders List (when multiple orders found and none selected yet) -->
+      @if (!isSearching() && !isVerifyingOtp() && !order() && guestOrders().length > 0) {
+        <div class="max-w-4xl mx-auto space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-line">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-foreground">Danh Sách Đơn Hàng Tìm Thấy ({{ guestOrders().length }})</h2>
+              <p class="text-xs text-muted">Bấm vào đơn hàng để xem chi tiết tiến độ, linh kiện và thông tin thanh toán.</p>
+            </div>
+            <span class="text-xs font-semibold text-primary">Đã xác thực OTP</span>
+          </div>
+
+          <div class="grid gap-3">
+            @for (item of guestOrders(); track item.code) {
+              <div
+                class="p-4 sm:p-5 rounded-xl bg-surface border border-line hover:border-primary/50 transition-colors shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 cursor-pointer"
+                (click)="selectGuestOrder(item)"
+              >
+                <div class="space-y-1.5 flex-1 min-w-0">
+                  <div class="flex items-center gap-2.5 flex-wrap">
+                    <span appBadge variant="primary" class="font-bold">
+                      MÃ ĐƠN: {{ item.code }}
+                    </span>
+                    <span appBadge variant="dark">
+                      {{ item.status }}
+                    </span>
+                    <span
+                      appBadge
+                      [variant]="item.payment?.state === 'PAID' ? 'success' : 'outline'"
+                    >
+                      {{ item.payment?.state === 'PAID' ? 'ĐÃ THANH TOÁN' : 'CHƯA THANH TOÁN' }}
+                    </span>
+                  </div>
+                  <div class="text-xs text-muted">
+                    Người nhận: <span class="text-foreground font-semibold">{{ item.receiverName }}</span> · {{ item.receiverPhone }}
+                  </div>
+                  <div class="text-xs text-muted truncate">
+                    {{ item.lines.length }} món linh kiện · {{ item.fulfillmentMethod === 'DELIVERY' ? 'Giao hàng tận nơi' : 'Nhận tại showroom' }}
+                  </div>
+                </div>
+
+                <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
+                  <div class="text-left sm:text-right">
+                    <span class="text-xs text-muted block">Tổng thanh toán</span>
+                    <span class="text-base font-black text-primary tabular">{{ item.grandTotal | vnd }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    appButton
+                    variant="secondary"
+                    size="sm"
+                    class="shrink-0 font-bold"
+                    (click)="selectGuestOrder(item); $event.stopPropagation()"
+                  >
+                    <span>Xem chi tiết</span>
+                    <lucide-icon name="ChevronRight" class="size-3.5" aria-hidden="true"></lucide-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
       <!-- Detailed Order View When Retrieved -->
-      @if (!isVerifyingOtp() && order(); as item) {
+      @if (!isSearching() && !isVerifyingOtp() && order(); as item) {
         <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm">
           
           <!-- Header Bar with Status Badges -->
@@ -715,7 +918,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
       }
 
       <!-- Empty Guide State (When No Order Selected/Retrieved) -->
-      @if (!isVerifyingOtp() && !order()) {
+      @if (!isSearching() && !isVerifyingOtp() && !order() && guestOrders().length === 0) {
         <div class="max-w-2xl mx-auto rounded-xl border border-line bg-surface p-8 text-center space-y-4 shadow-xs">
           <div class="size-12 rounded-full bg-surface-alt border border-line flex items-center justify-center mx-auto text-primary">
             <lucide-icon name="Package" class="size-6" aria-hidden="true"></lucide-icon>
@@ -723,7 +926,7 @@ type Otp = { readonly verificationId: string; readonly expiresAt: string; readon
           <div class="space-y-1.5">
             <h3 class="text-base font-bold text-foreground">Chưa có đơn hàng nào được chọn tra cứu</h3>
             <p class="text-xs text-muted max-w-md mx-auto leading-relaxed">
-              Nhập mã đơn hàng và số điện thoại hoặc email liên kết để nhận mã xác thực OTP, kiểm tra tiến độ đóng gói, kết quả stress-test và mã thanh toán VietQR.
+              Nhập mã đơn hàng hoặc sử dụng số điện thoại / email đặt hàng để nhận mã xác thực OTP, kiểm tra tiến độ đóng gói, kết quả stress-test và mã thanh toán VietQR.
             </p>
           </div>
 
@@ -772,10 +975,13 @@ export class OrderLookupPageComponent implements OnInit {
   protected readonly auth = inject(AuthService);
   protected readonly onImageError = handleProductImageError;
 
-  protected code = '';
-  protected identifier = '';
+  protected readonly activeTab = signal<'code' | 'phone' | 'email'>('code');
+  protected orderCode = '';
+  protected phoneNumber = '';
+  protected emailAddress = '';
   protected otp = '';
-  protected reviewText = '';
+  protected readonly otpTarget = signal<string>('');
+
   protected readonly ratingOptions: readonly SelectOption[] = [
     { value: '5', label: '5 sao - Rất tốt' },
     { value: '4', label: '4 sao - Tốt' },
@@ -785,22 +991,45 @@ export class OrderLookupPageComponent implements OnInit {
   ];
 
   protected reviewRating = 5;
+  protected reviewText = '';
   protected readonly verificationId = signal<string | null>(null);
   protected readonly sessionToken = signal<string | null>(null);
+  protected readonly guestOrders = signal<readonly Order[]>([]);
   protected readonly order = signal<Order | null>(null);
   protected readonly showCancelModal = signal(false);
   protected readonly reviewingLineId = signal<string | null>(null);
+
+  protected readonly isSearching = signal(false);
   protected readonly isRequestingOtp = signal(false);
   protected readonly isVerifyingOtp = signal(false);
   protected readonly isSubmittingReview = signal(false);
-  protected readonly requestError = signal<string | null>(null);
+
+  protected readonly searchError = signal<string | null>(null);
   protected readonly verifyError = signal<string | null>(null);
 
   ngOnInit(): void {
     const user = this.auth.currentUser();
     if (user) {
-      this.identifier = user.email || user.phone || '';
+      if (user.phone) {
+        this.phoneNumber = user.phone;
+      }
+      if (user.email) {
+        this.emailAddress = user.email;
+      }
     }
+  }
+
+  protected switchTab(tab: 'code' | 'phone' | 'email'): void {
+    if (this.activeTab() === tab) return;
+    this.activeTab.set(tab);
+    this.searchError.set(null);
+    this.verifyError.set(null);
+    this.verificationId.set(null);
+    this.otp = '';
+  }
+
+  protected selectGuestOrder(orderItem: Order): void {
+    this.order.set(orderItem);
   }
 
   protected readonly currentStageIndex = computed(() => {
@@ -833,49 +1062,135 @@ export class OrderLookupPageComponent implements OnInit {
     return digits ? `OTP-${digits}` : 'OTP-981240';
   });
 
-  protected async request(): Promise<void> {
-    if (this.isRequestingOtp() || !this.code.trim() || !this.identifier.trim()) return;
-    this.isRequestingOtp.set(true);
-    this.requestError.set(null);
+  protected async searchByCode(): Promise<void> {
+    const code = this.orderCode.trim();
+    if (this.isSearching() || !code) return;
+
+    this.isSearching.set(true);
+    this.searchError.set(null);
+    this.order.set(null);
+    this.guestOrders.set([]);
+    this.verificationId.set(null);
+
     try {
-      const response = await this.api.post<Otp>('/orders/lookup/request', {
-        code: this.code.trim(),
-        identifier: this.identifier.trim(),
-      });
+      const response = await this.api.get<Order>(`/orders/${encodeURIComponent(code)}/detail`);
       if (response.success) {
-        this.verificationId.set(response.data.verificationId);
+        this.order.set(response.data);
       } else {
-        this.requestError.set(
-          !response.success && response.error?.messageKey
-            ? response.error.messageKey
-            : 'Không tìm thấy đơn hàng với thông tin đã cung cấp. Vui lòng kiểm tra lại mã đơn và số điện thoại hoặc email.',
+        this.searchError.set(
+          this.formatErrorMessage(
+            response.error?.code || response.error?.messageKey,
+            'Không tìm thấy đơn hàng với mã đã nhập. Vui lòng kiểm tra lại.'
+          )
         );
       }
     } catch {
-      this.requestError.set('Lỗi kết nối máy chủ. Vui lòng thử lại sau.');
+      this.searchError.set('Lỗi kết nối máy chủ. Vui lòng thử lại sau.');
+    } finally {
+      this.isSearching.set(false);
+    }
+  }
+
+  protected async requestPhoneOtp(): Promise<void> {
+    const phone = this.phoneNumber.trim();
+    if (this.isRequestingOtp() || !phone) return;
+
+    this.isRequestingOtp.set(true);
+    this.searchError.set(null);
+    this.verifyError.set(null);
+    this.verificationId.set(null);
+    this.order.set(null);
+    this.guestOrders.set([]);
+    this.otp = '';
+
+    try {
+      const response = await this.api.post<{ verificationId: string; expiresAt: string }>(
+        '/orders/lookup/request-otp',
+        { identifier: phone, contactType: 'PHONE' }
+      );
+      if (response.success) {
+        this.verificationId.set(response.data.verificationId);
+        this.otpTarget.set(phone);
+      } else {
+        this.searchError.set(
+          this.formatErrorMessage(
+            response.error?.code || response.error?.messageKey,
+            'Không tìm thấy đơn hàng nào liên kết với số điện thoại này.'
+          )
+        );
+      }
+    } catch {
+      this.searchError.set('Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.');
     } finally {
       this.isRequestingOtp.set(false);
     }
   }
 
-  protected async verify(): Promise<void> {
+  protected async requestEmailOtp(): Promise<void> {
+    const email = this.emailAddress.trim();
+    if (this.isRequestingOtp() || !email) return;
+
+    this.isRequestingOtp.set(true);
+    this.searchError.set(null);
+    this.verifyError.set(null);
+    this.verificationId.set(null);
+    this.order.set(null);
+    this.guestOrders.set([]);
+    this.otp = '';
+
+    try {
+      const response = await this.api.post<{ verificationId: string; expiresAt: string }>(
+        '/orders/lookup/request-otp',
+        { identifier: email, contactType: 'EMAIL' }
+      );
+      if (response.success) {
+        this.verificationId.set(response.data.verificationId);
+        this.otpTarget.set(email);
+      } else {
+        this.searchError.set(
+          this.formatErrorMessage(
+            response.error?.code || response.error?.messageKey,
+            'Không tìm thấy đơn hàng nào liên kết với email này.'
+          )
+        );
+      }
+    } catch {
+      this.searchError.set('Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.');
+    } finally {
+      this.isRequestingOtp.set(false);
+    }
+  }
+
+  protected async verifyOtp(): Promise<void> {
     const verificationId = this.verificationId();
-    if (!verificationId || this.isVerifyingOtp() || !this.otp.trim()) return;
+    const otp = this.otp.trim();
+    if (!verificationId || this.isVerifyingOtp() || !otp) return;
+
     this.isVerifyingOtp.set(true);
     this.verifyError.set(null);
+
     try {
-      const response = await this.api.post<{ verificationId: string; sessionToken: string; order: Order }>('/orders/lookup/verify', {
-        verificationId,
-        code: this.otp.trim(),
-      });
+      const response = await this.api.post<{ verificationId: string; sessionToken: string; orders: readonly Order[] }>(
+        '/orders/lookup/verify-otp',
+        { verificationId, otp }
+      );
       if (response.success) {
         this.sessionToken.set(response.data.sessionToken || response.data.verificationId);
-        this.order.set(response.data.order);
+        const orders = response.data.orders;
+        this.guestOrders.set(orders);
+        if (orders.length === 1) {
+          this.order.set(orders[0]);
+        } else if (orders.length > 1) {
+          this.order.set(null);
+        } else {
+          this.verifyError.set('Không tìm thấy đơn hàng nào tương ứng.');
+        }
       } else {
         this.verifyError.set(
-          !response.success && response.error?.messageKey
-            ? response.error.messageKey
-            : 'Mã OTP không chính xác hoặc đã hết hạn.',
+          this.formatErrorMessage(
+            response.error?.code || response.error?.messageKey,
+            'Mã OTP không chính xác hoặc đã hết hạn.'
+          )
         );
       }
     } catch {
@@ -886,18 +1201,30 @@ export class OrderLookupPageComponent implements OnInit {
   }
 
   protected async refreshOrder(): Promise<void> {
-    const sessionToken = this.sessionToken();
-    if (!sessionToken) return;
-    const response = await this.api.post<Order>('/orders/lookup/session', { sessionToken });
+    const cur = this.order();
+    if (!cur) return;
+    const response = await this.api.get<Order>(`/orders/${encodeURIComponent(cur.code)}/detail`);
     if (response.success) {
       this.order.set(response.data);
+      this.guestOrders.update((list) =>
+        list.map((o) => (o.code === response.data.code ? response.data : o))
+      );
     }
   }
 
   protected async handleModalCancel(orderCode: string, payload: CancelOrderPayload): Promise<void> {
     const reasonText = payload.note ? `${payload.reason} - ${payload.note}` : payload.reason;
+    const cur = this.order();
+    const identifier =
+      cur?.receiverPhone ||
+      cur?.receiverEmail ||
+      this.phoneNumber.trim() ||
+      this.emailAddress.trim() ||
+      this.auth.currentUser()?.email ||
+      '';
+
     const response = await this.api.post<{ code: string; status: string; paymentState: string }>(`/orders/${orderCode}/cancel`, {
-      identifier: this.identifier.trim(),
+      identifier,
       sessionToken: this.sessionToken() ?? undefined,
       reason: reasonText,
       bankInfo: payload.bankInfo,
@@ -938,6 +1265,26 @@ export class OrderLookupPageComponent implements OnInit {
       }
     } finally {
       this.isSubmittingReview.set(false);
+    }
+  }
+
+  private formatErrorMessage(code?: string, fallback = 'Không tìm thấy đơn hàng với thông tin đã cung cấp.'): string {
+    if (!code) return fallback;
+    switch (code) {
+      case 'ORDER_NOT_FOUND':
+      case 'error.orderNotFound':
+        return 'Không tìm thấy đơn hàng với thông tin đã cung cấp. Vui lòng kiểm tra lại.';
+      case 'OTP_INVALID':
+      case 'error.otpInvalid':
+        return 'Mã xác thực OTP không chính xác. Vui lòng kiểm tra và nhập lại.';
+      case 'SESSION_EXPIRED':
+      case 'error.sessionExpired':
+        return 'Mã xác thực OTP hoặc phiên tra cứu đã hết hạn. Vui lòng yêu cầu gửi lại mã mới.';
+      case 'ORDER_ACCESS_DENIED':
+      case 'error.orderAccessDenied':
+        return 'Bạn không có quyền truy cập vào thông tin đơn hàng này.';
+      default:
+        return fallback;
     }
   }
 }

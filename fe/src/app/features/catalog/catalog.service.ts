@@ -34,7 +34,7 @@ export type CatalogCategory = {
   specificationSchema?: readonly SpecificationDefinition[];
 };
 export type CatalogBrand = { id: number; name: string; slug: string; description: string | null };
-export type ProductReviewItem = { id: string; rating: number; text: string; createdAt: string };
+export type ProductReviewItem = { id: string; authorName?: string | null; rating: number; text: string; createdAt: string };
 
 export type ProductFilterParams = {
   readonly query?: string;
@@ -78,10 +78,15 @@ export class CatalogService {
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
+  async submitReview(data: { productSlug: string; rating: number; text: string; authorName?: string }): Promise<{ id: string }> {
+    const response = await this.api.post<{ id: string }>('/reviews', data);
+    if (!response.success) throw new Error(response.error.messageKey);
+    return response.data;
+  }
   async categories(): Promise<readonly CatalogCategory[]> {
     const response = await this.api.get<readonly CatalogCategory[]>('/categories');
     if (!response.success) throw new Error(response.error.messageKey);
-    return response.data;
+    return response.data.filter((c) => c.slug !== 'laptop' && c.slug !== 'dien-thoai');
   }
   async brands(): Promise<readonly CatalogBrand[]> {
     const response = await this.api.get<readonly CatalogBrand[]>('/brands');

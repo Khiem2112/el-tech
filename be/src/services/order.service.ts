@@ -30,6 +30,31 @@ const asVnd = (value: Prisma.Decimal): string => value.toFixed(0);
 const orderCode = (): string => `ELT-${crypto.randomUUID().replaceAll('-', '').slice(0, 10).toUpperCase()}`;
 
 export const orderService = {
+  async rescheduleDelivery(orderId: string): Promise<{ code: string; status: string }> {
+    return prisma.$transaction(async (tx) => {
+      const order = await tx.order.findUnique({ where: { id: orderId } });
+      if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+      if (order.status !== 'DELIVERY_FAILED') {
+        throw new DomainError('INVALID_ORDER_STATE', { messageKey: 'error.invalidOrderState', status: 409 });
+      }
+      await tx.order.update({
+        where: { id: orderId },
+        data: { status: 'SHIPPING' },
+      });
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId,
+          previousStatus: 'DELIVERY_FAILED',
+          nextStatus: 'SHIPPING',
+          reason: 'Len lich giao lai sau su co giao nhan',
+          actorType: ActorType.SYSTEM,
+          idempotencyKey: `reschedule:${orderId}:${Date.now()}`,
+        },
+      });
+      return { code: order.code, status: 'SHIPPING' };
+    });
+  },
+
   async submit(input: SubmitOrderInput): Promise<{ code: string; status: string; paymentState: string; paymentReference?: string; expectedAmount?: string }> {
     const existing = await prisma.order.findUnique({ where: { idempotencyKey: input.idempotencyKey }, include: { payment: { include: { charges: true } } } });
     if (existing) return { code: existing.code, status: existing.status, paymentState: existing.payment?.state ?? 'UNPAID', paymentReference: existing.payment?.charges[0]?.providerReference, expectedAmount: existing.payment?.charges[0] ? asVnd(existing.payment.charges[0].expectedAmount) : undefined };
@@ -183,21 +208,13 @@ export const orderService = {
 
       const grandTotal = Prisma.Decimal.max(new Prisma.Decimal(0), subtotal.sub(couponDiscount).add(shippingFee));
 
-      const hasCustomBuild = cart.items.some((item) => item.pcBuildType === 'CUSTOM');
-      const isCodWithDeposit = input.paymentMethod === 'COD' && hasCustomBuild;
-
-      let depositRequired = new Prisma.Decimal(0);
+      const depositRequired = new Prisma.Decimal(0);
       let codRemaining = new Prisma.Decimal(0);
       let status: 'PENDING_PAYMENT' | 'PENDING_COD_CONFIRMATION' = 'PENDING_COD_CONFIRMATION';
 
       if (input.paymentMethod === 'QR') {
         status = 'PENDING_PAYMENT';
-      } else if (isCodWithDeposit) {
-        status = 'PENDING_PAYMENT';
-        const tenPercent = grandTotal.mul(0.1).toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
-        const minDeposit = new Prisma.Decimal(500000);
-        depositRequired = Prisma.Decimal.min(grandTotal, Prisma.Decimal.max(tenPercent, minDeposit));
-        codRemaining = grandTotal.sub(depositRequired);
+        codRemaining = new Prisma.Decimal(0);
       } else {
         status = 'PENDING_COD_CONFIRMATION';
         codRemaining = grandTotal;
@@ -258,7 +275,7 @@ export const orderService = {
           state: 'UNPAID',
           depositRequired,
           codRemaining,
-          depositDisposition: isCodWithDeposit ? 'HELD' : null,
+          depositDisposition: null,
         },
       });
 
@@ -278,10 +295,6 @@ export const orderService = {
           const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
           await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: after.onHand, reservedAfter: after.reserved, quarantineAfter: after.quarantineDamaged, actorType: ActorType.CUSTOMER } });
         }
-      } else if (isCodWithDeposit) {
-        paymentReference = `DEP-${order.code}`;
-        expectedChargeAmount = depositRequired;
-        await tx.paymentCharge.create({ data: { paymentId: payment.id, idempotencyKey: input.idempotencyKey, chargeType: 'CUSTOM_BUILD_DEPOSIT', providerReference: paymentReference, expectedAmount: depositRequired, expiresAt: new Date(Date.now() + 30 * 60_000) } });
       }
 
       if (appliedCoupon) {

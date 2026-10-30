@@ -249,7 +249,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   (click)="addToCart()"
                 >
                   <lucide-icon name="ShoppingCart" class="size-4" aria-hidden="true"></lucide-icon>
-                  <span>{{ adding() ? 'Đang thêm…' : 'Thêm giỏ' }}</span>
+                  <span>{{ adding() ? 'Đang thêm…' : 'Thêm vào giỏ hàng' }}</span>
                 </button>
                 <button
                   appButton
@@ -271,7 +271,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   (click)="openBomModal()"
                 >
                   <lucide-icon name="Wrench" class="size-4" aria-hidden="true"></lucide-icon>
-                  <span>Vào PC Builder</span>
+                  <span>Thêm vào PC Builder</span>
                 </button>
               </div>
 
@@ -286,32 +286,12 @@ const SPEC_LABEL_MAP: Record<string, string> = {
             </div>
 
             <!-- Store Branch Stock Status -->
-            <div class="border-t border-line pt-4 space-y-2">
-              <div class="text-xs font-bold text-foreground">Tình trạng còn hàng tại các chi nhánh:</div>
-              <div class="grid sm:grid-cols-3 gap-2 text-xs">
-                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
-                  <div class="flex items-center gap-1.5 font-bold">
-                    <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                    <span>HN: 45 Thái Hà</span>
-                  </div>
-                  <div class="text-xs text-muted truncate">Q. Đống Đa, Hà Nội</div>
-                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
-                </div>
-                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
-                  <div class="flex items-center gap-1.5 font-bold">
-                    <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                    <span>HCM: 280 Đường 3/2</span>
-                  </div>
-                  <div class="text-xs text-muted truncate">P. 12, Q. 10, TP. HCM</div>
-                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
-                </div>
-                <div class="p-2.5 rounded-md border border-line bg-surface-alt text-foreground space-y-1">
-                  <div class="flex items-center gap-1.5 font-bold">
-                    <lucide-icon name="Store" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                    <span>ĐN: 112 Hàm Nghi</span>
-                  </div>
-                  <div class="text-xs text-muted truncate">Q. Thanh Khê, Đà Nẵng</div>
-                  <div class="font-bold text-xs text-primary">Sẵn hàng (Giao 2h)</div>
+            <div class="border-t border-line pt-4">
+              <div class="p-3 rounded-lg border border-line bg-surface-alt flex items-center gap-2.5 text-xs text-foreground">
+                <lucide-icon name="Store" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+                <div>
+                  <span class="font-bold">Showroom EL-TECH:</span>
+                  <span class="text-primary font-semibold ml-1">Sẵn hàng - Giao nhanh toàn quốc</span>
                 </div>
               </div>
             </div>
@@ -762,14 +742,27 @@ export class ProductDetailPageComponent {
     }
   }
 
-  protected onReviewSubmitted(data: { rating: number; content: string }): void {
-    const newReview: ProductReviewItem = {
-      id: `rev-${Date.now()}`,
-      rating: data.rating,
-      text: data.content,
-      createdAt: new Date().toISOString(),
-    };
-    this.reviews.update((list) => [newReview, ...list]);
+  protected async onReviewSubmitted(data: { rating: number; content: string; authorName?: string }): Promise<void> {
+    const item = this.product();
+    if (!item) return;
+    try {
+      await this.catalog.submitReview({
+        productSlug: item.slug,
+        rating: data.rating,
+        text: data.content,
+        authorName: data.authorName,
+      });
+      const newReview: ProductReviewItem = {
+        id: `rev-${Date.now()}`,
+        authorName: data.authorName || 'Khách hàng',
+        rating: data.rating,
+        text: data.content,
+        createdAt: new Date().toISOString(),
+      };
+      this.reviews.update((list) => [newReview, ...list]);
+    } catch (e) {
+      console.error('Lỗi khi gửi đánh giá:', e);
+    }
     this.reviewModalOpen.set(false);
   }
 

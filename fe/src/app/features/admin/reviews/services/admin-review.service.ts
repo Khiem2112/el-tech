@@ -37,20 +37,21 @@ export type AdminReviewRevisionHistoryItem = {
 
 export type AdminReviewItem = {
   readonly id: string;
-  readonly customerId: string;
+  readonly customerId?: string | null;
   readonly productTemplateId: number;
   readonly skuId: number;
-  readonly orderId: string;
-  readonly orderLineId: string;
+  readonly orderId?: string | null;
+  readonly orderLineId?: string | null;
+  readonly authorName?: string | null;
   readonly rating: number;
   readonly text: string;
   readonly isVisible: boolean;
   readonly hiddenReason: string | null;
   readonly revisionHistory: readonly AdminReviewRevisionHistoryItem[];
-  readonly customer: AdminReviewCustomer;
+  readonly customer?: AdminReviewCustomer | null;
   readonly productTemplate: AdminReviewProduct;
   readonly sku: AdminReviewSku;
-  readonly order: AdminReviewOrder;
+  readonly order?: AdminReviewOrder | null;
   readonly createdAt: string;
   readonly updatedAt: string;
 };
