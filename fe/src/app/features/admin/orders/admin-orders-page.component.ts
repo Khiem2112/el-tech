@@ -516,7 +516,7 @@ export class AdminOrdersPageComponent implements OnInit {
     { key: 'ASSEMBLING', label: 'Đang lắp ráp' },
     { key: 'READY_FOR_PICKUP', label: 'Sẵn sàng nhận tại showroom' },
     { key: 'SHIPPING', label: 'Đang giao hàng' },
-    { key: 'DELIVERY_FAILED', label: 'Giao thất bại - Hẹn giao lại', isUrgent: true },
+    { key: 'DELIVERY_FAILED', label: 'Giao thất bại', isUrgent: true },
     { key: 'COMPLETED', label: 'Hoàn tất' },
     { key: 'CANCELLED', label: 'Đã hủy' },
   ];

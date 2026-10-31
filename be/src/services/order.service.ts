@@ -29,6 +29,11 @@ type CancelOrderInput = {
 const asVnd = (value: Prisma.Decimal): string => value.toFixed(0);
 const orderCode = (): string => `ELT-${crypto.randomUUID().replaceAll('-', '').slice(0, 10).toUpperCase()}`;
 
+const TRANSACTION_OPTIONS = {
+  maxWait: 10000,
+  timeout: 30000,
+} as const;
+
 export const orderService = {
   async rescheduleDelivery(orderId: string): Promise<{ code: string; status: string }> {
     return prisma.$transaction(async (tx) => {
@@ -52,7 +57,7 @@ export const orderService = {
         },
       });
       return { code: order.code, status: 'SHIPPING' };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async submit(input: SubmitOrderInput): Promise<{ code: string; status: string; paymentState: string; paymentReference?: string; expectedAmount?: string }> {
@@ -274,9 +279,9 @@ export const orderService = {
         const stock = stocks.find((entry) => entry.skuId === skuId)!;
         const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
         if (updated.count !== 1) throw new DomainError('STOCK_CHANGED', { ruleId: 'INV-006', messageKey: 'error.stockChanged', retryable: true, status: 409 });
-        const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+
         const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
-        await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: after.onHand, reservedAfter: after.reserved, quarantineAfter: after.quarantineDamaged, actorType: ActorType.CUSTOMER } });
+        await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: stock.onHand, reservedAfter: stock.reserved + quantity, quarantineAfter: stock.quarantineDamaged, actorType: ActorType.CUSTOMER } });
       }
 
       if (appliedCoupon) {
@@ -293,7 +298,7 @@ export const orderService = {
       await tx.orderStatusHistory.create({ data: { orderId: order.id, previousStatus: status, nextStatus: status, reason: 'ORDER_SUBMITTED', actorType: ActorType.CUSTOMER, idempotencyKey: `status:${order.id}` } });
       await tx.cart.update({ where: { id: cart.id }, data: { isActive: false } });
       return { code: order.code, status: order.status, paymentState: payment.state, paymentReference, expectedAmount: expectedChargeAmount ? asVnd(expectedChargeAmount) : undefined };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async cancel(input: CancelOrderInput): Promise<{ code: string; status: string; paymentState: string }> {
@@ -363,16 +368,16 @@ export const orderService = {
           const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
-            const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+    
             await tx.stockLedgerEntry.create({
               data: {
                 stockQuantId: stock.id,
                 stockMoveLineId: moveLine.id,
                 entryType: 'RELEASE_RESERVATION',
                 deltaReserved: -moveLine.quantity,
-                onHandAfter: after.onHand,
-                reservedAfter: after.reserved,
-                quarantineAfter: after.quarantineDamaged,
+                onHandAfter: stock.onHand,
+                reservedAfter: Math.max(0, stock.reserved - moveLine.quantity),
+                quarantineAfter: stock.quarantineDamaged,
                 actorType: ActorType.CUSTOMER,
               },
             });
@@ -443,7 +448,7 @@ export const orderService = {
       });
 
       return { code: order.code, status: 'CANCELLED', paymentState: nextPaymentState };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async expireOrderIfOverdue(orderId: string): Promise<boolean> {
@@ -483,16 +488,16 @@ export const orderService = {
           const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
-            const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+    
             await tx.stockLedgerEntry.create({
               data: {
                 stockQuantId: stock.id,
                 stockMoveLineId: moveLine.id,
                 entryType: 'RELEASE_RESERVATION',
                 deltaReserved: -moveLine.quantity,
-                onHandAfter: after.onHand,
-                reservedAfter: after.reserved,
-                quarantineAfter: after.quarantineDamaged,
+                onHandAfter: stock.onHand,
+                reservedAfter: Math.max(0, stock.reserved - moveLine.quantity),
+                quarantineAfter: stock.quarantineDamaged,
                 actorType: ActorType.SYSTEM,
               },
             });
