@@ -435,6 +435,15 @@ export class AdminOrderDetailService {
       });
     }
 
+    const branchFallback =
+      order.fulfillmentBranch ??
+      (await prisma.branch.findFirst({ where: { isActive: true }, orderBy: { id: 'asc' } })) ?? {
+        id: 1,
+        code: 'STORE-MAIN',
+        name: 'Showroom EL-TECH',
+        address: 'Toa nha EL-TECH, Ha Noi',
+      };
+
     const adminActorIds = order.statusHistories
       .map((h) => (h.actorType === ActorType.ADMIN && typeof h.actorId === 'string' ? h.actorId : null))
       .filter((actorId): actorId is string => typeof actorId === 'string' && actorId.length > 0);
@@ -515,7 +524,7 @@ export class AdminOrderDetailService {
       let availableStock: number | null = null;
       if (line.sku && line.sku.stockQuants) {
         const branchQuant = line.sku.stockQuants.find(
-          (sq) => sq.branchId === order.fulfillmentBranchId,
+          (sq) => sq.branchId === (order.fulfillmentBranchId ?? branchFallback.id),
         );
         if (branchQuant) {
           availableStock = Math.max(
@@ -661,10 +670,10 @@ export class AdminOrderDetailService {
         avatarUrl: order.customer.user?.image || null,
       },
       fulfillmentBranch: {
-        id: order.fulfillmentBranch.id,
-        code: order.fulfillmentBranch.code,
-        name: order.fulfillmentBranch.name,
-        address: order.fulfillmentBranch.address,
+        id: branchFallback.id,
+        code: branchFallback.code,
+        name: branchFallback.name,
+        address: branchFallback.address,
       },
       payment: order.payment
         ? {

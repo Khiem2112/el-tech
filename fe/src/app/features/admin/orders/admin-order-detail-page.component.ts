@@ -76,7 +76,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           @if (detailService.order(); as ord) {
             <span>/</span>
             <span class="text-muted">
-              {{ ord.fulfillmentBranch.code }} ({{ ord.fulfillmentBranch.name }})
+              {{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}
             </span>
           }
         </nav>
@@ -144,7 +144,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 </span>
               </div>
               <div class="text-xs text-muted mt-1 tabular tabular-nums">
-                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch.name }}</strong>
+                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}</strong>
               </div>
             </div>
 

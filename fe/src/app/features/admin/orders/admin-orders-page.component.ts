@@ -10,7 +10,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
-import { AdminBranch, AdminBranchService } from '../branches/services/admin-branch.service';
 import {
   AdminOrderListItem,
   AdminOrderStatus,
@@ -92,7 +91,7 @@ type OrderGroup = {
           }
         </div>
 
-        <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 bg-surface-alt/40">
+        <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 bg-surface-alt/40">
           <div class="lg:col-span-2">
             <label for="order-search-input" class="block font-semibold text-muted text-xs uppercase mb-1">
               Tìm kiếm
@@ -120,18 +119,6 @@ type OrderGroup = {
                 />
               </svg>
             </div>
-          </div>
-
-          <div>
-            <span class="block font-semibold text-muted text-xs uppercase mb-1">
-              Chi nhánh
-            </span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="orderService.selectedBranchId() !== null ? orderService.selectedBranchId()!.toString() : ''"
-              (valueChange)="onBranchChange($event ? Number($event) : null)"
-              size="sm"
-            />
           </div>
 
           <div>
@@ -286,7 +273,6 @@ type OrderGroup = {
                     <th class="py-2.5 px-4 whitespace-nowrap">Mã đơn</th>
                     <th class="py-2.5 px-4 whitespace-nowrap">Thời gian</th>
                     <th class="py-2.5 px-4 whitespace-nowrap">Khách hàng</th>
-                    <th class="py-2.5 px-4 whitespace-nowrap">Chi nhánh</th>
                     <th class="py-2.5 px-4 whitespace-nowrap">Hình thức</th>
                     <th class="py-2.5 px-4 whitespace-nowrap">Thanh toán</th>
                     <th class="py-2.5 px-4 text-right whitespace-nowrap">Tổng tiền</th>
@@ -332,11 +318,6 @@ type OrderGroup = {
                       <td class="py-3 px-4 whitespace-nowrap">
                         <div class="font-medium text-foreground text-sm">{{ order.receiverName }}</div>
                         <div class="text-xs text-muted tabular tabular-nums">{{ order.receiverPhone }}</div>
-                      </td>
-
-                      <td class="py-3 px-4 text-foreground whitespace-nowrap">
-                        <div class="font-medium text-sm">{{ order.branch.code }}</div>
-                        <div class="text-muted text-xs truncate max-w-[140px]">{{ order.branch.name }}</div>
                       </td>
 
                       <td class="py-3 px-4 whitespace-nowrap">
@@ -464,23 +445,12 @@ type OrderGroup = {
 })
 export class AdminOrdersPageComponent implements OnInit {
   readonly orderService = inject(AdminOrderService);
-  private readonly branchService = inject(AdminBranchService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly branchList = signal<AdminBranch[]>([]);
-  readonly groupMode = signal<'flat' | 'status' | 'branch'>('flat');
+  readonly groupMode = signal<'flat' | 'status'>('flat');
 
   readonly Math = Math;
-  readonly Number = Number;
-
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Tất cả chi nhánh' },
-    ...this.branchList().map((b) => ({
-      value: b.id.toString(),
-      label: `${b.code}: ${b.name}`,
-    })),
-  ]);
 
   readonly fulfillmentOptions: readonly SelectOption[] = [
     { value: '', label: 'Tất cả hình thức' },
@@ -503,7 +473,6 @@ export class AdminOrdersPageComponent implements OnInit {
   readonly groupModeOptions: readonly SelectOption[] = [
     { value: 'flat', label: 'Bảng tiêu chuẩn' },
     { value: 'status', label: 'Theo trạng thái' },
-    { value: 'branch', label: 'Theo chi nhánh' },
   ];
 
   private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -544,54 +513,20 @@ export class AdminOrdersPageComponent implements OnInit {
       }));
     }
 
-    if (mode === 'branch') {
-      const map = new Map<string, AdminOrderListItem[]>();
-      for (const order of list) {
-        const key = order.branch.name;
-        const current = map.get(key) ?? [];
-        current.push(order);
-        map.set(key, current);
-      }
-      return Array.from(map.entries()).map(([branchName, items]) => ({
-        key: branchName,
-        title: branchName,
-        items,
-      }));
-    }
-
     return [{ key: 'all', title: 'Tất cả đơn hàng', items: list }];
   });
 
   async ngOnInit(): Promise<void> {
     const queryTab = this.route.snapshot.queryParams['tab'] || this.route.snapshot.queryParams['status'];
-    const branchIdParam = this.route.snapshot.queryParams['branchId'];
     const searchParam = this.route.snapshot.queryParams['search'];
     if (queryTab) {
       this.orderService.selectedTab.set(queryTab);
-    }
-    if (branchIdParam) {
-      const branchId = Number(branchIdParam);
-      if (!Number.isNaN(branchId) && branchId > 0) {
-        this.orderService.selectedBranchId.set(branchId);
-      }
     }
     if (searchParam) {
       this.orderService.searchQuery.set(searchParam);
     }
 
-    await Promise.all([
-      this.orderService.loadOrders(),
-      this.loadBranches(),
-    ]);
-  }
-
-  private async loadBranches(): Promise<void> {
-    try {
-      await this.branchService.loadBranches({ limit: 100 });
-      this.branchList.set(this.branchService.branches());
-    } catch {
-      this.branchList.set([]);
-    }
+    await this.orderService.loadOrders();
   }
 
   onTabClick(tabKey: string): void {
@@ -612,10 +547,6 @@ export class AdminOrdersPageComponent implements OnInit {
     }, 250);
   }
 
-  onBranchChange(branchId: number | null): void {
-    this.orderService.setBranchFilter(branchId);
-  }
-
   onFulfillmentChange(fulfillment: string): void {
     this.orderService.setFulfillmentFilter(fulfillment);
   }
@@ -629,7 +560,7 @@ export class AdminOrdersPageComponent implements OnInit {
   }
 
   onGroupModeChange(mode: string): void {
-    this.groupMode.set(mode as 'flat' | 'status' | 'branch');
+    this.groupMode.set(mode as 'flat' | 'status');
   }
 
   onDateFromChange(date: string): void {
@@ -644,7 +575,6 @@ export class AdminOrdersPageComponent implements OnInit {
     return Boolean(
       this.orderService.searchQuery() ||
         this.orderService.selectedTab() !== 'ALL' ||
-        this.orderService.selectedBranchId() !== null ||
         this.orderService.selectedFulfillment() ||
         this.orderService.selectedPayment() ||
         this.orderService.selectedAssembly() ||
