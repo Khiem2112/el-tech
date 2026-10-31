@@ -47,3 +47,4 @@ Tích hợp tính năng truy xuất và xem trực quan toàn bộ phiếu kho (
 
 - Command 1: `npm run check:fe`
 - Command 2: `npm run check:be`
+
