@@ -6,6 +6,7 @@ import { handleProductImageError } from '../../core/constants/product.constants'
 import { VndPipe } from '../../lib/vnd.pipe';
 import { CatalogService, ProductDetail, ProductReviewItem } from './catalog.service';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
@@ -422,7 +423,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   variant="primary"
                   size="sm"
                   type="button"
-                  (click)="reviewModalOpen.set(true)"
+                  (click)="reviewSubmitError.set(null); reviewModalOpen.set(true)"
                 >
                   <lucide-icon name="Star" class="size-3.5" aria-hidden="true"></lucide-icon>
                   <span>Viết Đánh Giá</span>
@@ -473,7 +474,9 @@ const SPEC_LABEL_MAP: Record<string, string> = {
         <app-review-modal
           [isOpen]="reviewModalOpen()"
           [productName]="item.name"
-          (closeModal)="reviewModalOpen.set(false)"
+          [isSubmitting]="isSubmittingReview()"
+          [errorMessage]="reviewSubmitError()"
+          (closeModal)="reviewModalOpen.set(false); reviewSubmitError.set(null)"
           (submitted)="onReviewSubmitted($event)"
         ></app-review-modal>
 
@@ -569,6 +572,7 @@ export class ProductDetailPageComponent {
   private readonly router = inject(Router);
   private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
+  private readonly auth = inject(AuthService);
 
   protected readonly onImageError = handleProductImageError;
   protected readonly product = signal<ProductDetail | null>(null);
@@ -581,6 +585,8 @@ export class ProductDetailPageComponent {
   protected readonly quantity = signal(1);
   protected readonly activeTab = signal<'specs' | 'desc' | 'reviews' | 'policy'>('specs');
   protected readonly reviewModalOpen = signal(false);
+  protected readonly isSubmittingReview = signal(false);
+  protected readonly reviewSubmitError = signal<string | null>(null);
   protected readonly bomModalOpen = signal(false);
   protected readonly selectedImageIndex = signal(0);
 
@@ -745,25 +751,27 @@ export class ProductDetailPageComponent {
   protected async onReviewSubmitted(data: { rating: number; content: string; authorName?: string }): Promise<void> {
     const item = this.product();
     if (!item) return;
+    this.isSubmittingReview.set(true);
+    this.reviewSubmitError.set(null);
     try {
+      const user = this.auth.currentUser();
+      const customerId = user?.customerId ?? user?.id;
       await this.catalog.submitReview({
         productSlug: item.slug,
         rating: data.rating,
         text: data.content,
-        authorName: data.authorName,
+        authorName: data.authorName || user?.name,
+        customerId,
       });
-      const newReview: ProductReviewItem = {
-        id: `rev-${Date.now()}`,
-        authorName: data.authorName || 'Khách hàng',
-        rating: data.rating,
-        text: data.content,
-        createdAt: new Date().toISOString(),
-      };
-      this.reviews.update((list) => [newReview, ...list]);
+      const updatedReviews = await this.catalog.reviews(item.slug);
+      this.reviews.set(updatedReviews);
+      this.reviewModalOpen.set(false);
     } catch (e) {
       console.error('Lỗi khi gửi đánh giá:', e);
+      this.reviewSubmitError.set('Đã có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.');
+    } finally {
+      this.isSubmittingReview.set(false);
     }
-    this.reviewModalOpen.set(false);
   }
 
   protected async buyNow(): Promise<void> {

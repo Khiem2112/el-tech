@@ -24,6 +24,16 @@ reviewRouter.post('/reviews', async (request, response, next): Promise<void> => 
   }
 });
 
+reviewRouter.get('/reviews/customer', async (request, response, next): Promise<void> => {
+  try {
+    const customerId = typeof request.query.customerId === 'string' ? request.query.customerId : undefined;
+    const email = typeof request.query.email === 'string' ? request.query.email : undefined;
+    response.json(success(await reviewService.listByCustomer({ customerId, email }), response.locals.correlationId as string));
+  } catch (error: unknown) {
+    next(error);
+  }
+});
+
 reviewRouter.get('/products/:productSlug/reviews', async (request, response, next): Promise<void> => {
   try {
     response.json(success(await reviewService.list(request.params.productSlug), response.locals.correlationId as string));

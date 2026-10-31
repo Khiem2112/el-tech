@@ -448,6 +448,7 @@ graph TD
 | [[TASK-122-FINALIZE-PRODUCT-REVIEWS-FLOW-AND-UI-TEXT]] | Frontend UI | Xóa bỏ các văn bản tĩnh ràng buộc hóa đơn/REV-004 và hoàn thiện luồng đánh giá sản phẩm | Complete | [[TASK-100-BACKEND-FREE-REVIEW-SERVICE-REFACTOR]], [[TASK-101-FRONTEND-CATALOG-PURGE-AND-FREE-REVIEW-MODAL]] |
 | [[TASK-123-ORDER-LIFECYCLE-REMOVE-ON-HOLD-AND-COD-CONFIRMATION]] | Backend Logic | Vòng đời đơn hàng: Bỏ trạng thái ON_HOLD (treo ngoại lệ) và bỏ PENDING_COD_CONFIRMATION (đơn COD xác nhận ngay) | Complete | [[TASK-98-BACKEND-ORDER-LIFECYCLE-AND-PAYMENT-REFACTOR]], [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]] |
 | [[TASK-124-FRONTEND-ORDER-LIFECYCLE-AND-ADMIN-STREAMLINING]] | Frontend UI | Đồng bộ giao diện Storefront và Admin: Bỏ tab chờ duyệt COD, bỏ tab treo ngoại lệ, xóa nhãn cọc | Complete | [[TASK-123-ORDER-LIFECYCLE-REMOVE-ON-HOLD-AND-COD-CONFIRMATION]] |
+| [[TASK-125-CUSTOMER-REVIEW-PERSISTENCE-AND-PROFILE-SYNC]] | Fullstack / Shared | Đồng bộ luồng đánh giá vào DB, modal nền trắng, tăng chiều cao textarea và xem đánh giá tại trang cá nhân | Complete | [[TASK-122-FINALIZE-PRODUCT-REVIEWS-FLOW-AND-UI-TEXT]] |
 
 
 

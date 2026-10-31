@@ -36,6 +36,21 @@ export type CatalogCategory = {
 export type CatalogBrand = { id: number; name: string; slug: string; description: string | null };
 export type ProductReviewItem = { id: string; authorName?: string | null; rating: number; text: string; createdAt: string };
 
+export type CustomerReviewItem = {
+  readonly id: string;
+  readonly rating: number;
+  readonly text: string;
+  readonly authorName: string | null;
+  readonly isVisible: boolean;
+  readonly createdAt: string;
+  readonly product: {
+    readonly id: number;
+    readonly name: string;
+    readonly slug: string;
+    readonly media: unknown;
+  };
+};
+
 export type ProductFilterParams = {
   readonly query?: string;
   readonly category?: string;
@@ -78,8 +93,16 @@ export class CatalogService {
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
-  async submitReview(data: { productSlug: string; rating: number; text: string; authorName?: string }): Promise<{ id: string }> {
+  async submitReview(data: { productSlug: string; rating: number; text: string; authorName?: string; customerId?: string }): Promise<{ id: string }> {
     const response = await this.api.post<{ id: string }>('/reviews', data);
+    if (!response.success) throw new Error(response.error.messageKey);
+    return response.data;
+  }
+  async customerReviews(params: { customerId?: string; email?: string }): Promise<readonly CustomerReviewItem[]> {
+    const query = new URLSearchParams();
+    if (params.customerId) query.set('customerId', params.customerId);
+    if (params.email) query.set('email', params.email);
+    const response = await this.api.get<readonly CustomerReviewItem[]>(`/reviews/customer?${query.toString()}`);
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }

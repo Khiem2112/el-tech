@@ -1,5 +1,6 @@
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
+import { isUuid } from '../lib/uuid.js';
 
 type CreateReviewInput = {
   readonly productTemplateId?: number;
@@ -9,6 +10,21 @@ type CreateReviewInput = {
   readonly customerId?: string;
   readonly rating: number;
   readonly text: string;
+};
+
+export type CustomerReviewDto = {
+  readonly id: string;
+  readonly rating: number;
+  readonly text: string;
+  readonly authorName: string | null;
+  readonly isVisible: boolean;
+  readonly createdAt: string;
+  readonly product: {
+    readonly id: number;
+    readonly name: string;
+    readonly slug: string;
+    readonly media: unknown;
+  };
 };
 
 export const reviewService = {
@@ -59,12 +75,31 @@ export const reviewService = {
       }
     }
 
+    let resolvedCustomerId: string | null = null;
+    let authorName = input.authorName?.trim() || null;
+    if (input.customerId && isUuid(input.customerId)) {
+      const customer = await prisma.customer.findFirst({
+        where: {
+          OR: [
+            { id: input.customerId },
+            { userId: input.customerId },
+          ],
+        },
+      });
+      if (customer) {
+        resolvedCustomerId = customer.id;
+        if (!authorName) {
+          authorName = customer.name;
+        }
+      }
+    }
+
     const review = await prisma.review.create({
       data: {
         productTemplateId: templateId,
         skuId,
-        customerId: input.customerId ?? null,
-        authorName: input.authorName || 'Khách hàng',
+        customerId: resolvedCustomerId,
+        authorName: authorName || 'Khách hàng',
         rating: input.rating,
         text: input.text,
         isVisible: true,
@@ -93,6 +128,64 @@ export const reviewService = {
     return reviews.map((review) => ({
       ...review,
       createdAt: review.createdAt.toISOString(),
+    }));
+  },
+
+  async listByCustomer(filter: { customerId?: string; email?: string }): Promise<readonly CustomerReviewDto[]> {
+    let customer: { id: string } | null = null;
+    if (filter.customerId && isUuid(filter.customerId)) {
+      customer = await prisma.customer.findFirst({
+        where: {
+          OR: [
+            { id: filter.customerId },
+            { userId: filter.customerId },
+          ],
+        },
+        select: { id: true },
+      });
+    }
+    if (!customer && filter.email) {
+      customer = await prisma.customer.findFirst({
+        where: { email: filter.email },
+        select: { id: true },
+      });
+    }
+
+    if (!customer) {
+      return [];
+    }
+
+    const reviews = await prisma.review.findMany({
+      where: {
+        customerId: customer.id,
+        isActive: true,
+      },
+      include: {
+        productTemplate: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            media: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return reviews.map((review) => ({
+      id: review.id,
+      rating: review.rating,
+      text: review.text,
+      authorName: review.authorName,
+      isVisible: review.isVisible,
+      createdAt: review.createdAt.toISOString(),
+      product: {
+        id: review.productTemplate.id,
+        name: review.productTemplate.name,
+        slug: review.productTemplate.slug,
+        media: review.productTemplate.media,
+      },
     }));
   },
 };
