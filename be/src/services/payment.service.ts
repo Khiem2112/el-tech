@@ -47,8 +47,6 @@ export const paymentService = {
       } else {
         await tx.paymentCharge.update({ where: { id: charge.id }, data: { status: 'REVIEW', reviewDeadlineAt: new Date(Date.now() + 24 * 60 * 60_000) } });
         await tx.payment.update({ where: { id: charge.paymentId }, data: { totalReceived: { increment: received } } });
-        await tx.order.update({ where: { id: charge.payment.orderId }, data: { status: 'ON_HOLD', holdReason: 'PAYMENT_REVIEW' } });
-        await tx.orderStatusHistory.create({ data: { orderId: charge.payment.orderId, previousStatus: charge.payment.order.status, nextStatus: 'ON_HOLD', reason: 'PAYMENT_REVIEW', actorType: ActorType.PAYMENT_PROVIDER, idempotencyKey: `payment:${input.providerTransactionId}` } });
       }
       return { result, orderCode: charge.payment.order.code };
     });

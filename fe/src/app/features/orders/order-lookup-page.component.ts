@@ -791,9 +791,7 @@ type Order = {
               <div class="p-4 rounded-lg bg-surface-alt border border-line space-y-1.5">
                 <span class="font-bold text-foreground block text-sm">Phương Thức Thanh Toán</span>
                 <p>Hình thức: <strong class="text-foreground">{{ item.payment?.method === 'QR' ? 'Chuyển khoản VietQR' : 'Thanh toán COD' }}</strong></p>
-                @if (item.payment?.depositDisposition) {
-                  <p class="text-muted">Trạng thái đặt cọc: {{ item.payment?.depositDisposition }}</p>
-                }
+
                 <p class="text-sm font-black text-foreground pt-1 border-t border-line">
                   Tổng thanh toán: <span class="text-primary tabular text-base">{{ item.grandTotal | vnd }}</span>
                 </p>
@@ -1040,7 +1038,7 @@ export class OrderLookupPageComponent implements OnInit {
     if (status === 'READY_FOR_PICKUP' || status === 'SHIPPING') return 4;
     if (status === 'ASSEMBLING' || status === 'TESTING') return 3;
     if (status === 'PREPARING_COMPONENTS') return 2;
-    if (status === 'CONFIRMED' || status === 'PENDING_PAYMENT' || status === 'PENDING_COD_CONFIRMATION') return 1;
+    if (status === 'CONFIRMED' || status === 'PENDING_PAYMENT') return 1;
     return 0;
   });
 

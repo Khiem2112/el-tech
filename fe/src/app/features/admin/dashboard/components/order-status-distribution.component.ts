@@ -58,11 +58,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               [style.width.%]="(activeStats().shipping / activeTotal()) * 100"
               [title]="'Đang giao: ' + activeStats().shipping"
             ></div>
-            <div
-              class="bg-rose-500 transition-all duration-300"
-              [style.width.%]="(activeStats().onHold / activeTotal()) * 100"
-              [title]="'Tạm giữ: ' + activeStats().onHold"
-            ></div>
+            
           }
         </div>
 
@@ -92,17 +88,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
             <span class="text-muted">Đang giao:</span>
             <span class="font-semibold text-foreground tabular-nums">{{ activeStats().shipping }}</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-            <span class="text-muted">Tạm giữ:</span>
-            <span
-              class="font-semibold tabular-nums"
-              [class.text-rose-600]="activeStats().onHold > 0"
-              [class.text-foreground]="activeStats().onHold === 0"
-            >
-              {{ activeStats().onHold }}
-            </span>
-          </div>
+          
         </div>
       </div>
 
@@ -116,7 +102,6 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               <th class="py-2.5 px-3 text-center">Đang lắp</th>
               <th class="py-2.5 px-3 text-center">Sẵn sàng nhận</th>
               <th class="py-2.5 px-3 text-center">Đang giao</th>
-              <th class="py-2.5 px-3 text-center">Tạm giữ</th>
               <th class="py-2.5 px-3 text-right">Tổng xử lý</th>
             </tr>
           </thead>
@@ -179,17 +164,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                     {{ branch.shipping }}
                   </a>
                 </td>
-                <td class="py-2.5 px-3 text-center font-medium tabular-nums">
-                  <a
-                    [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'ON_HOLD', status: 'ON_HOLD', branchId: branch.branchId }"
-                    class="hover:underline"
-                    [class.text-rose-600]="branch.onHold > 0"
-                    [class.text-foreground]="branch.onHold === 0"
-                  >
-                    {{ branch.onHold }}
-                  </a>
-                </td>
+                
                 <td class="py-2.5 px-3 text-right font-bold tabular-nums text-foreground">
                   <a
                     [routerLink]="['/admin/orders']"
@@ -220,13 +195,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
                 {{ distribution()?.systemTotal?.shipping ?? 0 }}
               </td>
-              <td
-                class="py-2.5 px-3 text-center tabular-nums"
-                [class.text-rose-600]="(distribution()?.systemTotal?.onHold ?? 0) > 0"
-                [class.text-foreground]="(distribution()?.systemTotal?.onHold ?? 0) === 0"
-              >
-                {{ distribution()?.systemTotal?.onHold ?? 0 }}
-              </td>
+              
               <td class="py-2.5 px-3 text-right tabular-nums text-primary font-bold">
                 {{ distribution()?.systemTotal?.total ?? 0 }}
               </td>
@@ -254,7 +223,6 @@ export class OrderStatusDistributionComponent {
           assembling: branch.assembling,
           readyForPickup: branch.readyForPickup,
           shipping: branch.shipping,
-          onHold: branch.onHold,
         };
       }
     }
@@ -265,7 +233,6 @@ export class OrderStatusDistributionComponent {
       assembling: dist?.systemTotal?.assembling ?? 0,
       readyForPickup: dist?.systemTotal?.readyForPickup ?? 0,
       shipping: dist?.systemTotal?.shipping ?? 0,
-      onHold: dist?.systemTotal?.onHold ?? 0,
     };
   });
 
@@ -276,8 +243,7 @@ export class OrderStatusDistributionComponent {
       stats.preparingComponents +
       stats.assembling +
       stats.readyForPickup +
-      stats.shipping +
-      stats.onHold
+      stats.shipping
     );
   });
 

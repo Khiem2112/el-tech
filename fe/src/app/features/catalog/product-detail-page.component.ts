@@ -414,8 +414,8 @@ const SPEC_LABEL_MAP: Record<string, string> = {
 
               <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-line bg-surface-alt">
                 <div>
-                  <h3 class="text-sm font-bold text-foreground">Đánh giá thực tế từ khách hàng đã mua</h3>
-                  <p class="text-xs text-muted">Đánh giá được kiểm định qua hóa đơn và Serial Number linh kiện (REV-004).</p>
+                  <h3 class="text-sm font-bold text-foreground">Đánh giá và nhận xét từ người dùng</h3>
+                  <p class="text-xs text-muted">Chia sẻ nhận xét và trải nghiệm thực tế về linh kiện máy tính.</p>
                 </div>
                 <button
                   appButton
@@ -432,7 +432,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               @if (reviews().length === 0) {
                 <div class="rounded-lg border border-dashed border-line p-8 text-center bg-surface">
                   <p class="text-sm font-bold text-foreground">Chưa có đánh giá nào cho sản phẩm này</p>
-                  <p class="mt-1 text-xs text-muted">Khách hàng đã hoàn tất đơn hàng có thể gửi đánh giá từ trang tra cứu đơn hàng hoặc bấm Viết Đánh Giá ở trên.</p>
+                  <p class="mt-1 text-xs text-muted">Hãy là người đầu tiên chia sẻ trải nghiệm sử dụng linh kiện bằng cách bấm nút Viết Đánh Giá ở trên.</p>
                 </div>
               } @else {
                 <div class="divide-y divide-border rounded-lg border border-line bg-surface p-4">

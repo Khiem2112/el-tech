@@ -511,17 +511,13 @@ export class AdminOrdersPageComponent implements OnInit {
   readonly pipelineTabs: readonly PipelineTab[] = [
     { key: 'ALL', label: 'Tất cả' },
     { key: 'PENDING_PAYMENT', label: 'Chờ thanh toán QR', isUrgent: true },
-    { key: 'PENDING_COD_CONFIRMATION', label: 'Chờ xác nhận COD', isUrgent: true },
     { key: 'CONFIRMED', label: 'Đã xác nhận' },
     { key: 'PREPARING_COMPONENTS', label: 'Đang soạn linh kiện' },
     { key: 'ASSEMBLING', label: 'Đang lắp ráp' },
-    { key: 'READY_FOR_PICKUP', label: 'Sẵn sàng nhận tại shop' },
+    { key: 'READY_FOR_PICKUP', label: 'Sẵn sàng nhận tại showroom' },
     { key: 'SHIPPING', label: 'Đang giao hàng' },
-    { key: 'DELIVERY_FAILED', label: 'Giao thất bại', isUrgent: true },
-    
-    
+    { key: 'DELIVERY_FAILED', label: 'Giao thất bại - Hẹn giao lại', isUrgent: true },
     { key: 'COMPLETED', label: 'Hoàn tất' },
-    { key: 'ON_HOLD', label: 'Treo ngoại lệ ON_HOLD', isUrgent: true },
     { key: 'CANCELLED', label: 'Đã hủy' },
   ];
 
@@ -710,8 +706,7 @@ export class AdminOrdersPageComponent implements OnInit {
     switch (status) {
       case 'PENDING_PAYMENT':
         return 'Chờ thanh toán QR';
-      case 'PENDING_COD_CONFIRMATION':
-        return 'Chờ xác nhận COD';
+
       case 'CONFIRMED':
         return 'Đã xác nhận';
       case 'PREPARING_COMPONENTS':
@@ -727,8 +722,7 @@ export class AdminOrdersPageComponent implements OnInit {
       
       case 'COMPLETED':
         return 'Hoàn tất';
-      case 'ON_HOLD':
-        return 'Treo ngoại lệ ON_HOLD';
+
       case 'CANCELLED':
         return 'Đã hủy';
       default:

@@ -176,31 +176,14 @@ function calculateAvailableTransitions(
   fulfillmentMethod: FulfillmentMethod,
   hasAssembly: boolean,
   redeliveryAttemptCount: number,
-  holdReason?: OrderHoldReason | null,
+  _holdReason?: OrderHoldReason | null,
   hasPendingRefund?: boolean,
-  hasQrReview?: boolean,
+  _hasQrReview?: boolean,
 ): AdminOrderTransitionDto[] {
   const transitions: AdminOrderTransitionDto[] = [];
 
   switch (status) {
     case OrderStatus.PENDING_PAYMENT:
-      transitions.push({
-        targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
-        actionKey: 'CANCEL_ORDER',
-        modalId: 'MOD-17',
-        isDestructive: true,
-      });
-      break;
-
-    case OrderStatus.PENDING_COD_CONFIRMATION:
-      transitions.push({
-        targetStatus: OrderStatus.CONFIRMED,
-        label: 'Xac Nhan Don COD',
-        actionKey: 'CONFIRM_COD',
-        modalId: 'MOD-07',
-        isPrimary: true,
-      });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
         label: 'Huy Don Hang',
@@ -217,12 +200,6 @@ function calculateAvailableTransitions(
         actionKey: 'START_PREP',
         modalId: 'MOD-08',
         isPrimary: true,
-      });
-      transitions.push({
-        targetStatus: OrderStatus.ON_HOLD,
-        label: 'Tam Giu Don Hang',
-        actionKey: 'HOLD_ORDER',
-        modalId: 'MOD-18',
       });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
@@ -260,12 +237,6 @@ function calculateAvailableTransitions(
         });
       }
       transitions.push({
-        targetStatus: OrderStatus.ON_HOLD,
-        label: 'Tam Giu Don Hang',
-        actionKey: 'HOLD_ORDER',
-        modalId: 'MOD-18',
-      });
-      transitions.push({
         targetStatus: OrderStatus.CANCELLED,
         label: 'Huy Don Hang',
         actionKey: 'CANCEL_ORDER',
@@ -293,12 +264,6 @@ function calculateAvailableTransitions(
         });
       }
       transitions.push({
-        targetStatus: OrderStatus.ON_HOLD,
-        label: 'Tam Giu Don Hang',
-        actionKey: 'HOLD_ORDER',
-        modalId: 'MOD-18',
-      });
-      transitions.push({
         targetStatus: OrderStatus.CANCELLED,
         label: 'Huy Don Hang',
         actionKey: 'CANCEL_ORDER',
@@ -320,12 +285,6 @@ function calculateAvailableTransitions(
         label: 'Doi Sang Giao Tan Noi',
         actionKey: 'PICKUP_TO_DELIVERY',
         modalId: 'MOD-19',
-      });
-      transitions.push({
-        targetStatus: OrderStatus.ON_HOLD,
-        label: 'Tam Giu Don Hang',
-        actionKey: 'HOLD_ORDER',
-        modalId: 'MOD-18',
       });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
@@ -379,39 +338,7 @@ function calculateAvailableTransitions(
       });
       break;
 
-    case OrderStatus.ON_HOLD:
-      if (holdReason === OrderHoldReason.PAYMENT_REVIEW || hasQrReview) {
-        transitions.push({
-          targetStatus: OrderStatus.CONFIRMED,
-          label: 'Doi Soat Lech VietQR',
-          actionKey: 'RESOLVE_QR_DISCREPANCY',
-          modalId: 'MOD-20',
-          isPrimary: true,
-        });
-      }
-      transitions.push({
-        targetStatus: OrderStatus.CONFIRMED,
-        label: 'Xu Ly Xong - Tiep Tuc Don',
-        actionKey: 'RESOLVE_HOLD',
-        modalId: 'MOD-18',
-        isPrimary: !(holdReason === OrderHoldReason.PAYMENT_REVIEW || hasQrReview),
-      });
-      if (holdReason === OrderHoldReason.PICKUP_EXPIRED) {
-        transitions.push({
-          targetStatus: OrderStatus.READY_FOR_PICKUP,
-          label: 'Chuyen Sang Giao Tan Noi',
-          actionKey: 'PICKUP_TO_DELIVERY',
-          modalId: 'MOD-19',
-        });
-      }
-      transitions.push({
-        targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
-        actionKey: 'CANCEL_ORDER',
-        modalId: 'MOD-17',
-        isDestructive: true,
-      });
-      break;
+
 
     default:
       break;

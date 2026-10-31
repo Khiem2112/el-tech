@@ -112,14 +112,7 @@ export type InventoryRegionCluster = {
             >
               + Cách ly lỗi
             </button>
-            <button
-              type="button"
-              (click)="toggleGroupByRegion()"
-              class="px-3 py-1.5 border rounded font-semibold text-xs whitespace-nowrap shadow-xs transition-colors"
-              [ngClass]="isGroupByRegion() ? 'bg-primary text-primary-foreground border-primary font-bold' : 'bg-surface hover:bg-surface-alt text-foreground border-line'"
-            >
-              {{ isGroupByRegion() ? 'Chế độ xem phẳng' : 'Gom nhóm vùng miền' }}
-            </button>
+
             <span class="inline-flex items-center gap-1.5 text-xs text-muted ml-2">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Còn hàng (>5)
             </span>
@@ -132,9 +125,9 @@ export type InventoryRegionCluster = {
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-          <div class="relative">
-            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+          <div class="relative sm:col-span-1">
+            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm linh kiện</label>
             <div class="relative">
               <input
                 id="search-input"
@@ -148,18 +141,6 @@ export type InventoryRegionCluster = {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </div>
-
-          <div>
-            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchFilterId()"
-              (valueChange)="onBranchFilterChange($event)"
-              [searchable]="true"
-              searchPlaceholder="Tìm chi nhánh..."
-              size="md"
-            />
           </div>
 
           <div>
@@ -316,25 +297,7 @@ export type InventoryRegionCluster = {
 
               <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
                 <div class="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
-                  <a
-                    [routerLink]="['/admin/inventory/transfers']"
-                    [queryParams]="{ action: 'create', skuId: item.skuId, sourceBranchId: item.branchId }"
-                    appButton
-                    variant="secondary"
-                    size="sm"
-                    class="h-8 px-2 text-xs font-semibold inline-flex items-center gap-1 text-primary-strong hover:border-primary/50"
-                    title="Tạo yêu cầu chuyển kho cho linh kiện này"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M1 11h7V7H4L1 9.5V11z"/>
-                      <circle cx="3" cy="13" r="1"/>
-                      <circle cx="6.5" cy="13" r="1"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M23 16h-7v-4h3l3 2v2z"/>
-                      <circle cx="17.5" cy="18" r="1"/>
-                      <circle cx="21" cy="18" r="1"/>
-                    </svg>
-                    <span>Chuyển kho</span>
-                  </a>
+
 
                   <button
                     type="button"

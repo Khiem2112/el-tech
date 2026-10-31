@@ -212,9 +212,6 @@ export class OrderExceptionService {
 
     if (input.action === 'CANCEL_REFUND') {
       const totalReceived = Number(order.payment?.totalReceived ?? 0);
-      const isCustomPc = order.lines.some(
-        (l) => Boolean(l.pcBuildKey) || l.serviceType === 'ASSEMBLY',
-      );
 
       await prisma.$transaction(async (tx) => {
         const aggregated = new Map<number, number>();
@@ -309,7 +306,7 @@ export class OrderExceptionService {
               where: { id: order.payment.id },
               data: {
                 state: PaymentState.REFUND_PENDING,
-                depositDisposition: isCustomPc ? DepositDisposition.FORFEITED : DepositDisposition.REFUND_PENDING,
+                depositDisposition: null,
               },
             });
 

@@ -191,13 +191,13 @@ export const orderService = {
 
       const depositRequired = new Prisma.Decimal(0);
       let codRemaining = new Prisma.Decimal(0);
-      let status: 'PENDING_PAYMENT' | 'PENDING_COD_CONFIRMATION' = 'PENDING_COD_CONFIRMATION';
+      let status: 'PENDING_PAYMENT' | 'CONFIRMED' = 'CONFIRMED';
 
       if (input.paymentMethod === 'QR') {
         status = 'PENDING_PAYMENT';
         codRemaining = new Prisma.Decimal(0);
       } else {
-        status = 'PENDING_COD_CONFIRMATION';
+        status = 'CONFIRMED';
         codRemaining = grandTotal;
       }
 
@@ -267,15 +267,16 @@ export const orderService = {
         paymentReference = `QR-${order.code}`;
         expectedChargeAmount = grandTotal;
         await tx.paymentCharge.create({ data: { paymentId: payment.id, idempotencyKey: input.idempotencyKey, chargeType: 'INITIAL_ORDER', providerReference: paymentReference, expectedAmount: grandTotal, expiresAt: new Date(Date.now() + 30 * 60_000) } });
-        const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, sourceBranchId: branch.id, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: new Date(Date.now() + 30 * 60_000), reservedAt: new Date() } });
-        for (const [skuId, quantity] of quantities) {
-          const stock = stocks.find((entry) => entry.skuId === skuId)!;
-          const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
-          if (updated.count !== 1) throw new DomainError('STOCK_CHANGED', { ruleId: 'INV-006', messageKey: 'error.stockChanged', retryable: true, status: 409 });
-          const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
-          const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
-          await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: after.onHand, reservedAfter: after.reserved, quarantineAfter: after.quarantineDamaged, actorType: ActorType.CUSTOMER } });
-        }
+      }
+
+      const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, sourceBranchId: branch.id, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: input.paymentMethod === 'QR' ? new Date(Date.now() + 30 * 60_000) : null, reservedAt: new Date() } });
+      for (const [skuId, quantity] of quantities) {
+        const stock = stocks.find((entry) => entry.skuId === skuId)!;
+        const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
+        if (updated.count !== 1) throw new DomainError('STOCK_CHANGED', { ruleId: 'INV-006', messageKey: 'error.stockChanged', retryable: true, status: 409 });
+        const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+        const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
+        await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: after.onHand, reservedAfter: after.reserved, quarantineAfter: after.quarantineDamaged, actorType: ActorType.CUSTOMER } });
       }
 
       if (appliedCoupon) {
@@ -349,7 +350,7 @@ export const orderService = {
         }
       }
 
-      const eligibleStatuses = ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED'];
+      const eligibleStatuses = ['PENDING_PAYMENT', 'CONFIRMED'];
       if (!eligibleStatuses.includes(order.status)) {
         throw new DomainError('ORDER_NOT_CANCELLABLE', { ruleId: 'ORD-015', messageKey: 'error.orderNotCancellable', status: 409 });
       }
@@ -572,12 +573,12 @@ export const orderService = {
 
     const stageMap: Record<string, string> = {
       PENDING_PAYMENT: 'pending',
-      PENDING_COD_CONFIRMATION: 'pending',
       CONFIRMED: 'preparing',
       PREPARING_COMPONENTS: 'preparing',
       ASSEMBLING: 'assembling',
       READY_FOR_PICKUP: 'ready',
       SHIPPING: 'ready',
+      DELIVERY_FAILED: 'ready',
       COMPLETED: 'completed',
       CANCELLED: 'cancelled',
     };

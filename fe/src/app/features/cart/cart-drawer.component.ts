@@ -160,7 +160,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
                     </div>
                     <div class="flex items-center gap-1.5 mt-1 text-xs text-primary-strong font-medium">
                       <span class="size-1.5 rounded-full bg-success inline-block"></span>
-                      <span>Sẵn hàng đầy đủ tại Showroom Hà Nội &amp; TP. HCM</span>
+                      <span>Sẵn hàng đầy đủ tại Showroom EL-TECH</span>
                     </div>
                   </div>
                 </div>
@@ -380,7 +380,7 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 
             <!-- COD Note -->
             <div class="px-2.5 py-1.5 rounded bg-surface-alt border border-line text-xs text-muted leading-tight">
-              Cấu hình PC Custom Build chỉ cần đặt cọc trước 10% khi chọn hình thức thanh toán COD nhận hàng.
+              Đơn hàng thanh toán COD nhận hàng kiểm tra máy và thanh toán 100%, không cần đặt cọc trước.
             </div>
 
             <!-- Actions -->

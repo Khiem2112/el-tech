@@ -519,7 +519,6 @@ export class OrderClosingService {
     const unreserveStatuses: readonly OrderStatus[] = [
       OrderStatus.CONFIRMED,
       OrderStatus.PREPARING_COMPONENTS,
-      OrderStatus.ON_HOLD,
     ];
     const hasStockToUnreserve = unreserveStatuses.includes(order.status) && !validatedIssueMove;
 

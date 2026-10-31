@@ -1031,7 +1031,7 @@ export class ProfilePageComponent implements OnInit {
     const filter = this.orderFilter();
     if (filter === 'ALL') return orders;
     if (filter === 'PENDING') {
-      return orders.filter((o) => ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION'].includes(o.status));
+      return orders.filter((o) => ['PENDING_PAYMENT'].includes(o.status));
     }
     if (filter === 'PROCESSING') {
       return orders.filter((o) =>
@@ -1079,7 +1079,7 @@ export class ProfilePageComponent implements OnInit {
   protected readonly activeProcessingOrder = computed<CustomerOrderDto | null>(() => {
     const orders = this.customerOrders();
     const active = orders.find((o) =>
-      ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED', 'PREPARING_COMPONENTS', 'ASSEMBLING', 'TESTING', 'READY_FOR_PICKUP', 'SHIPPING'].includes(
+      ['PENDING_PAYMENT', 'CONFIRMED', 'PREPARING_COMPONENTS', 'ASSEMBLING', 'TESTING', 'READY_FOR_PICKUP', 'SHIPPING'].includes(
         o.status.toUpperCase()
       )
     );
@@ -1179,7 +1179,7 @@ export class ProfilePageComponent implements OnInit {
   }
 
   protected isOrderCancellable(status: string): boolean {
-    return ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED'].includes(status);
+    return ['PENDING_PAYMENT', 'CONFIRMED'].includes(status);
   }
 
   protected showVietQrPayment(order: OrderDetailDto): boolean {

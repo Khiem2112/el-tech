@@ -181,7 +181,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
           <div class="p-4 border-b border-line bg-surface space-y-3 shrink-0">
             <!-- Search and quick filters -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-              <div class="sm:col-span-6 relative">
+              <div class="sm:col-span-8 relative">
                 <lucide-icon name="search" class="size-4 absolute left-3 top-2.5 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
                 <input
                   appInput
@@ -193,7 +193,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 >
               </div>
 
-              <div class="sm:col-span-3">
+              <div class="sm:col-span-4">
                 <app-select
                   [options]="priceRangeOptions"
                   [value]="selectedPriceRange()"
@@ -202,18 +202,6 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                   class="h-9 text-xs font-semibold bg-surface-alt rounded-lg"
                   placeholder="Mức giá: Tất cả"
                   ariaLabel="Lọc theo mức giá"
-                />
-              </div>
-
-              <div class="sm:col-span-3">
-                <app-select
-                  [options]="branchOptions"
-                  [value]="selectedBranch()"
-                  (valueChange)="onBranchChange($event)"
-                  size="md"
-                  class="h-9 text-xs font-semibold bg-surface-alt rounded-lg"
-                  placeholder="Kho: Toàn quốc (HN & HCM)"
-                  ariaLabel="Lọc theo chi nhánh kho hàng"
                 />
               </div>
             </div>
@@ -546,7 +534,6 @@ export class ComponentSwapModalComponent {
   protected readonly searchQuery = signal('');
   protected readonly selectedBrand = signal('');
   protected readonly selectedPriceRange = signal<PriceFilterOption>('all');
-  protected readonly selectedBranch = signal<'all' | 'hn' | 'hcm'>('all');
   protected readonly selectedSpecs = signal<Record<string, string>>({});
 
   protected readonly priceRangeOptions: readonly SelectOption[] = [
@@ -556,18 +543,8 @@ export class ComponentSwapModalComponent {
     { value: 'above15m', label: 'Trên 15.000.000 đ' },
   ];
 
-  protected readonly branchOptions: readonly SelectOption[] = [
-    { value: 'all', label: 'Kho: Toàn quốc (HN & HCM)' },
-    { value: 'hn', label: 'Kho Hà Nội' },
-    { value: 'hcm', label: 'Kho TP. Hồ Chí Minh' },
-  ];
-
   protected onPriceRangeChange(val: string): void {
     this.selectedPriceRange.set((val || 'all') as PriceFilterOption);
-  }
-
-  protected onBranchChange(val: string): void {
-    this.selectedBranch.set((val || 'all') as 'all' | 'hn' | 'hcm');
   }
 
   protected readonly brands = computed<readonly string[]>(() => {
@@ -683,7 +660,6 @@ export class ComponentSwapModalComponent {
     const query = this.searchQuery().trim().toLowerCase();
     const brand = this.selectedBrand();
     const priceRange = this.selectedPriceRange();
-    const branch = this.selectedBranch();
     const activeSpecs = this.selectedSpecs();
 
     return this.availableItems.filter((item) => {
@@ -693,8 +669,6 @@ export class ComponentSwapModalComponent {
       if (priceRange === '5m-15m' && (item.price < 5000000 || item.price > 15000000)) return false;
       if (priceRange === 'above15m' && item.price <= 15000000) return false;
 
-      if (branch === 'hn' && item.stockStatus && !item.stockStatus.toLowerCase().includes('hn')) return false;
-      if (branch === 'hcm' && item.stockStatus && !item.stockStatus.toLowerCase().includes('hcm')) return false;
 
       if (query && !item.name.toLowerCase().includes(query) && !item.specs.toLowerCase().includes(query)) {
         return false;
@@ -755,7 +729,6 @@ export class ComponentSwapModalComponent {
     this.searchQuery.set('');
     this.selectedBrand.set('');
     this.selectedPriceRange.set('all');
-    this.selectedBranch.set('all');
     this.selectedSpecs.set({});
   }
 
