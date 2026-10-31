@@ -452,7 +452,7 @@ graph TD
 | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] | Frontend & Backend | Quản trị tồn kho tập trung, xóa gom cụm vùng miền, redirect chuyển kho sang số dư kho | Complete | [[TASK-118-DATABASE-BRANCH-CONSOLIDATION-AND-PURGE]], [[TASK-121-PURGE-INTER-BRANCH-TRANSFERS-AND-RESIDUAL-BRANCH-UI]] |
 | [[TASK-127-ADMIN-PROCUREMENT-SINGLE-STORE-REFACTOR]] | Frontend & Backend | Đơn PO và trả hàng NCC nhận/xuất trực tiếp tại Showroom EL-TECH, bỏ chọn chi nhánh | Complete | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] |
 | [[TASK-128-ADMIN-ORDERS-FULFILLMENT-SINGLE-STORE-REFACTOR]] | Frontend & Backend | Vận hành đơn hàng, lắp ráp PC và giao vận tập trung một showroom, bỏ lọc chi nhánh đơn | Complete | [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]], [[TASK-124-FRONTEND-ORDER-LIFECYCLE-AND-ADMIN-STREAMLINING]] |
-| [[TASK-129-ADMIN-CATALOG-BUNDLES-AND-SERIALS-SINGLE-STORE]] | Frontend UI | Xóa lọc chi nhánh PC Bundles, biến thể SKU và chuyển cột chi nhánh serial thành vị trí | Pending | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] |
+| [[TASK-129-ADMIN-CATALOG-BUNDLES-AND-SERIALS-SINGLE-STORE]] | Frontend UI | Xóa lọc chi nhánh PC Bundles, biến thể SKU và chuyển cột chi nhánh serial thành vị trí | Complete | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] |
 | [[TASK-130-ADMIN-DASHBOARD-AND-STORE-PROFILE-CONSOLIDATION]] | Frontend & Backend | Gỡ bỏ khối điều chuyển đang giao và dropdown chi nhánh Dashboard; giữ nguyên trang chi nhánh không truy cập | Pending | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]], [[TASK-128-ADMIN-ORDERS-FULFILLMENT-SINGLE-STORE-REFACTOR]] |
 
 

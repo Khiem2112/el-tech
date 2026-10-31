@@ -6,21 +6,19 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  computed,
   inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
-import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { SerialDetailDialogComponent } from './components/serial-detail-dialog.component';
 import { AdminSerialService, SerialDetailResponse } from './services/admin-serial.service';
 
 @Component({
   selector: 'app-admin-serials-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SelectComponent, SerialDetailDialogComponent],
+  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SerialDetailDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-6 text-sm text-foreground">
@@ -30,7 +28,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             Tra Cứu Vòng Đời Sê-ri & Lịch Sử Bảo Hành
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Định danh đơn vị vật lý duy nhất, kiểm soát vị trí chi nhánh và truy vết bảo hành
+            Định danh đơn vị vật lý duy nhất, kiểm soát vị trí linh kiện và truy vết bảo hành
           </p>
         </div>
 
@@ -48,7 +46,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <span>Tồn Kho Chi Nhánh</span>
+            <span>Số Dư Tồn Kho</span>
           </a>
         </div>
       </div>
@@ -200,13 +198,19 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             </div>
 
             <div class="text-left sm:text-right">
-              <span class="text-xs uppercase font-semibold text-muted block">Vị trí hiện tại</span>
+              <span class="text-xs uppercase font-semibold text-muted block">Vị trí linh kiện</span>
               <span class="font-bold text-foreground text-xs">
-                {{ qk.currentBranch?.name ?? 'Chưa phân bổ' }}
+                {{ qk.currentBranch?.name ?? 'Showroom EL-TECH' }}
               </span>
-              @if (qk.currentBranch) {
-                <span class="text-xs text-muted tabular block">({{ qk.currentBranch.code }})</span>
-              }
+              <span class="text-xs text-muted tabular block">
+                @if (qk.status === 'ISSUED') {
+                  (Đã giao khách hàng)
+                } @else if (qk.status === 'IN_TRANSIT') {
+                  (Đang luân chuyển)
+                } @else {
+                  {{ qk.currentBranch?.code ? '(' + qk.currentBranch.code + ')' : '(STORE-MAIN)' }}
+                }
+              </span>
             </div>
           </div>
 
@@ -321,30 +325,16 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
       }
 
       <div class="bg-surface border border-line rounded-xl p-4 flex flex-col md:flex-row gap-3 items-stretch md:items-end justify-between shadow-card">
-        <div class="flex flex-1 flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-          <div class="relative flex-1">
-            <label for="serials-table-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
-            <input
-              id="serials-table-search"
-              type="text"
-              [(ngModel)]="tableSearch"
-              (ngModelChange)="onSearchChange($event)"
-              placeholder="Lọc theo Serial, SKU, Tên linh kiện..."
-              class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
-          </div>
-
-          <div class="w-full sm:w-56">
-            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchFilterId()"
-              (valueChange)="onBranchFilterChange($event)"
-              [searchable]="true"
-              searchPlaceholder="Tìm chi nhánh..."
-              size="md"
-            />
-          </div>
+        <div class="flex-1">
+          <label for="serials-table-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+          <input
+            id="serials-table-search"
+            type="text"
+            [(ngModel)]="tableSearch"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Lọc theo Serial, SKU, Tên linh kiện..."
+            class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+          />
         </div>
 
         <div class="flex items-center gap-2 justify-end">
@@ -392,7 +382,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                 <tr class="bg-surface-alt border-b border-line text-muted uppercase tracking-wider font-semibold text-xs">
                   <th class="py-3 px-4 whitespace-nowrap">Mã Sê-Ri</th>
                   <th class="py-3 px-4">Linh Kiện & SKU</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Chi Nhánh Hiện Tại</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Vị Trí Linh Kiện</th>
                   <th class="py-3 px-4 whitespace-nowrap">Trạng Thái</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Giá Niêm Yết</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngày Khởi Tạo</th>
@@ -415,12 +405,18 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                       </div>
                     </td>
                     <td class="py-3.5 px-4 whitespace-nowrap">
-                      @if (unit.currentBranchName) {
-                        <span class="text-foreground font-semibold">{{ unit.currentBranchName }}</span>
-                        <span class="text-xs text-muted tabular block">({{ unit.currentBranchCode }})</span>
-                      } @else {
-                        <span class="text-muted italic">Chưa xác định</span>
-                      }
+                      <span class="text-foreground font-semibold">
+                        {{ unit.currentBranchName || 'Showroom EL-TECH' }}
+                      </span>
+                      <span class="text-xs text-muted tabular block">
+                        @if (unit.status === 'ISSUED') {
+                          (Đã giao khách hàng)
+                        } @else if (unit.status === 'IN_TRANSIT') {
+                          (Đang luân chuyển)
+                        } @else {
+                          ({{ unit.currentBranchCode || 'STORE-MAIN' }})
+                        }
+                      </span>
                     </td>
                     <td class="py-3.5 px-4 whitespace-nowrap">
                       <span class="text-xs px-2 py-0.5 rounded font-bold uppercase whitespace-nowrap" [ngClass]="getStatusBadgeClass(unit.status)">
@@ -495,7 +491,6 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
         [isOpen]="isModalOpen()"
         [detail]="selectedSerialDetail()"
         [isLoading]="isDetailLoading()"
-        [branches]="branches()"
         (close)="closeSerialModal()"
         (updated)="onModalDataUpdated()"
       />
@@ -522,11 +517,9 @@ export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
   readonly quickLookupSerial = this.serialService.quickLookupSerial;
   readonly isQuickLookupLoading = this.serialService.isQuickLookupLoading;
   readonly quickLookupError = this.serialService.quickLookupError;
-  readonly branches = this.serialService.branches;
 
   readonly activeStatus = signal<string>('ALL');
   readonly isModalOpen = signal<boolean>(false);
-  readonly selectedBranchFilterId = signal<string>('');
 
   scannerQuery = '';
   tableSearch = '';
@@ -538,20 +531,11 @@ export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
     'SN-AMD9800X-88129',
   ];
 
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Tất cả chi nhánh' },
-    ...this.branches().map((b) => ({
-      value: String(b.id),
-      label: `${b.name} (${b.code})`,
-    })),
-  ]);
-
   ngOnInit(): void {
     const searchParam = this.route.snapshot.queryParams['search'];
     if (searchParam) {
       this.tableSearch = searchParam;
     }
-    void this.serialService.loadBranches();
     void this.loadTableData();
   }
 
@@ -562,11 +546,9 @@ export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
   }
 
   async loadTableData(): Promise<void> {
-    const branchVal = this.selectedBranchFilterId();
     await this.serialService.loadSerials({
       search: this.tableSearch,
       status: this.activeStatus(),
-      branchId: branchVal ? Number(branchVal) : undefined,
       page: this.page(),
       limit: this.limit(),
     });
@@ -574,12 +556,6 @@ export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
 
   filterByStatus(status: string): void {
     this.activeStatus.set(status);
-    this.serialService.page.set(1);
-    void this.loadTableData();
-  }
-
-  onBranchFilterChange(branchId: string): void {
-    this.selectedBranchFilterId.set(branchId);
     this.serialService.page.set(1);
     void this.loadTableData();
   }
