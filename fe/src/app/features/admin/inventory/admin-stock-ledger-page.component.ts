@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -73,7 +72,7 @@ import {
       </div>
 
       <div class="bg-surface border border-line rounded-lg p-4 space-y-3 shadow-card">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
           <div class="relative lg:col-span-1">
             <label for="ledger-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <div class="relative">
@@ -89,18 +88,6 @@ import {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </div>
-
-          <div>
-            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchFilterId()"
-              (valueChange)="onBranchChange($event)"
-              [searchable]="true"
-              searchPlaceholder="Tìm chi nhánh..."
-              size="md"
-            />
           </div>
 
           <div>
@@ -162,7 +149,7 @@ import {
               <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
             </svg>
             <p class="text-sm font-semibold text-foreground">Không có bản ghi biến động sổ kho nào</p>
-            <p class="text-xs text-muted">Thử mở rộng khoảng thời gian hoặc chọn lại bộ lọc chi nhánh.</p>
+            <p class="text-xs text-muted">Thử mở rộng khoảng thời gian hoặc thay đổi bộ lọc tìm kiếm.</p>
           </div>
         } @else {
           <div class="overflow-x-auto">
@@ -308,18 +295,9 @@ export class AdminStockLedgerPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly searchQuery = signal<string>('');
-  readonly selectedBranchFilterId = signal<string>('');
   readonly selectedEntryType = signal<string>('');
   readonly startDate = signal<string>('');
   readonly endDate = signal<string>('');
-
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Tất cả chi nhánh' },
-    ...this.inventoryService.branches().map((b) => ({
-      value: String(b.id),
-      label: `${b.name} (${b.code})`,
-    })),
-  ]);
 
   readonly entryTypeOptions: SelectOption[] = [
     { value: '', label: 'Tất cả loại giao dịch' },
@@ -336,14 +314,9 @@ export class AdminStockLedgerPageComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    void this.inventoryService.loadBranches();
-
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
         this.searchQuery.set(params['search']);
-      }
-      if (params['branchId']) {
-        this.selectedBranchFilterId.set(String(params['branchId']));
       }
       if (params['entryType']) {
         this.selectedEntryType.set(params['entryType']);
@@ -353,10 +326,8 @@ export class AdminStockLedgerPageComponent implements OnInit {
   }
 
   async loadLedger(page = 1): Promise<void> {
-    const branchVal = this.selectedBranchFilterId();
     await this.inventoryService.loadLedger({
       search: this.searchQuery(),
-      branchId: branchVal ? Number(branchVal) : undefined,
       entryType: this.selectedEntryType() || undefined,
       startDate: this.startDate() || undefined,
       endDate: this.endDate() || undefined,
@@ -367,11 +338,6 @@ export class AdminStockLedgerPageComponent implements OnInit {
 
   onSearchChange(term: string): void {
     this.searchQuery.set(term);
-    void this.loadLedger(1);
-  }
-
-  onBranchChange(val: string): void {
-    this.selectedBranchFilterId.set(val);
     void this.loadLedger(1);
   }
 

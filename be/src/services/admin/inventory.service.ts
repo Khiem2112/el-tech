@@ -567,10 +567,20 @@ export class AdminInventoryService {
     input: QuarantineStockInput,
     adminUserId?: string,
   ): Promise<QuarantineStockResult> {
+    let targetBranchId = input.branchId;
+    if (!targetBranchId) {
+      const mainBranch = await prisma.branch.findFirst({
+        where: { isActive: true },
+        select: { id: true },
+        orderBy: { id: 'asc' },
+      });
+      targetBranchId = mainBranch?.id ?? 1;
+    }
+
     const quant = await prisma.stockQuant.findUnique({
       where: {
         branchId_skuId: {
-          branchId: input.branchId,
+          branchId: targetBranchId,
           skuId: input.skuId,
         },
       },
@@ -610,7 +620,7 @@ export class AdminInventoryService {
       serialUnitsToQuarantine = await prisma.serialUnit.findMany({
         where: {
           skuId: input.skuId,
-          currentBranchId: input.branchId,
+          currentBranchId: targetBranchId,
           OR: [
             { id: { in: input.serialIds } },
             { serialNumber: { in: input.serialIds } },
@@ -651,7 +661,7 @@ export class AdminInventoryService {
         data: {
           code: moveCode,
           idempotencyKey: `move:quarantine:${quant.id}:${Date.now()}:${Math.floor(Math.random() * 10000)}`,
-          sourceBranchId: input.branchId,
+          sourceBranchId: targetBranchId,
           moveType: StockMoveType.INTERNAL_CORRECTION,
           status: StockMoveStatus.VALIDATED,
           reason: input.reason,
@@ -698,8 +708,8 @@ export class AdminInventoryService {
           data: {
             serialUnitId: unit.id,
             stockMoveLineId: stockMoveLine.id,
-            fromBranchId: input.branchId,
-            toBranchId: input.branchId,
+            fromBranchId: targetBranchId,
+            toBranchId: targetBranchId,
             resultingStatus: SerialStatus.QUARANTINED,
             occurredAt: new Date(),
           },
@@ -715,7 +725,7 @@ export class AdminInventoryService {
         stockMoveId: stockMove.id,
         stockMoveCode: stockMove.code,
         skuId: input.skuId,
-        branchId: input.branchId,
+        branchId: targetBranchId,
         quarantinedQuantity: input.quantity,
         quarantineDamagedAfter: updatedQuant.quarantineDamaged,
         availableAfter,
