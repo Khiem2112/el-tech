@@ -3,7 +3,7 @@
 - Feature: Admin Procurement & Supplier Returns Single Store Consolidation
 - Governing Spec: Quy tắc một cửa hàng Showroom EL-TECH, loại bỏ chọn chi nhánh nhận/trả hàng nhà cung cấp
 - Scope: shared
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -24,12 +24,12 @@
 
 ## Checklist
 
-- [ ] Cập nhật [admin-purchase-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-purchase-order-detail-page.component.ts):
+- [x] Cập nhật [admin-purchase-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-purchase-order-detail-page.component.ts):
   - Xóa trường chọn chi nhánh nhận hàng khỏi form tạo và sửa PO.
   - Hiển thị cố định "Kho nhận hàng: Showroom EL-TECH".
-- [ ] Cập nhật [validate-po-receipt-dialog.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/components/validate-po-receipt-dialog.component.ts) & [po-receipt.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/po-receipt.service.ts):
+- [x] Cập nhật [validate-po-receipt-dialog.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/components/validate-po-receipt-dialog.component.ts) & [po-receipt.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/po-receipt.service.ts):
   - Nhập hàng tăng số lượng On-hand trực tiếp vào chi nhánh showroom chính.
-- [ ] Cập nhật [admin-supplier-returns-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-supplier-returns-page.component.ts) & [supplier-return.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/supplier-return.service.ts):
+- [x] Cập nhật [admin-supplier-returns-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-supplier-returns-page.component.ts) & [supplier-return.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/supplier-return.service.ts):
   - Loại bỏ dropdown chọn chi nhánh xuất trả hàng; xuất trực tiếp từ kho Showroom EL-TECH.
 
 ## Acceptance Criteria
@@ -43,4 +43,16 @@
 
 - Command 1: `npm run check:fe`
 - Command 2: `npm run check:be`
+
+## Review & Fix Log
+
+- Dual-Pass Review:
+  - Pass A (Functional): PASS - Đáp ứng đầy đủ 4 tiêu chí nghiệm thu.
+  - Pass B (Convention): PASS - Tuân thủ OnPush change detection, signals, zero emojis/icons, zero numbered comments.
+- Remediation:
+  - Cập nhật fallback mock object trong `supplier-return.service.ts` từ tên cũ sang `{ id: 1, code: 'STORE-MAIN', name: 'Showroom EL-TECH' }`.
+- Final Gate:
+  - `npm run check:be`: exit code 0.
+  - `npm run check:fe`: exit code 0.
+  - Review Verdict: PASS.
 

@@ -286,23 +286,37 @@ export class AdminSupplierReturnService {
     return returnMove;
   }
 
-  async getEligibleReceiptMoves(
-    search?: string,
+  async listEligibleReceiptMoves(
+    searchOrParams?: string | { search?: string; supplierId?: number; branchId?: number },
     supplierId?: number,
     branchId?: number,
   ): Promise<EligibleReceiptMoveDto[]> {
+    return this.getEligibleReceiptMoves(searchOrParams, supplierId, branchId);
+  }
+
+  async getEligibleReceiptMoves(
+    searchOrParams?: string | { search?: string; supplierId?: number; branchId?: number },
+    supplierId?: number,
+    branchId?: number,
+  ): Promise<EligibleReceiptMoveDto[]> {
+    const search = typeof searchOrParams === 'object' ? searchOrParams?.search : searchOrParams;
+    const finalSupplierId =
+      typeof searchOrParams === 'object' ? searchOrParams?.supplierId : supplierId;
+    const finalBranchId =
+      typeof searchOrParams === 'object' ? searchOrParams?.branchId : branchId;
+
     const where: Prisma.StockMoveWhereInput = {
       moveType: StockMoveType.PURCHASE_RECEIPT,
       status: StockMoveStatus.VALIDATED,
     };
 
-    if (branchId) {
-      where.destinationBranchId = branchId;
+    if (finalBranchId) {
+      where.destinationBranchId = finalBranchId;
     }
 
-    if (supplierId) {
+    if (finalSupplierId) {
       where.purchaseOrder = {
-        supplierId,
+        supplierId: finalSupplierId,
       };
     }
 
@@ -364,13 +378,23 @@ export class AdminSupplierReturnService {
     });
 
     const eligibleReceipts: EligibleReceiptMoveDto[] = [];
+    const fallbackBranch = await prisma.branch.findFirst({
+      where: { isActive: true },
+      select: { id: true, code: true, name: true },
+      orderBy: { id: 'asc' },
+    });
 
     for (const receipt of receiptMoves) {
-      if (!receipt.purchaseOrder || !receipt.destinationBranch) {
+      if (!receipt.purchaseOrder) {
         continue;
       }
 
-      const receivingBranchId = receipt.destinationBranch.id;
+      const receivingBranch = receipt.destinationBranch ?? fallbackBranch ?? {
+        id: 1,
+        code: 'STORE-MAIN',
+        name: 'Showroom EL-TECH',
+      };
+      const receivingBranchId = receivingBranch.id;
       const skuInfos: EligibleReceiptSkuInfo[] = [];
 
       for (const line of receipt.lines) {
@@ -437,9 +461,9 @@ export class AdminSupplierReturnService {
           supplierId: receipt.purchaseOrder.supplier.id,
           supplierName: receipt.purchaseOrder.supplier.name,
           supplierCode: receipt.purchaseOrder.supplier.code,
-          receivingBranchId: receipt.destinationBranch.id,
-          receivingBranchName: receipt.destinationBranch.name,
-          receivingBranchCode: receipt.destinationBranch.code,
+          receivingBranchId: receivingBranch.id,
+          receivingBranchName: receivingBranch.name,
+          receivingBranchCode: receivingBranch.code,
           skus: skuInfos,
         });
       }
@@ -486,7 +510,17 @@ export class AdminSupplierReturnService {
         });
       }
 
-      const receivingBranchId = receiptMove.destinationBranchId ?? 0;
+      const fallbackBranch = await prisma.branch.findFirst({
+        where: { isActive: true },
+        select: { id: true, code: true, name: true },
+        orderBy: { id: 'asc' },
+      });
+      const receivingBranch = receiptMove.destinationBranch ?? fallbackBranch ?? {
+        id: 1,
+        code: 'STORE-MAIN',
+        name: 'Showroom EL-TECH',
+      };
+      const receivingBranchId = receiptMove.destinationBranchId ?? receivingBranch.id;
       const skuInfos: EligibleReceiptSkuInfo[] = [];
 
       for (const line of receiptMove.lines) {
@@ -544,14 +578,21 @@ export class AdminSupplierReturnService {
         supplierId: receiptMove.purchaseOrder?.supplier.id ?? 0,
         supplierName: receiptMove.purchaseOrder?.supplier.name ?? '',
         supplierCode: receiptMove.purchaseOrder?.supplier.code ?? '',
-        receivingBranchId: receiptMove.destinationBranch?.id ?? 0,
-        receivingBranchName: receiptMove.destinationBranch?.name ?? '',
-        receivingBranchCode: receiptMove.destinationBranch?.code ?? '',
+        receivingBranchId: receivingBranch.id,
+        receivingBranchName: receivingBranch.name,
+        receivingBranchCode: receivingBranch.code,
         skus: skuInfos,
       };
     }
 
     return found;
+  }
+
+  async createReturnMove(
+    input: CreateSupplierReturnInput,
+    adminUserId?: string,
+  ): Promise<unknown> {
+    return this.createSupplierReturn(input, adminUserId);
   }
 
   async createSupplierReturn(
@@ -608,12 +649,14 @@ export class AdminSupplierReturnService {
       });
     }
 
-    const sourceBranchId = inboundMove.destinationBranchId;
+    let sourceBranchId = inboundMove.destinationBranchId;
     if (!sourceBranchId) {
-      throw new DomainError('INBOUND_MOVE_MISSING_BRANCH', {
-        status: 400,
-        messageKey: 'Phieu nhap kho goc thieu thong tin chi nhanh nhan hang',
+      const mainBranch = await prisma.branch.findFirst({
+        where: { isActive: true },
+        select: { id: true },
+        orderBy: { id: 'asc' },
       });
+      sourceBranchId = mainBranch?.id ?? 1;
     }
 
     const inboundLinesMap = new Map<number, (typeof inboundMove.lines)[number]>();

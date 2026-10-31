@@ -270,14 +270,10 @@ type ToastMessage = {
 
               <div>
                 <label class="block text-muted font-semibold uppercase mb-1">Kho Nhận Hàng</label>
-                <app-select
-                  [options]="branchOptions()"
-                  [value]="selectedBranchId ? selectedBranchId.toString() : ''"
-                  (valueChange)="selectedBranchId = $event ? Number($event) : null"
-                  placeholder="Chọn chi nhánh nhận hàng..."
-                  size="sm"
-                  ariaLabel="Kho Nhận Hàng"
-                />
+                <div class="px-3 py-1.5 bg-surface-alt/70 border border-line rounded text-xs flex flex-col justify-center min-h-[34px]">
+                  <span class="font-bold text-foreground">Showroom EL-TECH</span>
+                  <span class="text-[11px] text-muted">Điểm nhận hàng tập trung</span>
+                </div>
               </div>
 
               <div class="md:col-span-1 lg:col-span-2">
@@ -300,8 +296,8 @@ type ToastMessage = {
 
               <div class="pt-2 md:pt-0 md:px-3">
                 <span class="block text-muted uppercase text-xs font-semibold">Kho Nhận Hàng</span>
-                <span class="font-bold text-foreground block truncate mt-0.5">{{ po.receivingBranch.name }}</span>
-                <span class="tabular text-xs text-muted">{{ po.receivingBranch.code }}</span>
+                <span class="font-bold text-foreground block truncate mt-0.5">{{ po.receivingBranch?.name || 'Showroom EL-TECH' }}</span>
+                <span class="tabular text-xs text-muted">{{ po.receivingBranch?.code || 'SHOWROOM' }}</span>
               </div>
 
               <div class="pt-2 md:pt-0 md:px-3">
@@ -615,17 +611,10 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
     }))
   );
 
-  readonly branchOptions = computed<SelectOption[]>(() =>
-    this.branches().map((b) => ({
-      value: b.id.toString(),
-      label: `${b.name} (${b.code})`,
-    }))
-  );
-
   protected readonly Number = Number;
 
   selectedSupplierId: number | null = null;
-  selectedBranchId: number | null = null;
+  selectedBranchId: number | null = 1;
   orderNote = '';
 
   readonly editableLines = signal<EditableLine[]>([]);
@@ -687,9 +676,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       if (this.suppliers().length > 0) {
         this.selectedSupplierId = this.suppliers()[0].id;
       }
-      if (this.branches().length > 0) {
-        this.selectedBranchId = this.branches()[0].id;
-      }
+      this.selectedBranchId = this.branches()[0]?.id ?? 1;
     } else if (id) {
       await this.loadOrder(id);
     }
@@ -702,6 +689,9 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
     ]);
     this.suppliers.set(suppliersData);
     this.branches.set(branchesData);
+    if (!this.selectedBranchId) {
+      this.selectedBranchId = branchesData[0]?.id ?? 1;
+    }
   }
 
   private async loadOrder(id: string): Promise<void> {
@@ -709,7 +699,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       const data = await this.poService.getPurchaseOrderById(id);
       this.order.set(data);
       this.selectedSupplierId = data.supplierId;
-      this.selectedBranchId = data.receivingBranchId;
+      this.selectedBranchId = data.receivingBranchId ?? this.branches()[0]?.id ?? 1;
       this.orderNote = data.note ?? '';
 
       const lines: EditableLine[] = data.lines.map((l) => ({
@@ -800,10 +790,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast('Vui lòng chọn nhà cung cấp', 'error');
       return;
     }
-    if (!this.selectedBranchId) {
-      this.showToast('Vui lòng chọn chi nhánh nhận hàng', 'error');
-      return;
-    }
+    this.selectedBranchId = this.selectedBranchId ?? this.branches()[0]?.id ?? 1;
     if (this.editableLines().length === 0) {
       this.showToast('Đơn mua hàng phải có ít nhất một linh kiện', 'error');
       return;
@@ -839,10 +826,11 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       return;
     }
 
-    if (!this.selectedSupplierId || !this.selectedBranchId) {
-      this.showToast('Vui lòng chọn nhà cung cấp và chi nhánh nhận', 'error');
+    if (!this.selectedSupplierId) {
+      this.showToast('Vui lòng chọn nhà cung cấp', 'error');
       return;
     }
+    this.selectedBranchId = this.selectedBranchId ?? this.branches()[0]?.id ?? 1;
 
     if (this.editableLines().length === 0) {
       this.showToast('Đơn mua hàng phải có ít nhất một linh kiện', 'error');

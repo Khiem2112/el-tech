@@ -51,7 +51,7 @@ type ReceiptLineState = {
                 Đối Soát Nhập Kho PO #{{ po.code }}
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Kho nhận hàng: <strong class="text-foreground">{{ po.receivingBranch.name }}</strong>
+                Kho nhận hàng: <strong class="text-foreground">{{ po.receivingBranch?.name || 'Showroom EL-TECH' }}</strong>
               </p>
             </div>
             <button
