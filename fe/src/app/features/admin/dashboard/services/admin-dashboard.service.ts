@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AdminApiService } from '../../../../core/api/admin-api.service';
@@ -114,23 +114,15 @@ export class AdminDashboardService {
     }
   }
 
-  async loadDashboard(branchId?: number | null): Promise<void> {
+  async loadDashboard(): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 
-    const targetBranchId = branchId !== undefined ? branchId : this.selectedBranchId();
-
     try {
-      let params = new HttpParams();
-      if (targetBranchId !== null && targetBranchId !== undefined) {
-        params = params.set('branchId', targetBranchId.toString());
-      }
-
       const headers = this.getAuthHeaders();
       const response = await firstValueFrom(
         this.http.get<ApiResponse<AdminDashboardSummary>>(`${this.baseUrl}/summary`, {
           headers,
-          params,
         }),
       );
 
@@ -153,10 +145,10 @@ export class AdminDashboardService {
 
   async setSelectedBranch(branchId: number | null): Promise<void> {
     this.selectedBranchId.set(branchId);
-    await this.loadDashboard(branchId);
+    await this.loadDashboard();
   }
 
   async refresh(): Promise<void> {
-    await this.loadDashboard(this.selectedBranchId());
+    await this.loadDashboard();
   }
 }

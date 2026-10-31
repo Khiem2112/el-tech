@@ -1,44 +1,56 @@
-# Task: TASK-130 - Tinh Gọn Dashboard Admin & Chuyển Đổi Trang Chi Nhánh Thành Hồ Sơ Showroom
+# Task: TASK-130 - Gỡ Bỏ Khối Điều Chuyển Đang Giao & Tinh Gọn Dashboard Admin
 
-- Feature: Admin Operational Dashboard & Store Profile Consolidation
-- Governing Spec: Quy tắc một cửa hàng Showroom EL-TECH, loại bỏ lọc chi nhánh trên Dashboard và chuyển đổi quản lý chi nhánh sang hồ sơ showroom
-- Scope: frontend
-- Status: Pending
+- Feature: Admin Operational Dashboard Single Store Streamlining & Transfers Cleanup
+- Governing Spec: Quy tắc một cửa hàng Showroom EL-TECH, loại bỏ thẻ điều chuyển đang giao và bộ lọc chi nhánh trên Dashboard
+- Scope: frontend & backend
+- Status: Completed
 
 ## Objective
 
-Hoàn tất giai đoạn hợp nhất phân hệ quản trị một cửa hàng:
-1. Màn hình Dashboard ([admin-dashboard-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/admin-dashboard-page.component.ts)): xóa thanh dropdown chọn chi nhánh trên Dashboard; đảm bảo tất cả biểu đồ và thẻ số liệu thống kê phản ánh toàn bộ hoạt động của Showroom EL-TECH.
-2. Màn hình Quản lý chi nhánh ([admin-branches-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/branches/admin-branches-page.component.ts)): chuyển màn hình quản lý chi nhánh thành trang thông tin Showroom (quản trị địa chỉ, điện thoại, email hỗ trợ, giờ làm việc), ẩn nút thêm chi nhánh mới.
-3. Chi tiết khách hàng ([admin-customer-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/customers/admin-customer-detail-page.component.ts)): xóa cột hiển thị chi nhánh trong lịch sử mua hàng của khách hàng.
+Hoàn tất tinh gọn trang tổng quan vận hành Admin (Dashboard) theo mô hình một cửa hàng duy nhất:
+- Xử lý component **Phiếu Điều Chuyển Đang Giao** ([in-transit-transfers-card.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/components/in-transit-transfers-card.component.ts)): gỡ bỏ hoàn toàn việc hiển thị component này khỏi trang Dashboard ([admin-dashboard-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/admin-dashboard-page.component.ts)).
+- Gỡ bỏ liên kết lối tắt "Lập Lệnh Điều Chuyển" trỏ sang `/admin/inventory/transfers` trong danh sách Lối Tắt Thao Tác Nhanh trên Dashboard.
+- Điều chỉnh bố cục phần hiển thị: mở rộng thẻ Cảnh Báo Tồn Kho Thấp ([low-stock-alert-card.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/components/low-stock-alert-card.component.ts)) sang chiều rộng đầy đủ, tránh để lại khoảng trống sau khi gỡ bỏ Phiếu Điều Chuyển Đang Giao.
+- Xóa bỏ bộ lọc dropdown chi nhánh `branchOptions` và tín hiệu `selectedBranchValue` trên Dashboard; đảm bảo tất cả chỉ số KPI, phân bổ đơn hàng và cảnh báo phản ánh trực tiếp toàn bộ Showroom EL-TECH.
+- Dọn dẹp signal `inTransitTransfers` trong [admin-dashboard.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/services/admin-dashboard.service.ts) và hàm truy vấn tương ứng ở backend [dashboard.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/dashboard.service.ts).
+- Dọn dẹp cột hiển thị chi nhánh trong lịch sử đơn hàng tại trang chi tiết khách hàng [admin-customer-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/customers/admin-customer-detail-page.component.ts).
+- Lưu ý phạm vi: Màn hình quản lý chi nhánh `admin-branches-page.component.ts` dù vẫn tồn tại trong mã nguồn nhưng không còn bất kỳ đường dẫn nào trên thanh điều hướng trỏ tới, do đó giữ nguyên và không cần xóa hay chỉnh sửa.
 
 ## Technical Context And Dependencies
 
 - Pre-requisites: Hoàn thành TASK-126, TASK-127, TASK-128, TASK-129.
 - Target Files:
   - `fe/src/app/features/admin/dashboard/admin-dashboard-page.component.ts`
-  - `fe/src/app/features/admin/branches/admin-branches-page.component.ts`
+  - `fe/src/app/features/admin/dashboard/services/admin-dashboard.service.ts`
+  - `fe/src/app/features/admin/dashboard/components/in-transit-transfers-card.component.ts`
   - `fe/src/app/features/admin/customers/admin-customer-detail-page.component.ts`
+  - `be/src/services/admin/dashboard.service.ts`
 
 ## Checklist
 
-- [ ] Cập nhật [admin-dashboard-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/admin-dashboard-page.component.ts):
-  - Xóa dropdown chọn chi nhánh `branchOptions` và tín hiệu `selectedBranchId`.
-  - Toàn bộ KPI và hàng đợi khẩn cấp phản ánh hoạt động tập trung của Showroom EL-TECH.
-- [ ] Cập nhật [admin-branches-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/branches/admin-branches-page.component.ts):
-  - Chuyển tiêu đề thành "Cấu Hình Thông Tin Showroom".
-  - Ẩn nút tạo chi nhánh mới; chỉ cho phép chỉnh sửa thông tin liên hệ và giờ mở cửa của Showroom chính.
-- [ ] Cập nhật [admin-customer-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/customers/admin-customer-detail-page.component.ts):
-  - Xóa cột "Chi nhánh" trong bảng lịch sử đơn hàng của khách hàng.
+- [x] Cập nhật [admin-dashboard-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/admin-dashboard-page.component.ts):
+  - Gỡ bỏ component `<app-in-transit-transfers-card>` khỏi template và mảng `imports`.
+  - Gỡ bỏ thẻ liên kết lối tắt "Lập Lệnh Điều Chuyển" trỏ đến `/admin/inventory/transfers`.
+  - Mở rộng vùng hiển thị thẻ `<app-low-stock-alert-card>` chiếm toàn bộ chiều rộng lưới (`grid-cols-1`) thay cho lưới 2 cột trước đây.
+  - Xóa bỏ dropdown chọn chi nhánh `branchOptions`, hàm `onBranchSelect`, và tín hiệu `selectedBranchValue`.
+- [x] Cập nhật [admin-dashboard.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/dashboard/services/admin-dashboard.service.ts):
+  - Dọn dẹp signal `inTransitTransfers`, loại bỏ nạp dữ liệu điều chuyển không cần thiết.
+- [x] Cập nhật [dashboard.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/dashboard.service.ts):
+  - Dọn dẹp truy vấn `getInTransitTransfers` trong API dữ liệu dashboard tổng hợp.
+- [x] Cập nhật [admin-customer-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/customers/admin-customer-detail-page.component.ts):
+  - Xóa cột "Chi nhánh" trong bảng danh sách đơn hàng đã mua của khách hàng.
+- [x] Chạy kiểm thử tự động toàn diện:
+  - `npm run check:fe` đạt exit code 0.
+  - `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 
-- Criterion 1: Dashboard vận hành quản trị hiển thị thống kê tập trung không có lọc chi nhánh.
-- Criterion 2: Trang chi nhánh chuyển thành hồ sơ thông tin Showroom EL-TECH duy nhất.
-- Criterion 3: Lịch sử mua hàng của khách hàng hiển thị sạch sẽ, không có cột chi nhánh thừa.
-- Criterion 4: Kiểm thử tự động `npm run check:fe` hoàn tất thành công với mã thoát 0.
+- Criterion 1: Component "Phiếu Điều Chuyển Đang Giao" và lối tắt điều chuyển được gỡ bỏ hoàn toàn khỏi Dashboard, thẻ cảnh báo tồn kho thấp mở rộng hài hòa.
+- Criterion 2: Dashboard quản trị không còn dropdown lọc chi nhánh, toàn bộ dữ liệu phản ánh tập trung cho Showroom EL-TECH.
+- Criterion 3: Màn hình `admin-branches-page` không bị tác động thừa; lịch sử đơn hàng của khách hàng không còn cột chi nhánh.
+- Criterion 4: Kiểm thử tự động `npm run check:fe` và `npm run check:be` hoàn tất thành công với mã thoát 0.
 
 ## Verification Commands
 
 - Command 1: `npm run check:fe`
-
+- Command 2: `npm run check:be`

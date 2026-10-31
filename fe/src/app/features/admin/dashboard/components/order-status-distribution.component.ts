@@ -14,7 +14,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
       <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2">
         <div>
           <h2 class="text-xs font-bold uppercase tracking-wider text-muted">
-            Tiến Độ Đơn Hàng Theo Chi Nhánh
+            Tiến Độ Xử Lý Đơn Hàng
           </h2>
         </div>
         <a
@@ -122,7 +122,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-center font-medium tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'CONFIRMED', status: 'CONFIRMED', branchId: branch.branchId }"
+                    [queryParams]="{ tab: 'CONFIRMED', status: 'CONFIRMED' }"
                     class="hover:underline text-foreground"
                   >
                     {{ branch.confirmed }}
@@ -131,7 +131,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-center font-medium tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'PREPARING_COMPONENTS', status: 'PREPARING_COMPONENTS', branchId: branch.branchId }"
+                    [queryParams]="{ tab: 'PREPARING_COMPONENTS', status: 'PREPARING_COMPONENTS' }"
                     class="hover:underline text-foreground"
                   >
                     {{ branch.preparingComponents }}
@@ -140,7 +140,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-center font-medium tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'ASSEMBLING', status: 'ASSEMBLING', branchId: branch.branchId }"
+                    [queryParams]="{ tab: 'ASSEMBLING', status: 'ASSEMBLING' }"
                     class="hover:underline text-foreground"
                   >
                     {{ branch.assembling }}
@@ -149,7 +149,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-center font-medium tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'READY_FOR_PICKUP', status: 'READY_FOR_PICKUP', branchId: branch.branchId }"
+                    [queryParams]="{ tab: 'READY_FOR_PICKUP', status: 'READY_FOR_PICKUP' }"
                     class="hover:underline text-foreground"
                   >
                     {{ branch.readyForPickup }}
@@ -158,7 +158,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-center font-medium tabular-nums">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ tab: 'SHIPPING', status: 'SHIPPING', branchId: branch.branchId }"
+                    [queryParams]="{ tab: 'SHIPPING', status: 'SHIPPING' }"
                     class="hover:underline text-foreground"
                   >
                     {{ branch.shipping }}
@@ -168,7 +168,6 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
                 <td class="py-2.5 px-3 text-right font-bold tabular-nums text-foreground">
                   <a
                     [routerLink]="['/admin/orders']"
-                    [queryParams]="{ branchId: branch.branchId }"
                     class="hover:underline text-primary"
                   >
                     {{ branch.total }}

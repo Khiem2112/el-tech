@@ -284,7 +284,6 @@ type ToastNotification = {
                       <th class="py-3 px-4">Mã đơn</th>
                       <th class="py-3 px-4">Tóm tắt linh kiện</th>
                       <th class="py-3 px-4">Ngày đặt</th>
-                      <th class="py-3 px-4">Chi nhánh</th>
                       <th class="py-3 px-4">Phương thức</th>
                       <th class="py-3 px-4 text-right">Tổng tiền</th>
                       <th class="py-3 px-4 text-center">Trạng thái</th>
@@ -294,7 +293,7 @@ type ToastNotification = {
                   <tbody class="divide-y divide-line">
                     @if (cust.orders.length === 0) {
                       <tr>
-                        <td colspan="8" class="py-10 text-center text-muted">
+                        <td colspan="7" class="py-10 text-center text-muted">
                           Khách hàng chưa có đơn hàng nào trong lịch sử.
                         </td>
                       </tr>
@@ -311,9 +310,6 @@ type ToastNotification = {
                           </td>
                           <td class="py-3 px-4 text-muted tabular-nums whitespace-nowrap">
                             {{ formatDate(ord.submittedAt) }}
-                          </td>
-                          <td class="py-3 px-4 text-muted whitespace-nowrap">
-                            {{ ord.branch.code }} ({{ ord.branch.name }})
                           </td>
                           <td class="py-3 px-4 text-muted text-xs whitespace-nowrap tabular-nums">
                             {{ ord.paymentMethod }} | {{ ord.fulfillmentMethod }}

@@ -33,7 +33,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
             <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
                 <th class="py-2.5 px-3">Mã SKU</th>
-                <th class="py-2.5 px-3">Linh kiện &amp; Chi nhánh</th>
+                <th class="py-2.5 px-3">Linh kiện</th>
                 <th class="py-2.5 px-3 text-right">Khả dụng</th>
                 <th class="py-2.5 px-3 text-right">Thao tác</th>
               </tr>
@@ -54,7 +54,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
                     <td class="py-2.5 px-3">
                       <div class="font-medium text-foreground line-clamp-1">{{ item.productName }}</div>
                       <div class="text-xs text-muted flex items-center gap-1.5 mt-0.5">
-                        <span>{{ item.branchCode }}</span>
+                        <span>Showroom EL-TECH</span>
                         @if (item.variationLabel) {
                           <span>&bull;</span>
                           <span class="tabular">{{ item.variationLabel }}</span>
@@ -93,12 +93,6 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
           Đơn COD sẽ tạm chặn nếu hết hàng khả dụng
         </span>
         <div class="flex items-center gap-2">
-          <a
-            [routerLink]="['/admin/inventory/transfers']"
-            class="px-3 py-1 bg-surface border border-line hover:bg-surface-alt rounded font-medium text-foreground transition-colors"
-          >
-            Điều chuyển
-          </a>
           <a
             [routerLink]="['/admin/procurement/purchase-orders/new']"
             class="px-3 py-1 bg-primary hover:bg-primary-strong rounded font-semibold text-primary-foreground transition-colors"
