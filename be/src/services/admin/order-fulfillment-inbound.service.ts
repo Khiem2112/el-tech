@@ -136,7 +136,7 @@ export class OrderFulfillmentInboundService {
     const skuIds = [...aggregated.keys()];
     const quants = await prisma.stockQuant.findMany({
       where: {
-        branchId: order.fulfillmentBranchId,
+
         skuId: { in: skuIds },
         isActive: true,
       },
@@ -240,7 +240,7 @@ export class OrderFulfillmentInboundService {
         const serialUnits = await prisma.serialUnit.findMany({
           where: {
             skuId,
-            currentBranchId: order.fulfillmentBranchId,
+
             status: SerialStatus.AVAILABLE,
             isActive: true,
           },
@@ -347,7 +347,7 @@ export class OrderFulfillmentInboundService {
     const skuIds = [...aggregated.keys()];
     const quants = await prisma.stockQuant.findMany({
       where: {
-        branchId: order.fulfillmentBranchId,
+
         skuId: { in: skuIds },
         isActive: true,
       },
@@ -381,7 +381,7 @@ export class OrderFulfillmentInboundService {
       const stockMove = await tx.stockMove.create({
         data: {
           code: moveCode,
-          sourceBranchId: order.fulfillmentBranchId,
+          
           orderId: order.id,
           idempotencyKey: `reserve-cod:${order.id}:${Date.now()}`,
           moveType: StockMoveType.ORDER_ISSUE,
@@ -658,18 +658,6 @@ export class OrderFulfillmentInboundService {
           });
         }
 
-        if (found.currentBranchId !== order.fulfillmentBranchId) {
-          throw new DomainError('SERIAL_BRANCH_MISMATCH', {
-            messageKey: 'error.serialBranchMismatch',
-            status: 400,
-            details: {
-              serialNumber: assignment.serialNumber,
-              expectedBranchId: order.fulfillmentBranchId,
-              actualBranchId: found.currentBranchId,
-            },
-          });
-        }
-
         if (found.status !== SerialStatus.AVAILABLE && found.status !== SerialStatus.RESERVED) {
           throw new DomainError('SERIAL_NOT_AVAILABLE', {
             messageKey: 'error.serialNotAvailable',
@@ -688,7 +676,7 @@ export class OrderFulfillmentInboundService {
     const skuIds = [...aggregated.keys()];
     const quants = await prisma.stockQuant.findMany({
       where: {
-        branchId: order.fulfillmentBranchId,
+
         skuId: { in: skuIds },
         isActive: true,
       },
@@ -704,7 +692,7 @@ export class OrderFulfillmentInboundService {
         stockMove = await tx.stockMove.create({
           data: {
             code: `ISS-${order.code}`,
-            sourceBranchId: order.fulfillmentBranchId,
+            
             orderId: order.id,
             idempotencyKey: `issue:${order.id}:${Date.now()}`,
             moveType: StockMoveType.ORDER_ISSUE,
@@ -804,8 +792,8 @@ export class OrderFulfillmentInboundService {
           data: {
             serialUnitId: unit.id,
             stockMoveLineId: moveLineId,
-            fromBranchId: order.fulfillmentBranchId,
-            toBranchId: null,
+            
+
             resultingStatus: SerialStatus.ISSUED,
           },
         });

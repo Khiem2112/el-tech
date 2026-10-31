@@ -92,7 +92,7 @@ export type ProductVariantDetailDto = {
   totalOnHand: number;
   totalReserved: number;
   totalAvailable: number;
-  stockQuants: VariantStockQuantBranchDto[];
+  stockQuant: VariantStockQuantBranchDto[];
 };
 
 export type ProductVariantRecordDto = {
@@ -185,7 +185,7 @@ export class AdminProductVariantService {
             },
           },
         },
-        stockQuants: {
+        stockQuant: {
           select: {
             onHand: true,
             reserved: true,
@@ -199,10 +199,10 @@ export class AdminProductVariantService {
       let totalReserved = 0;
       let totalAvailable = 0;
 
-      for (const quant of variant.stockQuants) {
-        totalOnHand += quant.onHand;
-        totalReserved += quant.reserved;
-        totalAvailable += Math.max(0, quant.onHand - quant.reserved);
+      if (variant.stockQuant) {
+        totalOnHand += variant.stockQuant.onHand;
+        totalReserved += variant.stockQuant.reserved;
+        totalAvailable += Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved);
       }
 
       return {
@@ -255,18 +255,7 @@ export class AdminProductVariantService {
             },
           },
         },
-        stockQuants: {
-          include: {
-            branch: {
-              select: {
-                id: true,
-                code: true,
-                name: true,
-                address: true,
-              },
-            },
-          },
-        },
+        stockQuant: true,
       },
     });
 
@@ -281,23 +270,26 @@ export class AdminProductVariantService {
     let totalReserved = 0;
     let totalAvailable = 0;
 
-    const quants: VariantStockQuantBranchDto[] = variant.stockQuants.map((quant) => {
-      const available = Math.max(0, quant.onHand - quant.reserved);
-      totalOnHand += quant.onHand;
-      totalReserved += quant.reserved;
-      totalAvailable += available;
+    const quants: VariantStockQuantBranchDto[] = variant.stockQuant
+      ? [
+          {
+            id: variant.stockQuant.id,
+            branchId: 1,
+            branchName: 'Showroom EL-TECH',
+            branchCode: 'STORE-MAIN',
+            branchAddress: '280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh',
+            onHand: variant.stockQuant.onHand,
+            reserved: variant.stockQuant.reserved,
+            available: Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved),
+          },
+        ]
+      : [];
 
-      return {
-        id: quant.id,
-        branchId: quant.branchId,
-        branchName: quant.branch.name,
-        branchCode: quant.branch.code,
-        branchAddress: quant.branch.address,
-        onHand: quant.onHand,
-        reserved: quant.reserved,
-        available,
-      };
-    });
+    if (variant.stockQuant) {
+      totalOnHand = variant.stockQuant.onHand;
+      totalReserved = variant.stockQuant.reserved;
+      totalAvailable = Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved);
+    }
 
     return {
       id: variant.id,
@@ -316,7 +308,7 @@ export class AdminProductVariantService {
       totalOnHand,
       totalReserved,
       totalAvailable,
-      stockQuants: quants,
+      stockQuant: quants,
     };
   }
 
@@ -545,7 +537,7 @@ export class AdminProductVariantService {
     const variant = await prisma.productVariant.findUnique({
       where: { id },
       include: {
-        stockQuants: {
+        stockQuant: {
           select: { onHand: true },
         },
       },
@@ -559,11 +551,8 @@ export class AdminProductVariantService {
     }
 
     let hasStock = false;
-    for (const quant of variant.stockQuants) {
-      if (quant.onHand > 0) {
-        hasStock = true;
-        break;
-      }
+    if (variant.stockQuant && variant.stockQuant.onHand > 0) {
+      hasStock = true;
     }
 
     let hasTransactions = false;

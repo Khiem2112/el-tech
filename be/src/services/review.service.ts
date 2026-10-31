@@ -6,6 +6,8 @@ type CreateReviewInput = {
   readonly productTemplateId?: number;
   readonly productSlug?: string;
   readonly skuId?: number;
+  readonly orderLineId?: string;
+  readonly verificationId?: string;
   readonly authorName?: string;
   readonly customerId?: string;
   readonly rating: number;
@@ -31,6 +33,80 @@ export const reviewService = {
   async create(input: CreateReviewInput): Promise<{ id: string }> {
     let templateId = input.productTemplateId;
     let skuId = input.skuId;
+    let orderId: string | null = null;
+    let orderLineId: string | null = null;
+    let resolvedCustomerId: string | null = null;
+    let authorName = input.authorName?.trim() || null;
+
+    if (input.customerId && isUuid(input.customerId)) {
+      const customer = await prisma.customer.findFirst({
+        where: {
+          OR: [
+            { id: input.customerId },
+            { userId: input.customerId },
+          ],
+        },
+      });
+      if (customer) {
+        resolvedCustomerId = customer.id;
+        if (!authorName) {
+          authorName = customer.name;
+        }
+      }
+    }
+
+    if (input.orderLineId) {
+      const line = await prisma.orderLine.findFirst({
+        where: { id: input.orderLineId },
+        include: { order: true, sku: true },
+      });
+      if (!line?.sku || !line.skuId) {
+        throw new DomainError('SKU_NOT_FOUND', {
+          messageKey: 'error.skuNotFound',
+          status: 404,
+        });
+      }
+
+      if (input.verificationId) {
+        const verification = await prisma.verification.findFirst({
+          where: {
+            id: input.verificationId,
+            purpose: 'GUEST_ORDER_ACCESS',
+            consumedAt: { not: null },
+            orderId: line.orderId,
+          },
+        });
+        if (!verification && !resolvedCustomerId) {
+          throw new DomainError('REVIEW_NOT_ELIGIBLE', {
+            ruleId: 'REV-002',
+            messageKey: 'error.reviewNotEligible',
+            status: 403,
+          });
+        }
+      }
+
+      const existing = await prisma.review.findUnique({
+        where: { orderLineId: line.id },
+      });
+      if (existing) {
+        throw new DomainError('REVIEW_ALREADY_EXISTS', {
+          ruleId: 'REV-004',
+          messageKey: 'error.reviewAlreadyExists',
+          status: 409,
+        });
+      }
+
+      templateId = line.sku.productTemplateId;
+      skuId = line.skuId;
+      orderId = line.orderId;
+      orderLineId = line.id;
+      if (!resolvedCustomerId && line.order.customerId) {
+        resolvedCustomerId = line.order.customerId;
+      }
+      if (!authorName && line.order.receiverName) {
+        authorName = line.order.receiverName;
+      }
+    }
 
     if (!templateId && input.productSlug) {
       const template = await prisma.productTemplate.findUnique({
@@ -75,29 +151,12 @@ export const reviewService = {
       }
     }
 
-    let resolvedCustomerId: string | null = null;
-    let authorName = input.authorName?.trim() || null;
-    if (input.customerId && isUuid(input.customerId)) {
-      const customer = await prisma.customer.findFirst({
-        where: {
-          OR: [
-            { id: input.customerId },
-            { userId: input.customerId },
-          ],
-        },
-      });
-      if (customer) {
-        resolvedCustomerId = customer.id;
-        if (!authorName) {
-          authorName = customer.name;
-        }
-      }
-    }
-
     const review = await prisma.review.create({
       data: {
         productTemplateId: templateId,
         skuId,
+        orderId,
+        orderLineId,
         customerId: resolvedCustomerId,
         authorName: authorName || 'Khách hàng',
         rating: input.rating,

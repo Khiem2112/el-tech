@@ -8,8 +8,22 @@ const createSchema = z.object({
   productTemplateId: z.number().int().positive().optional(),
   productSlug: z.string().trim().optional(),
   skuId: z.number().int().positive().optional(),
-  authorName: z.string().trim().min(2).max(100).optional(),
-  customerId: z.string().uuid().optional(),
+  orderLineId: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().uuid().optional(),
+  ),
+  verificationId: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().uuid().optional(),
+  ),
+  authorName: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().trim().max(100).optional(),
+  ),
+  customerId: z.preprocess(
+    (val) => (typeof val === 'string' && val.trim() === '' ? undefined : val),
+    z.string().uuid().optional(),
+  ),
   rating: z.number().int().min(1).max(5),
   text: z.string().trim().min(5).max(2000),
 });

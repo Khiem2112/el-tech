@@ -392,7 +392,7 @@ export class AdminOrderDetailService {
                     category: { select: { id: true, name: true } },
                   },
                 },
-                stockQuants: true,
+                stockQuant: true,
               },
             },
           },
@@ -522,16 +522,11 @@ export class AdminOrderDetailService {
 
     const lineItems: AdminOrderLineItemDto[] = order.lines.map((line) => {
       let availableStock: number | null = null;
-      if (line.sku && line.sku.stockQuants) {
-        const branchQuant = line.sku.stockQuants.find(
-          (sq) => sq.branchId === (order.fulfillmentBranchId ?? branchFallback.id),
+      if (line.sku && line.sku.stockQuant) {
+        availableStock = Math.max(
+          0,
+          line.sku.stockQuant.onHand - line.sku.stockQuant.reserved - line.sku.stockQuant.quarantineDamaged,
         );
-        if (branchQuant) {
-          availableStock = Math.max(
-            0,
-            branchQuant.onHand - branchQuant.reserved - branchQuant.quarantineDamaged,
-          );
-        }
       }
 
       let imageUrl: string | undefined;

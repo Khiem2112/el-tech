@@ -93,9 +93,23 @@ export class CatalogService {
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
-  async submitReview(data: { productSlug: string; rating: number; text: string; authorName?: string; customerId?: string }): Promise<{ id: string }> {
+  async submitReview(data: {
+    productSlug?: string;
+    productTemplateId?: number;
+    skuId?: number;
+    rating: number;
+    text: string;
+    authorName?: string;
+    customerId?: string;
+  }): Promise<{ id: string }> {
     const response = await this.api.post<{ id: string }>('/reviews', data);
-    if (!response.success) throw new Error(response.error.messageKey);
+    if (!response.success) {
+      const err = response.error;
+      const msg = err.messageKey === 'error.invalidRequest'
+        ? 'Dữ liệu đánh giá không hợp lệ (nội dung tối thiểu 5 ký tự).'
+        : (err.messageKey || 'Lỗi khi gửi đánh giá.');
+      throw new Error(msg);
+    }
     return response.data;
   }
   async customerReviews(params: { customerId?: string; email?: string }): Promise<readonly CustomerReviewItem[]> {

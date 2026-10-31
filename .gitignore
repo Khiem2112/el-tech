@@ -17,4 +17,7 @@ report/
 QA/
 plan/
 contracts/.impeccable/
+.impeccable/
+bruno/
+be/bruno/
 *.docx

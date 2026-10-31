@@ -223,7 +223,7 @@ export class OrderExceptionService {
 
         const skuIds = [...aggregated.keys()];
         const quants = await tx.stockQuant.findMany({
-          where: { branchId: order.fulfillmentBranchId, skuId: { in: skuIds }, isActive: true },
+          where: {  skuId: { in: skuIds }, isActive: true },
         });
 
         let targetMove =
@@ -234,7 +234,7 @@ export class OrderExceptionService {
           targetMove = await tx.stockMove.create({
             data: {
               code: `REL-${order.code}`,
-              sourceBranchId: order.fulfillmentBranchId,
+              
               orderId: order.id,
               idempotencyKey: `rel:${order.id}:${Date.now()}`,
               moveType: StockMoveType.ORDER_ISSUE,
@@ -694,7 +694,7 @@ export class OrderExceptionService {
 
       const skuIds = [...aggregated.keys()];
       const quants = await tx.stockQuant.findMany({
-        where: { branchId: order.fulfillmentBranchId, skuId: { in: skuIds }, isActive: true },
+        where: {  skuId: { in: skuIds }, isActive: true },
       });
 
       let targetMove =
@@ -705,7 +705,7 @@ export class OrderExceptionService {
         targetMove = await tx.stockMove.create({
           data: {
             code: `REL-${order.code}`,
-            sourceBranchId: order.fulfillmentBranchId,
+            
             orderId: order.id,
             idempotencyKey: `rel:${order.id}:${Date.now()}`,
             moveType: StockMoveType.ORDER_ISSUE,

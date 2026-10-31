@@ -863,7 +863,7 @@ type Order = {
                             appButton
                             variant="primary"
                             size="sm"
-                            [disabled]="isSubmittingReview() || reviewText.trim().length < 10"
+                            [disabled]="isSubmittingReview() || reviewText.trim().length < 5"
                             (click)="submitReview(line)"
                           >
                             @if (isSubmittingReview()) {
@@ -1247,7 +1247,7 @@ export class OrderLookupPageComponent implements OnInit {
 
   protected async submitReview(line: OrderLine): Promise<void> {
     const verificationId = this.verificationId();
-    if (!verificationId || this.reviewText.trim().length < 10 || this.isSubmittingReview()) return;
+    if (!verificationId || this.reviewText.trim().length < 5 || this.isSubmittingReview()) return;
     this.isSubmittingReview.set(true);
     try {
       const response = await this.api.post<{ id: string }>('/reviews', {

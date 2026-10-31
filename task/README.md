@@ -454,6 +454,7 @@ graph TD
 | [[TASK-128-ADMIN-ORDERS-FULFILLMENT-SINGLE-STORE-REFACTOR]] | Frontend & Backend | Vận hành đơn hàng, lắp ráp PC và giao vận tập trung một showroom, bỏ lọc chi nhánh đơn | Complete | [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]], [[TASK-124-FRONTEND-ORDER-LIFECYCLE-AND-ADMIN-STREAMLINING]] |
 | [[TASK-129-ADMIN-CATALOG-BUNDLES-AND-SERIALS-SINGLE-STORE]] | Frontend UI | Xóa lọc chi nhánh PC Bundles, biến thể SKU và chuyển cột chi nhánh serial thành vị trí | Complete | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] |
 | [[TASK-130-ADMIN-DASHBOARD-AND-STORE-PROFILE-CONSOLIDATION]] | Frontend & Backend | Gỡ bỏ khối điều chuyển đang giao và dropdown chi nhánh Dashboard; giữ nguyên trang chi nhánh không truy cập | Complete | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]], [[TASK-128-ADMIN-ORDERS-FULFILLMENT-SINGLE-STORE-REFACTOR]] |
+| [[TASK-131-PURCHASE-FLOW-SINGLE-WAREHOUSE-RESIDUAL-CLEANUP]] | Frontend & Backend | Dọn dẹp triệt để tàn dư đa kho trong luồng mua hàng: biến branch, kiểu Quote, API quote/submit và route schema | Pending | [[TASK-102-FRONTEND-CHECKOUT-SINGLE-STORE-AND-NO-DEPOSIT]], [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]], [[TASK-130-ADMIN-DASHBOARD-AND-STORE-PROFILE-CONSOLIDATION]] |
 
 
 

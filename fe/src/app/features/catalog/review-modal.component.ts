@@ -108,6 +108,7 @@ import { AppIconModule, ButtonDirective, InputDirective } from '../../components
                 appInput
                 rows="5"
                 [(ngModel)]="reviewText"
+                (input)="errorMessage = null"
                 placeholder="Chia sẻ cảm nhận về hiệu năng, nhiệt độ, độ ồn hoặc độ hoàn thiện của sản phẩm..."
                 class="w-full min-h-[140px] bg-white border-line text-foreground placeholder:text-muted text-sm"
               ></textarea>
@@ -206,6 +207,7 @@ export class ReviewModalComponent {
     this.reviewText = '';
     this.authorName = '';
     this.rating.set(5);
+    this.errorMessage = null;
     this.closed.emit();
     this.closeModal.emit();
   }
@@ -224,10 +226,19 @@ export class ReviewModalComponent {
   }
 
   protected submitReview(): void {
-    if (!this.reviewText.trim()) return;
+    const text = this.reviewText.trim();
+    if (!text) {
+      this.errorMessage = 'Vui lòng nhập nội dung đánh giá.';
+      return;
+    }
+    if (text.length < 5) {
+      this.errorMessage = 'Nội dung đánh giá phải có ít nhất 5 ký tự.';
+      return;
+    }
+    this.errorMessage = null;
     this.submitted.emit({
       rating: this.rating(),
-      content: this.reviewText.trim(),
+      content: text,
       authorName: this.authorName.trim() || undefined,
     });
   }

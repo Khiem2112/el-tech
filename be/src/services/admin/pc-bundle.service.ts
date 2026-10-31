@@ -337,27 +337,24 @@ export const adminPcBundleService = {
         },
       }),
       prisma.pcBundle.count({ where }),
-      prisma.branch.findMany({
+      prisma.stockQuant.findMany({
         where: { isActive: true },
         select: {
-          id: true,
-          name: true,
-          code: true,
-          stockQuants: {
-            where: { isActive: true },
-            select: {
-              skuId: true,
-              onHand: true,
-              reserved: true,
-              quarantineDamaged: true,
-            },
-          },
+          skuId: true,
+          onHand: true,
+          reserved: true,
+          quarantineDamaged: true,
         },
-        orderBy: { deliveryPriority: 'asc' },
       }),
     ]);
 
-    const formattedItems = bundles.map((bundle) => formatBundleListItem(bundle, branches));
+    const branchWrapper = [{
+      id: 1,
+      code: 'STORE-MAIN',
+      name: 'Showroom EL-TECH',
+      stockQuants: branches,
+    }];
+    const formattedItems = bundles.map((bundle) => formatBundleListItem(bundle, branchWrapper));
 
     return {
       items: formattedItems,
@@ -398,24 +395,22 @@ export const adminPcBundleService = {
       });
     }
 
-    const branches = await prisma.branch.findMany({
-      where: { isActive: true },
+    const skuIds = bundle.items.map((i) => i.skuId);
+    const stockQuants = await prisma.stockQuant.findMany({
+      where: { isActive: true, skuId: { in: skuIds } },
       select: {
-        id: true,
-        name: true,
-        code: true,
-        stockQuants: {
-          where: { isActive: true },
-          select: {
-            skuId: true,
-            onHand: true,
-            reserved: true,
-            quarantineDamaged: true,
-          },
-        },
+        skuId: true,
+        onHand: true,
+        reserved: true,
+        quarantineDamaged: true,
       },
-      orderBy: { deliveryPriority: 'asc' },
     });
+    const branches = [{
+      id: 1,
+      name: 'Showroom EL-TECH',
+      code: 'STORE-MAIN',
+      stockQuants,
+    }];
 
     return formatBundleDetail(bundle, branches);
   },
@@ -630,7 +625,7 @@ export const adminPcBundleService = {
     return { success: true };
   },
 
-  async getBundleStockAvailability(id: number, branchId?: number): Promise<{
+  async getBundleStockAvailability(id: number, _branchId?: number): Promise<{
     bundleId: number;
     bundleName: string;
     branches: readonly BranchAvailabilityDto[];
@@ -657,27 +652,22 @@ export const adminPcBundleService = {
       });
     }
 
-    const branches = await prisma.branch.findMany({
-      where: {
-        isActive: true,
-        ...(branchId ? { id: branchId } : {}),
-      },
+    const skuIds = bundle.items.map((i) => i.skuId);
+    const stockQuants = await prisma.stockQuant.findMany({
+      where: { isActive: true, skuId: { in: skuIds } },
       select: {
-        id: true,
-        name: true,
-        code: true,
-        stockQuants: {
-          where: { isActive: true },
-          select: {
-            skuId: true,
-            onHand: true,
-            reserved: true,
-            quarantineDamaged: true,
-          },
-        },
+        skuId: true,
+        onHand: true,
+        reserved: true,
+        quarantineDamaged: true,
       },
-      orderBy: { deliveryPriority: 'asc' },
     });
+    const branches = [{
+      id: 1,
+      name: 'Showroom EL-TECH',
+      code: 'STORE-MAIN',
+      stockQuants,
+    }];
 
     const branchAvailability = computeBranchAvailabilityForBundle(bundle.items, branches);
 

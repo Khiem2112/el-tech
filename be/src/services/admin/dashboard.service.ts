@@ -137,7 +137,7 @@ export class AdminDashboardService {
       prisma.stockQuant.findMany({
         where: {
           isActive: true,
-          ...(branchId ? { branchId } : {}),
+  
         },
         select: {
           skuId: true,
@@ -299,16 +299,10 @@ export class AdminDashboardService {
     const quants = await prisma.stockQuant.findMany({
       where: {
         isActive: true,
-        ...(branchId ? { branchId } : {}),
+
       },
       include: {
-        branch: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
+
         sku: {
           select: {
             id: true,
@@ -348,9 +342,9 @@ export class AdminDashboardService {
         variationLabel: quant.sku.variationLabel,
         brandName: quant.sku.productTemplate.brand?.name ?? '',
         categoryName: quant.sku.productTemplate.category?.name ?? '',
-        branchId: quant.branch.id,
-        branchCode: quant.branch.code,
-        branchName: quant.branch.name,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
         onHand: quant.onHand,
         reserved: quant.reserved,
         quarantineDamaged: quant.quarantineDamaged,

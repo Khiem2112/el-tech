@@ -52,12 +52,7 @@ export class PoReceiptService {
       });
     }
 
-    const mainBranch = await prisma.branch.findFirst({
-      where: { isActive: true },
-      select: { id: true },
-      orderBy: { id: 'asc' },
-    });
-    const receivingBranchId = purchaseOrder.receivingBranchId ?? mainBranch?.id ?? 1;
+
 
     if (purchaseOrder.status !== PurchaseOrderStatus.CONFIRMED) {
       throw new DomainError('PURCHASE_ORDER_INVALID_STATE', {
@@ -174,8 +169,7 @@ export class PoReceiptService {
       const stockMove = await tx.stockMove.create({
         data: {
           code: moveCode,
-          destinationBranchId: receivingBranchId,
-          sourceBranchId: null,
+
           purchaseOrderId: purchaseOrder.id,
           idempotencyKey: `po-receipt-${purchaseOrder.id}`,
           moveType: StockMoveType.PURCHASE_RECEIPT,
@@ -197,10 +191,7 @@ export class PoReceiptService {
 
         const quant = await tx.stockQuant.findUnique({
           where: {
-            branchId_skuId: {
-              branchId: receivingBranchId,
-              skuId: poLine.skuId,
-            },
+            skuId: poLine.skuId,
           },
         });
 
@@ -232,7 +223,7 @@ export class PoReceiptService {
             })
           : await tx.stockQuant.create({
               data: {
-                branchId: receivingBranchId,
+
                 skuId: poLine.skuId,
                 onHand: newOnHand,
                 reserved: 0,
@@ -269,7 +260,7 @@ export class PoReceiptService {
             const serialUnit = await tx.serialUnit.create({
               data: {
                 skuId: poLine.skuId,
-                currentBranchId: receivingBranchId,
+
                 originStockMoveLineId: moveLine.id,
                 serialNumber: serial,
                 status: SerialStatus.AVAILABLE,
@@ -280,8 +271,7 @@ export class PoReceiptService {
               data: {
                 serialUnitId: serialUnit.id,
                 stockMoveLineId: moveLine.id,
-                fromBranchId: null,
-                toBranchId: receivingBranchId,
+
                 resultingStatus: SerialStatus.AVAILABLE,
                 occurredAt: new Date(),
               },

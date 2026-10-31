@@ -88,7 +88,7 @@ export const orderService = {
       const branch = await tx.branch.findFirst({ where: { isActive: true }, orderBy: { id: 'asc' } });
       if (!branch) throw new DomainError('STORE_NOT_AVAILABLE', { messageKey: 'error.storeNotAvailable', status: 503 });
 
-      const stocks = await tx.stockQuant.findMany({ where: { branchId: branch.id, skuId: { in: [...quantities.keys()] }, isActive: true } });
+      const stocks = await tx.stockQuant.findMany({ where: { skuId: { in: [...quantities.keys()] }, isActive: true } });
       if ([...quantities].some(([skuId, quantity]) => { const stock = stocks.find((entry) => entry.skuId === skuId); return !stock || stock.onHand - stock.reserved - stock.quarantineDamaged < quantity; })) throw new DomainError('INSUFFICIENT_STOCK', { ruleId: 'INV-004', messageKey: 'error.insufficientStock', status: 409 });
 
       const subtotal = cart.items.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
@@ -274,7 +274,7 @@ export const orderService = {
         await tx.paymentCharge.create({ data: { paymentId: payment.id, idempotencyKey: input.idempotencyKey, chargeType: 'INITIAL_ORDER', providerReference: paymentReference, expectedAmount: grandTotal, expiresAt: new Date(Date.now() + 30 * 60_000) } });
       }
 
-      const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, sourceBranchId: branch.id, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: input.paymentMethod === 'QR' ? new Date(Date.now() + 30 * 60_000) : null, reservedAt: new Date() } });
+      const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: input.paymentMethod === 'QR' ? new Date(Date.now() + 30 * 60_000) : null, reservedAt: new Date() } });
       for (const [skuId, quantity] of quantities) {
         const stock = stocks.find((entry) => entry.skuId === skuId)!;
         const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
@@ -361,11 +361,9 @@ export const orderService = {
       }
 
       for (const move of order.stockMoves) {
-        if (!move.sourceBranchId) continue;
-        const sourceBranchId = move.sourceBranchId;
         await tx.stockMove.update({ where: { id: move.id }, data: { status: 'CANCELLED' } });
         for (const moveLine of move.lines) {
-          const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
+          const stock = await tx.stockQuant.findFirst({ where: { skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
     
@@ -481,11 +479,9 @@ export const orderService = {
       }
 
       for (const move of freshOrder.stockMoves) {
-        if (!move.sourceBranchId) continue;
-        const sourceBranchId = move.sourceBranchId;
         await tx.stockMove.update({ where: { id: move.id }, data: { status: 'CANCELLED' } });
         for (const moveLine of move.lines) {
-          const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
+          const stock = await tx.stockQuant.findFirst({ where: { skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
     

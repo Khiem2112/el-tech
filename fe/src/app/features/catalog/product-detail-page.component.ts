@@ -756,19 +756,23 @@ export class ProductDetailPageComponent {
     try {
       const user = this.auth.currentUser();
       const customerId = user?.customerId ?? user?.id;
+      const variant = this.selected();
       await this.catalog.submitReview({
+        productTemplateId: item.id,
         productSlug: item.slug,
+        skuId: variant?.id,
         rating: data.rating,
         text: data.content,
-        authorName: data.authorName || user?.name,
-        customerId,
+        authorName: data.authorName || user?.name || undefined,
+        customerId: customerId || undefined,
       });
       const updatedReviews = await this.catalog.reviews(item.slug);
       this.reviews.set(updatedReviews);
       this.reviewModalOpen.set(false);
-    } catch (e) {
+    } catch (e: unknown) {
       console.error('Lỗi khi gửi đánh giá:', e);
-      this.reviewSubmitError.set('Đã có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.');
+      const msg = e instanceof Error ? e.message : 'Đã có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.';
+      this.reviewSubmitError.set(msg);
     } finally {
       this.isSubmittingReview.set(false);
     }

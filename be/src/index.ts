@@ -48,6 +48,7 @@ app.use('/v1', orderRouter);
 app.use('/v1', paymentRouter);
 app.use('/v1', orderLookupRouter);
 app.use('/v1', reviewRouter);
+app.use('/api', reviewRouter);
 app.use('/v1', pcBuildRouter);
 app.use('/api/auth', authRouter);
 app.use('/v1/auth', authRouter);

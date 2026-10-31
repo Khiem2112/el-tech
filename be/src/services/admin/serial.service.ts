@@ -120,7 +120,7 @@ export type SerialDetailResponse = {
 
 export class AdminSerialService {
   async getSerials(query: QuerySerialsInput): Promise<SerialsListResponse> {
-    const { search, status, branchId, skuId, page, limit } = query;
+    const { search, status, skuId, page, limit } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.SerialUnitWhereInput = {
@@ -129,10 +129,6 @@ export class AdminSerialService {
 
     if (status && status !== 'ALL') {
       where.status = status;
-    }
-
-    if (branchId) {
-      where.currentBranchId = branchId;
     }
 
     if (skuId) {
@@ -164,7 +160,7 @@ export class AdminSerialService {
               },
             },
           },
-          currentBranch: true,
+          
         },
         orderBy: { createdAt: 'desc' },
         skip,
@@ -199,17 +195,11 @@ export class AdminSerialService {
         case SerialStatus.RESERVED:
           summary.reservedCount = count;
           break;
-        case SerialStatus.IN_TRANSIT:
-          summary.inTransitCount = count;
-          break;
         case SerialStatus.ISSUED:
           summary.issuedCount = count;
           break;
         case SerialStatus.QUARANTINED:
           summary.quarantinedCount = count;
-          break;
-        case SerialStatus.RETURNED_TO_SUPPLIER:
-          summary.returnedToSupplierCount = count;
           break;
       }
     }
@@ -227,9 +217,9 @@ export class AdminSerialService {
       productSlug: unit.sku.productTemplate.slug,
       categoryName: unit.sku.productTemplate.category.name,
       brandName: unit.sku.productTemplate.brand.name,
-      currentBranchId: unit.currentBranchId,
-      currentBranchName: unit.currentBranch?.name ?? null,
-      currentBranchCode: unit.currentBranch?.code ?? null,
+      currentBranchId: 1,
+      currentBranchName: 'Showroom EL-TECH',
+      currentBranchCode: 'STORE-MAIN',
       sellingPrice: unit.sku.sellingPrice.toString(),
       createdAt: unit.createdAt.toISOString(),
       updatedAt: unit.updatedAt.toISOString(),
@@ -271,7 +261,7 @@ export class AdminSerialService {
             },
           },
         },
-        currentBranch: true,
+        
         originStockMoveLine: {
           include: {
             stockMove: {
@@ -292,8 +282,8 @@ export class AdminSerialService {
               include: {
                 stockMove: {
                   include: {
-                    sourceBranch: true,
-                    destinationBranch: true,
+                    
+                    
                     order: true,
                     purchaseOrder: {
                       include: {
@@ -316,16 +306,9 @@ export class AdminSerialService {
       });
     }
 
-    const branchIds = new Set<number>();
     const userIds = new Set<string>();
 
     for (const mov of unit.movements) {
-      if (mov.fromBranchId) {
-        branchIds.add(mov.fromBranchId);
-      }
-      if (mov.toBranchId) {
-        branchIds.add(mov.toBranchId);
-      }
       const sm = mov.stockMoveLine.stockMove;
       if (sm.validatedById) {
         userIds.add(sm.validatedById);
@@ -335,25 +318,12 @@ export class AdminSerialService {
       }
     }
 
-    const [branches, users] = await Promise.all([
-      branchIds.size > 0
-        ? prisma.branch.findMany({
-            where: { id: { in: Array.from(branchIds) } },
-            select: { id: true, code: true, name: true },
-          })
-        : [],
-      userIds.size > 0
-        ? prisma.user.findMany({
-            where: { id: { in: Array.from(userIds) } },
-            select: { id: true, name: true, email: true },
-          })
-        : [],
-    ]);
-
-    const branchMap = new Map<number, { id: number; code: string; name: string }>();
-    for (const b of branches) {
-      branchMap.set(b.id, b);
-    }
+    const users = userIds.size > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: Array.from(userIds) } },
+          select: { id: true, name: true, email: true },
+        })
+      : [];
 
     const userMap = new Map<string, { id: string; name: string; email: string }>();
     for (const u of users) {
@@ -362,31 +332,26 @@ export class AdminSerialService {
 
     const movementDetails: SerialMovementDetail[] = unit.movements.map((mov) => {
       const sm = mov.stockMoveLine.stockMove;
-      const fromBranch = mov.fromBranchId ? branchMap.get(mov.fromBranchId) ?? null : sm.sourceBranch;
-      const toBranch = mov.toBranchId ? branchMap.get(mov.toBranchId) ?? null : sm.destinationBranch;
-
       const actorId = sm.validatedById ?? sm.dispatchedById ?? null;
       const actor = actorId ? userMap.get(actorId) ?? null : null;
 
-      let summaryText = `Dieu chuyen kho (Lenh: ${sm.code})`;
+      let summaryText = `Chuyen dong kho (Lenh: ${sm.code})`;
       if (sm.purchaseOrder) {
         summaryText = `Nhap kho tu don mua PO: ${sm.purchaseOrder.code} (${sm.purchaseOrder.supplier.name})`;
       } else if (sm.order) {
         summaryText = `Xuat ban cho don hang: ${sm.order.code}`;
-      } else if (fromBranch && toBranch) {
-        summaryText = `Dieu chuyen tu ${fromBranch.name} sang ${toBranch.name}`;
       }
 
       return {
         id: mov.id,
         occurredAt: mov.occurredAt.toISOString(),
         resultingStatus: mov.resultingStatus,
-        fromBranchId: mov.fromBranchId ?? (fromBranch?.id ?? null),
-        fromBranchName: fromBranch?.name ?? null,
-        fromBranchCode: fromBranch?.code ?? null,
-        toBranchId: mov.toBranchId ?? (toBranch?.id ?? null),
-        toBranchName: toBranch?.name ?? null,
-        toBranchCode: toBranch?.code ?? null,
+        fromBranchId: null,
+        fromBranchName: null,
+        fromBranchCode: null,
+        toBranchId: null,
+        toBranchName: null,
+        toBranchCode: null,
         stockMoveId: sm.id,
         stockMoveCode: sm.code,
         moveType: sm.moveType,
@@ -414,9 +379,7 @@ export class AdminSerialService {
     const isExpired = new Date() > expiryDate;
 
     const warrantyClaimCount = unit.movements.filter(
-      (m) =>
-        m.resultingStatus === SerialStatus.QUARANTINED ||
-        m.resultingStatus === SerialStatus.RETURNED_TO_SUPPLIER,
+      (m) => m.resultingStatus === SerialStatus.QUARANTINED,
     ).length;
 
     const warranty: SerialWarrantyInfo = {
@@ -446,14 +409,12 @@ export class AdminSerialService {
         categoryName: unit.sku.productTemplate.category.name,
         media: unit.sku.productTemplate.media,
       },
-      currentBranch: unit.currentBranch
-        ? {
-            id: unit.currentBranch.id,
-            code: unit.currentBranch.code,
-            name: unit.currentBranch.name,
-            address: unit.currentBranch.address,
-          }
-        : null,
+      currentBranch: {
+        id: 1,
+        code: 'STORE-MAIN',
+        name: 'Showroom EL-TECH',
+        address: '280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh',
+      },
       origin: originStockMove
         ? {
             stockMoveId: originStockMove.id,
@@ -492,7 +453,7 @@ export class AdminSerialService {
       });
     }
 
-    if (payload.branchId && payload.branchId !== unit.currentBranchId) {
+    if (payload.branchId && payload.branchId !== 1) {
       throw new DomainError('SERIAL_BRANCH_TRANSFER_FORBIDDEN', {
         messageKey: 'Khong the thay doi chi nhanh truc tiep tren so se-ri. Bat buoc phai thuc hien thong qua quy trinh tao phieu dieu chuyen kho.',
         status: 400,
@@ -500,16 +461,11 @@ export class AdminSerialService {
     }
 
     if (payload.status === SerialStatus.QUARANTINED && unit.status !== SerialStatus.QUARANTINED) {
-      if (!unit.currentBranchId) {
-        throw new DomainError('SERIAL_NO_BRANCH', {
-          messageKey: 'So se-ri khong nam o chi nhanh nao de thuc hien cach ly',
-          status: 400,
-        });
-      }
+
 
       await adminInventoryService.quarantineStock(
         {
-          branchId: unit.currentBranchId,
+          branchId: 1,
           skuId: unit.skuId,
           quantity: 1,
           serialIds: [unit.id],

@@ -125,23 +125,7 @@ export class AdminCategoryService {
           },
         },
       }),
-      prisma.stockMoveLine.findMany({
-        where: {
-          stockMove: {
-            moveType: 'INTERNAL_TRANSFER',
-            status: { in: ['DRAFT', 'RESERVED', 'IN_TRANSIT'] },
-          },
-        },
-        select: {
-          sku: {
-            select: {
-              productTemplate: {
-                select: { categoryId: true },
-              },
-            },
-          },
-        },
-      }),
+      Promise.resolve([] as Array<{ sku: { productTemplate: { categoryId: number } } }>),
     ]);
 
     const templateCountMap = new Map<number, number>();
@@ -449,17 +433,7 @@ export class AdminCategoryService {
         },
         _sum: { onHand: true },
       }),
-      prisma.stockMoveLine.count({
-        where: {
-          stockMove: {
-            moveType: 'INTERNAL_TRANSFER',
-            status: { in: ['DRAFT', 'RESERVED', 'IN_TRANSIT'] },
-          },
-          sku: {
-            productTemplate: { categoryId: category.id },
-          },
-        },
-      }),
+      Promise.resolve(0),
     ]);
 
     return {
