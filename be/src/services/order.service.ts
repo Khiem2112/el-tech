@@ -80,27 +80,8 @@ export const orderService = {
         if (item.skuId) quantities.set(item.skuId, (quantities.get(item.skuId) ?? 0) + item.quantity);
       }
 
-      let branch: { id: number; name: string; address: string };
-      if (input.fulfillmentMethod === 'DELIVERY') {
-        const eligibleBranches = await tx.branch.findMany({
-          where: { isActive: true, ...(input.deliveryAreaCode ? { deliveryAreaCodes: { has: input.deliveryAreaCode } } : {}) },
-          include: { stockQuants: { where: { isActive: true, skuId: { in: [...quantities.keys()] } } } },
-          orderBy: { deliveryPriority: 'asc' },
-        });
-        const bestBranch = eligibleBranches.find((candidate) =>
-          [...quantities].every(([skuId, quantity]) => {
-            const stock = candidate.stockQuants.find((entry) => entry.skuId === skuId);
-            return Boolean(stock && stock.onHand - stock.reserved - stock.quarantineDamaged >= quantity);
-          })
-        );
-        if (!bestBranch) throw new DomainError('NO_FULFILLMENT_BRANCH', { ruleId: 'CHK-012', messageKey: 'error.noFulfillmentBranch', status: 409 });
-        branch = bestBranch;
-      } else {
-        if (!input.branchId) throw new DomainError('BRANCH_REQUIRED', { ruleId: 'CHK-004', messageKey: 'error.branchRequired', status: 400 });
-        const selectedBranch = await tx.branch.findFirst({ where: { id: input.branchId, isActive: true } });
-        if (!selectedBranch) throw new DomainError('BRANCH_NOT_AVAILABLE', { messageKey: 'error.branchNotAvailable', status: 409 });
-        branch = selectedBranch;
-      }
+      const branch = await tx.branch.findFirst({ where: { isActive: true }, orderBy: { id: 'asc' } });
+      if (!branch) throw new DomainError('STORE_NOT_AVAILABLE', { messageKey: 'error.storeNotAvailable', status: 503 });
 
       const stocks = await tx.stockQuant.findMany({ where: { branchId: branch.id, skuId: { in: [...quantities.keys()] }, isActive: true } });
       if ([...quantities].some(([skuId, quantity]) => { const stock = stocks.find((entry) => entry.skuId === skuId); return !stock || stock.onHand - stock.reserved - stock.quarantineDamaged < quantity; })) throw new DomainError('INSUFFICIENT_STOCK', { ruleId: 'INV-004', messageKey: 'error.insufficientStock', status: 409 });
@@ -412,7 +393,7 @@ export const orderService = {
           where: { id: order.payment.id },
           data: {
             state: 'REFUND_PENDING',
-            depositDisposition: order.payment.depositDisposition ? 'REFUND_PENDING' : null,
+            depositDisposition: null,
           },
         });
         await tx.refund.create({
@@ -628,8 +609,8 @@ export const orderService = {
         thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80',
         totalAmount: Number(o.grandTotal),
         stage: stage === 'cancelled' ? 'completed' : stage,
-        branch: o.fulfillmentBranch?.code === 'BRANCH-HN' ? 'hn' : 'hcm',
-        branchName: o.fulfillmentBranch?.name || 'Hub Quận 10, TP.HCM',
+        branch: 'store-main',
+        branchName: o.fulfillmentBranch?.name || 'Showroom EL-TECH',
         createdAtText: new Date(o.createdAt).toLocaleDateString('vi-VN'),
         technician: {
           initials: 'NV',

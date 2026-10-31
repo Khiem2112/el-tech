@@ -795,18 +795,7 @@ export class OrderFulfillmentShippingService {
       });
     }
 
-    if (order.redeliveryAttemptCount >= 2) {
-      throw new DomainError('REDELIVERY_LIMIT_EXCEEDED', {
-        ruleId: 'ORD-024',
-        messageKey: 'error.redeliveryLimitExceeded',
-        status: 400,
-        details: {
-          redeliveryAttemptCount: order.redeliveryAttemptCount,
-          maxAllowed: 2,
-          message: 'He thong chan hen giao lai: da cham moc toi da 2 lan giao that bai. Vui long chuyen hoan ve kho chi nhanh.',
-        },
-      });
-    }
+    // He thong cho phep hen giao lai khong gioi han so lan tu trang thai giao that bai
 
     const nextAttempt = order.redeliveryAttemptCount + 1;
     const historyReason = `Len lich hen giao lai lan ${nextAttempt}: ngay ${input.redeliveryDate}${input.note ? ' - ' + input.note : ''}`;

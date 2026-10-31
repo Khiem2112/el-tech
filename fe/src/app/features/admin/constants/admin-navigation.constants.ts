@@ -148,7 +148,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
       },
       {
         code: 'SCR-28',
-        title: 'Kiểm Duyệt Đánh Giá',
+        title: 'Theo Dõi Đánh Giá',
         route: 'reviews',
         fullPath: '/admin/reviews',
         module: 'Khách Hàng & Đánh Giá',
@@ -178,13 +178,6 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         title: 'Biểu Phí Giao Hàng',
         route: 'promotions/shipping-fee',
         fullPath: '/admin/promotions/shipping-fee',
-        module: 'Chính Sách & Cài Đặt',
-      },
-      {
-        code: 'SCR-29',
-        title: 'Chi Nhánh & Khu Vực',
-        route: 'settings/branches',
-        fullPath: '/admin/settings/branches',
         module: 'Chính Sách & Cài Đặt',
       },
       {

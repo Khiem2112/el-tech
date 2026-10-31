@@ -441,6 +441,10 @@ graph TD
 | [[TASK-115-FRONTEND-ORDER-LOOKUP-FLEXIBLE-THREE-CRITERIA-AND-OTP]] | Frontend UI | Nâng cấp giao diện tra cứu đơn hàng vãng lai linh hoạt theo 3 tiêu chí riêng biệt (Mã đơn / SĐT / Email) kèm OTP | [[TASK-07-ORDER-TRACKING-KANBAN-AND-CANCEL]], [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], Sheet PHAN CONG Task 9.0 |
 | [[TASK-116-FRONTEND-COMPLAINT-HUB-AND-OFFLINE-PROCESSING-POLICY]] | Frontend UI | Chính sách & Khiếu nại: Đổi sang Tạo đơn khiếu nại, Việt hóa trạng thái và gộp quy trình xử lý ngoại tuyến | [[TASK-08-WARRANTY-RMA-AND-RETURN-FLOW]], Sheet REVIEW UI USER Lỗi R30, R35, R36, Sheet PHAN CONG Task 8.0 |
 | [[TASK-117-CUSTOMER-AUTH-DB-PERSISTENCE-AND-REQUIRED-FIELDS]] | Fullstack | Lưu trữ Database cho tính năng Đăng nhập/Đăng ký khách hàng, bắt buộc SĐT và Email, gắn sao đỏ trường bắt buộc | [[TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE]], [[TASK-106-AUTH-MODAL-RESET-AND-SUCCESS-NOTIFICATION]] |
+| [[TASK-118-DATABASE-BRANCH-CONSOLIDATION-AND-PURGE]] | Database / Data | Dồn toàn bộ record liên kết chi nhánh về chi nhánh chính duy nhất, cộng dồn tồn kho StockQuant và xóa các chi nhánh thừa (giữ nguyên model Branch) | Complete | Sheet PHAN CONG Task 1.0, [[TASK-97-DATABASE-SCHEMA-PRUNING-AND-CATALOG-PURGE]] |
+| [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]] | Backend Logic | Tái cấu trúc Order và Shipping: Bỏ branchId pickup check, bỏ eligibleBranches delivery check, gán showroom chính; bỏ chặn 2 lần giao lại | Complete | Sheet PHAN CONG Task 1.0, 2.0, 6.0, [[TASK-98-BACKEND-ORDER-LIFECYCLE-AND-PAYMENT-REFACTOR]], [[TASK-118-DATABASE-BRANCH-CONSOLIDATION-AND-PURGE]] |
+| [[TASK-120-FRONTEND-KANBAN-AND-ADMIN-REVIEWS-STREAMLINING]] | Frontend UI | Bỏ dropdown lọc chi nhánh trên Kanban, ẩn menu quản lý chi nhánh admin, loại bỏ thao tác kiểm duyệt và ẩn đánh giá thủ công | Complete | Sheet PHAN CONG Task 1.0, 5.0, [[TASK-104-FRONTEND-ADMIN-OPERATIONS-AND-SYSTEM-VERIFICATION]], [[TASK-119-BACKEND-ORDER-AND-SHIPPING-SINGLE-BRANCH-REFACTOR]] |
+
 
 
 

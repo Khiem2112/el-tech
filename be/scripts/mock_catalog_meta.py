@@ -4,7 +4,7 @@ BRANCHES_DATA = [
     {
         "code": "STORE-MAIN",
         "name": "Showroom EL-TECH",
-        "address": "Số 123 Cầu Giấy, Phường Dịch Vọng, Quận Cầu Giấy, TP. Hà Nội",
+        "address": "280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh",
         "opening_hours": {"mon_fri": "08:00 - 21:30", "sat_sun": "08:00 - 22:00"},
         "delivery_priority": 1,
     },
