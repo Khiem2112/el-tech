@@ -6,6 +6,7 @@ import { adminInventoryService } from '../../services/admin/inventory.service.js
 import {
   queryInventoryBalancesSchema,
   queryStockLedgerSchema,
+  queryStockMovesSchema,
 } from '../../validations/admin/inventory.schema.js';
 
 export const adminInventoryRouter = Router();
@@ -39,6 +40,17 @@ adminInventoryRouter.get('/ledger', async (request, response, next): Promise<voi
     const query = parseQuery(queryStockLedgerSchema, request.query);
     const correlationId = response.locals.correlationId as string;
     const result = await adminInventoryService.getLedgerEntries(query);
+    response.json(success(result, correlationId));
+  } catch (error: unknown) {
+    next(error);
+  }
+});
+
+adminInventoryRouter.get('/moves', async (request, response, next): Promise<void> => {
+  try {
+    const query = parseQuery(queryStockMovesSchema, request.query);
+    const correlationId = response.locals.correlationId as string;
+    const result = await adminInventoryService.getStockMoves(query);
     response.json(success(result, correlationId));
   } catch (error: unknown) {
     next(error);

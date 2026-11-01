@@ -19,20 +19,26 @@ import {
 } from '../categories/services/admin-category.service';
 import { DynamicSpecRendererComponent } from './components/dynamic-spec-renderer.component';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
-import { VariantFormDialogComponent } from './components/variant-form-dialog.component';
 import {
   AdminProductTemplateService,
   CreateProductTemplatePayload,
+  CreateProductVariantPayload,
   ProductLifecycle,
   ProductTemplateDetail,
   ProductVariantItem,
   UpdateProductTemplatePayload,
+  UpdateProductVariantPayload,
 } from './services/admin-product-template.service';
 
 type ToastNotification = {
   id: number;
   message: string;
   type: 'success' | 'error' | 'info';
+};
+
+type VariantSpecPair = {
+  key: string;
+  value: string;
 };
 
 @Component({
@@ -45,7 +51,6 @@ type ToastNotification = {
     ButtonDirective,
     SelectComponent,
     DynamicSpecRendererComponent,
-    VariantFormDialogComponent,
     LifecycleTransitionDialogComponent,
   ],
   template: `
@@ -155,17 +160,17 @@ type ToastNotification = {
 
         @if (!isNew() && detailData(); as tpl) {
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
-            <a
-              [routerLink]="['/admin/catalog/variants']"
-              [queryParams]="{ productTemplateId: tpl.id, search: tpl.name }"
+            <button
+              type="button"
+              (click)="onVariantsTabClick()"
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
-              title="Nhấp để lọc danh sách biến thể SKU của mẫu sản phẩm này"
+              title="Nhấp để xem danh sách biến thể SKU của mẫu sản phẩm"
             >
               <div class="text-base font-bold text-primary tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.skuCount ?? tpl.variants.length }}
               </div>
               <div class="text-xs text-muted font-medium">Biến thể SKU</div>
-            </a>
+            </button>
 
             <a
               [routerLink]="['/admin/inventory/balances']"
@@ -230,7 +235,52 @@ type ToastNotification = {
         }
       </div>
 
-      <div class="w-full p-4 lg:p-6 space-y-6">
+      <!-- Tab Navigation Bar -->
+      <div class="border-b border-line px-4 lg:px-6 bg-surface flex items-center gap-6">
+        <button
+          type="button"
+          (click)="activeTab.set('general')"
+          class="py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors cursor-pointer"
+          [class.border-primary]="activeTab() === 'general'"
+          [class.text-primary]="activeTab() === 'general'"
+          [class.border-transparent]="activeTab() !== 'general'"
+          [class.text-muted]="activeTab() !== 'general'"
+          [class.hover:text-foreground]="activeTab() !== 'general'"
+        >
+          Thông Tin Chung
+        </button>
+        <button
+          type="button"
+          [disabled]="isNew()"
+          (click)="onVariantsTabClick()"
+          class="py-3 text-xs font-semibold uppercase tracking-wider border-b-2 transition-colors inline-flex items-center gap-2"
+          [class.border-primary]="activeTab() === 'variants'"
+          [class.text-primary]="activeTab() === 'variants'"
+          [class.border-transparent]="activeTab() !== 'variants'"
+          [class.text-muted]="activeTab() !== 'variants'"
+          [class.hover:text-foreground]="activeTab() !== 'variants' && !isNew()"
+          [class.cursor-pointer]="!isNew()"
+          [class.opacity-50]="isNew()"
+          [class.cursor-not-allowed]="isNew()"
+          [title]="isNew() ? 'Vui lòng lưu thông tin chung trước khi quản lý biến thể' : 'Cấu hình chi tiết biến thể SKU'"
+        >
+          <span>Cấu Hình Chi Tiết (Biến Thể SKU)</span>
+          @if (!isNew()) {
+            <span
+              class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+              [class.bg-primary/20]="activeTab() === 'variants'"
+              [class.text-primary]="activeTab() === 'variants'"
+              [class.bg-surface-alt]="activeTab() !== 'variants'"
+              [class.text-muted]="activeTab() !== 'variants'"
+            >
+              {{ variants().length }}
+            </span>
+          }
+        </button>
+      </div>
+
+      <!-- Tab 1: Thông Tin Chung (General Info, Media, Dynamic Specs) -->
+      <div [class.hidden]="activeTab() !== 'general'" class="w-full p-4 lg:p-6 space-y-6">
         @if (formError()) {
           <div class="p-3.5 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
             {{ formError() }}
@@ -242,7 +292,7 @@ type ToastNotification = {
             <div class="bg-surface border border-line rounded-lg p-5 shadow-xs space-y-4">
               <div class="border-b border-line pb-2">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
-                  Thông Tin Chung
+                  Thông Tin Cơ Bản Mẫu Sản Phẩm
                 </h2>
               </div>
 
@@ -391,7 +441,7 @@ type ToastNotification = {
                           (error)="onImageError($event)"
                         />
                         @if (i === 0) {
-                          <span class="absolute top-1 left-1 bg-primary text-primary-foreground font-extrabold text-xs px-1.5 py-0.5 rounded">
+                          <span class="absolute top-1 left-1 bg-primary text-primary-foreground font-extrabold text-[10px] px-1.5 py-0.5 rounded">
                             ẢNH CHÍNH
                           </span>
                         }
@@ -433,130 +483,484 @@ type ToastNotification = {
             </div>
           </div>
         </div>
+      </div>
 
-        @if (!isNew()) {
-          <div id="section-variants" class="bg-surface border border-line rounded-lg shadow-xs">
-            <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
-                  Danh Sách Biến Thể SKU
-                </h2>
-                <p class="text-xs text-muted">
-                  Mỗi biến thể có mã SKU duy nhất, giá bán niêm yết và quy định serial
-                </p>
+      <!-- Tab 2: Cấu Hình Chi Tiết (Biến Thể SKU) - 2-Column Master-Detail Layout -->
+      <div [class.hidden]="activeTab() !== 'variants'" class="w-full p-4 lg:p-6 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <!-- Column 1: Master List of SKU Variants -->
+          <div class="lg:col-span-5 xl:col-span-4 space-y-4">
+            <div class="bg-surface border border-line rounded-lg shadow-xs overflow-hidden">
+              <div class="p-4 border-b border-line space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                  <div>
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Danh Sách Biến Thể SKU
+                    </h2>
+                    <p class="text-xs text-muted">
+                      {{ filteredVariants().length }} / {{ variants().length }} biến thể
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    appButton
+                    variant="primary"
+                    size="sm"
+                    (click)="startCreateVariant()"
+                    class="inline-flex items-center gap-1.5"
+                    title="Thêm biến thể mới"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>+ Thêm SKU</span>
+                  </button>
+                </div>
+
+                <div class="relative">
+                  <svg class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    [value]="variantSearchQuery()"
+                    (input)="variantSearchQuery.set($any($event.target).value)"
+                    placeholder="Tìm SKU, barcode, nhãn..."
+                    class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                  />
+                </div>
               </div>
 
-              <button
-                type="button"
-                appButton
-                variant="primary"
-                size="sm"
-                (click)="openCreateVariantModal()"
-                class="inline-flex items-center gap-1.5 uppercase tracking-wide"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                </svg>
-                <span>+ Thêm SKU</span>
-              </button>
-            </div>
-
-            <div class="overflow-x-auto">
-              <table class="w-full min-w-[1000px] text-left text-sm">
-                <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
-                  <tr>
-                    <th class="py-3 px-4">Mã SKU</th>
-                    <th class="py-3 px-4">Mã Vạch Barcode</th>
-                    <th class="py-3 px-4">Tên Biến Thể</th>
-                    <th class="py-3 px-4 text-right">Giá Bán Niêm Yết</th>
-                    <th class="py-3 px-4 text-center">Quản Lý Serial</th>
-                    <th class="py-3 px-4 text-right">Tồn Khả Dụng</th>
-                    <th class="py-3 px-4 text-center">Trạng Thái</th>
-                    <th class="py-3 px-4 text-right">Thao Tác</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-line">
-                  @if (variants().length === 0) {
-                    <tr>
-                      <td colspan="8" class="p-6 text-center text-muted">
-                        Chưa có biến thể SKU nào. Vui lòng bấm "+ Thêm SKU" để tạo biến thể đầu tiên.
-                      </td>
-                    </tr>
-                  } @else {
-                    @for (v of variants(); track v.id) {
-                      <tr class="hover:bg-surface-alt/50 transition-colors">
-                        <td class="py-3 px-4 tabular font-bold text-foreground whitespace-nowrap">
-                          {{ v.sku }}
-                        </td>
-                        <td class="py-3 px-4 tabular text-muted whitespace-nowrap">
-                          {{ v.barcode || '—' }}
-                        </td>
-                        <td class="py-3 px-4 font-medium text-foreground">
-                          {{ v.variationLabel || 'Mặc định' }}
-                        </td>
-                        <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
-                          {{ formatCurrency(v.sellingPrice) }}
-                        </td>
-                        <td class="py-3 px-4 text-center whitespace-nowrap">
-                          @if (v.serialRequired) {
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/20">
-                              Có Serial
-                            </span>
-                          } @else {
-                            <span class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-muted border border-line">
-                              Không
-                            </span>
-                          }
-                        </td>
-                        <td class="py-3 px-4 text-right tabular tabular-nums font-bold whitespace-nowrap" [class.text-emerald-600]="v.totalAvailable > 0" [class.text-destructive]="v.totalAvailable <= 0">
-                          {{ v.totalAvailable }} chiếc
-                        </td>
-                        <td class="py-3 px-4 text-center whitespace-nowrap">
-                          <span [class]="getLifecycleBadgeClass(v.lifecycleState)">
-                            {{ getLifecycleLabel(v.lifecycleState) }}
+              <div class="p-3 space-y-2 max-h-[750px] overflow-y-auto">
+                @if (filteredVariants().length === 0) {
+                  <div class="p-6 text-center text-xs text-muted space-y-2">
+                    @if (variants().length === 0) {
+                      <p>Mẫu sản phẩm này chưa có biến thể SKU nào.</p>
+                      <button
+                        type="button"
+                        appButton
+                        variant="outline"
+                        size="sm"
+                        (click)="startCreateVariant()"
+                      >
+                        + Thêm biến thể đầu tiên
+                      </button>
+                    } @else {
+                      <p>Không tìm thấy biến thể phù hợp với từ khóa.</p>
+                    }
+                  </div>
+                } @else {
+                  @for (v of filteredVariants(); track v.id) {
+                    <div
+                      (click)="selectVariant(v)"
+                      class="p-3 rounded-lg border transition-all cursor-pointer relative"
+                      [class.border-primary]="!isCreatingNewVariant() && selectedVariantId() === v.id"
+                      [class.bg-primary/5]="!isCreatingNewVariant() && selectedVariantId() === v.id"
+                      [class.ring-1]="!isCreatingNewVariant() && selectedVariantId() === v.id"
+                      [class.ring-primary/40]="!isCreatingNewVariant() && selectedVariantId() === v.id"
+                      [class.border-line]="isCreatingNewVariant() || selectedVariantId() !== v.id"
+                      [class.bg-surface]="isCreatingNewVariant() || selectedVariantId() !== v.id"
+                      [class.hover:bg-surface-alt/70]="isCreatingNewVariant() || selectedVariantId() !== v.id"
+                    >
+                      @if (!isCreatingNewVariant() && selectedVariantId() === v.id) {
+                        <div class="absolute left-0 top-2 bottom-2 w-1 bg-primary rounded-r"></div>
+                      }
+                      <div class="flex items-start justify-between gap-2">
+                        <div>
+                          <span class="font-bold text-xs tabular text-foreground tracking-wide block">
+                            {{ v.sku }}
                           </span>
-                        </td>
-                        <td class="py-3 px-4 text-right whitespace-nowrap">
-                          <div class="flex items-center justify-end gap-1.5">
+                          <span class="text-xs text-muted line-clamp-1">
+                            {{ v.variationLabel || 'Phiên bản mặc định' }}
+                          </span>
+                        </div>
+                        <span [class]="getLifecycleBadgeClass(v.lifecycleState)">
+                          {{ getLifecycleLabel(v.lifecycleState) }}
+                        </span>
+                      </div>
+
+                      <div class="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-line/50 text-xs">
+                        <span class="font-bold tabular tabular-nums text-foreground">
+                          {{ formatCurrency(v.sellingPrice) }}
+                        </span>
+                        <span
+                          class="font-semibold tabular tabular-nums"
+                          [class.text-emerald-600]="v.totalAvailable > 0"
+                          [class.text-destructive]="v.totalAvailable <= 0"
+                        >
+                          {{ v.totalAvailable }} khả dụng
+                        </span>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Detail Form for Selected or New Variant -->
+          <div class="lg:col-span-7 xl:col-span-8 space-y-5">
+            @if (isCreatingNewVariant() || selectedVariant(); as currentV) {
+              <div class="bg-surface border border-line rounded-lg shadow-xs p-5 space-y-5">
+                <div class="flex items-center justify-between border-b border-line pb-3 flex-wrap gap-2">
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h2 class="text-sm font-bold uppercase tracking-wider text-foreground">
+                        {{ isCreatingNewVariant() ? 'Thêm Mới Biến Thể SKU' : 'Chi Tiết Biến Thể: ' + (vFormSku() || 'SKU') }}
+                      </h2>
+                      @if (!isCreatingNewVariant()) {
+                        <span [class]="getLifecycleBadgeClass(vFormLifecycleState())">
+                          {{ getLifecycleLabel(vFormLifecycleState()) }}
+                        </span>
+                      }
+                    </div>
+                    <p class="text-xs text-muted mt-0.5">
+                      {{ isCreatingNewVariant() ? 'Điền thông tin thương mại và thông số kỹ thuật riêng cho SKU mới' : 'Chỉnh sửa thông số thương mại, tồn kho và cấu hình riêng của SKU' }}
+                    </p>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    @if (isCreatingNewVariant()) {
+                      @if (variants().length > 0) {
+                        <button
+                          type="button"
+                          appButton
+                          variant="outline"
+                          size="sm"
+                          (click)="cancelCreateVariant()"
+                        >
+                          Hủy
+                        </button>
+                      }
+                    } @else {
+                      <button
+                        type="button"
+                        appButton
+                        variant="outline"
+                        size="sm"
+                        (click)="deleteCurrentVariant()"
+                        class="text-destructive hover:bg-destructive/10"
+                        title="Xóa biến thể này"
+                      >
+                        Xóa SKU
+                      </button>
+                    }
+
+                    <button
+                      type="button"
+                      appButton
+                      variant="primary"
+                      size="sm"
+                      [disabled]="isSavingVariant()"
+                      (click)="saveVariant()"
+                      class="disabled:opacity-50"
+                    >
+                      {{ isSavingVariant() ? 'Đang lưu...' : (isCreatingNewVariant() ? 'Tạo Biến Thể' : 'Lưu Biến Thể') }}
+                    </button>
+                  </div>
+                </div>
+
+                @if (variantFormError()) {
+                  <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
+                    {{ variantFormError() }}
+                  </div>
+                }
+
+                <div class="space-y-4">
+                  <div class="border-b border-line/60 pb-1">
+                    <span class="font-bold text-foreground text-xs uppercase tracking-wider">Thông Tin Thương Mại & Nhận Diện</span>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                        Mã SKU <span class="text-destructive">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        [value]="vFormSku()"
+                        (input)="onSkuInput($event)"
+                        placeholder="VD: VGA-RTX5090-O24G-BLACK"
+                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm uppercase"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                        Mã Vạch Barcode
+                      </label>
+                      <input
+                        type="text"
+                        [value]="vFormBarcode()"
+                        (input)="vFormBarcode.set($any($event.target).value)"
+                        placeholder="VD: 4711081992011"
+                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-medium tabular focus:outline-none focus:border-primary text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                        Nhãn Phân Loại / Phiên Bản
+                      </label>
+                      <input
+                        type="text"
+                        [value]="vFormVariationLabel()"
+                        (input)="vFormVariationLabel.set($any($event.target).value)"
+                        placeholder="VD: Bản OC Edition - Màu Đen"
+                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-sm"
+                      />
+                    </div>
+
+                    <div>
+                      <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                        Giá Bán Niêm Yết (VND) <span class="text-destructive">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        min="1"
+                        step="1"
+                        [value]="vFormSellingPrice()"
+                        (input)="vFormSellingPrice.set(+$any($event.target).value)"
+                        placeholder="59990000"
+                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                        Trạng Thái Vòng Đời
+                      </label>
+                      <app-select
+                        [options]="variantLifecycleOptions"
+                        [value]="vFormLifecycleState()"
+                        (valueChange)="onVariantLifecycleChange($event)"
+                        placeholder="Chọn trạng thái"
+                      />
+                    </div>
+
+                    <div class="flex flex-col justify-end gap-2 pt-1">
+                      <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          [checked]="vFormSerialRequired()"
+                          (change)="vFormSerialRequired.set($any($event.target).checked)"
+                          class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
+                        />
+                        <span class="font-medium text-foreground text-xs">Quản lý theo dõi sê-ri từng chiếc (Serial Required)</span>
+                      </label>
+
+                      <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          [checked]="vFormIsActive()"
+                          (change)="vFormIsActive.set($any($event.target).checked)"
+                          class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
+                        />
+                        <span class="font-medium text-foreground text-xs">Kích hoạt hiển thị kinh doanh (isActive)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                @if (!isCreatingNewVariant() && selectedVariant(); as selV) {
+                  <div class="space-y-2 pt-2 border-t border-line">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-foreground text-xs uppercase tracking-wider">Tồn Kho Tại Showroom</span>
+                      <a
+                        [routerLink]="['/admin/inventory/balances']"
+                        [queryParams]="{ search: selV.sku }"
+                        class="text-xs text-primary hover:underline font-medium"
+                      >
+                        Xem chi tiết số dư kho
+                      </a>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3">
+                      <div class="p-3 bg-surface-alt rounded border border-line text-center">
+                        <div class="text-lg font-bold text-foreground tabular tabular-nums">{{ selV.totalOnHand }}</div>
+                        <div class="text-[11px] text-muted font-medium">Tồn thực tế</div>
+                      </div>
+                      <div class="p-3 bg-surface-alt rounded border border-line text-center">
+                        <div class="text-lg font-bold text-muted tabular tabular-nums">{{ selV.totalReserved }}</div>
+                        <div class="text-[11px] text-muted font-medium">Đang giữ</div>
+                      </div>
+                      <div class="p-3 bg-surface-alt rounded border border-line text-center">
+                        <div
+                          class="text-lg font-bold tabular tabular-nums"
+                          [class.text-emerald-600]="selV.totalAvailable > 0"
+                          [class.text-destructive]="selV.totalAvailable <= 0"
+                        >
+                          {{ selV.totalAvailable }}
+                        </div>
+                        <div class="text-[11px] text-muted font-medium">Khả dụng</div>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <!-- VARIANT SPEC EDITING SECTION -->
+                <div class="space-y-3 pt-2 border-t border-line">
+                  <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                      <h3 class="font-bold text-foreground text-xs uppercase tracking-wider">
+                        Thông Số Kỹ Thuật Riêng Của Biến Thể (Variant Spec)
+                      </h3>
+                      <p class="text-xs text-muted">
+                        Các thuộc tính đặc thù cho riêng SKU này (màu sắc, dung lượng, xung nhịp, phụ kiện...)
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      appButton
+                      variant="outline"
+                      size="sm"
+                      (click)="addSpecPair()"
+                      class="inline-flex items-center gap-1 text-xs"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>+ Thêm thông số riêng</span>
+                    </button>
+                  </div>
+
+                  <!-- Quick preset suggestions -->
+                  <div class="flex items-center gap-1.5 flex-wrap text-xs">
+                    <span class="text-muted text-[11px] font-medium mr-1">Gợi ý nhanh:</span>
+                    <button
+                      type="button"
+                      (click)="addPresetSpec('color', 'Màu đen')"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
+                    >
+                      + Màu sắc (color)
+                    </button>
+                    <button
+                      type="button"
+                      (click)="addPresetSpec('capacity', '16GB')"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
+                    >
+                      + Dung lượng (capacity)
+                    </button>
+                    <button
+                      type="button"
+                      (click)="addPresetSpec('clock_speed', 'Base 2235 MHz / Boost 2520 MHz')"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
+                    >
+                      + Xung nhịp (clock_speed)
+                    </button>
+                    <button
+                      type="button"
+                      (click)="addPresetSpec('edition', 'OC Edition')"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
+                    >
+                      + Phiên bản (edition)
+                    </button>
+                    <button
+                      type="button"
+                      (click)="addPresetSpec('accessories', 'Cáp nguồn 16-pin, giá đỡ VGA')"
+                      class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
+                    >
+                      + Phụ kiện (accessories)
+                    </button>
+                  </div>
+
+                  <!-- Key-Value pairs list -->
+                  <div class="space-y-2">
+                    @if (vFormSpecPairs().length === 0) {
+                      <div class="p-4 bg-surface-alt border border-dashed border-line rounded text-center text-xs text-muted">
+                        Chưa có thông số kỹ thuật riêng cho SKU này. Nhấn vào các gợi ý phía trên hoặc nút "+ Thêm thông số riêng" để thêm.
+                      </div>
+                    } @else {
+                      <div class="space-y-2">
+                        @for (pair of vFormSpecPairs(); track $index; let idx = $index) {
+                          <div class="flex items-center gap-2">
+                            <div class="w-1/3">
+                              <input
+                                type="text"
+                                [value]="pair.key"
+                                (input)="updateSpecKey(idx, $any($event.target).value)"
+                                placeholder="Tên thuộc tính (VD: color)"
+                                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground font-semibold focus:outline-none focus:border-primary"
+                              />
+                            </div>
+                            <div class="flex-1">
+                              <input
+                                type="text"
+                                [value]="pair.value"
+                                (input)="updateSpecValue(idx, $any($event.target).value)"
+                                placeholder="Giá trị (VD: Đen nhám)"
+                                class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                              />
+                            </div>
                             <button
                               type="button"
-                              (click)="openEditVariantModal(v)"
-                              class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
-                              title="Sửa biến thể"
+                              (click)="removeSpecPair(idx)"
+                              class="p-1.5 rounded hover:bg-destructive/10 text-destructive transition-colors"
+                              title="Xóa thuộc tính này"
                             >
-                              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                              </svg>
-                            </button>
-                            <button
-                              type="button"
-                              (click)="deleteVariant(v)"
-                              class="p-1.5 rounded hover:bg-surface-alt text-destructive hover:opacity-80 transition-colors"
-                              title="Xóa biến thể"
-                            >
-                              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                               </svg>
                             </button>
                           </div>
-                        </td>
-                      </tr>
+                        }
+                      </div>
                     }
-                  }
-                </tbody>
-              </table>
-            </div>
-          </div>
-        }
-      </div>
+                  </div>
+                </div>
 
-      <app-variant-form-dialog
-        [isOpen]="isVariantModalOpen()"
-        [variant]="selectedVariant()"
-        [productTemplateId]="templateId()"
-        (close)="isVariantModalOpen.set(false)"
-        (saved)="onVariantSaved()"
-      />
+                <div class="flex items-center justify-end gap-3 pt-4 border-t border-line">
+                  @if (isCreatingNewVariant() && variants().length > 0) {
+                    <button
+                      type="button"
+                      appButton
+                      variant="outline"
+                      size="sm"
+                      (click)="cancelCreateVariant()"
+                    >
+                      Hủy
+                    </button>
+                  }
+                  <button
+                    type="button"
+                    appButton
+                    variant="primary"
+                    size="sm"
+                    [disabled]="isSavingVariant()"
+                    (click)="saveVariant()"
+                    class="disabled:opacity-50"
+                  >
+                    {{ isSavingVariant() ? 'Đang lưu...' : (isCreatingNewVariant() ? 'Tạo Biến Thể SKU' : 'Lưu Thay Đổi Biến Thể') }}
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div class="p-12 bg-surface border border-line rounded-lg text-center space-y-3">
+                <div class="text-sm font-semibold text-foreground">Chưa chọn biến thể SKU</div>
+                <p class="text-xs text-muted max-w-sm mx-auto">
+                  Vui lòng chọn một biến thể từ danh sách bên trái để xem và chỉnh sửa thông số chi tiết, hoặc tạo mới biến thể.
+                </p>
+                <button
+                  type="button"
+                  appButton
+                  variant="primary"
+                  size="sm"
+                  (click)="startCreateVariant()"
+                >
+                  + Thêm biến thể mới
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
 
       <app-lifecycle-transition-dialog
         [isOpen]="isTransitionModalOpen()"
@@ -613,6 +1017,8 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   readonly isSaving = signal<boolean>(false);
   readonly formError = signal<string | null>(null);
 
+  readonly activeTab = signal<'general' | 'variants'>('general');
+
   readonly templateName = signal<string>('');
   readonly slug = signal<string>('');
   readonly brandId = signal<number | null>(null);
@@ -641,14 +1047,56 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     ...this.brandList().map((b) => ({ value: String(b.id), label: b.name })),
   ]);
 
-  readonly isVariantModalOpen = signal<boolean>(false);
-  readonly selectedVariant = signal<ProductVariantItem | null>(null);
   readonly isTransitionModalOpen = signal<boolean>(false);
+
+  readonly selectedVariantId = signal<number | null>(null);
+  readonly isCreatingNewVariant = signal<boolean>(false);
+  readonly variantSearchQuery = signal<string>('');
+  readonly isSavingVariant = signal<boolean>(false);
+  readonly variantFormError = signal<string | null>(null);
+
+  readonly vFormSku = signal<string>('');
+  readonly vFormBarcode = signal<string>('');
+  readonly vFormVariationLabel = signal<string>('');
+  readonly vFormSellingPrice = signal<number>(0);
+  readonly vFormLifecycleState = signal<ProductLifecycle>('DRAFT');
+  readonly vFormSerialRequired = signal<boolean>(false);
+  readonly vFormIsActive = signal<boolean>(true);
+  readonly vFormSpecPairs = signal<VariantSpecPair[]>([]);
+
+  readonly variantLifecycleOptions: SelectOption[] = [
+    { value: 'DRAFT', label: 'Bản thảo nội bộ' },
+    { value: 'ACTIVE', label: 'Đang kinh doanh' },
+    { value: 'PAUSED', label: 'Tạm dừng kinh doanh' },
+    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh' },
+  ];
 
   readonly toasts = signal<ToastNotification[]>([]);
   private toastIdCounter = 0;
 
-  readonly variants = computed(() => this.detailData()?.variants ?? []);
+  readonly variants = computed<ProductVariantItem[]>(() => this.detailData()?.variants ?? []);
+
+  readonly filteredVariants = computed<ProductVariantItem[]>(() => {
+    const list = this.variants();
+    const query = this.variantSearchQuery().trim().toLowerCase();
+    if (!query) {
+      return list;
+    }
+    return list.filter((v) => {
+      const matchSku = v.sku.toLowerCase().includes(query);
+      const matchBarcode = v.barcode ? v.barcode.toLowerCase().includes(query) : false;
+      const matchLabel = v.variationLabel ? v.variationLabel.toLowerCase().includes(query) : false;
+      return matchSku || matchBarcode || matchLabel;
+    });
+  });
+
+  readonly selectedVariant = computed<ProductVariantItem | null>(() => {
+    const id = this.selectedVariantId();
+    if (!id) {
+      return null;
+    }
+    return this.variants().find((v) => v.id === id) ?? null;
+  });
 
   readonly activeVariantCount = computed(() => {
     const list = this.variants();
@@ -738,6 +1186,20 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
         this.activeSpecSchema.set(data.category.specificationSchema as SpecAttribute[]);
       } else {
         await this.syncCategorySchema(data.category.id);
+      }
+
+      if (data.variants && data.variants.length > 0) {
+        const currentId = this.selectedVariantId();
+        const found = currentId ? data.variants.find((v) => v.id === currentId) : null;
+        if (found) {
+          this.selectVariant(found);
+        } else if (!this.isCreatingNewVariant()) {
+          this.selectVariant(data.variants[0]);
+        }
+      } else {
+        if (!this.isCreatingNewVariant()) {
+          this.startCreateVariant();
+        }
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Lỗi khi tải chi tiết mẫu sản phẩm';
@@ -846,35 +1308,207 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     }
   }
 
-  openCreateVariantModal(): void {
-    this.selectedVariant.set(null);
-    this.isVariantModalOpen.set(true);
-  }
-
-  openEditVariantModal(variant: ProductVariantItem): void {
-    this.selectedVariant.set(variant);
-    this.isVariantModalOpen.set(true);
-  }
-
-  async onVariantSaved(): Promise<void> {
-    this.showToast('Lưu biến thể SKU thành công', 'success');
-    if (this.templateId()) {
-      await this.loadExistingTemplate(this.templateId());
+  onVariantsTabClick(): void {
+    if (this.isNew()) {
+      return;
+    }
+    this.activeTab.set('variants');
+    if (!this.isCreatingNewVariant() && this.selectedVariantId() === null) {
+      const list = this.variants();
+      if (list.length > 0) {
+        this.selectVariant(list[0]);
+      } else {
+        this.startCreateVariant();
+      }
     }
   }
 
-  async deleteVariant(variant: ProductVariantItem): Promise<void> {
+  selectVariant(v: ProductVariantItem): void {
+    this.isCreatingNewVariant.set(false);
+    this.selectedVariantId.set(v.id);
+    this.vFormSku.set(v.sku);
+    this.vFormBarcode.set(v.barcode ?? '');
+    this.vFormVariationLabel.set(v.variationLabel ?? '');
+    this.vFormSellingPrice.set(Number(v.sellingPrice) || 0);
+    this.vFormLifecycleState.set(v.lifecycleState);
+    this.vFormSerialRequired.set(v.serialRequired);
+    this.vFormIsActive.set(v.isActive);
+
+    const pairs: VariantSpecPair[] = [];
+    if (v.variantSpec && typeof v.variantSpec === 'object') {
+      for (const [key, val] of Object.entries(v.variantSpec)) {
+        pairs.push({ key, value: val !== null && val !== undefined ? String(val) : '' });
+      }
+    }
+    this.vFormSpecPairs.set(pairs);
+    this.variantFormError.set(null);
+  }
+
+  startCreateVariant(): void {
+    this.isCreatingNewVariant.set(true);
+    this.selectedVariantId.set(null);
+    this.vFormSku.set('');
+    this.vFormBarcode.set('');
+    this.vFormVariationLabel.set('');
+    this.vFormSellingPrice.set(0);
+    this.vFormLifecycleState.set('DRAFT');
+    this.vFormSerialRequired.set(false);
+    this.vFormIsActive.set(true);
+    this.vFormSpecPairs.set([]);
+    this.variantFormError.set(null);
+  }
+
+  cancelCreateVariant(): void {
+    const list = this.variants();
+    if (list.length > 0) {
+      this.selectVariant(list[0]);
+    } else {
+      this.startCreateVariant();
+    }
+  }
+
+  onSkuInput(event: Event): void {
+    const val = (event.target as HTMLInputElement).value;
+    this.vFormSku.set(val.toUpperCase());
+  }
+
+  onVariantLifecycleChange(val: string | number): void {
+    this.vFormLifecycleState.set(val as ProductLifecycle);
+  }
+
+  addSpecPair(key = '', value = ''): void {
+    this.vFormSpecPairs.update((pairs) => [...pairs, { key, value }]);
+  }
+
+  removeSpecPair(index: number): void {
+    this.vFormSpecPairs.update((pairs) => pairs.filter((_, i) => i !== index));
+  }
+
+  updateSpecKey(index: number, key: string): void {
+    this.vFormSpecPairs.update((pairs) =>
+      pairs.map((p, i) => (i === index ? { ...p, key } : p)),
+    );
+  }
+
+  updateSpecValue(index: number, value: string): void {
+    this.vFormSpecPairs.update((pairs) =>
+      pairs.map((p, i) => (i === index ? { ...p, value } : p)),
+    );
+  }
+
+  addPresetSpec(key: string, defaultVal = ''): void {
+    const existing = this.vFormSpecPairs().find((p) => p.key === key);
+    if (!existing) {
+      this.addSpecPair(key, defaultVal);
+    }
+  }
+
+  async saveVariant(): Promise<void> {
+    const trimmedSku = this.vFormSku().trim().toUpperCase();
+    if (!trimmedSku) {
+      this.variantFormError.set('Vui lòng nhập mã SKU cho biến thể');
+      return;
+    }
+
+    const price = Number(this.vFormSellingPrice());
+    if (isNaN(price) || price <= 0 || !Number.isInteger(price)) {
+      this.variantFormError.set('Giá bán phải là số nguyên dương VND');
+      return;
+    }
+
+    const templateId = this.templateId();
+    if (!templateId) {
+      this.variantFormError.set('Không xác định được mẫu sản phẩm');
+      return;
+    }
+
+    this.isSavingVariant.set(true);
+    this.variantFormError.set(null);
+
+    const specObj: Record<string, unknown> = {};
+    for (const pair of this.vFormSpecPairs()) {
+      const k = pair.key.trim();
+      if (k) {
+        specObj[k] = pair.value.trim();
+      }
+    }
+
+    try {
+      if (this.isCreatingNewVariant()) {
+        const payload: CreateProductVariantPayload = {
+          productTemplateId: templateId,
+          sku: trimmedSku,
+          barcode: this.vFormBarcode().trim() || null,
+          variationLabel: this.vFormVariationLabel().trim() || null,
+          sellingPrice: price,
+          serialRequired: this.vFormSerialRequired(),
+          lifecycleState: this.vFormLifecycleState(),
+          isActive: this.vFormIsActive(),
+          variantSpec: specObj,
+        };
+        const created = await this.templateService.createVariant(payload);
+        this.showToast('Tạo mới biến thể SKU thành công', 'success');
+        await this.loadExistingTemplate(templateId);
+        const match = this.variants().find((v) => v.id === created.id || v.sku === trimmedSku);
+        if (match) {
+          this.selectVariant(match);
+        } else if (this.variants().length > 0) {
+          this.selectVariant(this.variants()[this.variants().length - 1]);
+        }
+      } else {
+        const currentVariant = this.selectedVariant();
+        if (!currentVariant) {
+          throw new Error('Không tìm thấy thông tin biến thể cần cập nhật');
+        }
+        const payload: UpdateProductVariantPayload = {
+          sku: trimmedSku,
+          barcode: this.vFormBarcode().trim() || null,
+          variationLabel: this.vFormVariationLabel().trim() || null,
+          sellingPrice: price,
+          serialRequired: this.vFormSerialRequired(),
+          lifecycleState: this.vFormLifecycleState(),
+          isActive: this.vFormIsActive(),
+          variantSpec: specObj,
+        };
+        await this.templateService.updateVariant(currentVariant.id, payload);
+        this.showToast('Lưu biến thể SKU thành công', 'success');
+        await this.loadExistingTemplate(templateId);
+        const match = this.variants().find((v) => v.id === currentVariant.id);
+        if (match) {
+          this.selectVariant(match);
+        }
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Lỗi khi lưu biến thể SKU';
+      this.variantFormError.set(msg);
+      this.showToast(msg, 'error');
+    } finally {
+      this.isSavingVariant.set(false);
+    }
+  }
+
+  async deleteCurrentVariant(): Promise<void> {
+    const v = this.selectedVariant();
+    if (!v) {
+      return;
+    }
     const confirmed = confirm(
-      `Bạn có chắc chắn muốn xóa biến thể "${variant.sku}"? Thao tác này sẽ bị chặn nếu SKU đã phát sinh đơn hàng hoặc tồn kho.`,
+      `Bạn có chắc chắn muốn xóa biến thể "${v.sku}"? Thao tác này sẽ bị chặn nếu SKU đã phát sinh đơn hàng hoặc tồn kho.`,
     );
     if (!confirmed) {
       return;
     }
 
     try {
-      await this.templateService.deleteVariant(variant.id);
+      await this.templateService.deleteVariant(v.id);
       this.showToast('Đã xóa biến thể SKU', 'success');
       await this.loadExistingTemplate(this.templateId());
+      const remaining = this.variants();
+      if (remaining.length > 0) {
+        this.selectVariant(remaining[0]);
+      } else {
+        this.startCreateVariant();
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Lỗi khi xóa biến thể';
       this.showToast(msg, 'error');
@@ -925,7 +1559,6 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
         return 'px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 text-destructive border border-destructive/30';
     }
   }
-
 
   private showToast(message: string, type: 'success' | 'error' | 'info'): void {
     const id = ++this.toastIdCounter;

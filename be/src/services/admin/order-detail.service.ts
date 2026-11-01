@@ -69,6 +69,50 @@ export type AdminOrderTimelineEventDto = {
   occurredAt: Date;
 };
 
+export type AdminStockMoveLineDto = {
+  id: string;
+  skuId: number;
+  sku: {
+    id: number;
+    sku: string;
+    variationLabel: string | null;
+    template: {
+      id: number;
+      name: string;
+    };
+  };
+  variationLabel: string | null;
+  productName: string;
+  quantity: number;
+  unitCost: string;
+  receivedSerialUnits: Array<{
+    serialNumber: string;
+    status: string;
+  }>;
+  serialMovements: Array<{
+    id: string;
+    resultingStatus: string;
+    serialUnit: {
+      serialNumber: string;
+      status: string;
+    };
+  }>;
+  serials: string[];
+};
+
+export type AdminStockMoveDto = {
+  id: string;
+  code: string;
+  moveType: string;
+  status: string;
+  reason: string | null;
+  createdAt: Date;
+  reservedAt: Date | null;
+  dispatchedAt: Date | null;
+  validatedAt: Date | null;
+  lines: AdminStockMoveLineDto[];
+};
+
 export type AdminOrderDetailDto = {
   id: string;
   code: string;
@@ -145,17 +189,7 @@ export type AdminOrderDetailDto = {
       occurredAt: Date;
     }>;
   } | null;
-  stockMoves: Array<{
-    id: string;
-    code: string;
-    moveType: string;
-    status: string;
-    reason: string | null;
-    createdAt: Date;
-    reservedAt: Date | null;
-    dispatchedAt: Date | null;
-    validatedAt: Date | null;
-  }>;
+  stockMoves: AdminStockMoveDto[];
   amendments: Array<{
     id: string;
     type: string;
@@ -418,6 +452,29 @@ export class AdminOrderDetailService {
         },
         stockMoves: {
           orderBy: { createdAt: 'desc' },
+          include: {
+            lines: {
+              include: {
+                sku: {
+                  include: {
+                    productTemplate: {
+                      select: { id: true, name: true },
+                    },
+                  },
+                },
+                receivedSerialUnits: {
+                  select: { serialNumber: true, status: true },
+                },
+                serialMovements: {
+                  include: {
+                    serialUnit: {
+                      select: { serialNumber: true, status: true },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         amendments: {
           orderBy: { createdAt: 'desc' },
@@ -714,6 +771,44 @@ export class AdminOrderDetailService {
         reservedAt: sm.reservedAt,
         dispatchedAt: sm.dispatchedAt,
         validatedAt: sm.validatedAt,
+        lines: sm.lines.map((line) => {
+          const serials = [
+            ...line.receivedSerialUnits.map((u) => u.serialNumber),
+            ...line.serialMovements.map((m) => m.serialUnit.serialNumber),
+          ];
+          const uniqueSerials = [...new Set(serials)];
+
+          return {
+            id: line.id,
+            skuId: line.skuId,
+            sku: {
+              id: line.sku.id,
+              sku: line.sku.sku,
+              variationLabel: line.sku.variationLabel,
+              template: {
+                id: line.sku.productTemplate.id,
+                name: line.sku.productTemplate.name,
+              },
+            },
+            variationLabel: line.sku.variationLabel,
+            productName: line.sku.productTemplate.name,
+            quantity: line.quantity,
+            unitCost: line.unitCost.toString(),
+            receivedSerialUnits: line.receivedSerialUnits.map((u) => ({
+              serialNumber: u.serialNumber,
+              status: u.status,
+            })),
+            serialMovements: line.serialMovements.map((m) => ({
+              id: m.id,
+              resultingStatus: m.resultingStatus,
+              serialUnit: {
+                serialNumber: m.serialUnit.serialNumber,
+                status: m.serialUnit.status,
+              },
+            })),
+            serials: uniqueSerials,
+          };
+        }),
       })),
       amendments: order.amendments.map((am) => ({
         id: am.id,

@@ -15,6 +15,7 @@ import { SelectComponent, SelectOption } from '../../../components/atoms/select/
 import { ConfirmPODialogComponent } from './components/confirm-po-dialog.component';
 import { ShortShipmentDialogComponent } from './components/short-shipment-dialog.component';
 import { ValidatePOReceiptDialogComponent } from './components/validate-po-receipt-dialog.component';
+import { PoStockMoveModalComponent } from './components/po-stock-move-modal.component';
 import {
   AdminPurchaseOrderService,
   CatalogVariantOption,
@@ -54,6 +55,7 @@ type ToastMessage = {
     ConfirmPODialogComponent,
     ValidatePOReceiptDialogComponent,
     ShortShipmentDialogComponent,
+    PoStockMoveModalComponent,
     AppIconModule,
     SelectComponent,
   ],
@@ -164,6 +166,20 @@ type ToastMessage = {
                   Đơn PO đã bị hủy ({{ po.cancellationReason || 'Không có lý do' }})
                 </span>
               }
+            }
+
+            @if (po.receiptMove) {
+              <button
+                type="button"
+                (click)="isReceiptMoveModalOpen.set(true)"
+                class="px-3.5 py-1.5 bg-surface-alt hover:bg-surface border border-line text-foreground font-semibold text-xs rounded transition-colors inline-flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Xem chi tiết phiếu nhập kho"
+              >
+                <span>Xem Phiếu Nhập Kho</span>
+                <span class="px-1.5 py-0.2 rounded text-[11px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-bold">
+                  {{ po.receiptMove.code }}
+                </span>
+              </button>
             }
           }
         </div>
@@ -303,14 +319,21 @@ type ToastMessage = {
               <div class="pt-2 md:pt-0 md:px-3">
                 <span class="block text-muted uppercase text-xs font-semibold">Phiếu Nhập Kho</span>
                 @if (po.receiptMove) {
-                  <a
-                    [routerLink]="['/admin/inventory/ledger']"
-                    [queryParams]="{ search: po.code }"
-                    class="tabular font-bold text-emerald-700 hover:underline block truncate mt-0.5"
+                  <button
+                    type="button"
+                    (click)="isReceiptMoveModalOpen.set(true)"
+                    class="tabular font-bold text-emerald-700 hover:underline block truncate mt-0.5 text-left cursor-pointer"
+                    title="Xem chi tiết phiếu nhập kho"
                   >
                     {{ po.receiptMove.code }}
-                  </a>
-                  <span class="text-xs text-emerald-600 font-medium">Đã ghi sổ kho</span>
+                  </button>
+                  <button
+                    type="button"
+                    (click)="isReceiptMoveModalOpen.set(true)"
+                    class="text-xs text-emerald-600 font-medium hover:underline block cursor-pointer"
+                  >
+                    Xem chi tiết phiếu
+                  </button>
                 } @else if (po.status === 'CONFIRMED') {
                   <button
                     type="button"
@@ -570,6 +593,12 @@ type ToastMessage = {
         (cancelled)="isShortShipmentModalOpen.set(false)"
       ></app-short-shipment-dialog>
 
+      <app-po-stock-move-modal
+        [isOpen]="isReceiptMoveModalOpen()"
+        [po]="order()"
+        (closed)="isReceiptMoveModalOpen.set(false)"
+      ></app-po-stock-move-modal>
+
       @if (toasts().length > 0) {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
           @for (toast of toasts(); track toast.id) {
@@ -600,6 +629,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
   readonly order = signal<PurchaseOrderDetail | null>(null);
   readonly isNew = signal<boolean>(false);
   readonly isSubmitting = signal<boolean>(false);
+  readonly isReceiptMoveModalOpen = signal<boolean>(false);
 
   readonly suppliers = signal<SimpleOption[]>([]);
   readonly branches = signal<SimpleOption[]>([]);

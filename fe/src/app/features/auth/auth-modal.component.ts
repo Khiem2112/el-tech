@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
+import { GOOGLE_CLIENT_ID } from '../../core/constants/auth.constants';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
@@ -82,19 +83,25 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
             </div>
 
             <!-- Google OAuth 1-Click Fast Button -->
-            <button
-              type="button"
-              class="w-full h-11 px-4 rounded-lg bg-surface hover:bg-surface-alt border border-line shadow-xs flex items-center justify-center gap-3 text-xs font-bold text-foreground transition-all duration-150 group"
-              (click)="handleGoogleAuth()"
-            >
-              <svg class="size-4.5 shrink-0" viewBox="0 0 24 24">
-                <path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" fill="#4285F4"/>
-                <path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z" fill="#34A853"/>
-                <path d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z" fill="#FBBC05"/>
-                <path d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" fill="#EA4335"/>
-              </svg>
-              <span>Tiếp tục nhanh với Google</span>
-            </button>
+            <div class="relative w-full h-11 rounded-lg overflow-hidden">
+              <button
+                type="button"
+                class="w-full h-full px-4 rounded-lg bg-surface hover:bg-surface-alt border border-line shadow-xs flex items-center justify-center gap-3 text-xs font-bold text-foreground transition-all duration-150 group cursor-pointer"
+                (click)="handleGoogleAuth()"
+              >
+                <svg class="size-4.5 shrink-0" viewBox="0 0 24 24">
+                  <path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" fill="#4285F4"/>
+                  <path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z" fill="#34A853"/>
+                  <path d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.25C.45 8.18 0 10.03 0 12s.45 3.82 1.25 5.42l4.03-3.15z" fill="#FBBC05"/>
+                  <path d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" fill="#EA4335"/>
+                </svg>
+                <span>Tiếp tục nhanh với Google</span>
+              </button>
+              <div
+                id="google-identity-btn-container"
+                class="absolute inset-0 opacity-0 cursor-pointer overflow-hidden flex items-center justify-center scale-110"
+              ></div>
+            </div>
 
             <!-- Divider -->
             <div class="relative flex items-center justify-center">
@@ -435,7 +442,63 @@ export class AuthModalComponent {
     }
   }
 
-  protected async handleGoogleAuth(): Promise<void> {
+  constructor() {
+    effect(() => {
+      const isOpen = this.auth.isAuthModalOpen();
+      if (isOpen) {
+        setTimeout(() => {
+          this.initGoogleIdentity();
+        }, 100);
+      }
+    });
+  }
+
+  private initGoogleIdentity(retryCount = 0): void {
+    if (typeof window === 'undefined') return;
+    const google = (window as unknown as { google?: { accounts?: { id?: {
+      initialize: (config: object) => void;
+      renderButton: (parent: HTMLElement, options: object) => void;
+      prompt: (callback?: (notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean; isDismissedMoment: () => boolean }) => void) => void;
+    } } } }).google;
+
+    if (!google?.accounts?.id) {
+      if (retryCount < 10) {
+        setTimeout(() => this.initGoogleIdentity(retryCount + 1), 200);
+      }
+      return;
+    }
+
+    try {
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: (response: { credential?: string }) => {
+          if (response?.credential) {
+            void this.handleGoogleCredentialResponse(response.credential);
+          }
+        },
+        auto_select: false,
+        cancel_on_tap_outside: true,
+      });
+
+      const container = document.getElementById('google-identity-btn-container');
+      if (container) {
+        container.innerHTML = '';
+        google.accounts.id.renderButton(container, {
+          type: 'standard',
+          shape: 'rectangular',
+          theme: 'outline',
+          text: 'continue_with',
+          size: 'large',
+          width: 380,
+        });
+      }
+    } catch {
+      // Retain fallback click behavior if GIS initialization fails
+    }
+  }
+
+  protected async handleGoogleCredentialResponse(credential: string): Promise<void> {
+    this.isSubmitting.set(true);
     this.errorMessage.set(null);
     const currentUrl = this.router.url;
     const queryParams =
@@ -447,12 +510,38 @@ export class AuthModalComponent {
         : undefined;
 
     try {
-      await this.auth.loginWithGoogle();
+      await this.auth.loginWithGoogleCredential(credential);
       this.closeModal();
       void this.router.navigate(['/dang-nhap-thanh-cong'], { queryParams });
-    } catch {
-      this.errorMessage.set('Đăng nhập nhanh với Google không thành công. Vui lòng thử lại.');
+    } catch (err: unknown) {
+      const errMessage = err instanceof Error ? err.message : '';
+      if (errMessage.includes('INVALID_GOOGLE_TOKEN') || errMessage.includes('invalidGoogleToken')) {
+        this.errorMessage.set('Token xác thực Google không hợp lệ hoặc đã hết hạn.');
+      } else {
+        this.errorMessage.set('Đăng nhập nhanh với Google không thành công. Vui lòng thử lại.');
+      }
+    } finally {
+      this.isSubmitting.set(false);
     }
+  }
+
+  protected handleGoogleAuth(): void {
+    this.errorMessage.set(null);
+    if (typeof window !== 'undefined') {
+      const google = (window as unknown as { google?: { accounts?: { id?: {
+        prompt: (callback?: (notification: { isNotDisplayed: () => boolean; isSkippedMoment: () => boolean; isDismissedMoment: () => boolean }) => void) => void;
+      } } } }).google;
+
+      if (google?.accounts?.id) {
+        google.accounts.id.prompt((notification) => {
+          if (notification.isNotDisplayed()) {
+            this.errorMessage.set('Không thể hiển thị đăng nhập Google. Vui lòng cho phép popup hoặc kiểm tra cấu hình trình duyệt.');
+          }
+        });
+        return;
+      }
+    }
+    this.errorMessage.set('Đang tải tiện ích Google Identity Services. Vui lòng thử lại sau giây lát.');
   }
 
   protected handleForgotPassword(): void {

@@ -3,11 +3,12 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { correlationIdInterceptor } from './core/api/correlation-id.interceptor';
+import { authInterceptor } from './core/api/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([correlationIdInterceptor])),
-  ]
+    provideHttpClient(withInterceptors([correlationIdInterceptor, authInterceptor])),
+  ],
 };

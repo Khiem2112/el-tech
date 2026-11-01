@@ -2,6 +2,7 @@ import { NotificationChannel, Prisma } from '@prisma/client';
 import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
 import { QueryNotificationsInput } from '../../validations/admin/notification.schema.js';
+import { notificationDispatcherService } from '../notification-dispatcher.service.js';
 
 export type AdminNotificationCustomerDto = {
   readonly id: string;
@@ -244,48 +245,8 @@ export const adminNotificationService = {
   },
 
   async retryNotification(id: string): Promise<AdminNotificationItemDto> {
-    const existing = await prisma.notification.findUnique({
-      where: { id },
-    });
-
-    if (!existing) {
-      throw new DomainError('NOTIFICATION_NOT_FOUND', {
-        ruleId: 'NOT-006',
-        messageKey: 'error.notificationNotFound',
-        status: 404,
-      });
-    }
-
-    const currentAttempts = parseDeliveryAttempts(existing.deliveryAttempts);
-    const retryAttempt: AdminNotificationDeliveryAttemptDto = {
-      channel: existing.channels.join(','),
-      status: 'RETRY_DISPATCHED',
-      attemptedAt: new Date().toISOString(),
-      error: null,
-      details: { dispatchedBy: 'ADMIN_MANUAL_RETRY' },
-    };
-
-    const nextAttempts = [...currentAttempts, retryAttempt];
-    const now = new Date();
-
-    const updated = await prisma.notification.update({
-      where: { id },
-      data: {
-        publishedAt: now,
-        lastDeliveryAt: now,
-        lastDeliveryError: null,
-        deliveryAttempts: nextAttempts as unknown as Prisma.InputJsonValue,
-      },
-      include: {
-        customer: {
-          select: { id: true, name: true, email: true, phone: true },
-        },
-        order: {
-          select: { id: true, code: true },
-        },
-      },
-    });
-
-    return mapNotificationToDto(updated);
+    await notificationDispatcherService.retryDispatch(id);
+    return this.getNotificationById(id);
   },
+
 };

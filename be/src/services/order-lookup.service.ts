@@ -1,4 +1,5 @@
 import { DomainError } from '../contracts/domain-error.js';
+import { sendLookupOtpEmail } from '../lib/mailer.js';
 import { prisma } from '../lib/prisma.js';
 import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
 import { orderService } from './order.service.js';
@@ -136,16 +137,28 @@ const serialize = (order: OrderRecord): SerializedOrder => {
 };
 
 export const orderLookupService = {
-  async lookupByOrderCode(code: string): Promise<SerializedOrder> {
+  async lookupByOrderCode(code: string, requesterUserId?: string): Promise<SerializedOrder> {
     const order = await prisma.order.findFirst({
       where: { code, isActive: true },
       include: {
+        customer: true,
         payment: { include: { charges: true } },
         lines: { include: { review: true, sku: { include: { productTemplate: { select: { media: true } } } } } },
         statusHistories: { orderBy: { occurredAt: 'asc' } },
       },
     });
     if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+
+    if (order.customer.userId !== null) {
+      if (!requesterUserId || requesterUserId !== order.customer.userId) {
+        throw new DomainError('ORDER_ACCESS_DENIED', {
+          messageKey: 'error.orderBelongsToAccount',
+          status: 403,
+          details: { message: 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
+        });
+      }
+    }
+
     await orderService.expireOrderIfOverdue(order.id);
     return serialize(order);
   },
@@ -175,6 +188,9 @@ export const orderLookupService = {
         expiresAt: new Date(Date.now() + 5 * 60_000),
       },
     });
+    if (contactType === 'EMAIL') {
+      await sendLookupOtpEmail(trimmed.toLowerCase(), otp);
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.info({ guestLookup: trimmed, verificationId: verification.id, otp });
     }
@@ -220,11 +236,37 @@ export const orderLookupService = {
   },
 
   async request(code: string, identifier: string): Promise<{ verificationId: string; expiresAt: string }> {
-    const order = await prisma.order.findFirst({ where: { code, isActive: true, OR: [{ receiverEmail: identifier.trim().toLowerCase() }, { receiverPhone: identifier.trim() }] } });
+    const order = await prisma.order.findFirst({
+      where: { code, isActive: true, OR: [{ receiverEmail: identifier.trim().toLowerCase() }, { receiverPhone: identifier.trim() }] },
+      include: { customer: true },
+    });
     if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+
+    if (order.customer.userId !== null) {
+      throw new DomainError('ORDER_ACCESS_DENIED', {
+        messageKey: 'error.orderBelongsToAccount',
+        status: 403,
+        details: { message: 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
+      });
+    }
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    const verification = await prisma.verification.create({ data: { identifier: identifier.trim().toLowerCase(), value: otp, orderId: order.id, purpose: 'GUEST_ORDER_ACCESS', contactType: order.receiverEmail === identifier.trim().toLowerCase() ? 'EMAIL' : 'PHONE', expiresAt: new Date(Date.now() + 5 * 60_000) } });
-    if (process.env.NODE_ENV !== 'production') console.info({ orderCode: code, verificationId: verification.id, otp });
+    const contactType = order.receiverEmail === identifier.trim().toLowerCase() ? 'EMAIL' : 'PHONE';
+    const verification = await prisma.verification.create({
+      data: {
+        identifier: identifier.trim().toLowerCase(),
+        value: otp,
+        orderId: order.id,
+        purpose: 'GUEST_ORDER_ACCESS',
+        contactType,
+        expiresAt: new Date(Date.now() + 5 * 60_000),
+      },
+    });
+    if (contactType === 'EMAIL') {
+      await sendLookupOtpEmail(identifier.trim().toLowerCase(), otp);
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.info({ orderCode: code, verificationId: verification.id, otp });
+    }
     return { verificationId: verification.id, expiresAt: verification.expiresAt.toISOString() };
   },
   async verify(verificationId: string, code: string): Promise<{ verificationId: string; sessionToken: string; order: ReturnType<typeof serialize> }> {
@@ -280,7 +322,7 @@ export const orderLookupService = {
     return serialize(order);
   },
 
-  async getOrderDetailForCustomer(orderCode: string, identifier: string): Promise<SerializedOrder> {
+  async getOrderDetailForCustomer(orderCode: string, identifier: string, requesterUserId?: string): Promise<SerializedOrder> {
     const trimmed = sanitizeIdentifier(identifier);
     if (!trimmed) {
       throw new DomainError('UNAUTHORIZED', { messageKey: 'error.unauthorized', status: 401 });
@@ -288,6 +330,7 @@ export const orderLookupService = {
 
     const order = await prisma.order.findFirst({
       where: { code: orderCode, isActive: true },
+      include: { customer: true },
     });
     if (!order) {
       throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
@@ -305,15 +348,29 @@ export const orderLookupService = {
       },
     });
 
-    const isOwner =
-      (isUuidIdentifier && order.customerId === trimmed) ||
-      order.receiverEmail.toLowerCase() === trimmed.toLowerCase() ||
-      order.receiverPhone === trimmed ||
-      Boolean(customer && order.customerId === customer.id) ||
-      Boolean(customer && order.receiverEmail.toLowerCase() === customer.email.toLowerCase());
+    if (order.customer.userId !== null) {
+      const isUserOwner =
+        (requesterUserId && requesterUserId === order.customer.userId) ||
+        (isUuidIdentifier && order.customerId === trimmed) ||
+        Boolean(customer && order.customerId === customer.id);
 
-    if (!isOwner) {
-      throw new DomainError('ORDER_ACCESS_DENIED', { messageKey: 'error.orderAccessDenied', status: 403 });
+      if (!isUserOwner) {
+        throw new DomainError('ORDER_ACCESS_DENIED', {
+          messageKey: 'error.orderBelongsToAccount',
+          status: 403,
+          details: { message: 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
+        });
+      }
+    } else {
+      const isGuestOwner =
+        (isUuidIdentifier && order.customerId === trimmed) ||
+        order.receiverEmail.toLowerCase() === trimmed.toLowerCase() ||
+        order.receiverPhone === trimmed ||
+        Boolean(customer && order.customerId === customer.id);
+
+      if (!isGuestOwner) {
+        throw new DomainError('ORDER_ACCESS_DENIED', { messageKey: 'error.orderAccessDenied', status: 403 });
+      }
     }
 
     await orderService.expireOrderIfOverdue(order.id);

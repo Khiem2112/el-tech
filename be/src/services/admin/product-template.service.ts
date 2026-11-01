@@ -3,11 +3,14 @@ import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
 import {
   CreateProductTemplateInput,
+  CreateProductVariantInput,
   ProductLifecycleState,
   QueryProductTemplateInput,
   UpdateProductTemplateInput,
+  UpdateProductVariantInput,
 } from '../../validations/admin/product-template.schema.js';
 import { normalizeSpecSchema } from './category.service.js';
+import { adminProductVariantService, ProductVariantRecordDto } from './product-variant.service.js';
 
 export type ProductTemplateVariantSummary = {
   id: number;
@@ -21,6 +24,25 @@ export type ProductTemplateVariantSummary = {
   totalOnHand: number;
   totalReserved: number;
   totalAvailable: number;
+};
+
+export type ProductTemplateVariantStockQuantDto = {
+  id: string;
+  onHand: number;
+  reserved: number;
+  available: number;
+  quarantine: number;
+};
+
+export type ProductTemplateVariantSummaryItemDto = {
+  id: number;
+  sku: string;
+  variationLabel: string | null;
+  barcode: string | null;
+  retailPrice: string;
+  sellingPrice: string;
+  isActive: boolean;
+  stockQuant: ProductTemplateVariantStockQuantDto | null;
 };
 
 export type ProductTemplateListItemDto = {
@@ -47,10 +69,14 @@ export type ProductTemplateListItemDto = {
     slug: string;
   };
   variantCount: number;
+  variantsCount: number;
+  minPrice: number;
+  maxPrice: number;
   minSellingPrice: string | null;
   maxSellingPrice: string | null;
   totalOnHand: number;
   totalAvailable: number;
+  variants: ProductTemplateVariantSummaryItemDto[];
 };
 
 export type ProductTemplateListResult = {
@@ -210,37 +236,73 @@ export class AdminProductTemplateService {
         variants: {
           select: {
             id: true,
+            sku: true,
+            variationLabel: true,
+            barcode: true,
             isActive: true,
             sellingPrice: true,
             stockQuant: {
               select: {
+                id: true,
                 onHand: true,
                 reserved: true,
+                quarantineDamaged: true,
               },
             },
           },
+          orderBy: { id: 'asc' },
         },
       },
     });
 
     const items: ProductTemplateListItemDto[] = templates.map((template) => {
-      let minPrice: Prisma.Decimal | null = null;
-      let maxPrice: Prisma.Decimal | null = null;
+      let minPriceDecimal: Prisma.Decimal | null = null;
+      let maxPriceDecimal: Prisma.Decimal | null = null;
       let totalOnHand = 0;
       let totalAvailable = 0;
 
+      const variantsSummary: ProductTemplateVariantSummaryItemDto[] = [];
+
       for (const variant of template.variants) {
-        if (!minPrice || variant.sellingPrice.lessThan(minPrice)) {
-          minPrice = variant.sellingPrice;
+        if (!minPriceDecimal || variant.sellingPrice.lessThan(minPriceDecimal)) {
+          minPriceDecimal = variant.sellingPrice;
         }
-        if (!maxPrice || variant.sellingPrice.greaterThan(maxPrice)) {
-          maxPrice = variant.sellingPrice;
+        if (!maxPriceDecimal || variant.sellingPrice.greaterThan(maxPriceDecimal)) {
+          maxPriceDecimal = variant.sellingPrice;
         }
-        if (variant.stockQuant) {
-          totalOnHand += variant.stockQuant.onHand;
-          totalAvailable += Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved);
-        }
+
+        const onHand = variant.stockQuant?.onHand ?? 0;
+        const reserved = variant.stockQuant?.reserved ?? 0;
+        const available = Math.max(0, onHand - reserved);
+        const quarantine = variant.stockQuant?.quarantineDamaged ?? 0;
+
+        totalOnHand += onHand;
+        totalAvailable += available;
+
+        variantsSummary.push({
+          id: variant.id,
+          sku: variant.sku,
+          variationLabel: variant.variationLabel,
+          barcode: variant.barcode,
+          retailPrice: variant.sellingPrice.toFixed(0),
+          sellingPrice: variant.sellingPrice.toFixed(0),
+          isActive: variant.isActive,
+          stockQuant: variant.stockQuant
+            ? {
+                id: variant.stockQuant.id,
+                onHand,
+                reserved,
+                available,
+                quarantine,
+              }
+            : null,
+        });
       }
+
+      const minPrice = minPriceDecimal !== null ? Number(minPriceDecimal) : 0;
+      const maxPrice = maxPriceDecimal !== null ? Number(maxPriceDecimal) : 0;
+      const minSellingPrice = minPriceDecimal !== null ? (minPriceDecimal as Prisma.Decimal).toFixed(0) : null;
+      const maxSellingPrice = maxPriceDecimal !== null ? (maxPriceDecimal as Prisma.Decimal).toFixed(0) : null;
 
       return {
         id: template.id,
@@ -258,10 +320,14 @@ export class AdminProductTemplateService {
         category: template.category,
         brand: template.brand,
         variantCount: template.variants.length,
-        minSellingPrice: minPrice ? minPrice.toFixed(0) : null,
-        maxSellingPrice: maxPrice ? maxPrice.toFixed(0) : null,
+        variantsCount: template.variants.length,
+        minPrice,
+        maxPrice,
+        minSellingPrice,
+        maxSellingPrice,
         totalOnHand,
         totalAvailable,
+        variants: variantsSummary,
       };
     });
 
@@ -271,6 +337,10 @@ export class AdminProductTemplateService {
       page,
       limit,
     };
+  }
+
+  async getProductTemplates(query: QueryProductTemplateInput): Promise<ProductTemplateListResult> {
+    return this.getTemplates(query);
   }
 
   async getTemplateById(id: number): Promise<ProductTemplateDetailDto> {
@@ -767,6 +837,21 @@ export class AdminProductTemplateService {
     });
 
     return { success: true, id };
+  }
+
+  async addVariant(input: CreateProductVariantInput): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.createVariant(input);
+  }
+
+  async createVariant(input: CreateProductVariantInput): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.createVariant(input);
+  }
+
+  async updateVariant(
+    id: number,
+    input: UpdateProductVariantInput,
+  ): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.updateVariant(id, input);
   }
 }
 

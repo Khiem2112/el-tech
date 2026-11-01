@@ -201,13 +201,11 @@ export class AuthService {
     }
   }
 
-  async loginWithGoogle(): Promise<boolean> {
+  async loginWithGoogleCredential(credential: string): Promise<boolean> {
     try {
       const response = await firstValueFrom(
         this.http.post<ApiResponse<AuthResponseData>>(`${this.baseUrl}/google`, {
-          email: 'hoangnam.tech@gmail.com',
-          name: 'Nguyễn Hoàng Nam',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          credential,
         }),
       );
 
@@ -222,6 +220,11 @@ export class AuthService {
       const messageKey = extractErrorMessageKey(err);
       throw new Error(messageKey);
     }
+  }
+
+  async loginWithGoogle(): Promise<boolean> {
+    this.openAuthModal();
+    return false;
   }
 
   async updateProfile(updates: Partial<UserProfile>): Promise<void> {

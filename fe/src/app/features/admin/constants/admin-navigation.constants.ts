@@ -46,16 +46,9 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
       },
       {
         code: 'SCR-05',
-        title: 'Mẫu Sản Phẩm',
+        title: 'Mẫu Sản Phẩm & Biến Thể',
         route: 'catalog/templates',
         fullPath: '/admin/catalog/templates',
-        module: 'Danh Mục & Sản Phẩm',
-      },
-      {
-        code: 'SCR-07',
-        title: 'Biến Thể SKU',
-        route: 'catalog/variants',
-        fullPath: '/admin/catalog/variants',
         module: 'Danh Mục & Sản Phẩm',
       },
       {
@@ -105,7 +98,13 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         fullPath: '/admin/inventory/ledger',
         module: 'Kho Hàng & Thiết Bị',
       },
-      
+      {
+        code: 'SCR-18',
+        title: 'Phiếu Kho',
+        route: 'inventory/moves',
+        fullPath: '/admin/inventory/moves',
+        module: 'Kho Hàng & Thiết Bị',
+      },
     ],
   },
   {

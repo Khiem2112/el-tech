@@ -292,6 +292,7 @@ export class AdminNotificationOutboxPageComponent implements OnInit {
 
   readonly eventTypeOptions: readonly SelectOption[] = [
     { value: 'ALL', label: 'Tất cả sự kiện' },
+    { value: 'ORDER_SUBMITTED', label: 'Đặt hàng thành công' },
     { value: 'ORDER_PLACED', label: 'Tiếp nhận đặt hàng' },
     { value: 'ORDER_CONFIRMED', label: 'Xác nhận đơn hàng' },
     { value: 'ORDER_SHIPPED', label: 'Đã xuất kho giao hàng' },

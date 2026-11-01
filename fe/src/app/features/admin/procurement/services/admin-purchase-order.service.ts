@@ -100,13 +100,52 @@ export type PurchaseOrderDetail = {
     status: PurchaseOrderStatus;
     createdAt: string;
   }[];
-  receiptMove: {
-    id: string;
-    code: string;
+  receiptMove: PurchaseOrderReceiptMove | null;
+};
+
+export type PurchaseOrderReceiptMoveLine = {
+  id: string;
+  skuId: number;
+  sku: {
+    id: number;
+    sku: string;
+    variationLabel: string | null;
+    template: {
+      id: number;
+      name: string;
+    };
+  };
+  variationLabel: string | null;
+  productName: string;
+  quantity: number;
+  unitCost: string;
+  receivedSerialUnits?: Array<{
+    serialNumber: string;
     status: string;
-    validatedAt: string | null;
-    lineCount: number;
-  } | null;
+  }>;
+  serialMovements?: Array<{
+    id: string;
+    resultingStatus: string;
+    serialUnit: {
+      serialNumber: string;
+      status: string;
+    };
+  }>;
+  serials: string[];
+};
+
+export type PurchaseOrderReceiptMove = {
+  id: string;
+  code: string;
+  moveType?: string;
+  status: string;
+  reason?: string | null;
+  createdAt?: string;
+  validatedAt: string | null;
+  validatedById?: string | null;
+  validatorName?: string | null;
+  lineCount: number;
+  lines: PurchaseOrderReceiptMoveLine[];
 };
 
 export type PurchaseOrderListResponse = {

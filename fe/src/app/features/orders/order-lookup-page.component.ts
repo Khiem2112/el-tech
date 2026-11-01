@@ -1281,6 +1281,8 @@ export class OrderLookupPageComponent implements OnInit {
       case 'ORDER_ACCESS_DENIED':
       case 'error.orderAccessDenied':
         return 'Bạn không có quyền truy cập vào thông tin đơn hàng này.';
+      case 'error.orderBelongsToAccount':
+        return 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.';
       default:
         return fallback;
     }

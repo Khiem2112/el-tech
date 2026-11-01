@@ -3,7 +3,7 @@
 - Feature: Admin Product Template Detail Two-Tab Layout
 - Governing Spec: Yêu cầu hợp nhất trang chi tiết mẫu sản phẩm: Cấu trúc 2 tab gồm "Thông tin chung" (cấu hình mẫu và ảnh) và "Cấu hình chi tiết" (layout 2 cột: cột trái danh sách biến thể tóm tắt, cột phải thông tin chi tiết từng biến thể)
 - Scope: frontend & backend
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -28,16 +28,16 @@ Tái cấu trúc toàn diện màn hình Chi tiết mẫu sản phẩm ([admin-p
 
 ## Checklist
 
-- [ ] Bổ sung tín hiệu quản lý tab `activeTab = signal<'general' | 'variants'>('general')` và tín hiệu biến thể được chọn `selectedVariantId = signal<number | null>(null)` trong [admin-product-template-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/admin-product-template-detail-page.component.ts).
-- [ ] Thiết kế thanh chuyển đổi tab (Tab Navigation) ngay dưới phần header tóm tắt của trang chi tiết, tuân thủ token màu NVIDIA.
-- [ ] Đóng gói toàn bộ phần nhập thông tin mẫu sản phẩm, thư viện ảnh media và thông số kỹ thuật động vào khung Tab 1 "Thông Tin Chung".
-- [ ] Xây dựng bố cục 2 cột cho Tab 2 "Cấu Hình Chi Tiết":
+- [x] Bổ sung tín hiệu quản lý tab `activeTab = signal<'general' | 'variants'>('general')` và tín hiệu biến thể được chọn `selectedVariantId = signal<number | null>(null)` trong [admin-product-template-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/admin-product-template-detail-page.component.ts).
+- [x] Thiết kế thanh chuyển đổi tab (Tab Navigation) ngay dưới phần header tóm tắt của trang chi tiết, tuân thủ token màu NVIDIA.
+- [x] Đóng gói toàn bộ phần nhập thông tin mẫu sản phẩm, thư viện ảnh media và thông số kỹ thuật động vào khung Tab 1 "Thông Tin Chung".
+- [x] Xây dựng bố cục 2 cột cho Tab 2 "Cấu Hình Chi Tiết":
   - Cột trái: Danh sách thẻ biến thể SKU thu gọn (Mã SKU, Giá bán, Tồn khả dụng, Trạng thái), hỗ trợ tìm kiếm biến thể và nút "+ Thêm biến thể".
   - Cột phải: Form biên tập chi tiết thông số biến thể đang được chọn: Mã SKU, variant label, barcode, giá bán, giá vốn, tồn kho, quản lý sê-ri, trạng thái.
   - Cột phải - Thông số riêng: Xây dựng khu vực biên tập cấu hình thông số kỹ thuật riêng của từng biến thể (`variant_spec` / `variantSpec`) để quản lý các trường đặc thù của từng SKU (như màu sắc, dung lượng, xung nhịp, thông số bổ trợ) độc lập với thông số chung của mẫu sản phẩm.
-- [ ] Hỗ trợ tạo mới biến thể trực tiếp ngay trong Tab 2 bằng cách thiết lập trạng thái soạn thảo biến thể mới tại cột phải, bao gồm cả nhập thông số riêng `variant_spec`.
-- [ ] Đồng bộ hóa việc lưu thay đổi biến thể (kèm trường `variant_spec` JsonB) với backend API thông qua [admin-product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/services/admin-product-template.service.ts) và [product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/product-template.service.ts).
-- [ ] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
+- [x] Hỗ trợ tạo mới biến thể trực tiếp ngay trong Tab 2 bằng cách thiết lập trạng thái soạn thảo biến thể mới tại cột phải, bao gồm cả nhập thông số riêng `variant_spec`.
+- [x] Đồng bộ hóa việc lưu thay đổi biến thể (kèm trường `variant_spec` JsonB) với backend API thông qua [admin-product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/services/admin-product-template.service.ts) và [product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/product-template.service.ts).
+- [x] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 

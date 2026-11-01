@@ -1,6 +1,10 @@
+import 'dotenv/config';
 import crypto from 'node:crypto';
+import { OAuth2Client } from 'google-auth-library';
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export type AuthUserDto = {
   id: string;
@@ -249,15 +253,37 @@ export const authService = {
   },
 
   async loginWithGoogle(input: {
-    email: string;
-    name?: string;
-    avatar?: string;
+    credential: string;
     userAgent?: string;
     ipAddress?: string;
   }): Promise<AuthResponseDto> {
-    const email = normalizeEmail(input.email);
-    const name = input.name?.trim() || 'Khách Hàng Google';
-    const avatar = input.avatar ?? null;
+    const googleClientId = process.env.GOOGLE_CLIENT_ID;
+    let payload;
+
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken: input.credential,
+        audience: googleClientId,
+      });
+      payload = ticket.getPayload();
+    } catch {
+      throw new DomainError('INVALID_GOOGLE_TOKEN', {
+        messageKey: 'error.invalidGoogleToken',
+        status: 401,
+      });
+    }
+
+    if (!payload || !payload.email || !payload.sub) {
+      throw new DomainError('INVALID_GOOGLE_TOKEN', {
+        messageKey: 'error.invalidGoogleToken',
+        status: 401,
+      });
+    }
+
+    const email = normalizeEmail(payload.email);
+    const name = payload.name?.trim() || 'Khách Hàng Google';
+    const avatar = payload.picture ?? null;
+    const sub = payload.sub;
 
     const durationMs = 30 * 24 * 60 * 60 * 1000;
     const expiresAt = new Date(Date.now() + durationMs);
@@ -280,15 +306,46 @@ export const authService = {
           },
           include: { customer: true, accounts: true },
         });
+      } else {
+        const updateData: { emailVerified: boolean; image?: string } = {
+          emailVerified: true,
+        };
+        if (!user.image && avatar) {
+          updateData.image = avatar;
+        }
+        user = await tx.user.update({
+          where: { id: user.id },
+          data: updateData,
+          include: { customer: true, accounts: true },
+        });
       }
 
-      const hasGoogleAccount = user.accounts.some((acc) => acc.providerId === 'google');
-      if (!hasGoogleAccount) {
-        await tx.account.create({
-          data: {
+      const existingAccount = user.accounts.find((acc) => acc.providerId === 'google');
+      if (!existingAccount) {
+        await tx.account.upsert({
+          where: {
+            providerId_accountId: {
+              providerId: 'google',
+              accountId: sub,
+            },
+          },
+          create: {
             userId: user.id,
             providerId: 'google',
-            accountId: email,
+            accountId: sub,
+            idToken: input.credential,
+          },
+          update: {
+            userId: user.id,
+            idToken: input.credential,
+          },
+        });
+      } else if (existingAccount.accountId !== sub || existingAccount.idToken !== input.credential) {
+        await tx.account.update({
+          where: { id: existingAccount.id },
+          data: {
+            accountId: sub,
+            idToken: input.credential,
           },
         });
       }

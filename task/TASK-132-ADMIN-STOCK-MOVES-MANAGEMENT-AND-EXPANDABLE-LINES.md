@@ -3,7 +3,7 @@
 - Feature: Admin Inventory Stock Moves Management
 - Governing Spec: Yêu cầu quản lý phiếu kho: Quản lý tập trung các phiếu kho (Stock Moves), mỗi dòng phiếu kho có thể mở rộng (expand/dropdown) để xem chi tiết danh sách linh kiện (StockMoveLine) bên trong
 - Scope: shared
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -28,13 +28,13 @@ Xây dựng giao diện danh sách phiếu kho chuyên biệt tại tuyến đư
 
 ## Checklist
 
-- [ ] Định nghĩa schema kiểm thực Zod cho truy vấn danh sách phiếu kho (`queryStockMovesSchema`) tại [inventory.schema.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/validations/admin/inventory.schema.ts) với các tham số: `search`, `moveType`, `status`, `page`, `limit`.
-- [ ] Triển khai hàm `getStockMoves` trong [inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/inventory.service.ts) để truy vấn bảng `StockMove` kèm `lines` (`StockMoveLine`), thông tin SKU `productVariant`, đơn mua hàng `purchaseOrder`, đơn bán hàng `order` và người thực hiện.
-- [ ] Đăng ký route `GET /moves` trong [inventory.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/routes/admin/inventory.routes.ts) dưới sự bảo vệ của middleware xác thực admin.
-- [ ] Xây dựng dịch vụ Angular [admin-stock-move.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/services/admin-stock-move.service.ts) quản lý tín hiệu danh sách phiếu kho, phân trang, bộ lọc và trạng thái mở rộng dòng.
-- [ ] Xây dựng component giao diện [admin-stock-moves-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/admin-stock-moves-page.component.ts) hiển thị bảng phiếu kho kèm nút mở rộng dropdown xem chi tiết các `StockMoveLine`.
-- [ ] Đăng ký tuyến đường `inventory/moves` vào [admin.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/admin.routes.ts) và thêm liên kết "Phiếu Kho" vào menu Quản Lý Kho trong [admin-navigation.constants.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/constants/admin-navigation.constants.ts).
-- [ ] Chạy kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
+- [x] Định nghĩa schema kiểm thực Zod cho truy vấn danh sách phiếu kho (`queryStockMovesSchema`) tại [inventory.schema.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/validations/admin/inventory.schema.ts) với các tham số: `search`, `moveType`, `status`, `page`, `limit`.
+- [x] Triển khai hàm `getStockMoves` trong [inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/inventory.service.ts) để truy vấn bảng `StockMove` kèm `lines` (`StockMoveLine`), thông tin SKU `productVariant`, đơn mua hàng `purchaseOrder`, đơn bán hàng `order` và người thực hiện.
+- [x] Đăng ký route `GET /moves` trong [inventory.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/routes/admin/inventory.routes.ts) dưới sự bảo vệ của middleware xác thực admin.
+- [x] Xây dựng dịch vụ Angular [admin-stock-move.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/services/admin-stock-move.service.ts) quản lý tín hiệu danh sách phiếu kho, phân trang, bộ lọc và trạng thái mở rộng dòng.
+- [x] Xây dựng component giao diện [admin-stock-moves-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/admin-stock-moves-page.component.ts) hiển thị bảng phiếu kho kèm nút mở rộng dropdown xem chi tiết các `StockMoveLine`.
+- [x] Đăng ký tuyến đường `inventory/moves` vào [admin.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/admin.routes.ts) và thêm liên kết "Phiếu Kho" vào menu Quản Lý Kho trong [admin-navigation.constants.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/constants/admin-navigation.constants.ts).
+- [x] Chạy kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 

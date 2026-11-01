@@ -19,9 +19,7 @@ const loginSchema = z.object({
 });
 
 const googleAuthSchema = z.object({
-  email: z.string().email('Email không đúng định dạng'),
-  name: z.string().optional(),
-  avatar: z.string().optional(),
+  credential: z.string().min(1, 'Token Google không được để trống'),
 });
 
 const updateProfileSchema = z.object({
