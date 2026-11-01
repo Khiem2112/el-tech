@@ -462,6 +462,7 @@ graph TD
 | [[TASK-136-ADMIN-PRODUCT-TEMPLATE-DETAIL-TWO-TABS-CONSOLIDATION]] | Frontend & Backend | Gộp chi tiết: Trang chi tiết mẫu sản phẩm 2 tab (Thông tin chung & Cấu hình chi tiết biến thể bố cục 2 cột) | Complete | [[TASK-135-ADMIN-PRODUCT-TEMPLATES-LIST-EXPANDABLE-VARIANTS]] |
 | [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] | Fullstack | Tích hợp gửi thông báo đơn hàng thành công, transactional outbox và đồng bộ admin outbox | Complete | [[TASK-06-CHECKOUT-AND-ORDER-SUCCESS]], [[TASK-61-ADMIN-REVIEW-MODERATION-AND-NOTIFICATION-OUTBOX]] |
 | [[TASK-138-GMAIL-SMTP-EMAIL-SERVICE-INTEGRATION]] | Backend | Tích hợp gửi Gmail qua SMTP cho mã OTP tra cứu đơn và thông báo xác nhận đơn hàng | Complete | [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] |
+| [[TASK-139-GOOGLE-OAUTH-AUTHENTICATION-FLOW-INTEGRATION]] | Fullstack | Tích hợp xác thực đăng nhập Google OAuth qua Google Identity Services và xác minh backend | Complete | [[TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE]], [[TASK-117-CUSTOMER-AUTH-DB-PERSISTENCE-AND-REQUIRED-FIELDS]] |
 
 
 
