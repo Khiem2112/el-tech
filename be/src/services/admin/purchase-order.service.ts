@@ -229,7 +229,23 @@ export class AdminPurchaseOrderService {
           include: {
             lines: {
               include: {
-                receivedSerialUnits: true,
+                sku: {
+                  include: {
+                    productTemplate: {
+                      select: { id: true, name: true },
+                    },
+                  },
+                },
+                receivedSerialUnits: {
+                  select: { serialNumber: true, status: true },
+                },
+                serialMovements: {
+                  include: {
+                    serialUnit: {
+                      select: { serialNumber: true, status: true },
+                    },
+                  },
+                },
               },
             },
           },
@@ -296,6 +312,17 @@ export class AdminPurchaseOrderService {
       };
     });
 
+    let validatorName: string | null = null;
+    if (po.receiptMove?.validatedById) {
+      const validatorUser = await prisma.user.findUnique({
+        where: { id: po.receiptMove.validatedById },
+        select: { name: true, email: true },
+      });
+      if (validatorUser) {
+        validatorName = validatorUser.name || validatorUser.email;
+      }
+    }
+
     return {
       id: po.id,
       code: po.code,
@@ -321,9 +348,52 @@ export class AdminPurchaseOrderService {
         ? {
             id: po.receiptMove.id,
             code: po.receiptMove.code,
+            moveType: po.receiptMove.moveType,
             status: po.receiptMove.status,
+            reason: po.receiptMove.reason,
+            createdAt: po.receiptMove.createdAt,
             validatedAt: po.receiptMove.validatedAt,
+            validatedById: po.receiptMove.validatedById,
+            validatorName,
             lineCount: po.receiptMove.lines.length,
+            lines: po.receiptMove.lines.map((l) => {
+              const serials = [
+                ...l.receivedSerialUnits.map((u) => u.serialNumber),
+                ...l.serialMovements.map((m) => m.serialUnit.serialNumber),
+              ];
+              const uniqueSerials = [...new Set(serials)];
+
+              return {
+                id: l.id,
+                skuId: l.skuId,
+                sku: {
+                  id: l.sku.id,
+                  sku: l.sku.sku,
+                  variationLabel: l.sku.variationLabel,
+                  template: {
+                    id: l.sku.productTemplate.id,
+                    name: l.sku.productTemplate.name,
+                  },
+                },
+                variationLabel: l.sku.variationLabel,
+                productName: l.sku.productTemplate.name,
+                quantity: l.quantity,
+                unitCost: l.unitCost.toString(),
+                receivedSerialUnits: l.receivedSerialUnits.map((u) => ({
+                  serialNumber: u.serialNumber,
+                  status: u.status,
+                })),
+                serialMovements: l.serialMovements.map((m) => ({
+                  id: m.id,
+                  resultingStatus: m.resultingStatus,
+                  serialUnit: {
+                    serialNumber: m.serialUnit.serialNumber,
+                    status: m.serialUnit.status,
+                  },
+                })),
+                serials: uniqueSerials,
+              };
+            }),
           }
         : null,
     };

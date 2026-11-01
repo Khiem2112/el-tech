@@ -3,7 +3,7 @@
 - Feature: Admin Orders & Procurement Stock Moves Inspection
 - Governing Spec: Yêu cầu đối soát luân chuyển hàng: Cho phép xem ngay các phiếu kho ứng với đơn bán hàng khi bấm nút "Phiếu Kho", đồng thời xem phiếu kho và chi tiết các dòng sản phẩm trong đơn mua hàng nhà cung cấp (PO)
 - Scope: shared
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -28,14 +28,14 @@ Tích hợp tính năng truy xuất và xem trực quan toàn bộ phiếu kho (
 
 ## Checklist
 
-- [ ] Cập nhật [order-detail.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/order-detail.service.ts) để truy vấn kèm `lines` (`StockMoveLine`) và `receivedSerialUnits` trong danh sách `stockMoves` của đơn hàng.
-- [ ] Cập nhật [purchase-order.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/purchase-order.service.ts) để nạp đầy đủ thông tin các dòng `lines`, `sku`, `quantity`, `agreedUnitCost` và danh sách sê-ri trong `receiptMove`.
-- [ ] Mở rộng kiểu dữ liệu `stockMoves` trong [admin-order-detail.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/services/admin-order-detail.service.ts) và `receiptMove` trong [admin-purchase-order.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/services/admin-purchase-order.service.ts).
-- [ ] Xây dựng component hộp thoại [order-stock-moves-modal.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/components/order-stock-moves-modal.component.ts) hiển thị danh sách phiếu kho và bảng chi tiết các dòng sản phẩm của đơn hàng bán.
-- [ ] Thêm nút bấm "Phiếu Kho" trên thanh tác vụ của trang chi tiết đơn hàng [admin-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/admin-order-detail-page.component.ts), kích hoạt mở modal xem phiếu kho.
-- [ ] Xây dựng component hộp thoại [po-stock-move-modal.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/components/po-stock-move-modal.component.ts) hiển thị chi tiết phiếu kho nhập hàng của đơn PO kèm các dòng linh kiện và sê-ri đối soát.
-- [ ] Tích hợp nút xem chi tiết phiếu kho vào khối thông tin tiếp nhận hàng trong trang [admin-purchase-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-purchase-order-detail-page.component.ts).
-- [ ] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
+- [x] Cập nhật [order-detail.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/order-detail.service.ts) để truy vấn kèm `lines` (`StockMoveLine`) và `receivedSerialUnits` trong danh sách `stockMoves` của đơn hàng.
+- [x] Cập nhật [purchase-order.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/purchase-order.service.ts) để nạp đầy đủ thông tin các dòng `lines`, `sku`, `quantity`, `agreedUnitCost` và danh sách sê-ri trong `receiptMove`.
+- [x] Mở rộng kiểu dữ liệu `stockMoves` trong [admin-order-detail.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/services/admin-order-detail.service.ts) và `receiptMove` trong [admin-purchase-order.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/services/admin-purchase-order.service.ts).
+- [x] Xây dựng component hộp thoại [order-stock-moves-modal.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/components/order-stock-moves-modal.component.ts) hiển thị danh sách phiếu kho và bảng chi tiết các dòng sản phẩm của đơn hàng bán.
+- [x] Thêm nút bấm "Phiếu Kho" trên thanh tác vụ của trang chi tiết đơn hàng [admin-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/orders/admin-order-detail-page.component.ts), kích hoạt mở modal xem phiếu kho.
+- [x] Xây dựng component hộp thoại [po-stock-move-modal.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/components/po-stock-move-modal.component.ts) hiển thị chi tiết phiếu kho nhập hàng của đơn PO kèm các dòng linh kiện và sê-ri đối soát.
+- [x] Tích hợp nút xem chi tiết phiếu kho vào khối thông tin tiếp nhận hàng trong trang [admin-purchase-order-detail-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/procurement/admin-purchase-order-detail-page.component.ts).
+- [x] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 

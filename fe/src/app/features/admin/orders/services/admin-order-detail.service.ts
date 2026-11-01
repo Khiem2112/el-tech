@@ -60,6 +60,50 @@ export type AdminOrderTimelineEvent = {
   occurredAt: string;
 };
 
+export type AdminOrderDetailStockMoveLine = {
+  id: string;
+  skuId: number;
+  sku: {
+    id: number;
+    sku: string;
+    variationLabel: string | null;
+    template: {
+      id: number;
+      name: string;
+    };
+  };
+  variationLabel: string | null;
+  productName: string;
+  quantity: number;
+  unitCost: string;
+  receivedSerialUnits?: Array<{
+    serialNumber: string;
+    status: string;
+  }>;
+  serialMovements?: Array<{
+    id: string;
+    resultingStatus: string;
+    serialUnit: {
+      serialNumber: string;
+      status: string;
+    };
+  }>;
+  serials: string[];
+};
+
+export type AdminOrderDetailStockMove = {
+  id: string;
+  code: string;
+  moveType: string;
+  status: string;
+  reason: string | null;
+  createdAt: string;
+  reservedAt: string | null;
+  dispatchedAt: string | null;
+  validatedAt: string | null;
+  lines: AdminOrderDetailStockMoveLine[];
+};
+
 export type AdminOrderDetail = {
   id: string;
   code: string;
@@ -136,17 +180,7 @@ export type AdminOrderDetail = {
       occurredAt: string;
     }>;
   } | null;
-  stockMoves: Array<{
-    id: string;
-    code: string;
-    moveType: string;
-    status: string;
-    reason: string | null;
-    createdAt: string;
-    reservedAt: string | null;
-    dispatchedAt: string | null;
-    validatedAt: string | null;
-  }>;
+  stockMoves: AdminOrderDetailStockMove[];
   amendments: Array<{
     id: string;
     type: string;

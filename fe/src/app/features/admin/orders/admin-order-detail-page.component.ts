@@ -28,6 +28,7 @@ import { ResolveHoldDialogComponent } from './components/modals/resolve-hold-dia
 import { PickupToDeliveryAmendmentDialogComponent } from './components/modals/pickup-to-delivery-amendment-dialog.component';
 import { ResolveQrDiscrepancyDialogComponent } from './components/modals/resolve-qr-discrepancy-dialog.component';
 import { ManualRefundDialogComponent } from './components/modals/manual-refund-dialog.component';
+import { OrderStockMovesModalComponent } from './components/order-stock-moves-modal.component';
 import { AdminOrderDetailService } from './services/admin-order-detail.service';
 
 @Component({
@@ -57,6 +58,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
     PickupToDeliveryAmendmentDialogComponent,
     ResolveQrDiscrepancyDialogComponent,
     ManualRefundDialogComponent,
+    OrderStockMovesModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -158,15 +160,15 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 <span class="font-medium text-foreground truncate max-w-[120px] block">{{ ord.customer.name }}</span>
               </a>
 
-              <a
-                [routerLink]="['/admin/inventory/ledger']"
-                [queryParams]="{ search: ord.code }"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
-                title="Sổ kho bất biến"
+              <button
+                type="button"
+                (click)="isStockMovesModalOpen.set(true)"
+                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block cursor-pointer group"
+                title="Xem danh sách phiếu kho của đơn hàng"
               >
-                <span class="text-muted text-xs block">Phiếu kho</span>
+                <span class="text-muted group-hover:text-primary text-xs block transition-colors">Phiếu kho</span>
                 <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.stockMoves.length }}</span>
-              </a>
+              </button>
 
               <a
                 href="#section-finance"
@@ -206,6 +208,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
         <app-order-action-bar
           [order]="ord"
           (actionTriggered)="onActionTriggered($event)"
+          (viewStockMovesRequested)="isStockMovesModalOpen.set(true)"
           (refreshRequested)="loadOrder()"
         />
 
@@ -328,6 +331,12 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           (closed)="onModalClosed()"
           (confirmed)="onOperationConfirmed('Đã xác nhận chuyển khoản hoàn tiền thủ công thành công.')"
         />
+
+        <app-order-stock-moves-modal
+          [isOpen]="isStockMovesModalOpen()"
+          [order]="ord"
+          (closed)="isStockMovesModalOpen.set(false)"
+        />
       }
     </div>
   `,
@@ -338,6 +347,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
 
   readonly orderId = signal<string>('');
   readonly actionToastMessage = signal<string | null>(null);
+  readonly isStockMovesModalOpen = signal<boolean>(false);
   readonly activeModal = signal<
     | 'MOD-07'
     | 'MOD-08'

@@ -98,6 +98,18 @@ export type ActionTriggerEvent = {
       <div class="flex items-center gap-2">
         <button
           type="button"
+          (click)="viewStockMovesRequested.emit()"
+          class="px-3 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground text-sm font-medium rounded transition-colors flex items-center gap-1.5 cursor-pointer"
+          title="Xem các chứng từ phiếu kho liên kết với đơn hàng"
+        >
+          <span>Phiếu Kho</span>
+          <span class="px-1.5 py-0.2 rounded text-xs bg-surface-alt border border-line font-bold tabular-nums">
+            {{ order().stockMoves.length }}
+          </span>
+        </button>
+
+        <button
+          type="button"
           (click)="refreshRequested.emit()"
           class="px-3 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground text-sm font-medium rounded transition-colors flex items-center gap-1 cursor-pointer"
           title="Tải lại dữ liệu chi tiết đơn hàng"
@@ -113,6 +125,7 @@ export class OrderActionBarComponent {
 
   readonly actionTriggered = output<ActionTriggerEvent>();
   readonly refreshRequested = output<void>();
+  readonly viewStockMovesRequested = output<void>();
 
   readonly isMenuOpen = signal<boolean>(false);
 
