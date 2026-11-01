@@ -75,7 +75,7 @@ export type ProductVariantItem = {
   sku: string;
   barcode: string | null;
   variationLabel: string | null;
-  variantSpec: Record<string, unknown>;
+  variantSpec?: Record<string, unknown> | null;
   serialRequired: boolean;
   sellingPrice: string;
   lifecycleState: ProductLifecycle;
@@ -85,6 +85,8 @@ export type ProductVariantItem = {
   totalAvailable: number;
   stockQuants: VariantStockQuant[];
 };
+
+export type ProductTemplateVariant = ProductVariantItem;
 
 export type ProductTemplateSmartMetrics = {
   skuCount: number;
@@ -152,7 +154,7 @@ export type CreateProductVariantPayload = {
   sku: string;
   barcode?: string | null;
   variationLabel?: string | null;
-  variantSpec?: Record<string, unknown>;
+  variantSpec?: Record<string, unknown> | null;
   serialRequired?: boolean;
   sellingPrice: number;
   lifecycleState?: ProductLifecycle;
@@ -493,6 +495,10 @@ export class AdminProductTemplateService {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  async addVariant(payload: CreateProductVariantPayload): Promise<ProductVariantItem> {
+    return this.createVariant(payload);
   }
 
   async updateVariant(id: number, payload: UpdateProductVariantPayload): Promise<ProductVariantItem> {

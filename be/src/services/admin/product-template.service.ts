@@ -3,11 +3,14 @@ import { DomainError } from '../../contracts/domain-error.js';
 import { prisma } from '../../lib/prisma.js';
 import {
   CreateProductTemplateInput,
+  CreateProductVariantInput,
   ProductLifecycleState,
   QueryProductTemplateInput,
   UpdateProductTemplateInput,
+  UpdateProductVariantInput,
 } from '../../validations/admin/product-template.schema.js';
 import { normalizeSpecSchema } from './category.service.js';
+import { adminProductVariantService, ProductVariantRecordDto } from './product-variant.service.js';
 
 export type ProductTemplateVariantSummary = {
   id: number;
@@ -834,6 +837,21 @@ export class AdminProductTemplateService {
     });
 
     return { success: true, id };
+  }
+
+  async addVariant(input: CreateProductVariantInput): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.createVariant(input);
+  }
+
+  async createVariant(input: CreateProductVariantInput): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.createVariant(input);
+  }
+
+  async updateVariant(
+    id: number,
+    input: UpdateProductVariantInput,
+  ): Promise<ProductVariantRecordDto> {
+    return adminProductVariantService.updateVariant(id, input);
   }
 }
 

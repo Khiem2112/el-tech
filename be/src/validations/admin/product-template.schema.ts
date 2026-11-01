@@ -113,7 +113,22 @@ export const createProductVariantSchema = z.object({
     .max(150, 'Nhan bien the toi da 150 ky tu')
     .optional()
     .nullable(),
-  variantSpec: z.record(z.unknown()).default({}),
+  variantSpec: z
+    .union([z.record(z.unknown()), z.string()])
+    .transform((val) => {
+      if (typeof val === 'string') {
+        try {
+          const parsed = JSON.parse(val);
+          return typeof parsed === 'object' && parsed !== null
+            ? (parsed as Record<string, unknown>)
+            : {};
+        } catch {
+          return {};
+        }
+      }
+      return val ?? {};
+    })
+    .default({}),
   serialRequired: z.boolean().default(false),
   sellingPrice: z.coerce
     .number()
@@ -146,7 +161,22 @@ export const updateProductVariantSchema = z.object({
     .max(150, 'Nhan bien the toi da 150 ky tu')
     .optional()
     .nullable(),
-  variantSpec: z.record(z.unknown()).optional(),
+  variantSpec: z
+    .union([z.record(z.unknown()), z.string()])
+    .transform((val) => {
+      if (typeof val === 'string') {
+        try {
+          const parsed = JSON.parse(val);
+          return typeof parsed === 'object' && parsed !== null
+            ? (parsed as Record<string, unknown>)
+            : {};
+        } catch {
+          return {};
+        }
+      }
+      return val;
+    })
+    .optional(),
   serialRequired: z.boolean().optional(),
   sellingPrice: z.coerce
     .number()
