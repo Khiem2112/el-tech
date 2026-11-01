@@ -5,6 +5,7 @@ import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
 import { notificationDispatcherService } from './notification-dispatcher.service.js';
 
 type SubmitOrderInput = {
+  readonly userId?: string;
   readonly cartToken: string;
   readonly emailVerificationId?: string;
   readonly phoneVerificationId?: string;
@@ -98,18 +99,37 @@ export const orderService = {
 
       const normalizedEmail = input.receiverEmail.trim().toLowerCase();
       const normalizedPhone = input.receiverPhone.trim();
-      const existingCustomers = await tx.customer.findMany({ where: { isActive: true, OR: [{ email: normalizedEmail }, { phone: normalizedPhone }] } });
       let customerId: string;
-      if (existingCustomers.length === 0) {
-        const createdCustomer = await tx.customer.create({ data: { name: input.receiverName, email: normalizedEmail, phone: normalizedPhone, emailVerifiedAt, phoneVerifiedAt } });
-        customerId = createdCustomer.id;
-      } else {
-        const exactMatches = existingCustomers.filter((entry) => entry.email.toLowerCase() === normalizedEmail && entry.phone === normalizedPhone);
-        if (exactMatches.length === 1 && exactMatches[0]) {
-          customerId = exactMatches[0].id;
-        } else {
-          throw new DomainError('CUSTOMER_IDENTITY_AMBIGUOUS', { ruleId: 'CUS-004', messageKey: 'error.customerIdentityAmbiguous', status: 409 });
+
+      if (input.userId) {
+        let memberCustomer = await tx.customer.findUnique({
+          where: { userId: input.userId },
+        });
+        if (!memberCustomer) {
+          memberCustomer = await tx.customer.create({
+            data: {
+              userId: input.userId,
+              name: input.receiverName,
+              email: normalizedEmail,
+              phone: normalizedPhone,
+              emailVerifiedAt,
+              phoneVerifiedAt,
+            },
+          });
         }
+        customerId = memberCustomer.id;
+      } else {
+        const guestCustomer = await tx.customer.create({
+          data: {
+            userId: null,
+            name: input.receiverName,
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            emailVerifiedAt,
+            phoneVerifiedAt,
+          },
+        });
+        customerId = guestCustomer.id;
       }
 
       let couponDiscount = new Prisma.Decimal(0);

@@ -32,3 +32,30 @@ export const requireIdempotencyKey = (request: Request): string => {
   if (value.length > 200) throw new DomainError('INVALID_IDEMPOTENCY_KEY', { messageKey: 'error.invalidRequest', status: 400 });
   return value;
 };
+
+export const extractCustomerToken = (request: Request): string | null => {
+  const authHeader = request.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    if (token) {
+      return token;
+    }
+  }
+
+  const customHeader = request.headers['x-auth-token'];
+  if (typeof customHeader === 'string' && customHeader.trim()) {
+    return customHeader.trim();
+  }
+
+  const cookieHeader = request.headers.cookie;
+  if (cookieHeader) {
+    const cookies = cookieHeader.split(';').map((c) => c.trim());
+    for (const cookie of cookies) {
+      if (cookie.startsWith('customer_token=')) {
+        return decodeURIComponent(cookie.substring('customer_token='.length).trim());
+      }
+    }
+  }
+
+  return null;
+};

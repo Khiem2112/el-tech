@@ -3,7 +3,8 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { success } from '../contracts/api.js';
 import { DomainError } from '../contracts/domain-error.js';
-import { requireIdempotencyKey, parseBody } from '../lib/request.js';
+import { requireIdempotencyKey, parseBody, extractCustomerToken } from '../lib/request.js';
+import { authService } from '../services/auth.service.js';
 import { sanitizeIdentifier } from '../lib/uuid.js';
 import { orderService } from '../services/order.service.js';
 import { orderLookupService } from '../services/order-lookup.service.js';
@@ -45,7 +46,15 @@ export const orderRouter = Router();
 orderRouter.post('/checkout/submit', async (request, response, next): Promise<void> => {
   try {
     const input = parseBody(submitSchema, request.body);
-    response.json(success(await orderService.submit({ ...input, idempotencyKey: requireIdempotencyKey(request) }), response.locals.correlationId as string));
+    const token = extractCustomerToken(request);
+    let userId: string | undefined;
+    if (token) {
+      const authUser = await authService.getMe(token);
+      if (authUser) {
+        userId = authUser.id;
+      }
+    }
+    response.json(success(await orderService.submit({ ...input, userId, idempotencyKey: requireIdempotencyKey(request) }), response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 
@@ -69,8 +78,16 @@ orderRouter.get('/orders/kanban', async (request, response, next): Promise<void>
 
 orderRouter.get('/orders/customer', async (request, response, next): Promise<void> => {
   try {
-    const customerId = typeof request.query.customerId === 'string' ? sanitizeIdentifier(request.query.customerId) : undefined;
-    const email = typeof request.query.email === 'string' ? sanitizeIdentifier(request.query.email) : undefined;
+    const token = extractCustomerToken(request);
+    let customerId = typeof request.query.customerId === 'string' ? sanitizeIdentifier(request.query.customerId) : undefined;
+    let email = typeof request.query.email === 'string' ? sanitizeIdentifier(request.query.email) : undefined;
+    if (token) {
+      const authUser = await authService.getMe(token);
+      if (authUser) {
+        customerId = authUser.customerId;
+        email = authUser.email;
+      }
+    }
     const identifier = customerId || email;
     if (!identifier) {
       response.json(success([], response.locals.correlationId as string));
@@ -109,18 +126,30 @@ orderRouter.post('/orders/:orderCode/reschedule-delivery', async (request, respo
 
 orderRouter.get('/orders/:orderCode/detail', async (request, response, next): Promise<void> => {
   try {
+    const token = extractCustomerToken(request);
+    let requesterUserId: string | undefined;
+    let authCustomerId: string | undefined;
+    if (token) {
+      const authUser = await authService.getMe(token);
+      if (authUser) {
+        requesterUserId = authUser.id;
+        authCustomerId = authUser.customerId;
+      }
+    }
+
     const rawIdentifier = (typeof request.query.identifier === 'string' && request.query.identifier)
       || (typeof request.query.customerId === 'string' && request.query.customerId)
       || (typeof request.query.email === 'string' && request.query.email)
+      || authCustomerId
       || (typeof request.headers['x-user-identifier'] === 'string' && request.headers['x-user-identifier'])
       || undefined;
     const identifier = sanitizeIdentifier(rawIdentifier);
 
     if (identifier) {
-      const order = await orderLookupService.getOrderDetailForCustomer(request.params.orderCode, identifier);
+      const order = await orderLookupService.getOrderDetailForCustomer(request.params.orderCode, identifier, requesterUserId);
       response.json(success(order, response.locals.correlationId as string));
     } else {
-      const order = await orderLookupService.lookupByOrderCode(request.params.orderCode);
+      const order = await orderLookupService.lookupByOrderCode(request.params.orderCode, requesterUserId);
       response.json(success(order, response.locals.correlationId as string));
     }
   } catch (error: unknown) { next(error); }
