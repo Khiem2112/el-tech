@@ -12,7 +12,86 @@ import {
   QuarantineStockInput,
   QueryInventoryBalancesInput,
   QueryStockLedgerInput,
+  QueryStockMovesInput,
 } from '../../validations/admin/inventory.schema.js';
+
+export type StockMoveSkuDto = {
+  id: number;
+  sku: string;
+  barcode: string | null;
+  variationLabel: string | null;
+  template: {
+    id: number;
+    name: string;
+  };
+};
+
+export type StockMoveLineSerialUnitDto = {
+  serialNumber: string;
+  status: string;
+};
+
+export type StockMoveLineDto = {
+  id: string;
+  stockMoveId: string;
+  skuId: number;
+  quantity: number;
+  unitCost: string;
+  sku: StockMoveSkuDto;
+  receivedSerialUnits: StockMoveLineSerialUnitDto[];
+  serialMovements: StockMoveLineSerialUnitDto[];
+  serials: string[];
+};
+
+export type StockMoveOrderDto = {
+  id: string;
+  code: string;
+  receiverName: string;
+  receiverPhone: string;
+  status: string;
+  createdAt: Date;
+};
+
+export type StockMovePurchaseOrderDto = {
+  id: string;
+  poNumber: string;
+  code: string;
+  supplier: {
+    name: string;
+  };
+  status: string;
+  createdAt: Date;
+};
+
+export type StockMoveItemDto = {
+  id: string;
+  code: string;
+  orderId: string | null;
+  purchaseOrderId: string | null;
+  moveType: StockMoveType;
+  status: StockMoveStatus;
+  reason: string | null;
+  reservedAt: Date | null;
+  validatedAt: Date | null;
+  cancelledAt: Date | null;
+  dispatchedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  order: StockMoveOrderDto | null;
+  purchaseOrder: StockMovePurchaseOrderDto | null;
+  lines: StockMoveLineDto[];
+  totalQuantity: number;
+  totalLines: number;
+};
+
+export type StockMovesResult = {
+  items: StockMoveItemDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 
 export type InventoryBalanceItemDto = {
   id: string;
@@ -718,6 +797,198 @@ export class AdminInventoryService {
     });
 
     return result;
+  }
+
+  async getStockMoves(input: QueryStockMovesInput): Promise<StockMovesResult> {
+    const page = input.page ?? 1;
+    const limit = input.limit ?? 20;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.StockMoveWhereInput = {};
+
+    if (input.moveType && input.moveType !== 'ALL') {
+      where.moveType = input.moveType as StockMoveType;
+    }
+
+    if (input.status && input.status !== 'ALL') {
+      where.status = input.status as StockMoveStatus;
+    }
+
+    if (input.search && input.search.trim().length > 0) {
+      const search = input.search.trim();
+      where.OR = [
+        { code: { contains: search, mode: 'insensitive' } },
+        { reason: { contains: search, mode: 'insensitive' } },
+        { order: { code: { contains: search, mode: 'insensitive' } } },
+        { purchaseOrder: { code: { contains: search, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [total, moves] = await Promise.all([
+      prisma.stockMove.count({ where }),
+      prisma.stockMove.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          order: {
+            select: {
+              id: true,
+              code: true,
+              receiverName: true,
+              receiverPhone: true,
+              status: true,
+              createdAt: true,
+            },
+          },
+          purchaseOrder: {
+            select: {
+              id: true,
+              code: true,
+              supplier: {
+                select: {
+                  name: true,
+                },
+              },
+              status: true,
+              createdAt: true,
+            },
+          },
+          lines: {
+            include: {
+              sku: {
+                select: {
+                  id: true,
+                  sku: true,
+                  barcode: true,
+                  variationLabel: true,
+                  productTemplate: {
+                    select: {
+                      id: true,
+                      name: true,
+                    },
+                  },
+                },
+              },
+              receivedSerialUnits: {
+                select: {
+                  serialNumber: true,
+                  status: true,
+                },
+              },
+              serialMovements: {
+                include: {
+                  serialUnit: {
+                    select: {
+                      serialNumber: true,
+                      status: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const items: StockMoveItemDto[] = moves.map((move) => {
+      const lines: StockMoveLineDto[] = move.lines.map((line) => {
+        const receivedSerials: StockMoveLineSerialUnitDto[] = line.receivedSerialUnits.map((u) => ({
+          serialNumber: u.serialNumber,
+          status: u.status,
+        }));
+
+        const serialMovements: StockMoveLineSerialUnitDto[] = line.serialMovements.map((m) => ({
+          serialNumber: m.serialUnit.serialNumber,
+          status: m.serialUnit.status,
+        }));
+
+        const allSerials = Array.from(
+          new Set([
+            ...receivedSerials.map((s) => s.serialNumber),
+            ...serialMovements.map((s) => s.serialNumber),
+          ]),
+        );
+
+        return {
+          id: line.id,
+          stockMoveId: line.stockMoveId,
+          skuId: line.skuId,
+          quantity: line.quantity,
+          unitCost: line.unitCost.toString(),
+          sku: {
+            id: line.sku.id,
+            sku: line.sku.sku,
+            barcode: line.sku.barcode,
+            variationLabel: line.sku.variationLabel,
+            template: {
+              id: line.sku.productTemplate.id,
+              name: line.sku.productTemplate.name,
+            },
+          },
+          receivedSerialUnits: receivedSerials,
+          serialMovements,
+          serials: allSerials,
+        };
+      });
+
+      const totalQuantity = lines.reduce((acc, line) => acc + line.quantity, 0);
+
+      const orderDto: StockMoveOrderDto | null = move.order
+        ? {
+            id: move.order.id,
+            code: move.order.code,
+            receiverName: move.order.receiverName,
+            receiverPhone: move.order.receiverPhone,
+            status: move.order.status,
+            createdAt: move.order.createdAt,
+          }
+        : null;
+
+      const purchaseOrderDto: StockMovePurchaseOrderDto | null = move.purchaseOrder
+        ? {
+            id: move.purchaseOrder.id,
+            poNumber: move.purchaseOrder.code,
+            code: move.purchaseOrder.code,
+            supplier: {
+              name: move.purchaseOrder.supplier.name,
+            },
+            status: move.purchaseOrder.status,
+            createdAt: move.purchaseOrder.createdAt,
+          }
+        : null;
+
+      return {
+        id: move.id,
+        code: move.code,
+        orderId: move.orderId,
+        purchaseOrderId: move.purchaseOrderId,
+        moveType: move.moveType,
+        status: move.status,
+        reason: move.reason,
+        reservedAt: move.reservedAt,
+        validatedAt: move.validatedAt,
+        cancelledAt: move.cancelledAt,
+        dispatchedAt: move.dispatchedAt,
+        createdAt: move.createdAt,
+        updatedAt: move.updatedAt,
+        order: orderDto,
+        purchaseOrder: purchaseOrderDto,
+        lines,
+        totalQuantity,
+        totalLines: lines.length,
+      };
+    });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
 }
 
