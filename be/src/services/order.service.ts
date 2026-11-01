@@ -1,7 +1,8 @@
-import { ActorType, Prisma } from '@prisma/client';
+import { ActorType, NotificationChannel, Prisma } from '@prisma/client';
 import { DomainError } from '../contracts/domain-error.js';
 import { prisma } from '../lib/prisma.js';
 import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
+import { notificationDispatcherService } from './notification-dispatcher.service.js';
 
 type SubmitOrderInput = {
   readonly cartToken: string;
@@ -63,7 +64,7 @@ export const orderService = {
   async submit(input: SubmitOrderInput): Promise<{ code: string; status: string; paymentState: string; paymentReference?: string; expectedAmount?: string }> {
     const existing = await prisma.order.findUnique({ where: { idempotencyKey: input.idempotencyKey }, include: { payment: { include: { charges: true } } } });
     if (existing) return { code: existing.code, status: existing.status, paymentState: existing.payment?.state ?? 'UNPAID', paymentReference: existing.payment?.charges[0]?.providerReference, expectedAmount: existing.payment?.charges[0] ? asVnd(existing.payment.charges[0].expectedAmount) : undefined };
-    return prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       let emailVerifiedAt = new Date();
       let phoneVerifiedAt = new Date();
       if (input.emailVerificationId && input.phoneVerificationId) {
@@ -254,6 +255,37 @@ export const orderService = {
         },
       });
 
+      const notification = await tx.notification.create({
+        data: {
+          customerId,
+          orderId: order.id,
+          deduplicationKey: `order_submitted:${order.id}`,
+          eventType: 'ORDER_SUBMITTED',
+          title: `Đặt hàng thành công - Đơn hàng #${order.code}`,
+          body: `Người nhận: ${input.receiverName}, SĐT: ${normalizedPhone}, Email: ${normalizedEmail}, Hình thức: ${input.fulfillmentMethod}, Thanh toán: ${input.paymentMethod}, Tổng tiền: ${asVnd(grandTotal)}`,
+          channels: [NotificationChannel.IN_APP, NotificationChannel.EMAIL],
+          payload: {
+            orderId: order.id,
+            orderCode: order.code,
+            receiverName: input.receiverName,
+            receiverPhone: normalizedPhone,
+            receiverEmail: normalizedEmail,
+            fulfillmentMethod: input.fulfillmentMethod,
+            paymentMethod: input.paymentMethod,
+            deliveryAddress: input.deliveryAddress ?? null,
+            grandTotal: asVnd(grandTotal),
+            items: cart.items.map((item) => ({
+              skuId: item.skuId ?? null,
+              name: item.sku?.productTemplate.name ?? (item.lineType === 'SERVICE' ? `Dịch vụ lắp ráp PC (${item.pcBuildName ?? 'PC'})` : 'Sản phẩm'),
+              quantity: item.quantity,
+              unitPrice: item.sku ? asVnd(item.sku.sellingPrice) : '0',
+              netAmount: item.sku ? asVnd(item.sku.sellingPrice.mul(item.quantity)) : '0',
+            })),
+          },
+          deliveryAttempts: [],
+        },
+      });
+
       const payment = await tx.payment.create({
         data: {
           orderId: order.id,
@@ -297,8 +329,28 @@ export const orderService = {
 
       await tx.orderStatusHistory.create({ data: { orderId: order.id, previousStatus: status, nextStatus: status, reason: 'ORDER_SUBMITTED', actorType: ActorType.CUSTOMER, idempotencyKey: `status:${order.id}` } });
       await tx.cart.update({ where: { id: cart.id }, data: { isActive: false } });
-      return { code: order.code, status: order.status, paymentState: payment.state, paymentReference, expectedAmount: expectedChargeAmount ? asVnd(expectedChargeAmount) : undefined };
+      return {
+        code: order.code,
+        status: order.status,
+        paymentState: payment.state,
+        paymentReference,
+        expectedAmount: expectedChargeAmount ? asVnd(expectedChargeAmount) : undefined,
+        notificationId: notification.id,
+      };
     }, TRANSACTION_OPTIONS);
+
+    void notificationDispatcherService.dispatchOrderSubmittedNotification(result.notificationId).catch((error: unknown) => {
+      console.error('Loi khi phat hanh thong bao don hang:', error);
+    });
+
+    return {
+      code: result.code,
+      status: result.status,
+      paymentState: result.paymentState,
+      paymentReference: result.paymentReference,
+      expectedAmount: result.expectedAmount,
+    };
+
   },
 
   async cancel(input: CancelOrderInput): Promise<{ code: string; status: string; paymentState: string }> {

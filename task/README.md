@@ -460,7 +460,7 @@ graph TD
 | [[TASK-134-ADMIN-INVENTORY-LEDGER-SOURCE-TRACKING-ENHANCEMENT]] | Frontend & Backend | Nâng cấp sổ biến động kho, theo dõi từng dòng dịch chuyển gắn với nguồn gốc đơn mua hay đơn bán | Complete | [[TASK-126-ADMIN-INVENTORY-SINGLE-STORE-AND-TRANSFERS-CLEANUP]] |
 | [[TASK-135-ADMIN-PRODUCT-TEMPLATES-LIST-EXPANDABLE-VARIANTS]] | Frontend & Backend | Gộp danh mục: Bảng danh sách mẫu sản phẩm với dropdown mở rộng hiển thị các biến thể SKU, tồn kho và giá bán | Complete | [[TASK-129-ADMIN-CATALOG-BUNDLES-AND-SERIALS-SINGLE-STORE]] |
 | [[TASK-136-ADMIN-PRODUCT-TEMPLATE-DETAIL-TWO-TABS-CONSOLIDATION]] | Frontend & Backend | Gộp chi tiết: Trang chi tiết mẫu sản phẩm 2 tab (Thông tin chung & Cấu hình chi tiết biến thể bố cục 2 cột) | Complete | [[TASK-135-ADMIN-PRODUCT-TEMPLATES-LIST-EXPANDABLE-VARIANTS]] |
-| [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] | Fullstack | Tích hợp gửi thông báo đơn hàng thành công, transactional outbox và đồng bộ admin outbox | Pending | [[TASK-06-CHECKOUT-AND-ORDER-SUCCESS]], [[TASK-61-ADMIN-REVIEW-MODERATION-AND-NOTIFICATION-OUTBOX]] |
+| [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] | Fullstack | Tích hợp gửi thông báo đơn hàng thành công, transactional outbox và đồng bộ admin outbox | Complete | [[TASK-06-CHECKOUT-AND-ORDER-SUCCESS]], [[TASK-61-ADMIN-REVIEW-MODERATION-AND-NOTIFICATION-OUTBOX]] |
 | [[TASK-138-GMAIL-SMTP-EMAIL-SERVICE-INTEGRATION]] | Backend | Tích hợp gửi Gmail qua SMTP cho mã OTP tra cứu đơn và thông báo xác nhận đơn hàng | Pending | [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] |
 
 
