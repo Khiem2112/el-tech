@@ -7,6 +7,25 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
 
 export type ProductLifecycle = 'DRAFT' | 'ACTIVE' | 'PAUSED' | 'DISCONTINUED';
 
+export type ProductTemplateVariantStockQuant = {
+  id: string;
+  onHand: number;
+  reserved: number;
+  available: number;
+  quarantine: number;
+};
+
+export type ProductTemplateVariantSummaryItem = {
+  id: number;
+  sku: string;
+  variationLabel: string | null;
+  barcode: string | null;
+  retailPrice: string;
+  sellingPrice: string;
+  isActive: boolean;
+  stockQuant: ProductTemplateVariantStockQuant | null;
+};
+
 export type ProductTemplateListItem = {
   id: number;
   name: string;
@@ -31,10 +50,14 @@ export type ProductTemplateListItem = {
     slug: string;
   };
   variantCount: number;
+  variantsCount: number;
+  minPrice: number;
+  maxPrice: number;
   minSellingPrice: string | null;
   maxSellingPrice: string | null;
   totalOnHand: number;
   totalAvailable: number;
+  variants: ProductTemplateVariantSummaryItem[];
 };
 
 export type VariantStockQuant = {

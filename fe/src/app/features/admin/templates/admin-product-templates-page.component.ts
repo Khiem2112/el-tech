@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { handleProductImageError } from '../../../core/constants/product.constants';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
@@ -37,6 +38,7 @@ type ToastNotification = {
     ButtonDirective,
     SelectComponent,
     LifecycleTransitionDialogComponent,
+    AppIconModule,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -99,15 +101,40 @@ type ToastNotification = {
             Tổng cộng: <strong class="text-foreground font-bold tabular-nums">{{ total() }}</strong> mẫu sản phẩm
           </div>
 
-          <button
-            type="button"
-            appButton
-            variant="outline"
-            size="sm"
-            (click)="resetFilters()"
-          >
-            Đặt Lại
-          </button>
+          <div class="flex items-center gap-2">
+            @if (viewMode() === 'list') {
+              <button
+                type="button"
+                appButton
+                variant="outline"
+                size="sm"
+                (click)="expandAll()"
+                title="Mở rộng tất cả dòng mẫu sản phẩm"
+              >
+                Mở Rộng Tất Cả
+              </button>
+              <button
+                type="button"
+                appButton
+                variant="outline"
+                size="sm"
+                (click)="collapseAll()"
+                title="Thu gọn tất cả dòng mẫu sản phẩm"
+              >
+                Thu Gọn Tất Cả
+              </button>
+            }
+
+            <button
+              type="button"
+              appButton
+              variant="outline"
+              size="sm"
+              (click)="resetFilters()"
+            >
+              Đặt Lại
+            </button>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -178,21 +205,44 @@ type ToastNotification = {
               <table class="w-full text-left text-sm border-collapse min-w-[1000px]">
                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                   <tr>
+                    <th class="py-3 px-3 w-12 text-center whitespace-nowrap">
+                      <button
+                        type="button"
+                        (click)="templates().length > 0 && expandedTemplateIds().size === templates().length ? collapseAll() : expandAll()"
+                        class="p-1 rounded hover:bg-surface text-muted hover:text-foreground transition-colors inline-flex items-center justify-center"
+                        [title]="templates().length > 0 && expandedTemplateIds().size === templates().length ? 'Thu gọn tất cả' : 'Mở rộng tất cả'"
+                        aria-label="Đổi trạng thái mở rộng tất cả dòng"
+                      >
+                        <lucide-icon
+                          [name]="templates().length > 0 && expandedTemplateIds().size === templates().length ? 'chevron-down' : 'chevron-right'"
+                          class="w-4 h-4"
+                        ></lucide-icon>
+                      </button>
+                    </th>
                     <th class="py-3 px-4 w-16 text-center whitespace-nowrap">Ảnh</th>
-                    <th class="py-3 px-4 whitespace-nowrap">Tên Mẫu Sản Phẩm</th>
-                    <th class="py-3 px-4 whitespace-nowrap">Thương Hiệu</th>
-                    <th class="py-3 px-4 whitespace-nowrap">Danh Mục</th>
-                    <th class="py-3 px-4 whitespace-nowrap">Model</th>
-                    <th class="py-3 px-4 text-center whitespace-nowrap">Biến Thể</th>
+                    <th class="py-3 px-4 whitespace-nowrap">Thông Tin Mẫu Sản Phẩm</th>
                     <th class="py-3 px-4 text-right whitespace-nowrap">Khoảng Giá</th>
-                    <th class="py-3 px-4 text-right whitespace-nowrap">Tồn Khả Dụng</th>
-                    <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                    <th class="py-3 px-4 text-right whitespace-nowrap">Tồn Kho</th>
                     <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-line">
                   @for (tpl of templates(); track tpl.id) {
                     <tr class="hover:bg-surface-alt/70 transition-colors">
+                      <td class="py-3 px-3 text-center">
+                        <button
+                          type="button"
+                          (click)="toggleExpand(tpl.id)"
+                          class="p-1.5 rounded hover:bg-surface text-muted hover:text-foreground transition-colors inline-flex items-center justify-center"
+                          [attr.aria-expanded]="isExpanded(tpl.id)"
+                          aria-label="Mở rộng hoặc thu gọn danh sách biến thể"
+                        >
+                          <lucide-icon
+                            [name]="isExpanded(tpl.id) ? 'chevron-down' : 'chevron-right'"
+                            class="w-4 h-4 text-foreground transition-transform"
+                          ></lucide-icon>
+                        </button>
+                      </td>
                       <td class="py-3 px-4 text-center">
                         <div class="w-11 h-11 rounded border border-line bg-surface-alt overflow-hidden flex items-center justify-center mx-auto">
                           @if (getFirstMedia(tpl)) {
@@ -209,38 +259,46 @@ type ToastNotification = {
                         </div>
                       </td>
                       <td class="py-3 px-4">
-                        <a
-                          [routerLink]="['/admin/catalog/templates', tpl.id]"
-                          class="font-bold text-foreground hover:text-primary-strong transition-colors"
-                        >
-                          {{ tpl.name }}
-                        </a>
-                        <div class="text-xs text-muted mt-0.5">
-                          slug: {{ tpl.slug }}
+                        <div class="space-y-1">
+                          <div class="flex items-center gap-2 flex-wrap">
+                            <a
+                              [routerLink]="['/admin/catalog/templates', tpl.id]"
+                              class="font-bold text-foreground hover:text-primary-strong transition-colors line-clamp-1"
+                            >
+                              {{ tpl.name }}
+                            </a>
+                            <span [class]="getLifecycleBadgeClass(tpl.lifecycleState)">
+                              {{ getLifecycleLabel(tpl.lifecycleState) }}
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-foreground border border-line tabular-nums">
+                              {{ tpl.variantsCount ?? tpl.variantCount }} biến thể SKU
+                            </span>
+                          </div>
+                          <div class="text-xs text-muted flex items-center gap-2 flex-wrap">
+                            <span class="font-medium text-foreground">{{ tpl.brand.name }}</span>
+                            <span>&bull;</span>
+                            <span>{{ tpl.category.name }}</span>
+                            @if (tpl.model) {
+                              <span>&bull;</span>
+                              <span>Model: {{ tpl.model }}</span>
+                            }
+                            <span>&bull;</span>
+                            <span class="font-mono text-[11px]">slug: {{ tpl.slug }}</span>
+                          </div>
                         </div>
                       </td>
-                      <td class="py-3 px-4 font-medium text-foreground whitespace-nowrap">
-                        {{ tpl.brand.name }}
+                      <td class="py-3 px-4 text-right tabular-nums whitespace-nowrap">
+                        <div class="font-bold text-foreground">
+                          {{ formatPriceRange(tpl.minPrice ?? tpl.minSellingPrice, tpl.maxPrice ?? tpl.maxSellingPrice) }}
+                        </div>
                       </td>
-                      <td class="py-3 px-4 text-muted whitespace-nowrap">
-                        {{ tpl.category.name }}
-                      </td>
-                      <td class="py-3 px-4 text-muted whitespace-nowrap">
-                        {{ tpl.model }}
-                      </td>
-                      <td class="py-3 px-4 text-center tabular-nums font-semibold text-foreground whitespace-nowrap">
-                        {{ tpl.variantCount }} SKU
-                      </td>
-                      <td class="py-3 px-4 text-right tabular-nums font-bold text-foreground whitespace-nowrap">
-                        {{ formatPriceRange(tpl.minSellingPrice, tpl.maxSellingPrice) }}
-                      </td>
-                      <td class="py-3 px-4 text-right tabular-nums font-semibold whitespace-nowrap" [class.text-emerald-700]="tpl.totalAvailable > 0" [class.text-rose-600]="tpl.totalAvailable <= 0">
-                        {{ tpl.totalAvailable }} chiếc
-                      </td>
-                      <td class="py-3 px-4 text-center whitespace-nowrap">
-                        <span [class]="getLifecycleBadgeClass(tpl.lifecycleState)">
-                          {{ getLifecycleLabel(tpl.lifecycleState) }}
-                        </span>
+                      <td class="py-3 px-4 text-right tabular-nums whitespace-nowrap">
+                        <div class="font-bold" [class.text-emerald-700]="tpl.totalAvailable > 0" [class.text-rose-600]="tpl.totalAvailable <= 0">
+                          {{ tpl.totalAvailable }} khả dụng
+                        </div>
+                        <div class="text-xs text-muted mt-0.5">
+                          Tổng tồn: {{ tpl.totalOnHand }}
+                        </div>
                       </td>
                       <td class="py-3 px-4 text-right whitespace-nowrap">
                         <div class="flex items-center justify-end gap-1.5">
@@ -249,6 +307,7 @@ type ToastNotification = {
                             (click)="openTransitionModal(tpl)"
                             class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                             title="Đổi trạng thái vòng đời"
+                            aria-label="Đổi trạng thái vòng đời"
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -258,6 +317,7 @@ type ToastNotification = {
                             [routerLink]="['/admin/catalog/templates', tpl.id]"
                             class="p-1.5 rounded hover:bg-surface-alt text-primary-strong hover:opacity-80 transition-colors"
                             title="Chi tiết"
+                            aria-label="Chi tiết"
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -269,6 +329,7 @@ type ToastNotification = {
                             (click)="deleteTemplate(tpl)"
                             class="p-1.5 rounded hover:bg-surface-alt text-rose-600 hover:text-rose-700 transition-colors"
                             title="Xóa mẫu sản phẩm"
+                            aria-label="Xóa mẫu sản phẩm"
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
                               <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -277,6 +338,117 @@ type ToastNotification = {
                         </div>
                       </td>
                     </tr>
+                    @if (isExpanded(tpl.id)) {
+                      <tr class="bg-surface-alt/40 border-b border-line">
+                        <td colspan="6" class="p-0">
+                          <div class="p-4 pl-12 space-y-3 bg-surface-alt/25">
+                            <div class="flex items-center justify-between">
+                              <div class="flex items-center gap-2">
+                                <h4 class="text-xs font-bold uppercase tracking-wider text-muted">
+                                  Danh Sách Biến Thể SKU
+                                </h4>
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary tabular-nums">
+                                  {{ tpl.variants?.length ?? 0 }} SKU
+                                </span>
+                              </div>
+                              <a
+                                [routerLink]="['/admin/catalog/templates', tpl.id]"
+                                [fragment]="'section-variants'"
+                                class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
+                              >
+                                <span>Quản lý biến thể</span>
+                                <lucide-icon name="arrow-right" class="w-3.5 h-3.5"></lucide-icon>
+                              </a>
+                            </div>
+
+                            @if (!tpl.variants || tpl.variants.length === 0) {
+                              <div class="py-6 px-4 bg-surface border border-line rounded text-center text-xs text-muted space-y-1">
+                                <p>Mẫu sản phẩm này hiện chưa có biến thể SKU nào.</p>
+                                <a
+                                  [routerLink]="['/admin/catalog/templates', tpl.id]"
+                                  [fragment]="'section-variants'"
+                                  class="text-primary font-semibold hover:underline inline-block"
+                                >
+                                  Thêm biến thể đầu tiên cho mẫu này
+                                </a>
+                              </div>
+                            } @else {
+                              <div class="bg-surface border border-line rounded overflow-hidden shadow-xs">
+                                <div class="overflow-x-auto">
+                                  <table class="w-full text-left text-xs border-collapse min-w-[750px]">
+                                    <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider">
+                                      <tr>
+                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã SKU</th>
+                                        <th class="py-2.5 px-3 whitespace-nowrap">Nhãn Phân Loại</th>
+                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã Vạch</th>
+                                        <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Niêm Yết</th>
+                                        <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Bán</th>
+                                        <th class="py-2.5 px-3 text-right whitespace-nowrap">Tồn Thực Tế</th>
+                                        <th class="py-2.5 px-3 text-right whitespace-nowrap">Tồn Khả Dụng</th>
+                                        <th class="py-2.5 px-3 text-center whitespace-nowrap">Trạng Thái</th>
+                                        <th class="py-2.5 px-3 text-right whitespace-nowrap">Thao Tác</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-line/60">
+                                      @for (v of tpl.variants; track v.id) {
+                                        <tr class="hover:bg-surface-alt/50 transition-colors">
+                                          <td class="py-2 px-3 font-mono font-bold text-foreground whitespace-nowrap">
+                                            {{ v.sku }}
+                                          </td>
+                                          <td class="py-2 px-3 text-foreground whitespace-nowrap">
+                                            {{ v.variationLabel || 'Mặc định' }}
+                                          </td>
+                                          <td class="py-2 px-3 font-mono text-muted whitespace-nowrap">
+                                            {{ v.barcode || '-' }}
+                                          </td>
+                                          <td class="py-2 px-3 text-right text-muted tabular-nums whitespace-nowrap">
+                                            {{ formatPrice(v.retailPrice || v.sellingPrice) }}
+                                          </td>
+                                          <td class="py-2 px-3 text-right font-bold text-foreground tabular-nums whitespace-nowrap">
+                                            {{ formatPrice(v.sellingPrice) }}
+                                          </td>
+                                          <td class="py-2 px-3 text-right tabular-nums text-foreground whitespace-nowrap">
+                                            {{ v.stockQuant?.onHand ?? 0 }}
+                                          </td>
+                                          <td
+                                            class="py-2 px-3 text-right tabular-nums font-semibold whitespace-nowrap"
+                                            [class.text-emerald-700]="(v.stockQuant?.available ?? 0) > 0"
+                                            [class.text-rose-600]="(v.stockQuant?.available ?? 0) <= 0"
+                                          >
+                                            {{ v.stockQuant?.available ?? 0 }}
+                                          </td>
+                                          <td class="py-2 px-3 text-center whitespace-nowrap">
+                                            @if (v.isActive) {
+                                              <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                Đang bán
+                                              </span>
+                                            } @else {
+                                              <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                                                Dừng kinh doanh
+                                              </span>
+                                            }
+                                          </td>
+                                          <td class="py-2 px-3 text-right whitespace-nowrap">
+                                            <a
+                                              [routerLink]="['/admin/catalog/templates', tpl.id]"
+                                              [fragment]="'section-variants'"
+                                              class="px-2 py-1 bg-surface-alt hover:bg-surface border border-line text-[11px] font-semibold rounded text-primary hover:text-primary-strong transition-colors"
+                                              title="Xem hoặc chỉnh sửa biến thể này trên trang chi tiết"
+                                            >
+                                              Chi tiết
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      }
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    }
                   }
                 </tbody>
               </table>
@@ -463,6 +635,7 @@ export class AdminProductTemplatesPageComponent implements OnInit {
 
   readonly isTransitionModalOpen = signal<boolean>(false);
   readonly selectedTemplate = signal<ProductTemplateListItem | null>(null);
+  readonly expandedTemplateIds = signal<Set<number>>(new Set());
 
   readonly toasts = signal<ToastNotification[]>([]);
   private toastIdCounter = 0;
@@ -565,14 +738,51 @@ export class AdminProductTemplatesPageComponent implements OnInit {
     return null;
   }
 
+  toggleExpand(templateId: number): void {
+    this.expandedTemplateIds.update((current) => {
+      const next = new Set(current);
+      if (next.has(templateId)) {
+        next.delete(templateId);
+      } else {
+        next.add(templateId);
+      }
+      return next;
+    });
+  }
+
+  isExpanded(templateId: number): boolean {
+    return this.expandedTemplateIds().has(templateId);
+  }
+
+  expandAll(): void {
+    const ids = this.templates().map((t) => t.id);
+    this.expandedTemplateIds.set(new Set(ids));
+  }
+
+  collapseAll(): void {
+    this.expandedTemplateIds.set(new Set());
+  }
+
+  formatPrice(value: number | string | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '0 đ';
+    }
+    const num = typeof value === 'number' ? value : Number(value);
+    if (Number.isNaN(num)) {
+      return '0 đ';
+    }
+    return new Intl.NumberFormat('vi-VN').format(num) + ' đ';
+  }
+
   formatPriceRange(min: number | string | null, max: number | string | null): string {
     const numMin = min !== null && min !== undefined ? Number(min) : 0;
     const numMax = max !== null && max !== undefined ? Number(max) : 0;
-    const fmt = (num: number): string => new Intl.NumberFormat('vi-VN').format(num) + ' đ';
-    if (numMin === numMax) {
-      return fmt(numMin);
+    const validMin = Number.isNaN(numMin) ? 0 : numMin;
+    const validMax = Number.isNaN(numMax) ? 0 : numMax;
+    if (validMin === validMax) {
+      return this.formatPrice(validMin);
     }
-    return `${fmt(numMin)} - ${fmt(numMax)}`;
+    return `${this.formatPrice(validMin)} - ${this.formatPrice(validMax)}`;
   }
 
   getLifecycleLabel(state: ProductLifecycle): string {

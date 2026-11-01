@@ -3,7 +3,7 @@
 - Feature: Admin Product Catalog Unified List
 - Governing Spec: Yêu cầu hợp nhất giao diện mẫu sản phẩm và biến thể SKU: Trang danh sách hiển thị các mẫu sản phẩm (Product Template), mỗi mẫu có thể nhấn dropdown để hiển thị các biến thể SKU bên dưới, theo dõi đầy đủ thông tin tồn kho và giá theo từng mẫu và từng biến thể
 - Scope: shared
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -28,14 +28,14 @@ Hợp nhất toàn diện trải nghiệm danh mục sản phẩm trên màn hì
 
 ## Checklist
 
-- [ ] Nâng cấp hàm truy vấn `getProductTemplates` trong [product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/product-template.service.ts) để nạp kèm mảng `variants` gồm các trường `sku`, `variationLabel`, `barcode`, `retailPrice`, `sellingPrice`, `isActive` cùng `stockQuant` (onHand, available, reserved) và tính toán khoảng giá (minPrice, maxPrice), tổng tồn của template.
-- [ ] Cập nhật kiểu `ProductTemplateListItem` trong [admin-product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/services/admin-product-template.service.ts) để tương thích với cấu trúc dữ liệu mới.
-- [ ] Tái cấu trúc bảng hiển thị trong [admin-product-templates-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/admin-product-templates-page.component.ts): thêm cột nút mở rộng dropdown, hiển thị tổng tồn và khoảng giá trên dòng mẫu cha.
-- [ ] Xây dựng hàng mở rộng (expandable row template) hiển thị bảng con danh sách biến thể SKU trực thuộc với đầy đủ thông số: Mã SKU, nhãn biến thể, mã vạch, giá niêm yết, giá bán, tồn kho thực tế, tồn khả dụng và trạng thái.
-- [ ] Quản lý trạng thái mở rộng dòng bằng tập hợp mã id `expandedTemplateIds = signal<Set<number>>(new Set())` để đảm bảo thao tác đóng/mở độc lập, mượt mà.
-- [ ] Cập nhật [admin.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/admin.routes.ts) chuyển hướng `catalog/variants` sang `catalog/templates`.
-- [ ] Dọn dẹp liên kết "Biến thể SKU" trên menu điều hướng [admin-navigation.constants.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/constants/admin-navigation.constants.ts), tập trung người dùng vào menu "Mẫu Sản Phẩm & Biến Thể".
-- [ ] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
+- [x] Nâng cấp hàm truy vấn `getProductTemplates` trong [product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/product-template.service.ts) để nạp kèm mảng `variants` gồm các trường `sku`, `variationLabel`, `barcode`, `retailPrice`, `sellingPrice`, `isActive` cùng `stockQuant` (onHand, available, reserved) và tính toán khoảng giá (minPrice, maxPrice), tổng tồn của template.
+- [x] Cập nhật kiểu `ProductTemplateListItem` trong [admin-product-template.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/services/admin-product-template.service.ts) để tương thích với cấu trúc dữ liệu mới.
+- [x] Tái cấu trúc bảng hiển thị trong [admin-product-templates-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/templates/admin-product-templates-page.component.ts): thêm cột nút mở rộng dropdown, hiển thị tổng tồn và khoảng giá trên dòng mẫu cha.
+- [x] Xây dựng hàng mở rộng (expandable row template) hiển thị bảng con danh sách biến thể SKU trực thuộc với đầy đủ thông số: Mã SKU, nhãn biến thể, mã vạch, giá niêm yết, giá bán, tồn kho thực tế, tồn khả dụng và trạng thái.
+- [x] Quản lý trạng thái mở rộng dòng bằng tập hợp mã id `expandedTemplateIds = signal<Set<number>>(new Set())` để đảm bảo thao tác đóng/mở độc lập, mượt mà.
+- [x] Cập nhật [admin.routes.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/admin.routes.ts) chuyển hướng `catalog/variants` sang `catalog/templates`.
+- [x] Dọn dẹp liên kết "Biến thể SKU" trên menu điều hướng [admin-navigation.constants.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/constants/admin-navigation.constants.ts), tập trung người dùng vào menu "Mẫu Sản Phẩm & Biến Thể".
+- [x] Kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 

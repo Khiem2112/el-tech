@@ -64,10 +64,8 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: 'catalog/variants',
-        loadComponent: () =>
-          import('./variants/admin-variants-page.component').then(
-            (module) => module.AdminVariantsPageComponent,
-          ),
+        pathMatch: 'full',
+        redirectTo: '/admin/catalog/templates',
       },
       {
         path: 'catalog/pc-bundles',
