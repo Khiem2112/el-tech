@@ -1,4 +1,5 @@
 import { DomainError } from '../contracts/domain-error.js';
+import { sendLookupOtpEmail } from '../lib/mailer.js';
 import { prisma } from '../lib/prisma.js';
 import { isUuid, sanitizeIdentifier } from '../lib/uuid.js';
 import { orderService } from './order.service.js';
@@ -175,6 +176,9 @@ export const orderLookupService = {
         expiresAt: new Date(Date.now() + 5 * 60_000),
       },
     });
+    if (contactType === 'EMAIL') {
+      await sendLookupOtpEmail(trimmed.toLowerCase(), otp);
+    }
     if (process.env.NODE_ENV !== 'production') {
       console.info({ guestLookup: trimmed, verificationId: verification.id, otp });
     }
@@ -223,8 +227,23 @@ export const orderLookupService = {
     const order = await prisma.order.findFirst({ where: { code, isActive: true, OR: [{ receiverEmail: identifier.trim().toLowerCase() }, { receiverPhone: identifier.trim() }] } });
     if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    const verification = await prisma.verification.create({ data: { identifier: identifier.trim().toLowerCase(), value: otp, orderId: order.id, purpose: 'GUEST_ORDER_ACCESS', contactType: order.receiverEmail === identifier.trim().toLowerCase() ? 'EMAIL' : 'PHONE', expiresAt: new Date(Date.now() + 5 * 60_000) } });
-    if (process.env.NODE_ENV !== 'production') console.info({ orderCode: code, verificationId: verification.id, otp });
+    const contactType = order.receiverEmail === identifier.trim().toLowerCase() ? 'EMAIL' : 'PHONE';
+    const verification = await prisma.verification.create({
+      data: {
+        identifier: identifier.trim().toLowerCase(),
+        value: otp,
+        orderId: order.id,
+        purpose: 'GUEST_ORDER_ACCESS',
+        contactType,
+        expiresAt: new Date(Date.now() + 5 * 60_000),
+      },
+    });
+    if (contactType === 'EMAIL') {
+      await sendLookupOtpEmail(identifier.trim().toLowerCase(), otp);
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      console.info({ orderCode: code, verificationId: verification.id, otp });
+    }
     return { verificationId: verification.id, expiresAt: verification.expiresAt.toISOString() };
   },
   async verify(verificationId: string, code: string): Promise<{ verificationId: string; sessionToken: string; order: ReturnType<typeof serialize> }> {
