@@ -4,9 +4,7 @@ export const serialStatusEnum = z.enum([
   'AVAILABLE',
   'RESERVED',
   'ISSUED',
-  'IN_TRANSIT',
   'QUARANTINED',
-  'RETURNED_TO_SUPPLIER',
 ]);
 
 export type SerialStatusType = z.infer<typeof serialStatusEnum>;

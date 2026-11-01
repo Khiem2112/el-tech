@@ -124,10 +124,6 @@ export class AdminInventoryService {
       isActive: true,
     };
 
-    if (query.branchId) {
-      where.branchId = query.branchId;
-    }
-
     if (query.categoryId) {
       where.sku = {
         productTemplate: {
@@ -178,7 +174,7 @@ export class AdminInventoryService {
     const quants = await prisma.stockQuant.findMany({
       where,
       include: {
-        branch: true,
+        
         sku: {
           include: {
             productTemplate: {
@@ -191,7 +187,7 @@ export class AdminInventoryService {
         },
       },
       orderBy: [
-        { branch: { deliveryPriority: 'asc' } },
+        
         { sku: { sku: 'asc' } },
       ],
     });
@@ -201,10 +197,10 @@ export class AdminInventoryService {
       const hasInvariantBreach = available < 0;
       return {
         id: quant.id,
-        branchId: quant.branchId,
-        branchCode: quant.branch.code,
-        branchName: quant.branch.name,
-        branchAddress: quant.branch.address,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
+        branchAddress: '280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh',
         skuId: quant.skuId,
         sku: quant.sku.sku,
         barcode: quant.sku.barcode,
@@ -279,7 +275,7 @@ export class AdminInventoryService {
     const quant = await prisma.stockQuant.findUnique({
       where: { id: stockQuantId },
       include: {
-        branch: true,
+        
         sku: {
           include: {
             productTemplate: {
@@ -304,10 +300,10 @@ export class AdminInventoryService {
     const available = quant.onHand - quant.reserved - quant.quarantineDamaged;
     const quantDto: InventoryBalanceItemDto = {
       id: quant.id,
-      branchId: quant.branchId,
-      branchCode: quant.branch.code,
-      branchName: quant.branch.name,
-      branchAddress: quant.branch.address,
+      branchId: 1,
+      branchCode: 'STORE-MAIN',
+      branchName: 'Showroom EL-TECH',
+      branchAddress: '280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh',
       skuId: quant.skuId,
       sku: quant.sku.sku,
       barcode: quant.sku.barcode,
@@ -339,8 +335,8 @@ export class AdminInventoryService {
               include: {
                 order: true,
                 purchaseOrder: true,
-                sourceBranch: true,
-                destinationBranch: true,
+                
+                
               },
             },
           },
@@ -358,9 +354,9 @@ export class AdminInventoryService {
       return {
         id: entry.id,
         stockQuantId: entry.stockQuantId,
-        branchId: quant.branchId,
-        branchCode: quant.branch.code,
-        branchName: quant.branch.name,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
         skuId: quant.skuId,
         sku: quant.sku.sku,
         productName: quant.sku.productTemplate.name,
@@ -379,8 +375,8 @@ export class AdminInventoryService {
         moveCode: stockMove.code,
         moveType: stockMove.moveType,
         reason: stockMove.reason,
-        sourceBranchName: stockMove.sourceBranch?.name ?? null,
-        destinationBranchName: stockMove.destinationBranch?.name ?? null,
+        sourceBranchName: null,
+        destinationBranchName: null,
       };
     });
 
@@ -399,9 +395,6 @@ export class AdminInventoryService {
 
     if (query.branchId || query.skuId) {
       where.stockQuant = {};
-      if (query.branchId) {
-        where.stockQuant.branchId = query.branchId;
-      }
       if (query.skuId) {
         where.stockQuant.skuId = query.skuId;
       }
@@ -491,7 +484,7 @@ export class AdminInventoryService {
         include: {
           stockQuant: {
             include: {
-              branch: true,
+              
               sku: {
                 include: {
                   productTemplate: true,
@@ -505,8 +498,8 @@ export class AdminInventoryService {
                 include: {
                   order: true,
                   purchaseOrder: true,
-                  sourceBranch: true,
-                  destinationBranch: true,
+                  
+                  
                 },
               },
             },
@@ -526,9 +519,9 @@ export class AdminInventoryService {
       return {
         id: entry.id,
         stockQuantId: entry.stockQuantId,
-        branchId: entry.stockQuant.branchId,
-        branchCode: entry.stockQuant.branch.code,
-        branchName: entry.stockQuant.branch.name,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
         skuId: entry.stockQuant.skuId,
         sku: entry.stockQuant.sku.sku,
         productName: entry.stockQuant.sku.productTemplate.name,
@@ -547,8 +540,8 @@ export class AdminInventoryService {
         moveCode: stockMove.code,
         moveType: stockMove.moveType,
         reason: stockMove.reason,
-        sourceBranchName: stockMove.sourceBranch?.name ?? null,
-        destinationBranchName: stockMove.destinationBranch?.name ?? null,
+        sourceBranchName: null,
+        destinationBranchName: null,
       };
     });
 
@@ -569,10 +562,7 @@ export class AdminInventoryService {
   ): Promise<QuarantineStockResult> {
     const quant = await prisma.stockQuant.findUnique({
       where: {
-        branchId_skuId: {
-          branchId: input.branchId,
-          skuId: input.skuId,
-        },
+        skuId: input.skuId,
       },
       include: {
         sku: true,
@@ -581,7 +571,7 @@ export class AdminInventoryService {
 
     if (!quant) {
       throw new DomainError('STOCK_QUANT_NOT_FOUND', {
-        messageKey: 'Khong tim thay so du ton kho cua san pham tai chi nhanh nay',
+        messageKey: 'Khong tim thay so du ton kho cua san pham',
         status: 404,
       });
     }
@@ -610,7 +600,6 @@ export class AdminInventoryService {
       serialUnitsToQuarantine = await prisma.serialUnit.findMany({
         where: {
           skuId: input.skuId,
-          currentBranchId: input.branchId,
           OR: [
             { id: { in: input.serialIds } },
             { serialNumber: { in: input.serialIds } },
@@ -621,42 +610,38 @@ export class AdminInventoryService {
 
       if (serialUnitsToQuarantine.length !== input.quantity) {
         throw new DomainError('INVALID_SERIAL_COUNT', {
-          messageKey: 'Danh sach so se-ri khong khop voi so luong yeu cau hoac khong thuoc chi nhanh nay',
+          messageKey: 'Danh sach so se-ri khong khop voi so luong yeu cau',
           status: 400,
         });
       }
 
-      const notAvailable = serialUnitsToQuarantine.filter(
+      const invalidUnit = serialUnitsToQuarantine.find(
         (u) => u.status !== SerialStatus.AVAILABLE,
       );
-      if (notAvailable.length > 0) {
+      if (invalidUnit) {
         throw new DomainError('SERIAL_NOT_AVAILABLE', {
-          messageKey: `Cac so se-ri sau khong o trang thai kha dung: ${notAvailable.map((s) => s.serialNumber).join(', ')}`,
+          messageKey: `So se-ri ${invalidUnit.serialNumber} khong o trang thai kha dung de cach ly (trang thai: ${invalidUnit.status})`,
           status: 400,
+          details: {
+            serialNumber: invalidUnit.serialNumber,
+            currentStatus: invalidUnit.status,
+          },
         });
       }
     }
 
     const result = await prisma.$transaction(async (tx) => {
-      const updatedQuant = await tx.stockQuant.update({
-        where: { id: quant.id },
-        data: {
-          quarantineDamaged: { increment: input.quantity },
-          version: { increment: 1 },
-        },
-      });
+      const now = new Date();
+      const moveCode = `MOV-QUARANTINE-${Date.now().toString(36).toUpperCase()}`;
 
-      const moveCode = `MOVE-QR-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
       const stockMove = await tx.stockMove.create({
         data: {
           code: moveCode,
           idempotencyKey: `move:quarantine:${quant.id}:${Date.now()}:${Math.floor(Math.random() * 10000)}`,
-          sourceBranchId: input.branchId,
-          moveType: StockMoveType.INTERNAL_CORRECTION,
+          moveType: StockMoveType.ORDER_ISSUE,
           status: StockMoveStatus.VALIDATED,
           reason: input.reason,
           validatedAt: new Date(),
-          validatedById: adminUserId ?? null,
         },
       });
 
@@ -666,6 +651,15 @@ export class AdminInventoryService {
           skuId: input.skuId,
           quantity: input.quantity,
           unitCost: quant.weightedAverageCost,
+        },
+      });
+
+      const updatedQuant = await tx.stockQuant.update({
+        where: { id: quant.id },
+        data: {
+          quarantineDamaged: {
+            increment: input.quantity,
+          },
         },
       });
 
@@ -682,28 +676,28 @@ export class AdminInventoryService {
           quarantineAfter: updatedQuant.quarantineDamaged,
           actorType: ActorType.ADMIN,
           actorId: adminUserId ?? null,
-          occurredAt: new Date(),
+          occurredAt: now,
         },
       });
 
-      for (const unit of serialUnitsToQuarantine) {
-        await tx.serialUnit.update({
-          where: { id: unit.id },
-          data: {
-            status: SerialStatus.QUARANTINED,
-          },
-        });
+      if (quant.sku.serialRequired && serialUnitsToQuarantine.length > 0) {
+        for (const unit of serialUnitsToQuarantine) {
+          await tx.serialUnit.update({
+            where: { id: unit.id },
+            data: {
+              status: SerialStatus.QUARANTINED,
+            },
+          });
 
-        await tx.serialMovement.create({
-          data: {
-            serialUnitId: unit.id,
-            stockMoveLineId: stockMoveLine.id,
-            fromBranchId: input.branchId,
-            toBranchId: input.branchId,
-            resultingStatus: SerialStatus.QUARANTINED,
-            occurredAt: new Date(),
-          },
-        });
+          await tx.serialMovement.create({
+            data: {
+              serialUnitId: unit.id,
+              stockMoveLineId: stockMoveLine.id,
+              resultingStatus: SerialStatus.QUARANTINED,
+              occurredAt: new Date(),
+            },
+          });
+        }
       }
 
       const availableAfter =
@@ -715,7 +709,7 @@ export class AdminInventoryService {
         stockMoveId: stockMove.id,
         stockMoveCode: stockMove.code,
         skuId: input.skuId,
-        branchId: input.branchId,
+        branchId: 1,
         quarantinedQuantity: input.quantity,
         quarantineDamagedAfter: updatedQuant.quarantineDamaged,
         availableAfter,

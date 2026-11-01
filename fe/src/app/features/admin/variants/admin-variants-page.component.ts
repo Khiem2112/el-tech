@@ -326,7 +326,7 @@ type ToastNotification = {
                           type="button"
                           (click)="openBranchStockSheet(item)"
                           class="p-1.5 rounded bg-surface hover:bg-surface-alt text-primary border border-line transition-colors"
-                          title="Xem chi tiết phân bổ tồn kho chi nhánh"
+                          title="Xem chi tiết tồn kho Showroom EL-TECH"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -397,7 +397,7 @@ type ToastNotification = {
           <div class="relative bg-surface border-l border-line shadow-2xl w-full max-w-lg h-full flex flex-col z-10 text-sm">
             <div class="h-16 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
               <div>
-                <h3 class="font-bold text-foreground text-base">Phân Bổ Tồn Kho Theo Chi Nhánh</h3>
+                <h3 class="font-bold text-foreground text-base">Chi Tiết Tồn Kho Showroom EL-TECH</h3>
                 <p class="text-xs text-muted">
                   SKU: <strong class="text-primary tabular">{{ variant.sku }}</strong>
                   @if (variant.barcode) {
@@ -418,13 +418,48 @@ type ToastNotification = {
             </div>
 
             <div class="p-3.5 bg-blue-500/10 border-b border-blue-500/20 text-blue-700 dark:text-blue-300 text-xs">
-              Tồn khả dụng = Thực tế - Đang giữ chỗ - Cách ly lỗi. Hàng giữ chỗ liên kết trực tiếp với các đơn hàng đang xử lý.
+              Tồn khả dụng = Thực tế - Đang giữ chỗ - Cách ly lỗi. Toàn bộ tồn kho được quản lý tập trung tại Showroom EL-TECH.
             </div>
 
             <div class="flex-1 overflow-y-auto p-6 space-y-4">
               @if (variant.stockQuants.length === 0) {
-                <div class="p-8 text-center text-muted text-xs">
-                  Chưa có bản ghi phân bổ tồn kho nào cho biến thể này tại các chi nhánh.
+                <div class="bg-surface-alt border border-line rounded-lg p-4 space-y-3">
+                  <div class="flex items-center justify-between border-b border-line pb-2">
+                    <div>
+                      <span class="font-bold text-foreground text-sm">
+                        Showroom EL-TECH (STORE-MAIN)
+                      </span>
+                      <p class="text-xs text-muted mt-0.5">Trụ sở phân phối chính</p>
+                    </div>
+                    @if (variant.totalAvailable > 0) {
+                      <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                        Khả dụng: {{ variant.totalAvailable }}
+                      </span>
+                    } @else {
+                      <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 text-destructive border border-destructive/20">
+                        Hết hàng
+                      </span>
+                    }
+                  </div>
+
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                    <div class="p-2 bg-surface border border-line rounded">
+                      <span class="text-xs text-muted block uppercase">Thực Tế</span>
+                      <strong class="text-foreground text-sm font-bold">{{ variant.totalOnHand }}</strong>
+                    </div>
+                    <div class="p-2 bg-amber-500/10 border border-amber-500/20 rounded">
+                      <span class="text-xs text-amber-700 block uppercase">Giữ Chỗ</span>
+                      <strong class="text-amber-700 text-sm font-bold">{{ variant.totalReserved }}</strong>
+                    </div>
+                    <div class="p-2 bg-destructive/10 border border-destructive/20 rounded">
+                      <span class="text-xs text-destructive block uppercase">Lỗi / Hỏng</span>
+                      <strong class="text-destructive text-sm font-bold">{{ variant.totalQuarantineDamaged }}</strong>
+                    </div>
+                    <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                      <span class="text-xs text-emerald-600 block uppercase">Khả Dụng</span>
+                      <strong class="text-emerald-600 text-sm font-bold">{{ variant.totalAvailable }}</strong>
+                    </div>
+                  </div>
                 </div>
               } @else {
                 @for (quant of variant.stockQuants; track quant.id) {
@@ -432,9 +467,11 @@ type ToastNotification = {
                     <div class="flex items-center justify-between border-b border-line pb-2">
                       <div>
                         <span class="font-bold text-foreground text-sm">
-                          {{ quant.branchName }} ({{ quant.branchCode }})
+                          Showroom EL-TECH (STORE-MAIN)
                         </span>
-                        <p class="text-xs text-muted mt-0.5">{{ quant.branchAddress }}</p>
+                        @if (quant.branchAddress) {
+                          <p class="text-xs text-muted mt-0.5">{{ quant.branchAddress }}</p>
+                        }
                       </div>
                       @if (quant.available > 0) {
                         <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
@@ -447,7 +484,7 @@ type ToastNotification = {
                       }
                     </div>
 
-                    <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                       <div class="p-2 bg-surface border border-line rounded">
                         <span class="text-xs text-muted block uppercase">Thực Tế</span>
                         <strong class="text-foreground text-sm font-bold">{{ quant.onHand }}</strong>
@@ -459,6 +496,10 @@ type ToastNotification = {
                       <div class="p-2 bg-destructive/10 border border-destructive/20 rounded">
                         <span class="text-xs text-destructive block uppercase">Lỗi / Hỏng</span>
                         <strong class="text-destructive text-sm font-bold">{{ quant.quarantineDamaged }}</strong>
+                      </div>
+                      <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 rounded">
+                        <span class="text-xs text-emerald-600 block uppercase">Khả Dụng</span>
+                        <strong class="text-emerald-600 text-sm font-bold">{{ quant.available }}</strong>
                       </div>
                     </div>
                   </div>

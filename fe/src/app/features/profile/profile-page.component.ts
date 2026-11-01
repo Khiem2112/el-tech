@@ -10,6 +10,9 @@ import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
 import { OrderCancelModalComponent, CancelOrderPayload } from '../orders/order-cancel-modal.component';
+import { CatalogService, CustomerReviewItem } from '../catalog/catalog.service';
+import { ProductImagePipe } from '../../lib/product-image.pipe';
+import { handleProductImageError } from '../../core/constants/product.constants';
 
 type CustomerOrderDto = {
   id: string;
@@ -83,6 +86,7 @@ type StatusBadgeConfig = {
     InputDirective,
     AppIconModule,
     OrderCancelModalComponent,
+    ProductImagePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -227,6 +231,33 @@ type StatusBadgeConfig = {
                     <span>Thông tin & Bảo mật</span>
                   </div>
                   <lucide-icon name="ChevronRight" class="size-4" aria-hidden="true"></lucide-icon>
+                </button>
+
+                <button
+                  type="button"
+                  class="flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-colors cursor-pointer text-left"
+                  [class.bg-primary]="activeTab() === 'reviews'"
+                  [class.text-slate-950]="activeTab() === 'reviews'"
+                  [class.font-bold]="activeTab() === 'reviews'"
+                  [class.shadow-xs]="activeTab() === 'reviews'"
+                  [class.text-muted]="activeTab() !== 'reviews'"
+                  [class.hover:text-foreground]="activeTab() !== 'reviews'"
+                  [class.hover:bg-surface-alt]="activeTab() !== 'reviews'"
+                  (click)="switchTab('reviews')"
+                >
+                  <div class="flex items-center gap-2.5">
+                    <lucide-icon name="Star" class="size-4" aria-hidden="true"></lucide-icon>
+                    <span>Đánh giá của tôi</span>
+                  </div>
+                  <span
+                    class="px-2 py-0.5 rounded-full text-xs font-bold tabular"
+                    [class.bg-black/10]="activeTab() === 'reviews'"
+                    [class.text-slate-950]="activeTab() === 'reviews'"
+                    [class.bg-surface-alt]="activeTab() !== 'reviews'"
+                    [class.text-foreground]="activeTab() !== 'reviews'"
+                  >
+                    {{ customerReviews().length }} đánh giá
+                  </span>
                 </button>
 
                 <a
@@ -416,7 +447,7 @@ type StatusBadgeConfig = {
                 </div>
               }
 
-              <!-- TAB 1: ORDER MANAGEMENT -->
+              <!-- ORDER MANAGEMENT TAB -->
               @if (activeTab() === 'orders') {
                 @if (selectedOrderDetail()) {
                   <!-- Order Detail Sub-view -->
@@ -841,7 +872,7 @@ type StatusBadgeConfig = {
                 }
               }
 
-              <!-- TAB 2: PROFILE FORM & SECURITY SETTINGS -->
+              <!-- PROFILE FORM AND SECURITY SETTINGS TAB -->
               @if (activeTab() === 'profile') {
                 <section class="bg-surface rounded-xl p-5 sm:p-6 border border-line shadow-xs space-y-6">
                   <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line">
@@ -973,6 +1004,131 @@ type StatusBadgeConfig = {
                 </section>
               }
 
+              <!-- CUSTOMER REVIEWS TAB -->
+              @if (activeTab() === 'reviews') {
+                <section class="bg-surface rounded-xl p-5 sm:p-6 border border-line shadow-xs space-y-6">
+                  <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-line">
+                    <div>
+                      <h3 class="text-lg font-bold text-foreground">Đánh giá của tôi</h3>
+                      <p class="text-xs text-muted">Quản lý nhận xét và đánh giá trải nghiệm linh kiện phần cứng đã mua</p>
+                    </div>
+                    <span appBadge variant="outline" class="font-bold text-xs">
+                      {{ customerReviews().length }} đánh giá
+                    </span>
+                  </div>
+
+                  @if (reviewsError()) {
+                    <div class="p-3.5 rounded-lg bg-danger/10 border border-danger/30 text-xs text-danger font-medium flex items-center justify-between">
+                      <span>{{ reviewsError() }}</span>
+                      <button
+                        type="button"
+                        appButton
+                        variant="ghost"
+                        size="sm"
+                        class="text-xs font-bold"
+                        (click)="loadCustomerReviews()"
+                      >
+                        Thử lại
+                      </button>
+                    </div>
+                  }
+
+                  @if (isLoadingReviews()) {
+                    <div class="space-y-4">
+                      @for (placeholder of [1, 2, 3]; track placeholder) {
+                        <div class="p-4 rounded-xl border border-line bg-surface-alt animate-pulse space-y-3">
+                          <div class="flex items-center gap-3">
+                            <div class="size-14 rounded-lg bg-surface border border-line"></div>
+                            <div class="space-y-1.5 flex-1">
+                              <div class="h-4 w-1/3 bg-surface rounded"></div>
+                              <div class="h-3 w-1/4 bg-surface rounded"></div>
+                            </div>
+                          </div>
+                          <div class="h-10 bg-surface rounded"></div>
+                        </div>
+                      }
+                    </div>
+                  } @else if (customerReviews().length === 0) {
+                    <div class="rounded-xl border border-dashed border-line p-8 sm:p-12 text-center bg-surface-alt space-y-3">
+                      <div class="size-12 rounded-full bg-primary/10 text-primary mx-auto flex items-center justify-center">
+                        <lucide-icon name="Star" class="size-6" aria-hidden="true"></lucide-icon>
+                      </div>
+                      <div class="space-y-1 max-w-md mx-auto">
+                        <h4 class="text-sm font-bold text-foreground">Bạn chưa có bài đánh giá nào</h4>
+                        <p class="text-xs text-muted leading-relaxed">
+                          Chia sẻ cảm nhận về các linh kiện bạn đã trải nghiệm để giúp cộng đồng build PC đưa ra lựa chọn phù hợp nhất.
+                        </p>
+                      </div>
+                      <div class="pt-2">
+                        <a
+                          routerLink="/san-pham"
+                          appButton
+                          variant="primary"
+                          size="sm"
+                        >
+                          <lucide-icon name="ArrowRight" class="size-3.5" aria-hidden="true"></lucide-icon>
+                          <span>Khám phá linh kiện</span>
+                        </a>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="space-y-4">
+                      @for (rev of customerReviews(); track rev.id) {
+                        <div class="rounded-xl border border-line bg-surface p-4 sm:p-5 space-y-3.5 shadow-xs transition-colors hover:border-primary/40">
+                          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-line">
+                            <div class="flex items-center gap-3 min-w-0">
+                              <div class="size-14 rounded-lg bg-surface-alt border border-line p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                                <img
+                                  [src]="rev.product.media | productImage"
+                                  [alt]="rev.product.name"
+                                  class="size-full object-contain"
+                                  (error)="onImageError($event)"
+                                >
+                              </div>
+                              <div class="min-w-0 flex-1">
+                                <a
+                                  [routerLink]="['/san-pham', rev.product.slug]"
+                                  class="text-xs sm:text-sm font-bold text-foreground hover:text-primary transition-colors line-clamp-1"
+                                  [title]="rev.product.name"
+                                >
+                                  {{ rev.product.name }}
+                                </a>
+                                <div class="flex items-center gap-2 mt-1 flex-wrap text-xs">
+                                  <div class="flex items-center gap-0.5">
+                                    @for (star of [1, 2, 3, 4, 5]; track star) {
+                                      <lucide-icon
+                                        name="Star"
+                                        class="size-3.5"
+                                        [class.fill-current]="star <= rev.rating"
+                                        [class.text-warning]="star <= rev.rating"
+                                        [class.text-slate-300]="star > rev.rating"
+                                        aria-hidden="true"
+                                      ></lucide-icon>
+                                    }
+                                  </div>
+                                  <span class="text-xs font-bold text-foreground tabular">{{ rev.rating }}/5 Sao</span>
+                                  <span class="text-border">·</span>
+                                  <span class="text-xs text-muted tabular">{{ rev.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="shrink-0">
+                              <span appBadge variant="success" class="text-xs font-bold">
+                                Hiển thị công khai
+                              </span>
+                            </div>
+                          </div>
+
+                          <div class="text-xs text-foreground bg-surface-alt rounded-lg p-3 border border-line leading-relaxed">
+                            {{ rev.text }}
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                </section>
+              }
+
             </div>
 
           </div>
@@ -994,13 +1150,19 @@ type StatusBadgeConfig = {
   `,
 })
 export class ProfilePageComponent implements OnInit {
+  protected readonly onImageError = handleProductImageError;
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(ApiClientService);
+  private readonly catalog = inject(CatalogService);
 
   protected readonly user = computed(() => this.auth.currentUser());
-  protected readonly activeTab = signal<'orders' | 'profile'>('orders');
+  protected readonly activeTab = signal<'orders' | 'profile' | 'reviews'>('orders');
+
+  protected readonly customerReviews = signal<readonly CustomerReviewItem[]>([]);
+  protected readonly isLoadingReviews = signal<boolean>(false);
+  protected readonly reviewsError = signal<string | null>(null);
 
   protected readonly customerOrders = signal<readonly CustomerOrderDto[]>([]);
   protected readonly isLoadingOrders = signal<boolean>(false);
@@ -1031,7 +1193,7 @@ export class ProfilePageComponent implements OnInit {
     const filter = this.orderFilter();
     if (filter === 'ALL') return orders;
     if (filter === 'PENDING') {
-      return orders.filter((o) => ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION'].includes(o.status));
+      return orders.filter((o) => ['PENDING_PAYMENT'].includes(o.status));
     }
     if (filter === 'PROCESSING') {
       return orders.filter((o) =>
@@ -1054,7 +1216,7 @@ export class ProfilePageComponent implements OnInit {
       this.email = currentUser.email || '';
       this.phone = currentUser.phone || '';
       this.deliveryAddress = currentUser.address || '';
-      await this.loadCustomerOrders();
+      await Promise.all([this.loadCustomerOrders(), this.loadCustomerReviews()]);
     }
 
     this.route.queryParams.subscribe((params) => {
@@ -1062,6 +1224,8 @@ export class ProfilePageComponent implements OnInit {
         this.activeTab.set('profile');
       } else if (params['tab'] === 'orders') {
         this.activeTab.set('orders');
+      } else if (params['tab'] === 'reviews') {
+        this.switchTab('reviews');
       }
       if (params['code']) {
         void this.viewOrderDetail(params['code']);
@@ -1069,17 +1233,41 @@ export class ProfilePageComponent implements OnInit {
     });
   }
 
-  protected switchTab(tab: 'orders' | 'profile'): void {
+  protected switchTab(tab: 'orders' | 'profile' | 'reviews'): void {
     this.activeTab.set(tab);
     if (tab === 'orders') {
       this.clearSelectedOrder();
+    } else if (tab === 'reviews') {
+      void this.loadCustomerReviews();
+    }
+  }
+
+  protected async loadCustomerReviews(): Promise<void> {
+    const currentUser = this.user();
+    if (!currentUser) {
+      this.customerReviews.set([]);
+      return;
+    }
+    this.isLoadingReviews.set(true);
+    this.reviewsError.set(null);
+    try {
+      const reviews = await this.catalog.customerReviews({
+        customerId: currentUser.customerId ?? currentUser.id,
+        email: currentUser.email,
+      });
+      this.customerReviews.set(reviews);
+    } catch (_error) {
+      void _error;
+      this.reviewsError.set('Lỗi kết nối khi tải danh sách đánh giá.');
+    } finally {
+      this.isLoadingReviews.set(false);
     }
   }
 
   protected readonly activeProcessingOrder = computed<CustomerOrderDto | null>(() => {
     const orders = this.customerOrders();
     const active = orders.find((o) =>
-      ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED', 'PREPARING_COMPONENTS', 'ASSEMBLING', 'TESTING', 'READY_FOR_PICKUP', 'SHIPPING'].includes(
+      ['PENDING_PAYMENT', 'CONFIRMED', 'PREPARING_COMPONENTS', 'ASSEMBLING', 'TESTING', 'READY_FOR_PICKUP', 'SHIPPING'].includes(
         o.status.toUpperCase()
       )
     );
@@ -1179,7 +1367,7 @@ export class ProfilePageComponent implements OnInit {
   }
 
   protected isOrderCancellable(status: string): boolean {
-    return ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED'].includes(status);
+    return ['PENDING_PAYMENT', 'CONFIRMED'].includes(status);
   }
 
   protected showVietQrPayment(order: OrderDetailDto): boolean {

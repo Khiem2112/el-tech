@@ -209,24 +209,7 @@ export class AdminVariantCatalogService {
             },
           },
         },
-        stockQuants: {
-          where: {
-            branch: {
-              isActive: true,
-            },
-          },
-          include: {
-            branch: {
-              select: {
-                id: true,
-                code: true,
-                name: true,
-                address: true,
-                isActive: true,
-              },
-            },
-          },
-        },
+        stockQuant: true,
       },
     });
 
@@ -236,25 +219,23 @@ export class AdminVariantCatalogService {
       let totalQuarantineDamaged = 0;
       let totalAvailable = 0;
 
-      const quants: VariantStockQuantBranchDto[] = variant.stockQuants.map((quant) => {
-        const available = Math.max(0, quant.onHand - quant.reserved - quant.quarantineDamaged);
-        totalOnHand += quant.onHand;
-        totalReserved += quant.reserved;
-        totalQuarantineDamaged += quant.quarantineDamaged;
-        totalAvailable += available;
-
-        return {
-          id: quant.id,
-          branchId: quant.branchId,
-          branchName: quant.branch.name,
-          branchCode: quant.branch.code,
-          branchAddress: quant.branch.address,
-          onHand: quant.onHand,
-          reserved: quant.reserved,
-          quarantineDamaged: quant.quarantineDamaged,
-          available,
-        };
-      });
+      const quants: VariantStockQuantBranchDto[] = variant.stockQuant ? [{
+        id: variant.stockQuant.id,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
+        branchAddress: '280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh',
+        onHand: variant.stockQuant.onHand,
+        reserved: variant.stockQuant.reserved,
+        quarantineDamaged: variant.stockQuant.quarantineDamaged,
+        available: Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved - variant.stockQuant.quarantineDamaged),
+      }] : [];
+      if (variant.stockQuant) {
+        totalOnHand = variant.stockQuant.onHand;
+        totalReserved = variant.stockQuant.reserved;
+        totalQuarantineDamaged = variant.stockQuant.quarantineDamaged;
+        totalAvailable = Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved - variant.stockQuant.quarantineDamaged);
+      }
 
       const imageUrl = extractVariantImageUrl(
         variant.variantSpec,

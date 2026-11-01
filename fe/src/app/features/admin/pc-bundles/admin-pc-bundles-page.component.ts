@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -12,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
-import { AdminBranchService } from '../branches/services/admin-branch.service';
 import { ProductLifecycle } from '../variants/services/admin-variant.service';
 import { PcBundleSheetComponent } from './components/pc-bundle-sheet.component';
 import {
@@ -113,7 +111,7 @@ type ToastNotification = {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
-          <div class="md:col-span-5">
+          <div class="md:col-span-8">
             <label for="bundle-search-query" class="block font-semibold text-muted text-xs uppercase mb-1">
               Tìm Theo Tên Hoặc Mã Slug
             </label>
@@ -139,7 +137,7 @@ type ToastNotification = {
             </div>
           </div>
 
-          <div class="md:col-span-3">
+          <div class="md:col-span-4">
             <label class="block font-semibold text-muted text-xs uppercase mb-1">
               Trạng Thái Vòng Đời
             </label>
@@ -148,18 +146,6 @@ type ToastNotification = {
               [value]="lifecycleFilter()"
               (valueChange)="onLifecycleFilterChange($event)"
               placeholder="Trạng thái vòng đời"
-            />
-          </div>
-
-          <div class="md:col-span-4">
-            <label class="block font-semibold text-muted text-xs uppercase mb-1">
-              Chi Nhánh Tra Cứu Tồn Kho
-            </label>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchId() !== null ? String(selectedBranchId()) : ''"
-              (valueChange)="onBranchFilterChange($event)"
-              placeholder="Toàn bộ chi nhánh"
             />
           </div>
         </div>
@@ -261,25 +247,25 @@ type ToastNotification = {
                       </td>
 
                       <td class="py-3 px-4">
-                        <div class="space-y-0.5">
-                          @for (branch of getDisplayBranches(bundle); track branch.branchId) {
-                            <div class="flex items-center gap-1.5 text-xs">
-                              <span class="text-muted font-medium">{{ branch.branchCode }}:</span>
-                              <strong
-                                [class.text-emerald-600]="branch.buildableCount > 0"
-                                [class.text-destructive]="branch.buildableCount === 0"
-                                class="tabular tabular-nums font-bold"
-                              >
-                                {{ branch.buildableCount }} bộ
-                              </strong>
-                              @if (branch.bottleneckSku) {
-                                <span class="text-muted text-xs truncate max-w-[120px]" title="Giới hạn bởi: {{ branch.bottleneckSku }}">
-                                  (hạn chế: {{ branch.bottleneckSku }})
-                                </span>
-                              }
-                            </div>
-                          }
-                        </div>
+                        @if (getShowroomAvailability(bundle); as showroom) {
+                          <div class="flex items-center gap-1.5 text-xs">
+                            <span class="text-muted font-medium">Showroom:</span>
+                            <strong
+                              [class.text-emerald-600]="showroom.buildableCount > 0"
+                              [class.text-destructive]="showroom.buildableCount === 0"
+                              class="tabular tabular-nums font-bold"
+                            >
+                              {{ showroom.buildableCount }} bộ
+                            </strong>
+                            @if (showroom.bottleneckSku) {
+                              <span class="text-muted text-xs truncate max-w-[120px]" title="Giới hạn bởi: {{ showroom.bottleneckSku }}">
+                                (hạn chế: {{ showroom.bottleneckSku }})
+                              </span>
+                            }
+                          </div>
+                        } @else {
+                          <span class="text-muted text-xs">Chưa có dữ liệu</span>
+                        }
                       </td>
 
                       <td class="py-3 px-4 text-right tabular tabular-nums text-muted whitespace-nowrap">
@@ -431,19 +417,26 @@ type ToastNotification = {
 
                     <div class="p-2.5 bg-surface-alt rounded border border-line space-y-1 text-xs">
                       <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">
-                        Tồn Khả Dụng Toàn Hệ Thống:
+                        Tồn Khả Dụng Tại Showroom EL-TECH:
                       </div>
-                      @for (branch of getDisplayBranches(bundle); track branch.branchId) {
+                      @if (getShowroomAvailability(bundle); as showroom) {
                         <div class="flex items-center justify-between text-xs">
-                          <span class="text-muted">{{ branch.branchName }}:</span>
+                          <span class="text-muted">Khả năng lắp ráp:</span>
                           <span
-                            [class.text-emerald-600]="branch.buildableCount > 0"
-                            [class.text-destructive]="branch.buildableCount === 0"
+                            [class.text-emerald-600]="showroom.buildableCount > 0"
+                            [class.text-destructive]="showroom.buildableCount === 0"
                             class="font-bold tabular tabular-nums"
                           >
-                            {{ branch.buildableCount }} bộ
+                            {{ showroom.buildableCount }} bộ
                           </span>
                         </div>
+                        @if (showroom.bottleneckSku) {
+                          <div class="text-muted text-xs truncate" title="Giới hạn bởi: {{ showroom.bottleneckSku }}">
+                            Hạn chế bởi: {{ showroom.bottleneckSku }}
+                          </div>
+                        }
+                      } @else {
+                        <div class="text-muted text-xs">Chưa có dữ liệu tồn kho</div>
                       }
                     </div>
                   </div>
@@ -521,12 +514,10 @@ export class AdminPcBundlesPageComponent implements OnInit {
   protected readonly onImageError = handleProductImageError;
 
   readonly bundleService = inject(AdminPcBundleService);
-  readonly branchService = inject(AdminBranchService);
 
   readonly currentView = signal<'list' | 'cards'>('list');
   readonly searchQuery = signal<string>('');
   readonly lifecycleFilter = signal<string>('ALL');
-  readonly selectedBranchId = signal<number | null>(null);
 
   readonly isSheetOpen = signal<boolean>(false);
   readonly selectedBundle = signal<AdminPcBundle | null>(null);
@@ -540,16 +531,8 @@ export class AdminPcBundlesPageComponent implements OnInit {
     { value: 'DISCONTINUED', label: 'Ngừng kinh doanh (DISCONTINUED)' },
   ];
 
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Toàn bộ chi nhánh' },
-    ...this.branchService.branches().map((b) => ({ value: String(b.id), label: `${b.name} (${b.code})` })),
-  ]);
-
   ngOnInit(): void {
     this.loadBundles();
-    if (this.branchService.branches().length === 0) {
-      this.branchService.loadBranches().catch(() => {});
-    }
   }
 
   loadBundles(): void {
@@ -557,7 +540,6 @@ export class AdminPcBundlesPageComponent implements OnInit {
     this.bundleService.loadBundles({
       search: this.searchQuery(),
       lifecycleState: lifecycle === 'ALL' ? undefined : (lifecycle as ProductLifecycle),
-      branchId: this.selectedBranchId() ?? undefined,
     });
   }
 
@@ -570,12 +552,6 @@ export class AdminPcBundlesPageComponent implements OnInit {
     this.applyFilters();
   }
 
-  onBranchFilterChange(val: string | number): void {
-    const branchId = val ? Number(val) : null;
-    this.selectedBranchId.set(branchId);
-    this.applyFilters();
-  }
-
   applyFilters(): void {
     this.loadBundles();
   }
@@ -583,7 +559,6 @@ export class AdminPcBundlesPageComponent implements OnInit {
   onResetFilters(): void {
     this.searchQuery.set('');
     this.lifecycleFilter.set('ALL');
-    this.selectedBranchId.set(null);
     this.loadBundles();
   }
 
@@ -621,13 +596,11 @@ export class AdminPcBundlesPageComponent implements OnInit {
     }
   }
 
-  getDisplayBranches(bundle: AdminPcBundle): readonly BranchAvailability[] {
-    const selected = this.selectedBranchId();
-    if (selected) {
-      const found = bundle.branchAvailability.find((b: BranchAvailability) => b.branchId === selected);
-      return found ? [found] : [];
-    }
-    return bundle.branchAvailability;
+  getShowroomAvailability(bundle: AdminPcBundle): BranchAvailability | undefined {
+    return (
+      bundle.branchAvailability.find((b: BranchAvailability) => b.branchId === 1) ??
+      bundle.branchAvailability[0]
+    );
   }
 
   formatCurrency(value: number): string {

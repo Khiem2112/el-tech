@@ -212,7 +212,7 @@ export class AdminProductTemplateService {
             id: true,
             isActive: true,
             sellingPrice: true,
-            stockQuants: {
+            stockQuant: {
               select: {
                 onHand: true,
                 reserved: true,
@@ -236,9 +236,9 @@ export class AdminProductTemplateService {
         if (!maxPrice || variant.sellingPrice.greaterThan(maxPrice)) {
           maxPrice = variant.sellingPrice;
         }
-        for (const quant of variant.stockQuants) {
-          totalOnHand += quant.onHand;
-          totalAvailable += Math.max(0, quant.onHand - quant.reserved);
+        if (variant.stockQuant) {
+          totalOnHand += variant.stockQuant.onHand;
+          totalAvailable += Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved);
         }
       }
 
@@ -295,17 +295,7 @@ export class AdminProductTemplateService {
         },
         variants: {
           include: {
-            stockQuants: {
-              include: {
-                branch: {
-                  select: {
-                    id: true,
-                    code: true,
-                    name: true,
-                  },
-                },
-              },
-            },
+            stockQuant: true,
           },
           orderBy: { id: 'asc' },
         },
@@ -344,22 +334,20 @@ export class AdminProductTemplateService {
       let variantReserved = 0;
       let variantAvailable = 0;
 
-      const quants: VariantStockQuantDetail[] = variant.stockQuants.map((quant) => {
-        const available = Math.max(0, quant.onHand - quant.reserved);
-        variantOnHand += quant.onHand;
-        variantReserved += quant.reserved;
-        variantAvailable += available;
-
-        return {
-          id: quant.id,
-          branchId: quant.branchId,
-          branchName: quant.branch.name,
-          branchCode: quant.branch.code,
-          onHand: quant.onHand,
-          reserved: quant.reserved,
-          available,
-        };
-      });
+      const quants: VariantStockQuantDetail[] = variant.stockQuant ? [{
+        id: variant.stockQuant.id,
+        branchId: 1,
+        branchName: 'Showroom EL-TECH',
+        branchCode: 'STORE-MAIN',
+        onHand: variant.stockQuant.onHand,
+        reserved: variant.stockQuant.reserved,
+        available: Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved),
+      }] : [];
+      if (variant.stockQuant) {
+        variantOnHand = variant.stockQuant.onHand;
+        variantReserved = variant.stockQuant.reserved;
+        variantAvailable = Math.max(0, variant.stockQuant.onHand - variant.stockQuant.reserved);
+      }
 
       overallOnHand += variantOnHand;
       overallAvailable += variantAvailable;
@@ -711,7 +699,7 @@ export class AdminProductTemplateService {
           select: {
             id: true,
             sku: true,
-            stockQuants: {
+            stockQuant: {
               select: { onHand: true },
             },
           },
@@ -729,13 +717,8 @@ export class AdminProductTemplateService {
     const skuIds = template.variants.map((v) => v.id);
     let hasStock = false;
     for (const variant of template.variants) {
-      for (const quant of variant.stockQuants) {
-        if (quant.onHand > 0) {
-          hasStock = true;
-          break;
-        }
-      }
-      if (hasStock) {
+      if (variant.stockQuant && variant.stockQuant.onHand > 0) {
+        hasStock = true;
         break;
       }
     }

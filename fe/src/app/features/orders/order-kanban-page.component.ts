@@ -11,7 +11,6 @@ import { AppIconModule } from '../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../components/atoms/select/select.component';
 
 type KanbanOrderType = 'pc' | 'parts' | 'workstation';
-type KanbanBranch = 'hcm' | 'hn' | 'delivery';
 type KanbanStage = 'pending' | 'preparing' | 'assembling' | 'ready' | 'completed';
 
 type KanbanOrder = {
@@ -24,7 +23,7 @@ type KanbanOrder = {
   thumbnail: string;
   totalAmount: number;
   stage: KanbanStage;
-  branch: KanbanBranch;
+  branch: string;
   branchName: string;
   createdAtText: string;
   technician: {
@@ -39,7 +38,6 @@ type KanbanOrder = {
     metrics?: { label: string; value: string }[];
   };
 };
-
 
 @Component({
   selector: 'app-order-kanban-page',
@@ -102,7 +100,7 @@ type KanbanOrder = {
       <!-- Quick Filter Strip -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 bg-surface-alt p-3.5 rounded-xl border border-line">
         <!-- Search Input -->
-        <div class="lg:col-span-5 relative flex items-center">
+        <div class="lg:col-span-8 relative flex items-center">
           <input
             appInput
             class="w-full text-xs font-medium pl-8"
@@ -120,17 +118,6 @@ type KanbanOrder = {
             (valueChange)="selectedType.set($event)"
             size="sm"
             ariaLabel="Loại đơn hàng"
-          />
-        </div>
-
-        <!-- Branch Select -->
-        <div class="lg:col-span-3">
-          <app-select
-            [options]="branchOptions"
-            [value]="selectedBranch()"
-            (valueChange)="selectedBranch.set($event)"
-            size="sm"
-            ariaLabel="Chi nhánh & Hub"
           />
         </div>
 
@@ -239,12 +226,12 @@ type KanbanOrder = {
               </div>
             </div>
 
-            <!-- Stage 4: Sẵn sàng giao / Hub -->
+            <!-- Stage 4: Sẵn sàng giao / Showroom -->
             <div class="flex flex-col bg-surface-alt/70 p-3 rounded-xl border border-line min-h-[640px]">
               <div class="flex items-center justify-between px-2 py-1.5 mb-3 border-b border-line-dark/60">
                 <div class="flex items-center gap-2">
                   <span class="size-2.5 rounded-full bg-sky-500"></span>
-                  <span class="text-xs font-bold text-foreground">Sẵn sàng / Hub</span>
+                  <span class="text-xs font-bold text-foreground">Sẵn sàng / Showroom</span>
                 </div>
                 <span class="px-2 py-0.5 rounded-full bg-surface text-sky-500 font-bold text-xs border border-line tabular">
                   {{ readyOrders().length }} đơn
@@ -257,7 +244,7 @@ type KanbanOrder = {
                   <div class="rounded-xl border border-dashed border-line bg-surface/50 p-6 text-center space-y-1.5 my-auto">
                     <lucide-icon name="Package" class="size-6 text-muted/60 mx-auto" aria-hidden="true"></lucide-icon>
                     <p class="text-xs font-bold text-foreground">Không có đơn hàng</p>
-                    <p class="text-xs text-muted">Chưa có đơn sẵn sàng tại Hub</p>
+                    <p class="text-xs text-muted">Chưa có đơn sẵn sàng</p>
                   </div>
                 }
               </div>
@@ -374,7 +361,7 @@ type KanbanOrder = {
           </div>
         </div>
 
-        <!-- Context Highlight Block / Assembling Telemetry (KB-01) -->
+        <!-- Context Highlight Block / Assembling Telemetry -->
         @if (item.stage === 'assembling') {
           <div class="bg-surface-dark text-white p-2.5 rounded-lg text-xs space-y-1.5 border border-line-dark">
             <div class="flex items-center justify-between text-primary font-bold">
@@ -504,20 +491,12 @@ export class OrderKanbanPageComponent implements OnInit {
   protected readonly viewMode = signal<'kanban' | 'list'>('kanban');
   protected searchQuery = '';
   protected readonly selectedType = signal('all');
-  protected readonly selectedBranch = signal('all');
 
   protected readonly typeOptions: readonly SelectOption[] = [
     { value: 'all', label: 'Tất cả loại đơn' },
     { value: 'pc', label: 'PC Custom Build' },
     { value: 'parts', label: 'Linh kiện rời' },
     { value: 'workstation', label: 'Workstation & AI Server' },
-  ];
-
-  protected readonly branchOptions: readonly SelectOption[] = [
-    { value: 'all', label: 'Tất cả chi nhánh & Hub' },
-    { value: 'hcm', label: 'Hub TP.HCM (280 3/2, Q.10)' },
-    { value: 'hn', label: 'Hub Hà Nội (45 Thái Hà)' },
-    { value: 'delivery', label: 'Giao tận nơi (Hỏa tốc 2H)' },
   ];
 
   protected readonly isLoading = signal(false);
@@ -544,16 +523,12 @@ export class OrderKanbanPageComponent implements OnInit {
   protected readonly filteredOrders = computed(() => {
     const q = this.searchQuery.trim().toLowerCase();
     const type = this.selectedType();
-    const branch = this.selectedBranch();
 
     return this.orders().filter((order) => {
       if (q && !order.code.toLowerCase().includes(q) && !order.title.toLowerCase().includes(q)) {
         return false;
       }
       if (type !== 'all' && order.type !== type) {
-        return false;
-      }
-      if (branch !== 'all' && order.branch !== branch) {
         return false;
       }
       return true;
@@ -573,7 +548,6 @@ export class OrderKanbanPageComponent implements OnInit {
   protected resetFilters(): void {
     this.searchQuery = '';
     this.selectedType.set('all');
-    this.selectedBranch.set('all');
   }
 
   protected async refreshData(): Promise<void> {

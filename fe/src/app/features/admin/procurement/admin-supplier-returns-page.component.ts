@@ -138,8 +138,8 @@ import {
                       <div class="text-muted text-xs">{{ item.inboundMoveCode ?? 'N/A' }}</div>
                     </td>
                     <td class="py-2.5 px-4">
-                      <div class="text-foreground">{{ item.sourceBranchName ?? 'N/A' }}</div>
-                      <div class="text-muted text-xs tabular">{{ item.sourceBranchCode ?? 'N/A' }}</div>
+                      <div class="text-foreground">{{ item.sourceBranchName || 'Showroom EL-TECH' }}</div>
+                      <div class="text-muted text-xs tabular">{{ item.sourceBranchCode || 'SHOWROOM' }}</div>
                     </td>
                     <td class="py-2.5 px-4 text-center tabular-nums text-foreground font-bold">
                       {{ item.totalQuantity }} chiếc
@@ -223,9 +223,9 @@ import {
                 </div>
                 <div>
                   <span class="text-muted block text-xs uppercase font-semibold">Kho Xuất Trả</span>
-                  <strong class="text-foreground block truncate">{{ selectedDetail()!.sourceBranch?.name ?? 'N/A' }}</strong>
+                  <strong class="text-foreground block truncate">{{ selectedDetail()!.sourceBranch?.name || 'Showroom EL-TECH' }}</strong>
                   <span class="text-muted tabular text-xs block">
-                    {{ selectedDetail()!.sourceBranch?.code ?? '' }}
+                    {{ selectedDetail()!.sourceBranch?.code || 'SHOWROOM' }}
                   </span>
                 </div>
                 <div>

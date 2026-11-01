@@ -212,9 +212,6 @@ export class OrderExceptionService {
 
     if (input.action === 'CANCEL_REFUND') {
       const totalReceived = Number(order.payment?.totalReceived ?? 0);
-      const isCustomPc = order.lines.some(
-        (l) => Boolean(l.pcBuildKey) || l.serviceType === 'ASSEMBLY',
-      );
 
       await prisma.$transaction(async (tx) => {
         const aggregated = new Map<number, number>();
@@ -226,7 +223,7 @@ export class OrderExceptionService {
 
         const skuIds = [...aggregated.keys()];
         const quants = await tx.stockQuant.findMany({
-          where: { branchId: order.fulfillmentBranchId, skuId: { in: skuIds }, isActive: true },
+          where: {  skuId: { in: skuIds }, isActive: true },
         });
 
         let targetMove =
@@ -237,7 +234,7 @@ export class OrderExceptionService {
           targetMove = await tx.stockMove.create({
             data: {
               code: `REL-${order.code}`,
-              sourceBranchId: order.fulfillmentBranchId,
+              
               orderId: order.id,
               idempotencyKey: `rel:${order.id}:${Date.now()}`,
               moveType: StockMoveType.ORDER_ISSUE,
@@ -309,7 +306,7 @@ export class OrderExceptionService {
               where: { id: order.payment.id },
               data: {
                 state: PaymentState.REFUND_PENDING,
-                depositDisposition: isCustomPc ? DepositDisposition.FORFEITED : DepositDisposition.REFUND_PENDING,
+                depositDisposition: null,
               },
             });
 
@@ -697,7 +694,7 @@ export class OrderExceptionService {
 
       const skuIds = [...aggregated.keys()];
       const quants = await tx.stockQuant.findMany({
-        where: { branchId: order.fulfillmentBranchId, skuId: { in: skuIds }, isActive: true },
+        where: {  skuId: { in: skuIds }, isActive: true },
       });
 
       let targetMove =
@@ -708,7 +705,7 @@ export class OrderExceptionService {
         targetMove = await tx.stockMove.create({
           data: {
             code: `REL-${order.code}`,
-            sourceBranchId: order.fulfillmentBranchId,
+            
             orderId: order.id,
             idempotencyKey: `rel:${order.id}:${Date.now()}`,
             moveType: StockMoveType.ORDER_ISSUE,

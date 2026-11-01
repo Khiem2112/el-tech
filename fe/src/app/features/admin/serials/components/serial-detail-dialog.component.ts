@@ -5,7 +5,6 @@ import {
   EventEmitter,
   Input,
   Output,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -16,7 +15,6 @@ import { SelectComponent, SelectOption } from '../../../../components/atoms/sele
 import {
   AdminSerialService,
   SerialDetailResponse,
-  SimpleBranchOption,
 } from '../services/admin-serial.service';
 
 @Component({
@@ -89,13 +87,13 @@ import {
                 </div>
 
                 <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
-                  <span class="text-xs uppercase tracking-wider text-muted block font-semibold">Kho hiện tại</span>
+                  <span class="text-xs uppercase tracking-wider text-muted block font-semibold">Cơ sở quản lý</span>
                   <span class="font-bold text-foreground text-sm">
-                    {{ d.currentBranch?.name ?? 'Chưa phân bổ chi nhánh' }}
+                    {{ d.currentBranch?.name ?? 'Showroom EL-TECH' }}
                   </span>
-                  @if (d.currentBranch) {
-                    <span class="text-xs text-muted tabular block">({{ d.currentBranch.code }})</span>
-                  }
+                  <span class="text-xs text-muted tabular block">
+                    {{ d.currentBranch?.code ? '(' + d.currentBranch.code + ')' : '(STORE-MAIN)' }}
+                  </span>
                 </div>
               </div>
 
@@ -112,7 +110,7 @@ import {
                     </button>
                   </div>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs items-end">
                     <div>
                       <span class="block text-muted mb-1 font-semibold">Trạng thái mới</span>
                       <app-select
@@ -123,16 +121,8 @@ import {
                       />
                     </div>
 
-                    <div>
-                      <span class="block text-muted mb-1 font-semibold">Chi nhánh phân bổ</span>
-                      <app-select
-                        [options]="branchOptions()"
-                        [value]="selectedBranchFilterId()"
-                        (valueChange)="onBranchChange($event)"
-                        [searchable]="true"
-                        searchPlaceholder="Tìm chi nhánh..."
-                        size="md"
-                      />
+                    <div class="h-9 px-3 bg-surface border border-line rounded flex items-center">
+                      <span class="text-xs text-muted">Cơ sở quản lý: <strong class="text-foreground font-semibold">Showroom EL-TECH</strong></span>
                     </div>
                   </div>
 
@@ -269,7 +259,6 @@ export class SerialDetailDialogComponent {
   @Input() isOpen = false;
   @Input() detail: SerialDetailResponse | null = null;
   @Input() isLoading = false;
-  @Input() branches: SimpleBranchOption[] = [];
 
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>();
@@ -277,10 +266,9 @@ export class SerialDetailDialogComponent {
   readonly isAdjustingStatus = signal<boolean>(false);
   readonly isSubmittingAdjustment = signal<boolean>(false);
   readonly adjustmentError = signal<string | null>(null);
-  readonly selectedBranchFilterId = signal<string>('');
 
   newStatus: string = 'AVAILABLE';
-  selectedBranchId: number | null = null;
+  selectedBranchId: number | null = 1;
   adjustmentReason: string = '';
 
   readonly statusAdjustmentOptions: SelectOption[] = [
@@ -292,14 +280,6 @@ export class SerialDetailDialogComponent {
     { value: 'RETURNED_TO_SUPPLIER', label: 'Xuất trả nhà cung cấp' },
   ];
 
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Giữ nguyên chi nhánh' },
-    ...this.branches.map((b) => ({
-      value: String(b.id),
-      label: `${b.name} (${b.code})`,
-    })),
-  ]);
-
   onClose(): void {
     this.isAdjustingStatus.set(false);
     this.close.emit();
@@ -308,17 +288,11 @@ export class SerialDetailDialogComponent {
   openAdjustStatus(): void {
     if (this.detail) {
       this.newStatus = this.detail.status;
-      this.selectedBranchId = this.detail.currentBranch?.id ?? null;
-      this.selectedBranchFilterId.set(this.selectedBranchId ? String(this.selectedBranchId) : '');
+      this.selectedBranchId = 1;
       this.adjustmentReason = '';
       this.adjustmentError.set(null);
       this.isAdjustingStatus.set(true);
     }
-  }
-
-  onBranchChange(val: string): void {
-    this.selectedBranchFilterId.set(val);
-    this.selectedBranchId = val ? Number(val) : null;
   }
 
   async saveStatusAdjustment(serialId: string): Promise<void> {
@@ -329,7 +303,7 @@ export class SerialDetailDialogComponent {
       await this.serialService.updateStatus(
         serialId,
         this.newStatus,
-        this.selectedBranchId ?? undefined,
+        this.selectedBranchId ?? 1,
         this.adjustmentReason.trim() || undefined,
       );
       this.isAdjustingStatus.set(false);

@@ -47,8 +47,10 @@ export const checkoutService = {
       if (item.skuId) quantities.set(item.skuId, (quantities.get(item.skuId) ?? 0) + item.quantity);
     }
     const subtotal = skuItems.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
-    const branches = await prisma.branch.findMany({ where: { isActive: true, ...(input.fulfillmentMethod === 'DELIVERY' && input.deliveryAreaCode ? { deliveryAreaCodes: { has: input.deliveryAreaCode } } : {}) }, include: { stockQuants: { where: { isActive: true, skuId: { in: [...quantities.keys()] } } } }, orderBy: { deliveryPriority: 'asc' } });
-    const candidates = branches.map((branch) => ({ id: branch.id, name: branch.name, available: [...quantities].every(([skuId, quantity]) => { const stock = branch.stockQuants.find((item) => item.skuId === skuId); return Boolean(stock && stock.onHand - stock.reserved - stock.quarantineDamaged >= quantity); }) }));
+    const branches = await prisma.branch.findMany({ where: { isActive: true, ...(input.fulfillmentMethod === 'DELIVERY' && input.deliveryAreaCode ? { deliveryAreaCodes: { has: input.deliveryAreaCode } } : {}) }, orderBy: { deliveryPriority: 'asc' } });
+    const stocks = await prisma.stockQuant.findMany({ where: { isActive: true, skuId: { in: [...quantities.keys()] } } });
+    const isAvailable = [...quantities].every(([skuId, quantity]) => { const stock = stocks.find((item) => item.skuId === skuId); return Boolean(stock && stock.onHand - stock.reserved - stock.quarantineDamaged >= quantity); });
+    const candidates = branches.map((branch) => ({ id: branch.id, name: branch.name, available: isAvailable }));
 
     let couponDiscount = new Prisma.Decimal(0);
     let appliedCouponCode: string | undefined;

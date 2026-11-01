@@ -1,8 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
-import { InTransitTransfersCardComponent } from './components/in-transit-transfers-card.component';
 import { LowStockAlertCardComponent } from './components/low-stock-alert-card.component';
 import { OrderStatusDistributionComponent } from './components/order-status-distribution.component';
 import { SmartBiAnalyticsCardsComponent } from './components/smart-bi-analytics-cards.component';
@@ -19,8 +17,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
     SmartBiAnalyticsCardsComponent,
     OrderStatusDistributionComponent,
     LowStockAlertCardComponent,
-    InTransitTransfersCardComponent,
-    SelectComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -31,18 +27,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
         </h1>
 
         <div class="flex items-center gap-3 flex-wrap">
-          <div class="flex items-center gap-2 text-xs">
-            <span class="text-muted font-medium whitespace-nowrap">Chi nhánh:</span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchValue()"
-              (valueChange)="onBranchSelect($event)"
-              size="sm"
-              class="w-60"
-              ariaLabel="Lọc theo chi nhánh"
-            />
-          </div>
-
           <button
             type="button"
             (click)="onRefresh()"
@@ -85,13 +69,9 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           [selectedBranchId]="dashboardService.selectedBranchId()"
         />
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
           <app-low-stock-alert-card
             [alerts]="dashboardService.lowStockAlerts()"
-            [selectedBranchId]="dashboardService.selectedBranchId()"
-          />
-          <app-in-transit-transfers-card
-            [transfers]="dashboardService.inTransitTransfers()"
             [selectedBranchId]="dashboardService.selectedBranchId()"
           />
         </div>
@@ -114,12 +94,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
               Tra Cứu Tồn Kho
             </a>
             <a
-              routerLink="/admin/inventory/transfers"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
-            >
-              Lập Lệnh Điều Chuyển
-            </a>
-            <a
               routerLink="/admin/procurement/purchase-orders"
               class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
             >
@@ -140,29 +114,8 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
 export class AdminDashboardPageComponent implements OnInit {
   readonly dashboardService = inject(AdminDashboardService);
 
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: 'ALL', label: 'Toàn hệ thống' },
-    ...this.dashboardService.branches().map((branch) => ({
-      value: branch.id.toString(),
-      label: `${branch.code}: ${branch.name}`,
-    })),
-  ]);
-
   async ngOnInit(): Promise<void> {
-    await Promise.all([
-      this.dashboardService.loadBranches(),
-      this.dashboardService.loadDashboard(),
-    ]);
-  }
-
-  selectedBranchValue(): string {
-    const id = this.dashboardService.selectedBranchId();
-    return id !== null ? id.toString() : 'ALL';
-  }
-
-  onBranchSelect(value: string): void {
-    const branchId = value === 'ALL' ? null : Number(value);
-    void this.dashboardService.setSelectedBranch(branchId);
+    await this.dashboardService.loadDashboard();
   }
 
   onRefresh(): void {

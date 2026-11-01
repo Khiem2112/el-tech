@@ -29,6 +29,11 @@ type CancelOrderInput = {
 const asVnd = (value: Prisma.Decimal): string => value.toFixed(0);
 const orderCode = (): string => `ELT-${crypto.randomUUID().replaceAll('-', '').slice(0, 10).toUpperCase()}`;
 
+const TRANSACTION_OPTIONS = {
+  maxWait: 10000,
+  timeout: 30000,
+} as const;
+
 export const orderService = {
   async rescheduleDelivery(orderId: string): Promise<{ code: string; status: string }> {
     return prisma.$transaction(async (tx) => {
@@ -52,7 +57,7 @@ export const orderService = {
         },
       });
       return { code: order.code, status: 'SHIPPING' };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async submit(input: SubmitOrderInput): Promise<{ code: string; status: string; paymentState: string; paymentReference?: string; expectedAmount?: string }> {
@@ -80,29 +85,10 @@ export const orderService = {
         if (item.skuId) quantities.set(item.skuId, (quantities.get(item.skuId) ?? 0) + item.quantity);
       }
 
-      let branch: { id: number; name: string; address: string };
-      if (input.fulfillmentMethod === 'DELIVERY') {
-        const eligibleBranches = await tx.branch.findMany({
-          where: { isActive: true, ...(input.deliveryAreaCode ? { deliveryAreaCodes: { has: input.deliveryAreaCode } } : {}) },
-          include: { stockQuants: { where: { isActive: true, skuId: { in: [...quantities.keys()] } } } },
-          orderBy: { deliveryPriority: 'asc' },
-        });
-        const bestBranch = eligibleBranches.find((candidate) =>
-          [...quantities].every(([skuId, quantity]) => {
-            const stock = candidate.stockQuants.find((entry) => entry.skuId === skuId);
-            return Boolean(stock && stock.onHand - stock.reserved - stock.quarantineDamaged >= quantity);
-          })
-        );
-        if (!bestBranch) throw new DomainError('NO_FULFILLMENT_BRANCH', { ruleId: 'CHK-012', messageKey: 'error.noFulfillmentBranch', status: 409 });
-        branch = bestBranch;
-      } else {
-        if (!input.branchId) throw new DomainError('BRANCH_REQUIRED', { ruleId: 'CHK-004', messageKey: 'error.branchRequired', status: 400 });
-        const selectedBranch = await tx.branch.findFirst({ where: { id: input.branchId, isActive: true } });
-        if (!selectedBranch) throw new DomainError('BRANCH_NOT_AVAILABLE', { messageKey: 'error.branchNotAvailable', status: 409 });
-        branch = selectedBranch;
-      }
+      const branch = await tx.branch.findFirst({ where: { isActive: true }, orderBy: { id: 'asc' } });
+      if (!branch) throw new DomainError('STORE_NOT_AVAILABLE', { messageKey: 'error.storeNotAvailable', status: 503 });
 
-      const stocks = await tx.stockQuant.findMany({ where: { branchId: branch.id, skuId: { in: [...quantities.keys()] }, isActive: true } });
+      const stocks = await tx.stockQuant.findMany({ where: { skuId: { in: [...quantities.keys()] }, isActive: true } });
       if ([...quantities].some(([skuId, quantity]) => { const stock = stocks.find((entry) => entry.skuId === skuId); return !stock || stock.onHand - stock.reserved - stock.quarantineDamaged < quantity; })) throw new DomainError('INSUFFICIENT_STOCK', { ruleId: 'INV-004', messageKey: 'error.insufficientStock', status: 409 });
 
       const subtotal = cart.items.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
@@ -210,13 +196,13 @@ export const orderService = {
 
       const depositRequired = new Prisma.Decimal(0);
       let codRemaining = new Prisma.Decimal(0);
-      let status: 'PENDING_PAYMENT' | 'PENDING_COD_CONFIRMATION' = 'PENDING_COD_CONFIRMATION';
+      let status: 'PENDING_PAYMENT' | 'CONFIRMED' = 'CONFIRMED';
 
       if (input.paymentMethod === 'QR') {
         status = 'PENDING_PAYMENT';
         codRemaining = new Prisma.Decimal(0);
       } else {
-        status = 'PENDING_COD_CONFIRMATION';
+        status = 'CONFIRMED';
         codRemaining = grandTotal;
       }
 
@@ -286,15 +272,16 @@ export const orderService = {
         paymentReference = `QR-${order.code}`;
         expectedChargeAmount = grandTotal;
         await tx.paymentCharge.create({ data: { paymentId: payment.id, idempotencyKey: input.idempotencyKey, chargeType: 'INITIAL_ORDER', providerReference: paymentReference, expectedAmount: grandTotal, expiresAt: new Date(Date.now() + 30 * 60_000) } });
-        const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, sourceBranchId: branch.id, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: new Date(Date.now() + 30 * 60_000), reservedAt: new Date() } });
-        for (const [skuId, quantity] of quantities) {
-          const stock = stocks.find((entry) => entry.skuId === skuId)!;
-          const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
-          if (updated.count !== 1) throw new DomainError('STOCK_CHANGED', { ruleId: 'INV-006', messageKey: 'error.stockChanged', retryable: true, status: 409 });
-          const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
-          const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
-          await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: after.onHand, reservedAfter: after.reserved, quarantineAfter: after.quarantineDamaged, actorType: ActorType.CUSTOMER } });
-        }
+      }
+
+      const move = await tx.stockMove.create({ data: { code: `RES-${order.code}`, orderId: order.id, idempotencyKey: `reserve:${order.id}`, moveType: 'ORDER_ISSUE', status: 'RESERVED', expiresAt: input.paymentMethod === 'QR' ? new Date(Date.now() + 30 * 60_000) : null, reservedAt: new Date() } });
+      for (const [skuId, quantity] of quantities) {
+        const stock = stocks.find((entry) => entry.skuId === skuId)!;
+        const updated = await tx.stockQuant.updateMany({ where: { id: stock.id, version: stock.version }, data: { reserved: { increment: quantity }, version: { increment: 1 } } });
+        if (updated.count !== 1) throw new DomainError('STOCK_CHANGED', { ruleId: 'INV-006', messageKey: 'error.stockChanged', retryable: true, status: 409 });
+
+        const moveLine = await tx.stockMoveLine.create({ data: { stockMoveId: move.id, skuId, quantity, unitCost: stock.weightedAverageCost } });
+        await tx.stockLedgerEntry.create({ data: { stockQuantId: stock.id, stockMoveLineId: moveLine.id, entryType: 'RESERVE', deltaReserved: quantity, onHandAfter: stock.onHand, reservedAfter: stock.reserved + quantity, quarantineAfter: stock.quarantineDamaged, actorType: ActorType.CUSTOMER } });
       }
 
       if (appliedCoupon) {
@@ -311,7 +298,7 @@ export const orderService = {
       await tx.orderStatusHistory.create({ data: { orderId: order.id, previousStatus: status, nextStatus: status, reason: 'ORDER_SUBMITTED', actorType: ActorType.CUSTOMER, idempotencyKey: `status:${order.id}` } });
       await tx.cart.update({ where: { id: cart.id }, data: { isActive: false } });
       return { code: order.code, status: order.status, paymentState: payment.state, paymentReference, expectedAmount: expectedChargeAmount ? asVnd(expectedChargeAmount) : undefined };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async cancel(input: CancelOrderInput): Promise<{ code: string; status: string; paymentState: string }> {
@@ -368,29 +355,27 @@ export const orderService = {
         }
       }
 
-      const eligibleStatuses = ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED'];
+      const eligibleStatuses = ['PENDING_PAYMENT', 'CONFIRMED'];
       if (!eligibleStatuses.includes(order.status)) {
         throw new DomainError('ORDER_NOT_CANCELLABLE', { ruleId: 'ORD-015', messageKey: 'error.orderNotCancellable', status: 409 });
       }
 
       for (const move of order.stockMoves) {
-        if (!move.sourceBranchId) continue;
-        const sourceBranchId = move.sourceBranchId;
         await tx.stockMove.update({ where: { id: move.id }, data: { status: 'CANCELLED' } });
         for (const moveLine of move.lines) {
-          const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
+          const stock = await tx.stockQuant.findFirst({ where: { skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
-            const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+    
             await tx.stockLedgerEntry.create({
               data: {
                 stockQuantId: stock.id,
                 stockMoveLineId: moveLine.id,
                 entryType: 'RELEASE_RESERVATION',
                 deltaReserved: -moveLine.quantity,
-                onHandAfter: after.onHand,
-                reservedAfter: after.reserved,
-                quarantineAfter: after.quarantineDamaged,
+                onHandAfter: stock.onHand,
+                reservedAfter: Math.max(0, stock.reserved - moveLine.quantity),
+                quarantineAfter: stock.quarantineDamaged,
                 actorType: ActorType.CUSTOMER,
               },
             });
@@ -412,7 +397,7 @@ export const orderService = {
           where: { id: order.payment.id },
           data: {
             state: 'REFUND_PENDING',
-            depositDisposition: order.payment.depositDisposition ? 'REFUND_PENDING' : null,
+            depositDisposition: null,
           },
         });
         await tx.refund.create({
@@ -461,7 +446,7 @@ export const orderService = {
       });
 
       return { code: order.code, status: 'CANCELLED', paymentState: nextPaymentState };
-    });
+    }, TRANSACTION_OPTIONS);
   },
 
   async expireOrderIfOverdue(orderId: string): Promise<boolean> {
@@ -494,23 +479,21 @@ export const orderService = {
       }
 
       for (const move of freshOrder.stockMoves) {
-        if (!move.sourceBranchId) continue;
-        const sourceBranchId = move.sourceBranchId;
         await tx.stockMove.update({ where: { id: move.id }, data: { status: 'CANCELLED' } });
         for (const moveLine of move.lines) {
-          const stock = await tx.stockQuant.findFirst({ where: { branchId: sourceBranchId, skuId: moveLine.skuId, isActive: true } });
+          const stock = await tx.stockQuant.findFirst({ where: { skuId: moveLine.skuId, isActive: true } });
           if (stock) {
             await tx.stockQuant.update({ where: { id: stock.id }, data: { reserved: { decrement: moveLine.quantity }, version: { increment: 1 } } });
-            const after = await tx.stockQuant.findUniqueOrThrow({ where: { id: stock.id } });
+    
             await tx.stockLedgerEntry.create({
               data: {
                 stockQuantId: stock.id,
                 stockMoveLineId: moveLine.id,
                 entryType: 'RELEASE_RESERVATION',
                 deltaReserved: -moveLine.quantity,
-                onHandAfter: after.onHand,
-                reservedAfter: after.reserved,
-                quarantineAfter: after.quarantineDamaged,
+                onHandAfter: stock.onHand,
+                reservedAfter: Math.max(0, stock.reserved - moveLine.quantity),
+                quarantineAfter: stock.quarantineDamaged,
                 actorType: ActorType.SYSTEM,
               },
             });
@@ -591,12 +574,12 @@ export const orderService = {
 
     const stageMap: Record<string, string> = {
       PENDING_PAYMENT: 'pending',
-      PENDING_COD_CONFIRMATION: 'pending',
       CONFIRMED: 'preparing',
       PREPARING_COMPONENTS: 'preparing',
       ASSEMBLING: 'assembling',
       READY_FOR_PICKUP: 'ready',
       SHIPPING: 'ready',
+      DELIVERY_FAILED: 'ready',
       COMPLETED: 'completed',
       CANCELLED: 'cancelled',
     };
@@ -628,8 +611,8 @@ export const orderService = {
         thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=400&q=80',
         totalAmount: Number(o.grandTotal),
         stage: stage === 'cancelled' ? 'completed' : stage,
-        branch: o.fulfillmentBranch?.code === 'BRANCH-HN' ? 'hn' : 'hcm',
-        branchName: o.fulfillmentBranch?.name || 'Hub Quận 10, TP.HCM',
+        branch: 'store-main',
+        branchName: o.fulfillmentBranch?.name || 'Showroom EL-TECH',
         createdAtText: new Date(o.createdAt).toLocaleDateString('vi-VN'),
         technician: {
           initials: 'NV',

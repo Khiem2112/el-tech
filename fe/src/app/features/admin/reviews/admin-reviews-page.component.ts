@@ -34,7 +34,7 @@ type ToastNotification = {
             Đánh Giá Sản Phẩm
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Kiểm duyệt và quản lý hiển thị đánh giá từ khách hàng
+            Theo dõi ý kiến phản hồi và đánh giá sản phẩm từ người dùng
           </p>
         </div>
       </div>
@@ -162,8 +162,8 @@ type ToastNotification = {
                           type="button"
                           (click)="openDetailDialog(rev)"
                           class="inline-flex items-center justify-center p-1.5 rounded-md hover:bg-surface-alt text-muted hover:text-primary transition-colors cursor-pointer"
-                          title="Chi tiết & Kiểm duyệt"
-                          aria-label="Xem chi tiết và kiểm duyệt nhận xét đánh giá"
+                          title="Xem chi tiết"
+                          aria-label="Xem chi tiết nhận xét đánh giá"
                         >
                           <lucide-icon name="file-text" class="size-4" aria-hidden="true"></lucide-icon>
                         </button>
@@ -209,7 +209,6 @@ type ToastNotification = {
         <app-review-detail-dialog
           [review]="selectedReview()!"
           (closed)="closeDetailDialog()"
-          (visibilityChanged)="onReviewVisibilityChanged($event)"
         />
       }
 
@@ -307,14 +306,6 @@ export class AdminReviewsPageComponent implements OnInit {
 
   closeDetailDialog(): void {
     this.selectedReview.set(null);
-  }
-
-  onReviewVisibilityChanged(updated: AdminReviewItem): void {
-    this.selectedReview.set(null);
-    const actionText = updated.isVisible
-      ? 'Đã phục hồi hiển thị đánh giá thành công'
-      : 'Đã ẩn đánh giá và ghi nhận lý do kiểm toán';
-    this.addToast(actionText, 'success');
   }
 
   addToast(message: string, type: 'success' | 'error' | 'warning'): void {

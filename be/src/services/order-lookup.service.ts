@@ -87,7 +87,7 @@ const serialize = (order: OrderRecord): SerializedOrder => {
   const pendingCharge = order.payment?.charges.find((c) => c.status === 'PENDING');
   const deliverySnapshot = order.deliveryAddressSnapshot as { address?: string } | null;
   const branchSnapshot = order.branchSnapshot as { id: number; name: string; address: string } | null;
-  const cancellable = ['PENDING_PAYMENT', 'PENDING_COD_CONFIRMATION', 'CONFIRMED'].includes(order.status);
+  const cancellable = ['PENDING_PAYMENT', 'CONFIRMED'].includes(order.status);
 
   return {
     code: order.code,

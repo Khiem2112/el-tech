@@ -67,8 +67,7 @@ export type CancelOrderPayload = {
                 </span>
                 <p class="text-muted leading-relaxed">
                   Đơn hàng được phép tự hủy trực tuyến khi ở trạng thái
-                  <strong class="text-foreground">PENDING_PAYMENT</strong>,
-                  <strong class="text-foreground">PENDING_COD_CONFIRMATION</strong> hoặc
+                  <strong class="text-foreground">PENDING_PAYMENT</strong> hoặc
                   <strong class="text-foreground">CONFIRMED</strong> trước khi chuyên viên kỹ thuật tiến hành bóc seal linh kiện.
                 </p>
               </div>
@@ -81,7 +80,7 @@ export type CancelOrderPayload = {
                   Chính sách hoàn tiền 100% (ORD-014)
                 </span>
                 <p class="text-muted leading-relaxed">
-                  Số tiền đã thanh toán hoặc tiền cọc sẽ được hoàn trả 100% (<strong class="text-foreground tabular">{{ totalAmount() | vnd }}</strong>)
+                  Số tiền đã thanh toán sẽ được hoàn trả 100% (<strong class="text-foreground tabular">{{ totalAmount() | vnd }}</strong>)
                   vào tài khoản gốc trong vòng 24 giờ làm việc theo quy trình đối soát không thu phí giao dịch.
                 </p>
               </div>

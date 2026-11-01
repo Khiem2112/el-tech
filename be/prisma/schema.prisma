@@ -165,18 +165,12 @@ enum RefundStatus {
 enum StockMoveType {
   PURCHASE_RECEIPT
   ORDER_ISSUE
-  ORDER_REVERSAL
-  INTERNAL_TRANSFER
-  SUPPLIER_RETURN
-  INTERNAL_CORRECTION
 }
 
 enum StockMoveStatus {
   DRAFT
   RESERVED
-  IN_TRANSIT
   VALIDATED
-  REVERSED
   CANCELLED
 }
 
@@ -185,21 +179,15 @@ enum StockLedgerEntryType {
   RELEASE_RESERVATION
   PURCHASE_RECEIPT
   ORDER_ISSUE
-  TRANSFER_OUT
-  TRANSFER_IN
-  SUPPLIER_RETURN
   QUARANTINE
   RELEASE_QUARANTINE
-  REVERSAL
 }
 
 enum SerialStatus {
   AVAILABLE
   RESERVED
   ISSUED
-  IN_TRANSIT
   QUARANTINED
-  RETURNED_TO_SUPPLIER
 }
 
 enum PurchaseOrderStatus {
@@ -413,7 +401,7 @@ model ProductVariant {
   promotionTargets   PromotionSku[]
   couponRules        CouponSkuRule[]
   orderLines         OrderLine[]
-  stockQuants        StockQuant[]
+  stockQuant         StockQuant?
   stockMoveLines     StockMoveLine[]
   serialUnits        SerialUnit[]
   purchaseOrderLines PurchaseOrderLine[]
@@ -529,10 +517,6 @@ model Branch {
 
   coupons               Coupon[]
   orders                Order[]
-  stockQuants           StockQuant[]
-  sourceStockMoves      StockMove[]     @relation("StockMoveSourceBranch")
-  destinationStockMoves StockMove[]     @relation("StockMoveDestinationBranch")
-  serialUnits           SerialUnit[]
   purchaseOrders        PurchaseOrder[]
 
   isActive  Boolean  @default(true) @map("is_active")
@@ -943,15 +927,13 @@ model CodCollection {
 /// on_hand - reserved - quarantine_damaged >= 0.
 model StockQuant {
   id                  String  @id @default(uuid()) @db.Uuid
-  branchId            Int     @map("branch_id")
-  skuId               Int     @map("sku_id")
+  skuId               Int     @unique @map("sku_id")
   onHand              Int     @default(0) @map("on_hand")
   reserved            Int     @default(0)
   quarantineDamaged   Int     @default(0) @map("quarantine_damaged")
   weightedAverageCost Decimal @default(0) @map("weighted_average_cost") @db.Decimal(12, 2)
   version             Int     @default(0)
 
-  branch        Branch             @relation(fields: [branchId], references: [id], onDelete: Restrict)
   sku           ProductVariant     @relation(fields: [skuId], references: [id], onDelete: Restrict)
   ledgerEntries StockLedgerEntry[]
 
@@ -959,9 +941,7 @@ model StockQuant {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  @@unique([branchId, skuId])
   @@index([skuId])
-  @@index([branchId, isActive])
   @@map("stock_quant")
 }
 
@@ -969,41 +949,31 @@ model StockQuant {
 /// ORDER_ISSUE in RESERVED state is the order reservation; validating that same
 /// move consumes the reservation and issues stock.
 model StockMove {
-  id                  String          @id @default(uuid()) @db.Uuid
-  code                String          @unique
-  sourceBranchId      Int?            @map("source_branch_id")
-  destinationBranchId Int?            @map("destination_branch_id")
-  orderId             String?         @map("order_id") @db.Uuid
-  purchaseOrderId     String?         @unique @map("purchase_order_id") @db.Uuid
-  reversalOfMoveId    String?         @map("reversal_of_move_id") @db.Uuid
-  idempotencyKey      String          @unique @map("idempotency_key")
-  moveType            StockMoveType   @map("move_type")
-  status              StockMoveStatus @default(DRAFT)
-  reason              String?
-  expiresAt           DateTime?       @map("expires_at") @db.Timestamptz(3)
-  reservedAt          DateTime?       @map("reserved_at") @db.Timestamptz(3)
-  dispatchedAt        DateTime?       @map("dispatched_at") @db.Timestamptz(3)
-  validatedAt         DateTime?       @map("validated_at") @db.Timestamptz(3)
-  cancelledAt         DateTime?       @map("cancelled_at") @db.Timestamptz(3)
-  dispatchedById      String?         @map("dispatched_by_id") @db.Uuid
-  validatedById       String?         @map("validated_by_id") @db.Uuid
+  id              String          @id @default(uuid()) @db.Uuid
+  code            String          @unique
+  orderId         String?         @map("order_id") @db.Uuid
+  purchaseOrderId String?         @unique @map("purchase_order_id") @db.Uuid
+  idempotencyKey  String          @unique @map("idempotency_key")
+  moveType        StockMoveType   @map("move_type")
+  status          StockMoveStatus @default(DRAFT)
+  reason          String?
+  expiresAt       DateTime?       @map("expires_at") @db.Timestamptz(3)
+  reservedAt      DateTime?       @map("reserved_at") @db.Timestamptz(3)
+  dispatchedAt    DateTime?       @map("dispatched_at") @db.Timestamptz(3)
+  validatedAt     DateTime?       @map("validated_at") @db.Timestamptz(3)
+  cancelledAt     DateTime?       @map("cancelled_at") @db.Timestamptz(3)
+  dispatchedById  String?         @map("dispatched_by_id") @db.Uuid
+  validatedById   String?         @map("validated_by_id") @db.Uuid
 
-  sourceBranch      Branch?         @relation("StockMoveSourceBranch", fields: [sourceBranchId], references: [id], onDelete: Restrict)
-  destinationBranch Branch?         @relation("StockMoveDestinationBranch", fields: [destinationBranchId], references: [id], onDelete: Restrict)
-  order             Order?          @relation(fields: [orderId], references: [id], onDelete: Restrict)
-  purchaseOrder     PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id], onDelete: Restrict)
-  reversalOfMove    StockMove?      @relation("StockMoveReversal", fields: [reversalOfMoveId], references: [id], onDelete: Restrict)
-  reversalMoves     StockMove[]     @relation("StockMoveReversal")
-  lines             StockMoveLine[]
+  order         Order?          @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  purchaseOrder PurchaseOrder?  @relation(fields: [purchaseOrderId], references: [id], onDelete: Restrict)
+  lines         StockMoveLine[]
 
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  @@index([sourceBranchId, status])
-  @@index([destinationBranchId, status])
   @@index([orderId, moveType])
-  @@index([reversalOfMoveId])
   @@index([moveType, status])
   @@index([status, expiresAt])
   @@map("stock_move")
@@ -1012,17 +982,14 @@ model StockMove {
 /// One planned SKU quantity inside a StockMove. This plays the role of Odoo's
 /// stock.move; SerialMovement provides the serial-level execution details.
 model StockMoveLine {
-  id                 String  @id @default(uuid()) @db.Uuid
-  stockMoveId        String  @map("stock_move_id") @db.Uuid
-  skuId              Int     @map("sku_id")
-  originalMoveLineId String? @map("original_move_line_id") @db.Uuid
-  quantity           Int
-  unitCost           Decimal @default(0) @map("unit_cost") @db.Decimal(12, 2)
+  id          String  @id @default(uuid()) @db.Uuid
+  stockMoveId String  @map("stock_move_id") @db.Uuid
+  skuId       Int     @map("sku_id")
+  quantity    Int
+  unitCost    Decimal @default(0) @map("unit_cost") @db.Decimal(12, 2)
 
   stockMove           StockMove          @relation(fields: [stockMoveId], references: [id], onDelete: Restrict)
   sku                 ProductVariant     @relation(fields: [skuId], references: [id], onDelete: Restrict)
-  originalMoveLine    StockMoveLine?     @relation("StockMoveLineReversal", fields: [originalMoveLineId], references: [id], onDelete: Restrict)
-  reversalLines       StockMoveLine[]    @relation("StockMoveLineReversal")
   ledgerEntries       StockLedgerEntry[]
   serialMovements     SerialMovement[]
   receivedSerialUnits SerialUnit[]       @relation("SerialUnitOrigin")
@@ -1031,7 +998,6 @@ model StockMoveLine {
 
   @@unique([stockMoveId, skuId])
   @@index([skuId])
-  @@index([originalMoveLineId])
   @@map("stock_move_line")
 }
 
@@ -1065,13 +1031,11 @@ model StockLedgerEntry {
 model SerialUnit {
   id                    String       @id @default(uuid()) @db.Uuid
   skuId                 Int          @map("sku_id")
-  currentBranchId       Int?         @map("current_branch_id")
   originStockMoveLineId String       @map("origin_stock_move_line_id") @db.Uuid
   serialNumber          String       @unique @map("serial_number")
   status                SerialStatus
 
   sku                 ProductVariant   @relation(fields: [skuId], references: [id], onDelete: Restrict)
-  currentBranch       Branch?          @relation(fields: [currentBranchId], references: [id], onDelete: Restrict)
   originStockMoveLine StockMoveLine    @relation("SerialUnitOrigin", fields: [originStockMoveLineId], references: [id], onDelete: Restrict)
   movements           SerialMovement[]
 
@@ -1080,7 +1044,6 @@ model SerialUnit {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@index([skuId, status])
-  @@index([currentBranchId, status])
   @@index([originStockMoveLineId])
   @@map("serial_unit")
 }
@@ -1089,8 +1052,6 @@ model SerialMovement {
   id              String       @id @default(uuid()) @db.Uuid
   serialUnitId    String       @map("serial_unit_id") @db.Uuid
   stockMoveLineId String       @map("stock_move_line_id") @db.Uuid
-  fromBranchId    Int?         @map("from_branch_id")
-  toBranchId      Int?         @map("to_branch_id")
   resultingStatus SerialStatus @map("resulting_status")
   occurredAt      DateTime     @default(now()) @map("occurred_at") @db.Timestamptz(3)
 

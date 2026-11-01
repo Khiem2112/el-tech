@@ -18,16 +18,6 @@ import {
   InventoryBalanceItem,
 } from './services/admin-inventory.service';
 
-export type InventoryRegionCluster = {
-  name: string;
-  regionKey: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'OTHER';
-  branchCodes: string;
-  totalSkus: number;
-  totalAvailable: number;
-  totalValue: number;
-  items: InventoryBalanceItem[];
-};
-
 @Component({
   selector: 'app-admin-inventory-balances-page',
   standalone: true,
@@ -46,10 +36,10 @@ export type InventoryRegionCluster = {
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
-            Tồn Kho Chi Nhánh
+            Quản Lý Tồn Kho Tập Trung
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Giám sát số dư tồn kho đa trạng thái và giá vốn WAC theo từng chi nhánh
+            Giám sát số dư tồn kho đa trạng thái và giá vốn WAC tại Showroom EL-TECH
           </p>
         </div>
 
@@ -112,14 +102,7 @@ export type InventoryRegionCluster = {
             >
               + Cách ly lỗi
             </button>
-            <button
-              type="button"
-              (click)="toggleGroupByRegion()"
-              class="px-3 py-1.5 border rounded font-semibold text-xs whitespace-nowrap shadow-xs transition-colors"
-              [ngClass]="isGroupByRegion() ? 'bg-primary text-primary-foreground border-primary font-bold' : 'bg-surface hover:bg-surface-alt text-foreground border-line'"
-            >
-              {{ isGroupByRegion() ? 'Chế độ xem phẳng' : 'Gom nhóm vùng miền' }}
-            </button>
+
             <span class="inline-flex items-center gap-1.5 text-xs text-muted ml-2">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Còn hàng (>5)
             </span>
@@ -132,9 +115,9 @@ export type InventoryRegionCluster = {
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
-          <div class="relative">
-            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+          <div class="relative sm:col-span-1">
+            <label for="search-input" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm linh kiện</label>
             <div class="relative">
               <input
                 id="search-input"
@@ -148,18 +131,6 @@ export type InventoryRegionCluster = {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-          </div>
-
-          <div>
-            <span class="block text-xs font-semibold text-muted uppercase mb-1">Chi nhánh</span>
-            <app-select
-              [options]="branchOptions()"
-              [value]="selectedBranchFilterId()"
-              (valueChange)="onBranchFilterChange($event)"
-              [searchable]="true"
-              searchPlaceholder="Tìm chi nhánh..."
-              size="md"
-            />
           </div>
 
           <div>
@@ -220,7 +191,6 @@ export type InventoryRegionCluster = {
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Mã SKU</th>
                   <th class="py-3 px-4">Tên linh kiện</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Chi nhánh</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Thực tế</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Đang giữ</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Cách ly</th>
@@ -231,30 +201,8 @@ export type InventoryRegionCluster = {
                 </tr>
               </thead>
               <tbody class="divide-y divide-line text-sm text-foreground">
-                @if (isGroupByRegion()) {
-                  @for (cluster of regionClusters(); track cluster.regionKey) {
-                    <tr class="bg-surface-alt/90 border-y border-line">
-                      <td colspan="10" class="py-2.5 px-4">
-                        <div class="flex items-center justify-between text-xs flex-wrap gap-2">
-                          <span class="font-bold text-foreground uppercase tracking-wider">
-                            {{ cluster.name }} ({{ cluster.branchCodes }})
-                          </span>
-                          <div class="flex items-center gap-4 text-xs text-muted">
-                            <span>{{ cluster.totalSkus }} SKU</span>
-                            <span>Khả dụng: <strong class="text-emerald-700 font-bold">{{ cluster.totalAvailable }} chiếc</strong></span>
-                            <span>Giá trị tồn: <strong class="text-foreground font-bold">{{ formatCurrency(cluster.totalValue) }}</strong></span>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    @for (item of cluster.items; track item.id) {
-                      <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"></ng-container>
-                    }
-                  }
-                } @else {
-                  @for (item of inventoryService.balances(); track item.id) {
-                    <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"></ng-container>
-                  }
+                @for (item of inventoryService.balances(); track item.id) {
+                  <ng-container *ngTemplateOutlet="rowTemplate; context: { $implicit: item }"></ng-container>
                 }
               </tbody>
             </table>
@@ -281,11 +229,6 @@ export type InventoryRegionCluster = {
                     &bull; <span class="text-foreground">{{ item.variationLabel }}</span>
                   }
                 </div>
-              </td>
-
-              <td class="py-3 px-4 whitespace-nowrap">
-                <div class="font-semibold text-foreground">{{ item.branchName }}</div>
-                <div class="text-xs text-muted tabular">{{ item.branchCode }}</div>
               </td>
 
               <td class="py-3 px-4 text-right font-bold text-foreground tabular tabular-nums whitespace-nowrap">
@@ -316,25 +259,6 @@ export type InventoryRegionCluster = {
 
               <td class="py-3 px-4 text-right whitespace-nowrap shrink-0">
                 <div class="flex items-center justify-end gap-1.5 whitespace-nowrap shrink-0">
-                  <a
-                    [routerLink]="['/admin/inventory/transfers']"
-                    [queryParams]="{ action: 'create', skuId: item.skuId, sourceBranchId: item.branchId }"
-                    appButton
-                    variant="secondary"
-                    size="sm"
-                    class="h-8 px-2 text-xs font-semibold inline-flex items-center gap-1 text-primary-strong hover:border-primary/50"
-                    title="Tạo yêu cầu chuyển kho cho linh kiện này"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M1 11h7V7H4L1 9.5V11z"/>
-                      <circle cx="3" cy="13" r="1"/>
-                      <circle cx="6.5" cy="13" r="1"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M23 16h-7v-4h3l3 2v2z"/>
-                      <circle cx="17.5" cy="18" r="1"/>
-                      <circle cx="21" cy="18" r="1"/>
-                    </svg>
-                    <span>Chuyển kho</span>
-                  </a>
 
                   <button
                     type="button"
@@ -365,7 +289,7 @@ export type InventoryRegionCluster = {
 
                   <a
                     [routerLink]="['/admin/inventory/ledger']"
-                    [queryParams]="{ search: item.sku, branchId: item.branchId }"
+                    [queryParams]="{ search: item.sku }"
                     appButton
                     variant="outline"
                     size="sm"
@@ -450,7 +374,6 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly searchQuery = signal<string>('');
-  readonly selectedBranchFilterId = signal<string>('');
   readonly selectedCategoryFilterId = signal<string>('');
   readonly selectedStockStatus = signal<string>('ALL');
 
@@ -459,75 +382,9 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
 
   readonly isQuarantineModalOpen = signal<boolean>(false);
   readonly selectedQuarantineQuant = signal<InventoryBalanceItem | null>(null);
-  readonly isGroupByRegion = signal<boolean>(false);
   readonly toastMessage = signal<string | null>(null);
 
   readonly summary = computed(() => this.inventoryService.balancesSummary());
-
-  readonly regionClusters = computed<InventoryRegionCluster[]>(() => {
-    const items = this.inventoryService.balances();
-    const northItems: InventoryBalanceItem[] = [];
-    const centralItems: InventoryBalanceItem[] = [];
-    const southItems: InventoryBalanceItem[] = [];
-    const otherItems: InventoryBalanceItem[] = [];
-
-    for (const item of items) {
-      const text = `${item.branchCode} ${item.branchName} ${item.branchAddress}`.toUpperCase();
-      if (text.includes('HN') || text.includes('HÀ NỘI') || text.includes('HA NOI')) {
-        northItems.push(item);
-      } else if (text.includes('DN') || text.includes('ĐÀ NẴNG') || text.includes('DA NANG')) {
-        centralItems.push(item);
-      } else if (
-        text.includes('HCM') ||
-        text.includes('SG') ||
-        text.includes('HỒ CHÍ MINH') ||
-        text.includes('HO CHI MINH')
-      ) {
-        southItems.push(item);
-      } else {
-        otherItems.push(item);
-      }
-    }
-
-    const clusters: InventoryRegionCluster[] = [];
-
-    const buildCluster = (
-      name: string,
-      regionKey: 'NORTH' | 'CENTRAL' | 'SOUTH' | 'OTHER',
-      clusterItems: InventoryBalanceItem[],
-    ): InventoryRegionCluster => {
-      const codes = Array.from(new Set(clusterItems.map((i) => i.branchCode))).join(', ');
-      const totalAvailable = clusterItems.reduce((acc, i) => acc + i.available, 0);
-      const totalValue = clusterItems.reduce(
-        (acc, i) => acc + (parseFloat(i.weightedAverageCost) || 0) * i.onHand,
-        0,
-      );
-      return {
-        name,
-        regionKey,
-        branchCodes: codes || 'Toàn vùng',
-        totalSkus: clusterItems.length,
-        totalAvailable,
-        totalValue,
-        items: clusterItems,
-      };
-    };
-
-    if (northItems.length > 0) {
-      clusters.push(buildCluster('Cụm Miền Bắc', 'NORTH', northItems));
-    }
-    if (centralItems.length > 0) {
-      clusters.push(buildCluster('Cụm Miền Trung', 'CENTRAL', centralItems));
-    }
-    if (southItems.length > 0) {
-      clusters.push(buildCluster('Cụm Miền Nam', 'SOUTH', southItems));
-    }
-    if (otherItems.length > 0) {
-      clusters.push(buildCluster('Khu Vực Khác', 'OTHER', otherItems));
-    }
-
-    return clusters;
-  });
 
   openQuarantineModal(quant?: InventoryBalanceItem): void {
     this.selectedQuarantineQuant.set(quant ?? null);
@@ -544,24 +401,12 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
     void this.loadBalances();
   }
 
-  toggleGroupByRegion(): void {
-    this.isGroupByRegion.update((v) => !v);
-  }
-
   showToast(msg: string): void {
     this.toastMessage.set(msg);
     setTimeout(() => {
       this.toastMessage.set(null);
     }, 4000);
   }
-
-  readonly branchOptions = computed<SelectOption[]>(() => [
-    { value: '', label: 'Tất cả chi nhánh' },
-    ...this.inventoryService.branches().map((b) => ({
-      value: String(b.id),
-      label: `${b.name} (${b.code})`,
-    })),
-  ]);
 
   readonly categoryOptions = computed<SelectOption[]>(() => [
     { value: '', label: 'Tất cả danh mục' },
@@ -582,7 +427,6 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
     const stockStatusParam =
       this.route.snapshot.queryParams['stockStatus'] ||
       (this.route.snapshot.queryParams['filter'] === 'zero' ? 'OUT_OF_STOCK' : null);
-    const branchIdParam = this.route.snapshot.queryParams['branchId'];
     const categoryIdParam = this.route.snapshot.queryParams['categoryId'];
     const searchParam = this.route.snapshot.queryParams['search'];
     if (
@@ -591,12 +435,6 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
       stockStatusParam === 'IN_STOCK'
     ) {
       this.selectedStockStatus.set(stockStatusParam);
-    }
-    if (branchIdParam) {
-      const branchId = Number(branchIdParam);
-      if (!Number.isNaN(branchId) && branchId > 0) {
-        this.selectedBranchFilterId.set(String(branchId));
-      }
     }
     if (categoryIdParam) {
       const categoryId = Number(categoryIdParam);
@@ -614,11 +452,9 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
   }
 
   async loadBalances(page = 1): Promise<void> {
-    const branchVal = this.selectedBranchFilterId();
     const categoryVal = this.selectedCategoryFilterId();
     await this.inventoryService.loadBalances({
       search: this.searchQuery(),
-      branchId: branchVal ? Number(branchVal) : undefined,
       categoryId: categoryVal ? Number(categoryVal) : undefined,
       stockStatus: this.selectedStockStatus() as 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK',
       page,
@@ -628,11 +464,6 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
 
   onSearchChange(term: string): void {
     this.searchQuery.set(term);
-    void this.loadBalances(1);
-  }
-
-  onBranchFilterChange(val: string): void {
-    this.selectedBranchFilterId.set(val);
     void this.loadBalances(1);
   }
 

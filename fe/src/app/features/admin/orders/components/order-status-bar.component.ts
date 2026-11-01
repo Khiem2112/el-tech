@@ -150,24 +150,20 @@ export class OrderStatusBarComponent {
   readonly isExceptionState = computed<boolean>(() => {
     const s = this.order().status;
     return (
-      s === 'ON_HOLD' ||
       s === 'CANCELLED' ||
-      s === 'DELIVERY_FAILED' ||
-      s === 'PENDING_COD_CONFIRMATION'
+      s === 'DELIVERY_FAILED'
     );
   });
 
   readonly exceptionLabel = computed<string>(() => {
     const ord = this.order();
     switch (ord.status) {
-      case 'ON_HOLD':
-        return `TẠM GIỮ (${ord.holdReason || 'Đang xử lý'})`;
+
       case 'CANCELLED':
         return `ĐÃ HỦY (${ord.cancellationReason || 'Theo yêu cầu'})`;
       case 'DELIVERY_FAILED':
         return `GIAO THẤT BẠI (Lần ${ord.redeliveryAttemptCount})`;
-      case 'PENDING_COD_CONFIRMATION':
-        return 'CHỜ XÁC NHẬN ĐƠN COD';
+
       default:
         return ord.status;
     }
@@ -178,10 +174,7 @@ export class OrderStatusBarComponent {
     if (s === 'CANCELLED') {
       return 'bg-destructive/10 text-destructive border-destructive/20';
     }
-    if (s === 'ON_HOLD') {
-      return 'bg-warning/10 text-warning border-warning/30';
-    }
-    if (s === 'PENDING_COD_CONFIRMATION' || s === 'DELIVERY_FAILED') {
+    if (s === 'DELIVERY_FAILED') {
       return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
     }
     return 'bg-surface-alt text-muted border-line';
@@ -190,7 +183,6 @@ export class OrderStatusBarComponent {
   private getStepOrderIndex(status: AdminOrderStatus): number {
     switch (status) {
       case 'PENDING_PAYMENT':
-      case 'PENDING_COD_CONFIRMATION':
         return -1;
       case 'CONFIRMED':
         return 0;

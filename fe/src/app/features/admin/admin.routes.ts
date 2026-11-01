@@ -113,10 +113,8 @@ export const ADMIN_ROUTES: Routes = [
       },
       {
         path: 'inventory/transfers',
-        loadComponent: () =>
-          import('./inventory/admin-transfers-page.component').then(
-            (module) => module.AdminTransfersPageComponent,
-          ),
+        redirectTo: 'inventory/balances',
+        pathMatch: 'full',
       },
       {
         path: 'procurement/suppliers',

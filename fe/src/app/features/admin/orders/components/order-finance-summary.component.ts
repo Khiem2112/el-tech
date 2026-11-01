@@ -65,9 +65,9 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="text-muted">Tiền cọc lắp ráp PC:</span>
+                <span class="text-muted">Chính sách đặt cọc:</span>
                 <span class="tabular tabular-nums text-foreground">
-                  {{ order().hasAssembly ? (order().payment?.depositDisposition || 'Đang giữ cọc 10%') : 'Không áp dụng' }}
+                  Không yêu cầu đặt cọc
                 </span>
               </div>
 
@@ -127,7 +127,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
               </div>
 
               <div class="flex items-center justify-between text-muted">
-                <span>Đã thanh toán (Cọc / QR):</span>
+                <span>Đã thanh toán:</span>
                 <span class="tabular tabular-nums font-medium text-emerald-600 dark:text-emerald-400">
                   - {{ order().payment ? formatVnd(order().payment?.totalReceived) : '0 ₫' }}
                 </span>

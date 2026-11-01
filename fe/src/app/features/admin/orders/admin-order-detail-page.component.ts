@@ -76,7 +76,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           @if (detailService.order(); as ord) {
             <span>/</span>
             <span class="text-muted">
-              {{ ord.fulfillmentBranch.code }} ({{ ord.fulfillmentBranch.name }})
+              {{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}
             </span>
           }
         </nav>
@@ -144,7 +144,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 </span>
               </div>
               <div class="text-xs text-muted mt-1 tabular tabular-nums">
-                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch.name }}</strong>
+                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}</strong>
               </div>
             </div>
 
@@ -175,7 +175,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
               >
                 <span class="text-muted text-xs block">Thanh toán</span>
                 <span class="font-medium text-foreground block">
-                  {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Cọc 10%')) : 'Chưa thu' }}
+                  {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Thu khi nhận hàng (COD)')) : 'Chưa thu' }}
                 </span>
               </a>
 
@@ -298,7 +298,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           [order]="ord"
           [isOpen]="activeModal() === 'MOD-17'"
           (closed)="onModalClosed()"
-          (confirmed)="onOperationConfirmed('Đã hủy đơn hàng, giải phóng kho giữ chỗ và cập nhật trạng thái tiền cọc/hoàn tiền.')"
+          (confirmed)="onOperationConfirmed('Đã hủy đơn hàng, giải phóng kho giữ chỗ linh kiện.')"
         />
 
         <app-resolve-hold-dialog
@@ -428,8 +428,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
     switch (status) {
       case 'PENDING_PAYMENT':
         return 'Chờ thanh toán QR';
-      case 'PENDING_COD_CONFIRMATION':
-        return 'Chờ xác nhận COD';
+
       case 'CONFIRMED':
         return 'Đã xác nhận';
       case 'PREPARING_COMPONENTS':
@@ -445,8 +444,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
       
       case 'COMPLETED':
         return 'Hoàn tất';
-      case 'ON_HOLD':
-        return 'Tạm giữ (On-Hold)';
+
       case 'CANCELLED':
         return 'Đã hủy đơn';
       default:

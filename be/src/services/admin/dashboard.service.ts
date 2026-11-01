@@ -2,8 +2,6 @@ import {
   OrderHoldReason,
   OrderStatus,
   PaymentChargeStatus,
-  StockMoveStatus,
-  StockMoveType,
 } from '@prisma/client';
 import { prisma } from '../../lib/prisma.js';
 
@@ -139,7 +137,7 @@ export class AdminDashboardService {
       prisma.stockQuant.findMany({
         where: {
           isActive: true,
-          ...(branchId ? { branchId } : {}),
+  
         },
         select: {
           skuId: true,
@@ -301,16 +299,10 @@ export class AdminDashboardService {
     const quants = await prisma.stockQuant.findMany({
       where: {
         isActive: true,
-        ...(branchId ? { branchId } : {}),
+
       },
       include: {
-        branch: {
-          select: {
-            id: true,
-            code: true,
-            name: true,
-          },
-        },
+
         sku: {
           select: {
             id: true,
@@ -350,9 +342,9 @@ export class AdminDashboardService {
         variationLabel: quant.sku.variationLabel,
         brandName: quant.sku.productTemplate.brand?.name ?? '',
         categoryName: quant.sku.productTemplate.category?.name ?? '',
-        branchId: quant.branch.id,
-        branchCode: quant.branch.code,
-        branchName: quant.branch.name,
+        branchId: 1,
+        branchCode: 'STORE-MAIN',
+        branchName: 'Showroom EL-TECH',
         onHand: quant.onHand,
         reserved: quant.reserved,
         quarantineDamaged: quant.quarantineDamaged,
@@ -365,71 +357,8 @@ export class AdminDashboardService {
     return mapped.slice(0, limit);
   }
 
-  async getInTransitTransfers(branchId?: number, limit = 5): Promise<InTransitTransferItemDto[]> {
-    const moves = await prisma.stockMove.findMany({
-      where: {
-        moveType: StockMoveType.INTERNAL_TRANSFER,
-        status: StockMoveStatus.IN_TRANSIT,
-        isActive: true,
-        ...(branchId
-          ? {
-              OR: [{ sourceBranchId: branchId }, { destinationBranchId: branchId }],
-            }
-          : {}),
-      },
-      include: {
-        sourceBranch: {
-          select: { code: true, name: true },
-        },
-        destinationBranch: {
-          select: { code: true, name: true },
-        },
-        lines: {
-          select: { quantity: true, skuId: true },
-        },
-      },
-      orderBy: { dispatchedAt: 'desc' },
-      take: limit,
-    });
-
-    if (moves.length === 0) {
-      return [
-        {
-          id: 'demo-trf-0042',
-          code: 'TRF-2026-0042',
-          sourceBranchCode: 'HCM-01',
-          sourceBranchName: 'Kho Quận 10 (TP.HCM)',
-          destinationBranchCode: 'HN-01',
-          destinationBranchName: 'Kho Cầu Giấy (Hà Nội)',
-          totalQuantity: 10,
-          skuCount: 3,
-          dispatchedAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-        },
-        {
-          id: 'demo-trf-0045',
-          code: 'TRF-2026-0045',
-          sourceBranchCode: 'HN-01',
-          sourceBranchName: 'Kho Cầu Giấy (Hà Nội)',
-          destinationBranchCode: 'DN-01',
-          destinationBranchName: 'Kho Hải Châu (Đà Nẵng)',
-          totalQuantity: 4,
-          skuCount: 2,
-          dispatchedAt: new Date(Date.now() - 9 * 3600 * 1000).toISOString(),
-        },
-      ];
-    }
-
-    return moves.map((move) => ({
-      id: move.id,
-      code: move.code,
-      sourceBranchCode: move.sourceBranch?.code ?? '',
-      sourceBranchName: move.sourceBranch?.name ?? '',
-      destinationBranchCode: move.destinationBranch?.code ?? '',
-      destinationBranchName: move.destinationBranch?.name ?? '',
-      totalQuantity: move.lines.reduce((acc, l) => acc + l.quantity, 0),
-      skuCount: new Set(move.lines.map((l) => l.skuId)).size,
-      dispatchedAt: move.dispatchedAt ? move.dispatchedAt.toISOString() : null,
-    }));
+  async getInTransitTransfers(_branchId?: number, _limit = 5): Promise<InTransitTransferItemDto[]> {
+    return [];
   }
 
   async getSummary(branchId?: number): Promise<AdminDashboardSummaryDto> {

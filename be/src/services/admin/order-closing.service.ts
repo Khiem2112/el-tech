@@ -255,7 +255,7 @@ export class OrderClosingService {
         const skuIds = [...aggregated.keys()];
         const quants = await tx.stockQuant.findMany({
           where: {
-            branchId: order.fulfillmentBranchId,
+            
             skuId: { in: skuIds },
             isActive: true,
           },
@@ -266,7 +266,7 @@ export class OrderClosingService {
           targetStockMove = await tx.stockMove.create({
             data: {
               code: `ISS-${order.code}`,
-              sourceBranchId: order.fulfillmentBranchId,
+              
               orderId: order.id,
               idempotencyKey: `issue:${order.id}:${Date.now()}`,
               moveType: StockMoveType.ORDER_ISSUE,
@@ -340,7 +340,7 @@ export class OrderClosingService {
           await tx.serialUnit.updateMany({
             where: {
               serialNumber: { in: input.confirmedSerialNumbers },
-              currentBranchId: order.fulfillmentBranchId,
+              
             },
             data: {
               status: SerialStatus.ISSUED,
@@ -519,7 +519,6 @@ export class OrderClosingService {
     const unreserveStatuses: readonly OrderStatus[] = [
       OrderStatus.CONFIRMED,
       OrderStatus.PREPARING_COMPONENTS,
-      OrderStatus.ON_HOLD,
     ];
     const hasStockToUnreserve = unreserveStatuses.includes(order.status) && !validatedIssueMove;
 
@@ -537,73 +536,19 @@ export class OrderClosingService {
           }
         }
 
-        const reversalCode = `REV-${order.code}-${Date.now().toString().slice(-4)}`;
-        const reversalStockMove = await tx.stockMove.create({
-          data: {
-            code: reversalCode,
-            destinationBranchId: order.fulfillmentBranchId,
-            orderId: order.id,
-            reversalOfMoveId: validatedIssueMove.id,
-            idempotencyKey: `cancel-reversal:${order.id}:${Date.now()}`,
-            moveType: StockMoveType.ORDER_REVERSAL,
-            status: StockMoveStatus.VALIDATED,
-            validatedAt: new Date(),
-            validatedById: adminId,
-            reason: `Nhap hoan kho khi huy don hang: ${input.reason}`,
-          },
-        });
-
-        const revLineMap = new Map<number, string>();
-
         for (const [skuId, item] of aggregated.entries()) {
           const quant = await tx.stockQuant.findFirst({
             where: {
-              branchId: order.fulfillmentBranchId,
               skuId,
               isActive: true,
             },
           });
-
           if (quant) {
             await tx.stockQuant.updateMany({
               where: { id: quant.id, version: quant.version },
               data: {
                 onHand: { increment: item.quantity },
                 version: { increment: 1 },
-              },
-            });
-
-            const updatedQuant = await tx.stockQuant.findUniqueOrThrow({
-              where: { id: quant.id },
-            });
-
-            const origLine = validatedIssueMove.lines.find((l) => l.skuId === skuId);
-
-            const revMoveLine = await tx.stockMoveLine.create({
-              data: {
-                stockMoveId: reversalStockMove.id,
-                skuId,
-                originalMoveLineId: origLine?.id || null,
-                quantity: item.quantity,
-                unitCost: quant.weightedAverageCost,
-              },
-            });
-
-            revLineMap.set(skuId, revMoveLine.id);
-
-            await tx.stockLedgerEntry.create({
-              data: {
-                stockQuantId: quant.id,
-                stockMoveLineId: revMoveLine.id,
-                entryType: StockLedgerEntryType.REVERSAL,
-                deltaOnHand: item.quantity,
-                deltaReserved: 0,
-                deltaQuarantine: 0,
-                onHandAfter: updatedQuant.onHand,
-                reservedAfter: updatedQuant.reserved,
-                quarantineAfter: updatedQuant.quarantineDamaged,
-                actorType: ActorType.ADMIN,
-                actorId: adminId,
               },
             });
           }
@@ -615,34 +560,15 @@ export class OrderClosingService {
             stockMoveLineId: { in: origMoveLineIds },
             resultingStatus: SerialStatus.ISSUED,
           },
-          include: {
-            serialUnit: true,
-          },
         });
-
         for (const mov of issuedSerialMovements) {
-          const revLineId = revLineMap.get(mov.serialUnit.skuId);
-          if (revLineId) {
-            await tx.serialUnit.update({
-              where: { id: mov.serialUnitId },
-              data: {
-                status: SerialStatus.AVAILABLE,
-                currentBranchId: order.fulfillmentBranchId,
-              },
-            });
-
-            await tx.serialMovement.create({
-              data: {
-                serialUnitId: mov.serialUnitId,
-                stockMoveLineId: revLineId,
-                fromBranchId: null,
-                toBranchId: order.fulfillmentBranchId,
-                resultingStatus: SerialStatus.AVAILABLE,
-              },
-            });
-          }
+          await tx.serialUnit.update({
+            where: { id: mov.serialUnitId },
+            data: {
+              status: SerialStatus.AVAILABLE,
+            },
+          });
         }
-
         await tx.stockMove.updateMany({
           where: {
             orderId: order.id,
@@ -669,7 +595,7 @@ export class OrderClosingService {
         const skuIds = [...aggregated.keys()];
         const quants = await tx.stockQuant.findMany({
           where: {
-            branchId: order.fulfillmentBranchId,
+            
             skuId: { in: skuIds },
             isActive: true,
           },
@@ -683,7 +609,7 @@ export class OrderClosingService {
           targetMove = await tx.stockMove.create({
             data: {
               code: `REL-${order.code}`,
-              sourceBranchId: order.fulfillmentBranchId,
+              
               orderId: order.id,
               idempotencyKey: `rel:${order.id}:${Date.now()}`,
               moveType: StockMoveType.ORDER_ISSUE,

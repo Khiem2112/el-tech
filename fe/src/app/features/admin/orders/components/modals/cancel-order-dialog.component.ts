@@ -42,7 +42,7 @@ import {
 
           @if (isLoadingPreview()) {
             <div class="p-4 text-center bg-surface-alt border border-line rounded text-muted text-sm">
-              Đang tính toán chính sách tiền cọc và tồn kho...
+              Đang tính toán chính sách tồn kho và hoàn tiền...
             </div>
           } @else if (preview(); as p) {
             @if (!p.canCancel) {
@@ -59,9 +59,6 @@ import {
                 </div>
                 <div class="pt-1.5 border-t border-line text-muted">
                   Giải phóng {{ p.reservedItemsCount }} linh kiện giữ chỗ kho.
-                  @if (p.isDepositForfeited) {
-                    <span class="text-destructive font-medium ml-1">Tiền cọc 10% bị tịch thu do đã qua bước soạn hàng.</span>
-                  }
                 </div>
               </div>
             }

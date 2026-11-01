@@ -173,7 +173,7 @@ export class OrderFulfillmentShippingService {
           const availableUnits = await prisma.serialUnit.findMany({
             where: {
               skuId,
-              currentBranchId: order.fulfillmentBranchId,
+              
               status: { in: [SerialStatus.AVAILABLE, SerialStatus.RESERVED] },
               isActive: true,
             },
@@ -468,7 +468,7 @@ export class OrderFulfillmentShippingService {
               where: {
                 skuId,
                 serialNumber: assignment.serialNumber,
-                currentBranchId: order.fulfillmentBranchId,
+                
                 status: { in: [SerialStatus.AVAILABLE, SerialStatus.RESERVED] },
                 isActive: true,
               },
@@ -496,7 +496,7 @@ export class OrderFulfillmentShippingService {
     const skuIds = [...aggregated.keys()];
     const quants = await prisma.stockQuant.findMany({
       where: {
-        branchId: order.fulfillmentBranchId,
+        
         skuId: { in: skuIds },
         isActive: true,
       },
@@ -515,7 +515,7 @@ export class OrderFulfillmentShippingService {
           stockMove = await tx.stockMove.create({
             data: {
               code: `ISS-${order.code}`,
-              sourceBranchId: order.fulfillmentBranchId,
+              
               orderId: order.id,
               idempotencyKey: `issue-ship:${order.id}:${Date.now()}`,
               moveType: StockMoveType.ORDER_ISSUE,
@@ -616,8 +616,6 @@ export class OrderFulfillmentShippingService {
             data: {
               serialUnitId: unit.id,
               stockMoveLineId: moveLineId,
-              fromBranchId: order.fulfillmentBranchId,
-              toBranchId: null,
               resultingStatus: SerialStatus.ISSUED,
             },
           });
@@ -795,18 +793,7 @@ export class OrderFulfillmentShippingService {
       });
     }
 
-    if (order.redeliveryAttemptCount >= 2) {
-      throw new DomainError('REDELIVERY_LIMIT_EXCEEDED', {
-        ruleId: 'ORD-024',
-        messageKey: 'error.redeliveryLimitExceeded',
-        status: 400,
-        details: {
-          redeliveryAttemptCount: order.redeliveryAttemptCount,
-          maxAllowed: 2,
-          message: 'He thong chan hen giao lai: da cham moc toi da 2 lan giao that bai. Vui long chuyen hoan ve kho chi nhanh.',
-        },
-      });
-    }
+    // He thong cho phep hen giao lai khong gioi han so lan tu trang thai giao that bai
 
     const nextAttempt = order.redeliveryAttemptCount + 1;
     const historyReason = `Len lich hen giao lai lan ${nextAttempt}: ngay ${input.redeliveryDate}${input.note ? ' - ' + input.note : ''}`;
@@ -950,268 +937,14 @@ export class OrderFulfillmentShippingService {
   }
 
   async receiveReturn(
-    orderId: string,
-    adminId: string,
-    input?: ReceiveReturnInput,
+    _orderId: string,
+    _adminId: string,
+    _input?: ReceiveReturnInput,
   ): Promise<OrderOperationResultDto> {
-    const order = await prisma.order.findUnique({
-      where: { id: orderId },
-      include: {
-        fulfillmentBranch: true,
-        lines: {
-          where: { lineType: SalesLineType.SKU, skuId: { not: null } },
-          include: {
-            sku: {
-              include: {
-                productTemplate: true,
-              },
-            },
-          },
-        },
-        stockMoves: {
-          where: { moveType: StockMoveType.ORDER_ISSUE, status: StockMoveStatus.VALIDATED },
-          include: {
-            lines: {
-              include: {
-                serialMovements: {
-                  where: { resultingStatus: SerialStatus.ISSUED },
-                  include: {
-                    serialUnit: true,
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+    throw new DomainError('FEATURE_DISABLED', {
+      status: 400,
+      messageKey: 'Luong doi tra hang va hoan kho da duoc loai bo khoi he thong',
     });
-
-    if (!order) {
-      throw new DomainError('ORDER_NOT_FOUND', {
-        messageKey: 'error.orderNotFound',
-        status: 404,
-      });
-    }
-
-    if (order.status !== OrderStatus.DELIVERY_FAILED) {
-      throw new DomainError('INVALID_ORDER_STATE', {
-        ruleId: 'ORD-025',
-        messageKey: 'error.invalidOrderState',
-        status: 409,
-        details: {
-          currentStatus: order.status,
-          requiredStatus: OrderStatus.DELIVERY_FAILED,
-          message: 'Don hang phai o trang thai DELIVERY_FAILED de xac nhan nhap lai kho',
-        },
-      });
-    }
-
-    const existingReversal = await prisma.stockMove.findFirst({
-      where: {
-        orderId: order.id,
-        moveType: StockMoveType.ORDER_REVERSAL,
-        status: StockMoveStatus.VALIDATED,
-      },
-    });
-
-    if (existingReversal) {
-      throw new DomainError('REVERSAL_ALREADY_EXISTS', {
-        ruleId: 'INV-022',
-        messageKey: 'error.reversalAlreadyExists',
-        status: 409,
-        details: {
-          stockMoveId: existingReversal.id,
-          message: 'Phieu kho dao nguoc da duoc tao va xac thuc truoc do cho don hang nay',
-        },
-      });
-    }
-
-    const aggregated = new Map<number, AggregatedItem>();
-    for (const line of order.lines) {
-      if (line.skuId) {
-        const existing = aggregated.get(line.skuId);
-        if (existing) {
-          existing.quantity += line.quantity;
-        } else {
-          const skuCode = line.sku?.sku ?? line.skuSnapshot ?? `SKU-${line.skuId}`;
-          const name = line.nameSnapshot || line.sku?.variationLabel || line.sku?.productTemplate?.name || `Linh kien #${line.skuId}`;
-          aggregated.set(line.skuId, {
-            skuId: line.skuId,
-            skuCode,
-            name,
-            serialRequired: Boolean(line.sku?.serialRequired),
-            quantity: line.quantity,
-          });
-        }
-      }
-    }
-
-    const originalStockMove = order.stockMoves[0] || null;
-    const originalMoveLineIds = originalStockMove?.lines.map((l) => l.id) || [];
-
-    const issuedSerialMovements = await prisma.serialMovement.findMany({
-      where: {
-        stockMoveLineId: { in: originalMoveLineIds },
-        resultingStatus: SerialStatus.ISSUED,
-      },
-      include: {
-        serialUnit: true,
-        stockMoveLine: true,
-      },
-    });
-
-    let reversalCode = '';
-
-    await prisma.$transaction(async (tx) => {
-      reversalCode = `REV-${order.code}-${Date.now().toString().slice(-4)}`;
-
-      const reversalStockMove = await tx.stockMove.create({
-        data: {
-          code: reversalCode,
-          destinationBranchId: order.fulfillmentBranchId,
-          orderId: order.id,
-          reversalOfMoveId: originalStockMove?.id || null,
-          idempotencyKey: `return-reversal:${order.id}:${Date.now()}`,
-          moveType: StockMoveType.ORDER_REVERSAL,
-          status: StockMoveStatus.VALIDATED,
-          validatedAt: new Date(),
-          validatedById: adminId,
-          reason: input?.note || 'Nhap hoan kho chi nhanh tu don hang giao that bai',
-        },
-      });
-
-      const revLineMap = new Map<number, string>();
-
-      for (const [skuId, item] of aggregated.entries()) {
-        const quant = await tx.stockQuant.findFirst({
-          where: {
-            branchId: order.fulfillmentBranchId,
-            skuId,
-            isActive: true,
-          },
-        });
-
-        if (!quant) {
-          throw new DomainError('STOCK_QUANT_NOT_FOUND', {
-            messageKey: 'error.stockQuantNotFound',
-            status: 404,
-            details: { skuId },
-          });
-        }
-
-        await tx.stockQuant.updateMany({
-          where: { id: quant.id, version: quant.version },
-          data: {
-            onHand: { increment: item.quantity },
-            version: { increment: 1 },
-          },
-        });
-
-        const updatedQuant = await tx.stockQuant.findUniqueOrThrow({
-          where: { id: quant.id },
-        });
-
-        const origLine = originalStockMove?.lines.find((l) => l.skuId === skuId);
-
-        const revMoveLine = await tx.stockMoveLine.create({
-          data: {
-            stockMoveId: reversalStockMove.id,
-            skuId,
-            originalMoveLineId: origLine?.id || null,
-            quantity: item.quantity,
-            unitCost: quant.weightedAverageCost,
-          },
-        });
-
-        revLineMap.set(skuId, revMoveLine.id);
-
-        await tx.stockLedgerEntry.create({
-          data: {
-            stockQuantId: quant.id,
-            stockMoveLineId: revMoveLine.id,
-            entryType: StockLedgerEntryType.REVERSAL,
-            deltaOnHand: item.quantity,
-            deltaReserved: 0,
-            deltaQuarantine: 0,
-            onHandAfter: updatedQuant.onHand,
-            reservedAfter: updatedQuant.reserved,
-            quarantineAfter: updatedQuant.quarantineDamaged,
-            actorType: ActorType.ADMIN,
-            actorId: adminId,
-          },
-        });
-      }
-
-      for (const mov of issuedSerialMovements) {
-        const revLineId = revLineMap.get(mov.serialUnit.skuId);
-        if (revLineId) {
-          await tx.serialUnit.update({
-            where: { id: mov.serialUnitId },
-            data: {
-              status: SerialStatus.AVAILABLE,
-              currentBranchId: order.fulfillmentBranchId,
-            },
-          });
-
-          await tx.serialMovement.create({
-            data: {
-              serialUnitId: mov.serialUnitId,
-              stockMoveLineId: revLineId,
-              fromBranchId: null,
-              toBranchId: order.fulfillmentBranchId,
-              resultingStatus: SerialStatus.AVAILABLE,
-            },
-          });
-        }
-      }
-
-      await tx.order.update({
-        where: { id: order.id },
-        data: {
-          status: OrderStatus.CANCELLED,
-        },
-      });
-
-      const historyReason = input?.note || 'Da doi soat 100% hang hoan va nhap lai kho chi nhanh';
-
-      await tx.orderStatusHistory.create({
-        data: {
-          orderId: order.id,
-          previousStatus: order.status,
-          nextStatus: OrderStatus.CANCELLED,
-          reason: historyReason,
-          actorType: ActorType.ADMIN,
-          actorId: adminId,
-          idempotencyKey: `history:returned-branch:${order.id}:${Date.now()}`,
-        },
-      });
-
-      await tx.notification.create({
-        data: {
-          customerId: order.customerId,
-          orderId: order.id,
-          deduplicationKey: `order-returned-branch:${order.id}:${Date.now()}`,
-          eventType: 'ORDER_RETURNED_TO_BRANCH',
-          title: `Don hang #${order.code} da ve lai kho chi nhanh`,
-          body: `Kien hang don #${order.code} da duoc nhan lai va nhap kho thanh cong tai chi nhanh ${order.fulfillmentBranch.name}.`,
-          channels: [NotificationChannel.IN_APP, NotificationChannel.EMAIL],
-          payload: {
-            orderId: order.id,
-            orderCode: order.code,
-            branchName: order.fulfillmentBranch.name,
-          },
-        },
-      });
-    });
-
-    return {
-      success: true,
-      orderId: order.id,
-      orderCode: order.code,
-      status: OrderStatus.CANCELLED,
-      message: 'Da doi soat 100% linh kien, phuc hoi ton kho thuc te onHand va chuyen don ve RETURNED_TO_BRANCH',
-      stockMoveCode: reversalCode,
-    };
   }
 }
 

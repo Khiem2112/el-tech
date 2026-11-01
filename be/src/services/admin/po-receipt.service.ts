@@ -12,13 +12,22 @@ import { prisma } from '../../lib/prisma.js';
 import { ValidatePoReceiptInput } from '../../validations/admin/purchase-order.schema.js';
 
 export class PoReceiptService {
-  async validatePoReceipt(
-    purchaseOrderId: string,
+  async validateReceipt(
+    purchaseOrderId: string | number,
     input: ValidatePoReceiptInput,
     adminUserId?: string,
   ): Promise<unknown> {
+    return this.validatePoReceipt(purchaseOrderId, input, adminUserId);
+  }
+
+  async validatePoReceipt(
+    purchaseOrderId: string | number,
+    input: ValidatePoReceiptInput,
+    adminUserId?: string,
+  ): Promise<unknown> {
+    const poId = String(purchaseOrderId);
     const purchaseOrder = await prisma.purchaseOrder.findUnique({
-      where: { id: purchaseOrderId },
+      where: { id: poId },
       include: {
         supplier: true,
         receivingBranch: true,
@@ -39,9 +48,11 @@ export class PoReceiptService {
       throw new DomainError('PURCHASE_ORDER_NOT_FOUND', {
         status: 404,
         messageKey: 'Don mua hang khong ton tai',
-        details: { purchaseOrderId },
+        details: { purchaseOrderId: poId },
       });
     }
+
+
 
     if (purchaseOrder.status !== PurchaseOrderStatus.CONFIRMED) {
       throw new DomainError('PURCHASE_ORDER_INVALID_STATE', {
@@ -158,8 +169,7 @@ export class PoReceiptService {
       const stockMove = await tx.stockMove.create({
         data: {
           code: moveCode,
-          destinationBranchId: purchaseOrder.receivingBranchId,
-          sourceBranchId: null,
+
           purchaseOrderId: purchaseOrder.id,
           idempotencyKey: `po-receipt-${purchaseOrder.id}`,
           moveType: StockMoveType.PURCHASE_RECEIPT,
@@ -181,10 +191,7 @@ export class PoReceiptService {
 
         const quant = await tx.stockQuant.findUnique({
           where: {
-            branchId_skuId: {
-              branchId: purchaseOrder.receivingBranchId,
-              skuId: poLine.skuId,
-            },
+            skuId: poLine.skuId,
           },
         });
 
@@ -216,7 +223,7 @@ export class PoReceiptService {
             })
           : await tx.stockQuant.create({
               data: {
-                branchId: purchaseOrder.receivingBranchId,
+
                 skuId: poLine.skuId,
                 onHand: newOnHand,
                 reserved: 0,
@@ -253,7 +260,7 @@ export class PoReceiptService {
             const serialUnit = await tx.serialUnit.create({
               data: {
                 skuId: poLine.skuId,
-                currentBranchId: purchaseOrder.receivingBranchId,
+
                 originStockMoveLineId: moveLine.id,
                 serialNumber: serial,
                 status: SerialStatus.AVAILABLE,
@@ -264,8 +271,7 @@ export class PoReceiptService {
               data: {
                 serialUnitId: serialUnit.id,
                 stockMoveLineId: moveLine.id,
-                fromBranchId: null,
-                toBranchId: purchaseOrder.receivingBranchId,
+
                 resultingStatus: SerialStatus.AVAILABLE,
                 occurredAt: new Date(),
               },

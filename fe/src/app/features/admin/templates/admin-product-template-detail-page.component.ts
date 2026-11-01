@@ -171,7 +171,7 @@ type ToastNotification = {
               [routerLink]="['/admin/inventory/balances']"
               [queryParams]="{ search: tpl.name }"
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
-              title="Nhấp để kiểm tra tồn kho thực tế tại các chi nhánh"
+              title="Nhấp để kiểm tra tồn kho thực tế tại Showroom EL-TECH"
             >
               <div class="text-base font-bold text-foreground tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalOnHand ?? 0 }}
@@ -183,7 +183,7 @@ type ToastNotification = {
               [routerLink]="['/admin/inventory/balances']"
               [queryParams]="{ search: tpl.name, stockStatus: 'IN_STOCK' }"
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
-              [title]="getAvailableBranchTooltip()"
+              title="Tồn khả dụng tại Showroom EL-TECH"
             >
               <div class="text-base font-bold text-emerald-600 tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.totalAvailable ?? 0 }}
@@ -926,29 +926,6 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     }
   }
 
-  getAvailableBranchTooltip(): string {
-    const detail = this.detailData();
-    if (!detail || !detail.variants) {
-      return 'Tồn khả dụng toàn hệ thống';
-    }
-    const branchMap = new Map<string, number>();
-    for (const v of detail.variants) {
-      if (v.stockQuants) {
-        for (const q of v.stockQuants) {
-          const bName = q.branchName || `Chi nhánh ${q.branchId}`;
-          branchMap.set(bName, (branchMap.get(bName) ?? 0) + (q.available ?? 0));
-        }
-      }
-    }
-    if (branchMap.size === 0) {
-      return 'Tồn khả dụng: 0';
-    }
-    const parts: string[] = [];
-    branchMap.forEach((qty, name) => {
-      parts.push(`${name}: ${qty}`);
-    });
-    return `Phân bổ khả dụng: ${parts.join(', ')}`;
-  }
 
   private showToast(message: string, type: 'success' | 'error' | 'info'): void {
     const id = ++this.toastIdCounter;

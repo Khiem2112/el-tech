@@ -6,6 +6,7 @@ import { handleProductImageError } from '../../core/constants/product.constants'
 import { VndPipe } from '../../lib/vnd.pipe';
 import { CatalogService, ProductDetail, ProductReviewItem } from './catalog.service';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
@@ -414,15 +415,15 @@ const SPEC_LABEL_MAP: Record<string, string> = {
 
               <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-line bg-surface-alt">
                 <div>
-                  <h3 class="text-sm font-bold text-foreground">Đánh giá thực tế từ khách hàng đã mua</h3>
-                  <p class="text-xs text-muted">Đánh giá được kiểm định qua hóa đơn và Serial Number linh kiện (REV-004).</p>
+                  <h3 class="text-sm font-bold text-foreground">Đánh giá và nhận xét từ người dùng</h3>
+                  <p class="text-xs text-muted">Chia sẻ nhận xét và trải nghiệm thực tế về linh kiện máy tính.</p>
                 </div>
                 <button
                   appButton
                   variant="primary"
                   size="sm"
                   type="button"
-                  (click)="reviewModalOpen.set(true)"
+                  (click)="reviewSubmitError.set(null); reviewModalOpen.set(true)"
                 >
                   <lucide-icon name="Star" class="size-3.5" aria-hidden="true"></lucide-icon>
                   <span>Viết Đánh Giá</span>
@@ -432,7 +433,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               @if (reviews().length === 0) {
                 <div class="rounded-lg border border-dashed border-line p-8 text-center bg-surface">
                   <p class="text-sm font-bold text-foreground">Chưa có đánh giá nào cho sản phẩm này</p>
-                  <p class="mt-1 text-xs text-muted">Khách hàng đã hoàn tất đơn hàng có thể gửi đánh giá từ trang tra cứu đơn hàng hoặc bấm Viết Đánh Giá ở trên.</p>
+                  <p class="mt-1 text-xs text-muted">Hãy là người đầu tiên chia sẻ trải nghiệm sử dụng linh kiện bằng cách bấm nút Viết Đánh Giá ở trên.</p>
                 </div>
               } @else {
                 <div class="divide-y divide-border rounded-lg border border-line bg-surface p-4">
@@ -473,7 +474,9 @@ const SPEC_LABEL_MAP: Record<string, string> = {
         <app-review-modal
           [isOpen]="reviewModalOpen()"
           [productName]="item.name"
-          (closeModal)="reviewModalOpen.set(false)"
+          [isSubmitting]="isSubmittingReview()"
+          [errorMessage]="reviewSubmitError()"
+          (closeModal)="reviewModalOpen.set(false); reviewSubmitError.set(null)"
           (submitted)="onReviewSubmitted($event)"
         ></app-review-modal>
 
@@ -569,6 +572,7 @@ export class ProductDetailPageComponent {
   private readonly router = inject(Router);
   private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
+  private readonly auth = inject(AuthService);
 
   protected readonly onImageError = handleProductImageError;
   protected readonly product = signal<ProductDetail | null>(null);
@@ -581,6 +585,8 @@ export class ProductDetailPageComponent {
   protected readonly quantity = signal(1);
   protected readonly activeTab = signal<'specs' | 'desc' | 'reviews' | 'policy'>('specs');
   protected readonly reviewModalOpen = signal(false);
+  protected readonly isSubmittingReview = signal(false);
+  protected readonly reviewSubmitError = signal<string | null>(null);
   protected readonly bomModalOpen = signal(false);
   protected readonly selectedImageIndex = signal(0);
 
@@ -745,25 +751,31 @@ export class ProductDetailPageComponent {
   protected async onReviewSubmitted(data: { rating: number; content: string; authorName?: string }): Promise<void> {
     const item = this.product();
     if (!item) return;
+    this.isSubmittingReview.set(true);
+    this.reviewSubmitError.set(null);
     try {
+      const user = this.auth.currentUser();
+      const customerId = user?.customerId ?? user?.id;
+      const variant = this.selected();
       await this.catalog.submitReview({
+        productTemplateId: item.id,
         productSlug: item.slug,
+        skuId: variant?.id,
         rating: data.rating,
         text: data.content,
-        authorName: data.authorName,
+        authorName: data.authorName || user?.name || undefined,
+        customerId: customerId || undefined,
       });
-      const newReview: ProductReviewItem = {
-        id: `rev-${Date.now()}`,
-        authorName: data.authorName || 'Khách hàng',
-        rating: data.rating,
-        text: data.content,
-        createdAt: new Date().toISOString(),
-      };
-      this.reviews.update((list) => [newReview, ...list]);
-    } catch (e) {
+      const updatedReviews = await this.catalog.reviews(item.slug);
+      this.reviews.set(updatedReviews);
+      this.reviewModalOpen.set(false);
+    } catch (e: unknown) {
       console.error('Lỗi khi gửi đánh giá:', e);
+      const msg = e instanceof Error ? e.message : 'Đã có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại sau.';
+      this.reviewSubmitError.set(msg);
+    } finally {
+      this.isSubmittingReview.set(false);
     }
-    this.reviewModalOpen.set(false);
   }
 
   protected async buyNow(): Promise<void> {
