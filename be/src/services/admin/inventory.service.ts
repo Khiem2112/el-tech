@@ -152,6 +152,8 @@ export type InventoryBalancesResult = {
   summary: InventoryBalancesSummaryDto;
 };
 
+export type LedgerOriginType = 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE' | 'INTERNAL';
+
 export type StockLedgerEntryItemDto = {
   id: string;
   stockQuantId: string;
@@ -178,6 +180,57 @@ export type StockLedgerEntryItemDto = {
   reason: string | null;
   sourceBranchName: string | null;
   destinationBranchName: string | null;
+  originType: LedgerOriginType;
+  originId: string | null;
+  originCode: string | null;
+  originUrl: string | null;
+};
+
+type LedgerOriginResolution = {
+  originType: LedgerOriginType;
+  originId: string | null;
+  originCode: string | null;
+  originUrl: string | null;
+};
+
+const resolveLedgerOrigin = (
+  stockMove: {
+    code: string;
+    order?: { id: string; code: string } | null;
+    purchaseOrder?: { id: string; code: string } | null;
+  },
+  entryType: StockLedgerEntryType,
+): LedgerOriginResolution => {
+  if (stockMove.order) {
+    return {
+      originType: 'ORDER',
+      originId: stockMove.order.id,
+      originCode: stockMove.order.code,
+      originUrl: `/admin/orders/${stockMove.order.id}`,
+    };
+  }
+  if (stockMove.purchaseOrder) {
+    return {
+      originType: 'PURCHASE_ORDER',
+      originId: stockMove.purchaseOrder.id,
+      originCode: stockMove.purchaseOrder.code,
+      originUrl: `/admin/procurement/purchase-orders/${stockMove.purchaseOrder.id}`,
+    };
+  }
+  if (entryType === 'QUARANTINE' || entryType === 'RELEASE_QUARANTINE') {
+    return {
+      originType: 'QUARANTINE',
+      originId: null,
+      originCode: 'Cách ly / Kiểm định',
+      originUrl: null,
+    };
+  }
+  return {
+    originType: 'INTERNAL',
+    originId: null,
+    originCode: stockMove.code,
+    originUrl: null,
+  };
 };
 
 export type StockLedgerListResult = {
@@ -429,6 +482,7 @@ export class AdminInventoryService {
       const stockMove = entry.stockMoveLine.stockMove;
       const documentCode =
         stockMove.purchaseOrder?.code ?? stockMove.order?.code ?? stockMove.code;
+      const origin = resolveLedgerOrigin(stockMove, entry.entryType);
 
       return {
         id: entry.id,
@@ -456,6 +510,10 @@ export class AdminInventoryService {
         reason: stockMove.reason,
         sourceBranchName: null,
         destinationBranchName: null,
+        originType: origin.originType,
+        originId: origin.originId,
+        originCode: origin.originCode,
+        originUrl: origin.originUrl,
       };
     });
 
@@ -481,6 +539,35 @@ export class AdminInventoryService {
 
     if (query.entryType) {
       where.entryType = query.entryType as StockLedgerEntryType;
+    }
+
+    if (query.originType && query.originType !== 'ALL') {
+      if (query.originType === 'ORDER') {
+        where.stockMoveLine = {
+          stockMove: {
+            orderId: { not: null },
+          },
+        };
+      } else if (query.originType === 'PURCHASE_ORDER') {
+        where.stockMoveLine = {
+          stockMove: {
+            purchaseOrderId: { not: null },
+          },
+        };
+      } else if (query.originType === 'QUARANTINE') {
+        if (query.entryType) {
+          if (
+            query.entryType !== StockLedgerEntryType.QUARANTINE &&
+            query.entryType !== StockLedgerEntryType.RELEASE_QUARANTINE
+          ) {
+            where.entryType = { in: [] };
+          }
+        } else {
+          where.entryType = {
+            in: [StockLedgerEntryType.QUARANTINE, StockLedgerEntryType.RELEASE_QUARANTINE],
+          };
+        }
+      }
     }
 
     if (query.startDate || query.endDate) {
@@ -563,7 +650,6 @@ export class AdminInventoryService {
         include: {
           stockQuant: {
             include: {
-              
               sku: {
                 include: {
                   productTemplate: true,
@@ -577,8 +663,6 @@ export class AdminInventoryService {
                 include: {
                   order: true,
                   purchaseOrder: true,
-                  
-                  
                 },
               },
             },
@@ -594,6 +678,7 @@ export class AdminInventoryService {
       const stockMove = entry.stockMoveLine.stockMove;
       const documentCode =
         stockMove.purchaseOrder?.code ?? stockMove.order?.code ?? stockMove.code;
+      const origin = resolveLedgerOrigin(stockMove, entry.entryType);
 
       return {
         id: entry.id,
@@ -621,6 +706,10 @@ export class AdminInventoryService {
         reason: stockMove.reason,
         sourceBranchName: null,
         destinationBranchName: null,
+        originType: origin.originType,
+        originId: origin.originId,
+        originCode: origin.originCode,
+        originUrl: origin.originUrl,
       };
     });
 

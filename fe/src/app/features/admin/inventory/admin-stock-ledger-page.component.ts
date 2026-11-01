@@ -72,7 +72,7 @@ import {
       </div>
 
       <div class="bg-surface border border-line rounded-lg p-4 space-y-3 shadow-card">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
           <div class="relative lg:col-span-1">
             <label for="ledger-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
             <div class="relative">
@@ -88,6 +88,16 @@ import {
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
+          </div>
+
+          <div>
+            <span class="block text-xs font-semibold text-muted uppercase mb-1">Nguồn chứng từ</span>
+            <app-select
+              [options]="originTypeOptions"
+              [value]="selectedOriginType()"
+              (valueChange)="onOriginTypeChange($event)"
+              size="md"
+            />
           </div>
 
           <div>
@@ -164,7 +174,7 @@ import {
                   <th class="py-3 px-4 text-right whitespace-nowrap">Biến động giữ</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Biến động lỗi</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Tồn sau GD</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Mã chứng từ</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Chứng từ & Nguồn gốc</th>
                   <th class="py-3 px-4 whitespace-nowrap">Tác nhân</th>
                 </tr>
               </thead>
@@ -230,9 +240,24 @@ import {
                       Thực: <strong class="text-foreground">{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-amber-600">{{ entry.reservedAfter }}</strong>
                     </td>
 
-                    <td class="py-3 px-4 font-semibold text-primary-strong whitespace-nowrap tabular">
-                      <div class="flex items-center gap-1.5">
-                        <span>{{ entry.documentCode }}</span>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                      <div class="flex flex-col gap-1 items-start">
+                        <span [class]="getOriginBadgeClass(entry.originType)">
+                          {{ getOriginLabel(entry.originType) }}
+                        </span>
+                        @if (entry.originUrl) {
+                          <a
+                            [routerLink]="entry.originUrl"
+                            class="text-xs font-bold text-primary hover:text-primary-focus hover:underline tabular tabular-nums tracking-wide inline-flex items-center gap-1"
+                            [title]="'Xem chi tiết ' + (entry.originCode || entry.documentCode)"
+                          >
+                            <span>{{ entry.originCode || entry.documentCode }}</span>
+                          </a>
+                        } @else {
+                          <span class="text-xs font-medium text-foreground tabular tabular-nums">
+                            {{ entry.documentCode }}
+                          </span>
+                        }
                       </div>
                     </td>
 
@@ -296,8 +321,16 @@ export class AdminStockLedgerPageComponent implements OnInit {
 
   readonly searchQuery = signal<string>('');
   readonly selectedEntryType = signal<string>('');
+  readonly selectedOriginType = signal<'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE'>('ALL');
   readonly startDate = signal<string>('');
   readonly endDate = signal<string>('');
+
+  readonly originTypeOptions: SelectOption[] = [
+    { value: 'ALL', label: 'Tất cả nguồn chứng từ' },
+    { value: 'ORDER', label: 'Đơn bán hàng' },
+    { value: 'PURCHASE_ORDER', label: 'Đơn mua nhà cung cấp' },
+    { value: 'QUARANTINE', label: 'Kiểm định kho nội bộ' },
+  ];
 
   readonly entryTypeOptions: SelectOption[] = [
     { value: '', label: 'Tất cả loại giao dịch' },
@@ -321,6 +354,9 @@ export class AdminStockLedgerPageComponent implements OnInit {
       if (params['entryType']) {
         this.selectedEntryType.set(params['entryType']);
       }
+      if (params['originType']) {
+        this.selectedOriginType.set(params['originType'] as 'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE');
+      }
       void this.loadLedger(1);
     });
   }
@@ -329,6 +365,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
     await this.inventoryService.loadLedger({
       search: this.searchQuery(),
       entryType: this.selectedEntryType() || undefined,
+      originType: this.selectedOriginType(),
       startDate: this.startDate() || undefined,
       endDate: this.endDate() || undefined,
       page,
@@ -338,6 +375,11 @@ export class AdminStockLedgerPageComponent implements OnInit {
 
   onSearchChange(term: string): void {
     this.searchQuery.set(term);
+    void this.loadLedger(1);
+  }
+
+  onOriginTypeChange(type: string): void {
+    this.selectedOriginType.set(type as 'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE');
     void this.loadLedger(1);
   }
 
@@ -419,6 +461,36 @@ export class AdminStockLedgerPageComponent implements OnInit {
     }
   }
 
+  getOriginLabel(originType?: string): string {
+    switch (originType) {
+      case 'ORDER':
+        return 'ĐƠN BÁN';
+      case 'PURCHASE_ORDER':
+        return 'ĐƠN MUA PO';
+      case 'QUARANTINE':
+        return 'KIỂM ĐỊNH';
+      case 'INTERNAL':
+        return 'NỘI BỘ';
+      default:
+        return originType || 'NỘI BỘ';
+    }
+  }
+
+  getOriginBadgeClass(originType?: string): string {
+    const base = 'px-2 py-0.5 rounded text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap border';
+    switch (originType) {
+      case 'ORDER':
+        return `${base} bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800`;
+      case 'PURCHASE_ORDER':
+        return `${base} bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800`;
+      case 'QUARANTINE':
+        return `${base} bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800`;
+      case 'INTERNAL':
+      default:
+        return `${base} bg-surface-alt text-muted border-line`;
+    }
+  }
+
   exportCsv(): void {
     const entries = this.inventoryService.ledgerEntries();
     if (!entries.length) {
@@ -432,6 +504,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
       'Ma SKU',
       'Ten linh kien',
       'Loai bien dong',
+      'Nguon chung tu',
       'Bien dong thuc te',
       'Bien dong giu ton',
       'Bien dong cach ly',
@@ -448,12 +521,13 @@ export class AdminStockLedgerPageComponent implements OnInit {
       `"${e.sku}"`,
       `"${e.productName.replace(/"/g, '""')}"`,
       `"${e.entryType}"`,
+      `"${e.originType ?? 'INTERNAL'}"`,
       e.deltaOnHand,
       e.deltaReserved,
       e.deltaQuarantine,
       e.onHandAfter,
       e.reservedAfter,
-      `"${e.documentCode}"`,
+      `"${e.originCode || e.documentCode}"`,
       `"${e.actorType}"`,
     ]);
 

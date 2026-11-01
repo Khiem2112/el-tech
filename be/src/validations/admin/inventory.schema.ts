@@ -29,11 +29,15 @@ export const stockLedgerEntryTypeEnum = z.enum([
 
 export type StockLedgerEntryTypeFilter = z.infer<typeof stockLedgerEntryTypeEnum>;
 
+export const ledgerOriginTypeEnum = z.enum(['ALL', 'ORDER', 'PURCHASE_ORDER', 'QUARANTINE']);
+export type LedgerOriginTypeFilter = z.infer<typeof ledgerOriginTypeEnum>;
+
 export const queryStockLedgerSchema = z.object({
   search: z.string().trim().optional(),
   branchId: z.coerce.number().int().positive().optional(),
   skuId: z.coerce.number().int().positive().optional(),
   entryType: stockLedgerEntryTypeEnum.optional(),
+  originType: ledgerOriginTypeEnum.optional().default('ALL'),
   startDate: z.string().trim().optional(),
   endDate: z.string().trim().optional(),
   page: z.coerce.number().int().positive().optional().default(1),

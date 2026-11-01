@@ -3,7 +3,7 @@
 - Feature: Admin Stock Ledger Source Tracking & Movement Audit
 - Governing Spec: Yêu cầu kiểm toán dòng hàng hóa: Xem chi tiết từng dòng dịch chuyển biến động kho của linh kiện, thể hiện rõ dòng dịch chuyển đó bắt nguồn từ đơn bán hàng, đơn mua nhà cung cấp hay kiểm định lỗi kho
 - Scope: shared
-- Status: Pending
+- Status: Complete
 
 ## Objective
 
@@ -27,12 +27,12 @@ Nâng cấp màn hình Sổ kho bất biến ([admin-stock-ledger-page.component
 
 ## Checklist
 
-- [ ] Bổ sung trường `originType: 'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE'` vào schema kiểm thực Zod [inventory.schema.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/validations/admin/inventory.schema.ts).
-- [ ] Cập nhật hàm `getLedgerEntries` và `getQuantLedger` trong [inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/inventory.service.ts) để trích xuất chính xác `originType`, `originId`, `originCode` và lọc theo nguồn phát sinh chứng từ.
-- [ ] Mở rộng kiểu dữ liệu `StockLedgerEntryItem` và `LedgerFilterParams` trong [admin-inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/services/admin-inventory.service.ts).
-- [ ] Bổ sung bộ chọn dropdown "Nguồn chứng từ" trên thanh công cụ lọc của [admin-stock-ledger-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/admin-stock-ledger-page.component.ts).
-- [ ] Tái cấu trúc cột "Mã chứng từ & Nguồn gốc" trên bảng sổ kho: hiển thị huy hiệu loại nguồn phát sinh và liên kết nhấp chuột mở trang chi tiết tương ứng.
-- [ ] Chạy kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
+- [x] Bổ sung trường `originType: 'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE'` vào schema kiểm thực Zod [inventory.schema.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/validations/admin/inventory.schema.ts).
+- [x] Cập nhật hàm `getLedgerEntries` và `getQuantLedger` trong [inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/be/src/services/admin/inventory.service.ts) để trích xuất chính xác `originType`, `originId`, `originCode` và lọc theo nguồn phát sinh chứng từ.
+- [x] Mở rộng kiểu dữ liệu `StockLedgerEntryItem` và `LedgerFilterParams` trong [admin-inventory.service.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/services/admin-inventory.service.ts).
+- [x] Bổ sung bộ chọn dropdown "Nguồn chứng từ" trên thanh công cụ lọc của [admin-stock-ledger-page.component.ts](file:///c:/University/Education%20program/HK1-nam-4/web-nang-cao/project/fe/src/app/features/admin/inventory/admin-stock-ledger-page.component.ts).
+- [x] Tái cấu trúc cột "Mã chứng từ & Nguồn gốc" trên bảng sổ kho: hiển thị huy hiệu loại nguồn phát sinh và liên kết nhấp chuột mở trang chi tiết tương ứng.
+- [x] Chạy kiểm thử tự động `npm run check:fe` và `npm run check:be` đạt exit code 0.
 
 ## Acceptance Criteria
 

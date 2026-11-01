@@ -75,6 +75,10 @@ export type StockLedgerEntryItem = {
   reason: string | null;
   sourceBranchName: string | null;
   destinationBranchName: string | null;
+  originType?: 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE' | 'INTERNAL' | string;
+  originId?: string | null;
+  originCode?: string | null;
+  originUrl?: string | null;
 };
 
 export type StockLedgerResponse = {
@@ -118,6 +122,7 @@ export type LedgerFilterParams = {
   branchId?: number;
   skuId?: number;
   entryType?: string;
+  originType?: 'ALL' | 'ORDER' | 'PURCHASE_ORDER' | 'QUARANTINE';
   startDate?: string;
   endDate?: string;
   page?: number;
@@ -286,6 +291,9 @@ export class AdminInventoryService {
       }
       if (params?.entryType) {
         httpParams = httpParams.set('entryType', params.entryType);
+      }
+      if (params?.originType && params.originType !== 'ALL') {
+        httpParams = httpParams.set('originType', params.originType);
       }
       if (params?.startDate) {
         httpParams = httpParams.set('startDate', params.startDate);
