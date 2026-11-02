@@ -1,0 +1,28 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="uc-4-3-2" name="UCQuanTri">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;SƠ ĐỒ USE CASE: TỔNG THỂ PHÂN HỆ QUẢN TRỊ VIÊN (ADMIN PORTAL)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="box" value="Hệ thống EL-TECH Admin Management" style="swimlane;html=1;startSize=25;fillColor=#ffffff;strokeColor=#cbd5e1;" vertex="1" parent="1"><mxGeometry x="280" y="80" width="600" height="520" as="geometry"/></mxCell>
+        <mxCell id="uc6" value="UC-06: Quản trị Catalog, SKU&lt;br&gt;&amp;amp; Cấu hình Virtual BOM" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="box"><mxGeometry x="40" y="40" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc7" value="UC-07: Tiếp nhận đơn PO,&lt;br&gt;Nhập kho &amp;amp; Quét Serial" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="box"><mxGeometry x="40" y="130" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc8" value="UC-08: Điều phối đơn hàng&lt;br&gt;(9 trạng thái &amp;amp; Lắp ráp PC)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="box"><mxGeometry x="40" y="220" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_promo" value="Cấu hình Khuyến mãi&lt;br&gt;&amp;amp; Mã giảm giá Coupon" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="box"><mxGeometry x="40" y="310" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_comp" value="Xem hòm thư khiếu nại&lt;br&gt;&amp;amp; Thông tin liên hệ khách" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="box"><mxGeometry x="40" y="400" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="uc_stk" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;&lt;br&gt;Hạch toán giá vốn WAC" style="ellipse;dashed=1;whiteSpace=wrap;html=1;fillColor=#fef08a;" vertex="1" parent="box"><mxGeometry x="360" y="130" width="180" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="act_admin" value="Quản trị viên&lt;br&gt;(Store Admin)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#fed7aa;" vertex="1" parent="1"><mxGeometry x="80" y="280" width="50" height="90" as="geometry"/></mxCell>
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" source="act_admin" target="uc6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" source="act_admin" target="uc7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" source="act_admin" target="uc8" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" source="act_admin" target="uc_promo" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;" edge="1" source="act_admin" target="uc_comp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="uc7" target="uc_stk" parent="box"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

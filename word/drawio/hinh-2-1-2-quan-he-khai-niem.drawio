@@ -1,0 +1,34 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-1-2" name="VirtualBOM">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;MÔ HÌNH QUAN HỆ KHÁI NIỆM CATEGORY - PRODUCT TEMPLATE - SKU VÀ VIRTUAL BOM&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1000" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="cat" value="&lt;b&gt;Category&lt;/b&gt;&lt;br&gt;- id: String&lt;br&gt;- name: String&lt;br&gt;- slug: String" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="200" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pt" value="&lt;b&gt;ProductTemplate&lt;/b&gt;&lt;br&gt;- id: String&lt;br&gt;- categoryId: String&lt;br&gt;- brandId: String&lt;br&gt;- name: String (Mẫu SP)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="120" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="sku" value="&lt;b&gt;ProductVariant (SKU)&lt;/b&gt;&lt;br&gt;- id: String (Mã SKU)&lt;br&gt;- templateId: String&lt;br&gt;- price: Decimal (Giá niêm yết)&lt;br&gt;- status: ACTIVE/INACTIVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;align=left;spacingLeft=10;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="120" width="230" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="bundle" value="&lt;b&gt;PcBundle (Dàn máy PC)&lt;/b&gt;&lt;br&gt;- id: String&lt;br&gt;- name: String&lt;br&gt;- totalPrice: Decimal&lt;br&gt;- status: PUBLISHED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="320" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="bom" value="&lt;b&gt;PcBundleItem (Virtual BOM)&lt;/b&gt;&lt;br&gt;- bundleId: String&lt;br&gt;- variantId: String (FK -> SKU)&lt;br&gt;- quantity: Int&lt;br&gt;- isMandatory: Boolean" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=10;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="640" y="320" width="230" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="cat" target="pt" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="pt" target="sku" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="bundle" target="bom" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="tham chiếu linh kiện con" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" edge="1" source="bom" target="sku" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

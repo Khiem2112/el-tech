@@ -1,0 +1,30 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-4" name="BPMNPoNhapKho">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH MUA HÀNG VÀ NHẬP KHO (XỬ LÝ ĐỦ &amp;amp; GIAO THIẾU HÀNG)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1180" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="1"><mxGeometry x="50" y="130" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Tạo Đơn mua hàng (PO)&lt;br&gt;Trạng thái DRAFT" style="rounded=1;fillColor=#ffffff;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="120" y="120" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="a2" value="Xác nhận gửi PO tới&lt;br&gt;Nhà cung cấp (CONFIRMED)" style="rounded=1;fillColor=#ffffff;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="320" y="120" width="170" height="55" as="geometry"/></mxCell>
+        <mxCell id="gw1" value="Nhà cung cấp&lt;br&gt;giao đủ hàng?" style="rhombus;fillColor=#fef08a;" vertex="1" parent="1"><mxGeometry x="530" y="105" width="120" height="85" as="geometry"/></mxCell>
+        <mxCell id="a_full" value="Nhập đủ: Quét mã Serial&lt;br&gt;&amp;amp; Nhận 100% số lượng đặt" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="700" y="80" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_short" value="Giao thiếu: Điều chỉnh dòng PO&lt;br&gt;theo số lượng thực tế nhận" style="rounded=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1"><mxGeometry x="700" y="170" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_update" value="Tăng tồn kho onHand&lt;br&gt;Tạo SerialUnit &amp;amp;&lt;br&gt;Tính toán lại giá vốn WAC" style="rounded=1;fillColor=#bfdbfe;strokeColor=#2563eb;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="930" y="120" width="180" height="65" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="1160" y="135" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a1" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a2" target="gw1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Đủ hàng" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_full" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" value="Thiếu hàng" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_short" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_full" target="a_update" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_short" target="a_update" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_update" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,35 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-5" name="BPMNChuanBiLapRap">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH XỬ LÝ ĐƠN HÀNG VÀ LẮP RÁP PC (PHÂN TÁCH LINH KIỆN RỜI VÀ PC BUNDLE)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1180" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="1"><mxGeometry x="50" y="140" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Đơn hàng được xác nhận&lt;br&gt;(CONFIRMED)" style="rounded=1;fillColor=#ffffff;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="120" y="130" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="gw1" value="Đơn hàng có chứa&lt;br&gt;PC Bundle không?" style="rhombus;fillColor=#fef08a;" vertex="1" parent="1"><mxGeometry x="320" y="115" width="130" height="85" as="geometry"/></mxCell>
+        <mxCell id="a_prep" value="Chuyển sang PREPARING&lt;br&gt;Nhặt linh kiện rời từ kệ" style="rounded=1;fillColor=#eff6ff;strokeColor=#3b82f6;" vertex="1" parent="1"><mxGeometry x="510" y="80" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_asm" value="Chuyển sang ASSEMBLING&lt;br&gt;Kỹ thuật lắp ráp theo Virtual BOM" style="rounded=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="1"><mxGeometry x="510" y="180" width="190" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_test" value="Kiểm tra tương thích,&lt;br&gt;Chạy benchmark &amp;amp; Dán tem" style="rounded=1;fillColor=#ffffff;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="740" y="180" width="170" height="55" as="geometry"/></mxCell>
+        <mxCell id="gw2" value="Hình thức&lt;br&gt;giao nhận?" style="rhombus;fillColor=#fef08a;" vertex="1" parent="1"><mxGeometry x="760" y="65" width="120" height="85" as="geometry"/></mxCell>
+        <mxCell id="a_pickup" value="READY_FOR_PICKUP&lt;br&gt;Chờ khách tới quầy nhận" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="930" y="50" width="170" height="50" as="geometry"/></mxCell>
+        <mxCell id="a_ship" value="Bàn giao đơn vị giao vận&lt;br&gt;Chuyển sang SHIPPING" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="930" y="120" width="170" height="50" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="1150" y="95" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a1" target="gw1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" value="Linh kiện rời" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_prep" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Có PC Bundle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_asm" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_asm" target="a_test" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_prep" target="gw2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_test" target="gw2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8" value="Tại quầy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw2" target="a_pickup" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c9" value="Giao tận nơi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw2" target="a_ship" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_pickup" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_ship" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

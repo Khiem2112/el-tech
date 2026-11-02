@@ -1,0 +1,19 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-payment" name="ERDPayment">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD CHI TIẾT: THANH TOÁN QR VÀ COD TOÀN PHẦN (KHÔNG CỌC - KHÔNG HOÀN TIỀN SITE)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="980" height="40" as="geometry"/></mxCell>
+        <mxCell id="tb_order" value="&lt;b&gt;Order&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;orderStatus: OrderStatus&lt;br&gt;totalAmount: Decimal(12,2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="60" y="110" width="220" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_pay" value="&lt;b&gt;Payment&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;orderId: String [FK, UQ]&lt;br&gt;method: QR_BANK / COD&lt;br&gt;state: PENDING / PAID / FAILED&lt;br&gt;amount: Decimal(12,2) [100% Total]&lt;br&gt;&lt;i&gt;Không Deposit - Không Refund&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="360" y="100" width="260" height="130" as="geometry"/></mxCell>
+        <mxCell id="tb_tx" value="&lt;b&gt;PaymentTransaction&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;paymentId: String [FK]&lt;br&gt;qrContent: String&lt;br&gt;transCode: String&lt;br&gt;confirmedAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="700" y="110" width="240" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="1..1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_order" target="tb_pay" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_pay" target="tb_tx" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

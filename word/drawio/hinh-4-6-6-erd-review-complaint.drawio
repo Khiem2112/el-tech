@@ -1,0 +1,18 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-review-complaint" name="ERDReviewComplaint">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD CHI TIẾT: ĐÁNH GIÁ MỞ TỰ DO VÀ TIẾP NHẬN YÊU CẦU KHIẾU NẠI&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="980" height="40" as="geometry"/></mxCell>
+        <mxCell id="tb_sku" value="&lt;b&gt;ProductVariant (SKU)&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;skuCode: String" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="60" y="110" width="220" height="80" as="geometry"/></mxCell>
+        <mxCell id="tb_rev" value="&lt;b&gt;Review (Đánh giá mở tự do)&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;variantId: String [FK]&lt;br&gt;authorName: String&lt;br&gt;rating: Int (1 - 5 sao)&lt;br&gt;content: String&lt;br&gt;&lt;i&gt;Không ràng buộc OrderLine / Không duyệt tay&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="360" y="100" width="270" height="120" as="geometry"/></mxCell>
+        <mxCell id="tb_cmp" value="&lt;b&gt;Complaint (Tiếp nhận khiếu nại)&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;contactName: String&lt;br&gt;contactPhone: String&lt;br&gt;contactEmail: String&lt;br&gt;orderCode: String [Nullable]&lt;br&gt;description: String (Nội dung tự do)&lt;br&gt;submittedAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="700" y="100" width="270" height="140" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_sku" target="tb_rev" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

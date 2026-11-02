@@ -1,0 +1,34 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-1-4" name="TonKhoChuyenDong">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;QUAN HỆ SỐ DƯ TỒN KHO, SỔ CÁI VÀ ĐƠN VỊ SERIAL TRÊN MỘT KHO DUY NHẤT&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sq" value="&lt;b&gt;StockQuant (Số dư tức thời)&lt;/b&gt;&lt;br&gt;- variantId: String (SKU)&lt;br&gt;- onHand: Int (Thực tế tại kho)&lt;br&gt;- reserved: Int (Đang giữ cho đơn)&lt;br&gt;- quarantine: Int (Lỗi/chờ kiểm)&lt;br&gt;&lt;b&gt;available = onHand - reserved - quarantine&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bfdbfe;strokeColor=#2563eb;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="110" width="280" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="sm" value="&lt;b&gt;StockMove (Phiếu biến động)&lt;/b&gt;&lt;br&gt;- id: String&lt;br&gt;- moveType: PO_RECEIPT / SALE_DELIVERY&lt;br&gt;- status: DRAFT / CONFIRMED / DONE&lt;br&gt;- createdAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="110" width="280" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="sml" value="&lt;b&gt;StockMoveLine (Chi tiết chuyển động)&lt;/b&gt;&lt;br&gt;- moveId: String&lt;br&gt;- variantId: String&lt;br&gt;- quantity: Int&lt;br&gt;- unitPrice: Decimal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="280" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="sle" value="&lt;b&gt;StockLedgerEntry (Sổ cái bất biến)&lt;/b&gt;&lt;br&gt;- id: String&lt;br&gt;- variantId: String&lt;br&gt;- quantityDelta: Int&lt;br&gt;- balanceAfter: Int&lt;br&gt;- wacUnitCost: Decimal (Giá vốn bình quân)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="780" y="110" width="280" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="su" value="&lt;b&gt;SerialUnit (Định danh từng linh kiện)&lt;/b&gt;&lt;br&gt;- serialNumber: String (Duy nhất)&lt;br&gt;- variantId: String&lt;br&gt;- status: IN_STOCK / RESERVED / SHIPPED&lt;br&gt;- poId: String (Nguồn gốc nhập)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="780" y="270" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="Cập nhật số dư" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="sm" target="sq" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="sm" target="sml" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="Ghi nhật ký biến động" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="sml" target="sle" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="Gán serial khi xuất/nhập" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" edge="1" source="sml" target="su" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

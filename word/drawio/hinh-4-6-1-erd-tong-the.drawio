@@ -1,0 +1,25 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-overview" name="ERDTongThe">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD TỔNG THỂ MỤC TIÊU EL-TECH DRAGON STORE (6 PHÂN CỤM DỮ LIỆU CỐT LÕI)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1180" height="40" as="geometry"/></mxCell>
+        <mxCell id="c1" value="&lt;b&gt;CỤM 1: CATALOG &amp;amp; VIRTUAL BOM&lt;/b&gt;&lt;br&gt;- Category&lt;br&gt;- Brand&lt;br&gt;- ProductTemplate&lt;br&gt;- ProductVariant (SKU)&lt;br&gt;- PcBundle&lt;br&gt;- PcBundleItem (BOM)&lt;br&gt;- ProductPromotion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="100" width="260" height="150" as="geometry"/></mxCell>
+        <mxCell id="c2" value="&lt;b&gt;CỤM 2: KHÁCH HÀNG &amp;amp; AUTH&lt;/b&gt;&lt;br&gt;- User (Account)&lt;br&gt;- Customer (Profile)&lt;br&gt;- OrderLookupOtp (Guest auth)&lt;br&gt;- Session / RefreshToken" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="400" y="100" width="240" height="150" as="geometry"/></mxCell>
+        <mxCell id="c3" value="&lt;b&gt;CỤM 3: GIỎ HÀNG &amp;amp; ĐƠN HÀNG&lt;/b&gt;&lt;br&gt;- Cart &amp;amp; CartItem&lt;br&gt;- Order&lt;br&gt;- OrderLine (SKU snapshot)&lt;br&gt;- OrderStatusHistory (9 states)&lt;br&gt;- Coupon" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="720" y="100" width="240" height="150" as="geometry"/></mxCell>
+        <mxCell id="c4" value="&lt;b&gt;CỤM 4: THANH TOÁN (QR / COD)&lt;/b&gt;&lt;br&gt;- Payment (Phương thức QR/COD)&lt;br&gt;- PaymentTransaction (Xác nhận)&lt;br&gt;&lt;i&gt;Không cọc - Không refund entity&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="1000" y="100" width="220" height="150" as="geometry"/></mxCell>
+        <mxCell id="c5" value="&lt;b&gt;CỤM 5: KHO VÀ MUA HÀNG (PO)&lt;/b&gt;&lt;br&gt;- Supplier (Nhà cung cấp)&lt;br&gt;- PurchaseOrder &amp;amp; POLine&lt;br&gt;- StockQuant (onHand, reserved, wac)&lt;br&gt;- StockMove &amp;amp; StockMoveLine&lt;br&gt;- StockLedgerEntry (Sổ cái WAC)&lt;br&gt;- SerialUnit (Định danh từng linh kiện)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="300" width="320" height="160" as="geometry"/></mxCell>
+        <mxCell id="c6" value="&lt;b&gt;CỤM 6: ĐÁNH GIÁ &amp;amp; KHIẾU NẠI&lt;/b&gt;&lt;br&gt;- Review (Đánh giá mở tự do theo SKU)&lt;br&gt;- Complaint (Tiếp nhận nội dung tự do)&lt;br&gt;&lt;i&gt;Ranh giới giải quyết ngoài hệ thống&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="450" y="300" width="300" height="160" as="geometry"/></mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c1" target="c3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c2" target="c3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c3" target="c4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c1" target="c5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c1" target="c6" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

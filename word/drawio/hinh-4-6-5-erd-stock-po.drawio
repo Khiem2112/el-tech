@@ -1,0 +1,25 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-stock-po" name="ERDStockPO">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD CHI TIẾT: NHÀ CUNG CẤP, ĐƠN MUA PO, TỒN KHO VÀ SERIAL TRÊN MỘT KHO DUY NHẤT&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1180" height="40" as="geometry"/></mxCell>
+        <mxCell id="tb_sup" value="&lt;b&gt;Supplier&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;name: String&lt;br&gt;contactPhone: String" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="40" y="100" width="200" height="80" as="geometry"/></mxCell>
+        <mxCell id="tb_po" value="&lt;b&gt;PurchaseOrder&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;supplierId: String [FK]&lt;br&gt;poCode: String [UQ]&lt;br&gt;status: DRAFT / CONFIRMED / DONE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="300" y="100" width="240" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_pol" value="&lt;b&gt;PurchaseOrderLine&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;poId: String [FK]&lt;br&gt;variantId: String [FK]&lt;br&gt;quantityOrdered: Int&lt;br&gt;quantityReceived: Int&lt;br&gt;unitCost: Decimal(12,2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="600" y="100" width="240" height="120" as="geometry"/></mxCell>
+        <mxCell id="tb_quant" value="&lt;b&gt;StockQuant (1 kho duy nhất)&lt;/b&gt;&lt;br&gt;&lt;u&gt;variantId: String [PK]&lt;/u&gt;&lt;br&gt;onHand: Int&lt;br&gt;reserved: Int&lt;br&gt;quarantine: Int&lt;br&gt;wacUnitCost: Decimal(12,2)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bfdbfe;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="900" y="100" width="240" height="110" as="geometry"/></mxCell>
+        <mxCell id="tb_serial" value="&lt;b&gt;SerialUnit&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;serialNumber: String [UQ]&lt;br&gt;variantId: String [FK]&lt;br&gt;status: IN_STOCK / SHIPPED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="600" y="270" width="240" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_ledger" value="&lt;b&gt;StockLedgerEntry&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;variantId: String [FK]&lt;br&gt;quantityDelta: Int&lt;br&gt;balanceAfter: Int&lt;br&gt;wacUnitCost: Decimal(12,2)&lt;br&gt;createdAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="900" y="250" width="240" height="130" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_sup" target="tb_po" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_po" target="tb_pol" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="cập nhật tồn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_pol" target="tb_quant" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_pol" target="tb_serial" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="ghi sổ cái" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_quant" target="tb_ledger" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

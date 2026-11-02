@@ -1,0 +1,28 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-7" name="BPMNTiepNhanKhieuNai">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH TIẾP NHẬN YÊU CẦU KHIẾU NẠI VÀ RANH GIỚI OFF-SCREEN&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="1"><mxGeometry x="60" y="120" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Khách truy cập trang&lt;br&gt;Gửi khiếu nại (/complaints)" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="130" y="110" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="a2" value="Điền form nội dung tự do&lt;br&gt;&amp;amp; Thông tin liên hệ" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="330" y="110" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="a3" value="Hệ thống lưu trữ vào DB&lt;br&gt;&amp;amp; Trả về mã tiếp nhận" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="530" y="110" width="170" height="55" as="geometry"/></mxCell>
+        <mxCell id="a4" value="KẾT THÚC TRÁCH NHIỆM&lt;br&gt;TRỰC TUYẾN TRÊN WEBSITE" style="rounded=1;fillColor=#fee2e2;strokeColor=#ef4444;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="740" y="110" width="190" height="55" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="970" y="120" width="35" height="35" as="geometry"/></mxCell>
+        
+        <mxCell id="box_off" value="&lt;b&gt;Ranh giới vận hành ngoài màn hình (Off-screen / Offline)&lt;/b&gt;&lt;br&gt;Nhân viên gọi điện thoại cho khách -&gt; Thỏa thuận kiểm tra linh kiện -&gt; Đổi hàng mới hoặc hoàn tiền mặt trực tiếp" style="rounded=1;dashed=1;fillColor=#f8fafc;strokeColor=#64748b;align=center;" vertex="1" parent="1"><mxGeometry x="400" y="210" width="530" height="70" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a1" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a2" target="a3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a3" target="a4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a4" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="a4" target="box_off" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

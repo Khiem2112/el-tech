@@ -1,0 +1,43 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-1" name="BPMNDatHang">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH LỰA CHỌN LINH KIỆN PC VÀ ĐẶT HÀNG (MÔ HÌNH TINH GIẢN)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1320" height="40" as="geometry"/></mxCell>
+        <mxCell id="pool" value="EL-TECH Dragon Store - Quy trình Đặt hàng" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;resizeParentMax=0;startSize=30;horizontal=0;horizontalStack=0;fillColor=#f8fafc;strokeColor=#cbd5e1;" vertex="1" parent="1"><mxGeometry x="40" y="80" width="1320" height="520" as="geometry"/></mxCell>
+        
+        <mxCell id="lane_cust" value="Khách hàng&lt;br&gt;(Guest / Member)" style="swimlane;html=1;startSize=25;horizontal=0;fillColor=#eff6ff;strokeColor=#bfdbfe;" vertex="1" parent="pool"><mxGeometry x="30" y="0" width="1290" height="180" as="geometry"/></mxCell>
+        <mxCell id="start1" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#22c55e;strokeColor=#16a34a;" vertex="1" parent="lane_cust"><mxGeometry x="30" y="70" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="act_browse" value="Chọn linh kiện rời&lt;br&gt;hoặc Ráp PC Builder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="lane_cust"><mxGeometry x="100" y="55" width="140" height="65" as="geometry"/></mxCell>
+        <mxCell id="act_cart" value="Thêm vào giỏ hàng&lt;br&gt;&amp;amp; Bấm Checkout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="lane_cust"><mxGeometry x="280" y="55" width="140" height="65" as="geometry"/></mxCell>
+        <mxCell id="gw_pay" value="Chọn hình thức&lt;br&gt;thanh toán?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="lane_cust"><mxGeometry x="640" y="45" width="120" height="85" as="geometry"/></mxCell>
+        <mxCell id="act_pay_qr" value="Quét mã VietQR 100%&lt;br&gt;&amp;amp; Hoàn tất chuyển khoản" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="lane_cust"><mxGeometry x="810" y="25" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="act_pay_cod" value="Chọn thanh toán COD 100%&lt;br&gt;(Không cần đặt cọc)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="lane_cust"><mxGeometry x="810" y="105" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="act_receive_order" value="Nhận mã đơn hàng &amp;amp;&lt;br&gt;Thông tin hóa đơn" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="lane_cust"><mxGeometry x="1060" y="55" width="140" height="65" as="geometry"/></mxCell>
+        <mxCell id="end_cust" value="" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ef4444;strokeColor=#dc2626;" vertex="1" parent="lane_cust"><mxGeometry x="1230" y="70" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="lane_sys" value="Hệ thống Backend&lt;br&gt;(Express &amp;amp; Prisma)" style="swimlane;html=1;startSize=25;horizontal=0;fillColor=#f8fafc;strokeColor=#cbd5e1;" vertex="1" parent="pool"><mxGeometry x="30" y="180" width="1290" height="170" as="geometry"/></mxCell>
+        <mxCell id="act_validate" value="Kiểm tra tồn kho &amp;amp;&lt;br&gt;Tính giá niêm yết + Coupon" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="lane_sys"><mxGeometry x="460" y="55" width="160" height="65" as="geometry"/></mxCell>
+        <mxCell id="act_tx_create" value="Mở ACID Transaction:&lt;br&gt;- Khóa &amp;amp; Tăng reserved stock&lt;br&gt;- Tạo Order &amp;amp; OrderLine" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="lane_sys"><mxGeometry x="860" y="55" width="180" height="65" as="geometry"/></mxCell>
+
+        <mxCell id="lane_wh" value="Vận hành Kho &amp;amp;&lt;br&gt;Xưởng Lắp ráp" style="swimlane;html=1;startSize=25;horizontal=0;fillColor=#f0fdf4;strokeColor=#bbf7d0;" vertex="1" parent="pool"><mxGeometry x="30" y="350" width="1290" height="170" as="geometry"/></mxCell>
+        <mxCell id="act_fulfill" value="Tiếp nhận đơn hàng PENDING / CONFIRMED&lt;br&gt;Điều phối sang chuẩn bị hoặc lắp ráp PC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;" vertex="1" parent="lane_wh"><mxGeometry x="860" y="55" width="240" height="65" as="geometry"/></mxCell>
+
+        <mxCell id="f1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="start1" target="act_browse" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_browse" target="act_cart" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_cart" target="act_validate" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_validate" target="gw_pay" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f5" value="QR" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw_pay" target="act_pay_qr" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f6" value="COD" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw_pay" target="act_pay_cod" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_pay_qr" target="act_tx_create" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_pay_cod" target="act_tx_create" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_tx_create" target="act_receive_order" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_tx_create" target="act_fulfill" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_receive_order" target="end_cust" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

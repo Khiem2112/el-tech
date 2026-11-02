@@ -1,0 +1,25 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-8" name="BPMNKhuyenMai">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH CẤU HÌNH CHƯƠNG TRÌNH KHUYẾN MÃI VÀ MÃ GIẢM GIÁ&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="1"><mxGeometry x="60" y="125" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Admin chọn loại ưu đãi&lt;br&gt;(Giảm % hoặc Số tiền)" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="130" y="115" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="a2" value="Thiết lập phạm vi áp dụng&lt;br&gt;(Toàn Category hoặc từng SKU)" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="330" y="115" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="a3" value="Cài đặt thời gian hiệu lực&lt;br&gt;&amp;amp; Giá trị đơn tối thiểu" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="1"><mxGeometry x="550" y="115" width="170" height="55" as="geometry"/></mxCell>
+        <mxCell id="a4" value="Kích hoạt chiến dịch&lt;br&gt;(Tự động áp dụng ở Checkout)" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="760" y="115" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="980" y="125" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a1" target="a2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a2" target="a3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a3" target="a4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a4" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

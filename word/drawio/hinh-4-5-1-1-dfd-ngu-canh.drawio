@@ -1,0 +1,27 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="dfd-context" name="DFDNgayCanh">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;SƠ ĐỒ LUỒNG DỮ LIỆU DFD CẤP NGỮ CẢNH (LEVEL 0 CONTEXT DIAGRAM) EL-TECH&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="p0" value="&lt;b&gt;0.0&lt;/b&gt;&lt;br&gt;&lt;b&gt;HỆ THỐNG THƯƠNG MẠI&lt;br&gt;ĐIỆN TỬ VÀ LẮP RÁP PC&lt;br&gt;EL-TECH DRAGON STORE&lt;/b&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#bfdbfe;strokeColor=#2563eb;fontStyle=0;align=center;" vertex="1" parent="1"><mxGeometry x="450" y="160" width="260" height="150" as="geometry"/></mxCell>
+        
+        <mxCell id="e_cust" value="&lt;b&gt;Khách hàng&lt;/b&gt;&lt;br&gt;(Guest / Member)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;" vertex="1" parent="1"><mxGeometry x="60" y="180" width="160" height="110" as="geometry"/></mxCell>
+        <mxCell id="e_admin" value="&lt;b&gt;Quản trị viên&lt;/b&gt;&lt;br&gt;(Store Admin)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1"><mxGeometry x="940" y="180" width="160" height="110" as="geometry"/></mxCell>
+        <mxCell id="e_sup" value="&lt;b&gt;Nhà cung cấp&lt;/b&gt;&lt;br&gt;(Hardware Supplier)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;" vertex="1" parent="1"><mxGeometry x="500" y="380" width="160" height="80" as="geometry"/></mxCell>
+        <mxCell id="e_otp" value="&lt;b&gt;Dịch vụ OTP ngoài&lt;/b&gt;&lt;br&gt;(SMS / Email Gateway)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="1"><mxGeometry x="500" y="80" width="160" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="f1" value="Yêu cầu cấu hình, Đơn hàng, Khiếu nại" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="e_cust" target="p0" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="320" y="210"/><mxPoint x="320" y="210"/></Array></mxGeometry></mxCell>
+        <mxCell id="f2" value="Báo giá, Mã đơn, Tiến độ giao" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="p0" target="e_cust" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="320" y="260"/><mxPoint x="320" y="260"/></Array></mxGeometry></mxCell>
+        <mxCell id="f3" value="Catalog, Giá, Quản lý kho PO, Đơn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="e_admin" target="p0" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="840" y="210"/><mxPoint x="840" y="210"/></Array></mxGeometry></mxCell>
+        <mxCell id="f4" value="Báo cáo tồn kho, Doanh thu, Khiếu nại" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="p0" target="e_admin" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="840" y="260"/><mxPoint x="840" y="260"/></Array></mxGeometry></mxCell>
+        <mxCell id="f5" value="Yêu cầu gửi OTP tra cứu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p0" target="e_otp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="f6" value="Đơn đặt hàng PO" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p0" target="e_sup" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="550" y="350"/><mxPoint x="550" y="350"/></Array></mxGeometry></mxCell>
+        <mxCell id="f7" value="Biên bản giao hàng &amp;amp; Serial" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="e_sup" target="p0" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="610" y="350"/><mxPoint x="610" y="350"/></Array></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

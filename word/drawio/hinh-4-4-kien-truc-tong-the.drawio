@@ -1,0 +1,23 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="arch-4-4" name="KienTrucTongThe">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;SƠ ĐỒ KIẾN TRÚC TỔNG THỂ HỆ THỐNG EL-TECH: ANGULAR 22 - EXPRESS - PRISMA - POSTGRESQL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1180" height="40" as="geometry"/></mxCell>
+        <mxCell id="c_fe" value="&lt;b&gt;CLIENT TIER (Angular 22 Standalone)&lt;/b&gt;&lt;br&gt;- Storefront Portal: PC Builder, Catalog, Cart, Checkout, Order Lookup&lt;br&gt;- Admin Portal: Catalog Manager, Procurement PO, Kanban Orders, Inventory&lt;br&gt;- Spartan UI + Tailwind CSS (NVIDIA Dark Style)&lt;br&gt;- Angular Native Signals State Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="100" width="1140" height="90" as="geometry"/></mxCell>
+        <mxCell id="c_gw" value="&lt;b&gt;ROUTING &amp;amp; SECURITY MIDDLEWARE (Express 4.x)&lt;/b&gt;&lt;br&gt;- CORS Policy &amp;amp; Body Parser&lt;br&gt;- Rate Limiter (Chống brute-force OTP &amp;amp; spam đơn)&lt;br&gt;- Admin Authentication &amp;amp; RBAC Guard&lt;br&gt;- Zod Runtime Validation Schemas" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="230" width="1140" height="90" as="geometry"/></mxCell>
+        <mxCell id="c_svc" value="&lt;b&gt;BUSINESS DOMAIN SERVICES&lt;/b&gt;&lt;br&gt;- Catalog &amp;amp; PC Builder Engine (Socket &amp;amp; TDP Compatibility)&lt;br&gt;- Pricing &amp;amp; Coupon Calculator&lt;br&gt;- Order Service &amp;amp; Status Lifecycle (9 target states)&lt;br&gt;- Inventory Service &amp;amp; WAC Valuation (Single store quant)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="360" width="1140" height="90" as="geometry"/></mxCell>
+        <mxCell id="c_orm" value="&lt;b&gt;PERSISTENCE TIER (Prisma ORM Client)&lt;/b&gt;&lt;br&gt;- Interactive Transactions (prisma.$transaction)&lt;br&gt;- Type-safe Data Mapping &amp;amp; Migrations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=15;" vertex="1" parent="1"><mxGeometry x="60" y="490" width="1140" height="70" as="geometry"/></mxCell>
+        <mxCell id="c_db" value="&lt;b&gt;DATABASE TIER (PostgreSQL 15 - Supabase)&lt;/b&gt;&lt;br&gt;43 Model &amp;amp; Target Schemas: Catalog, Orders, Payments, StockQuants, StockLedgerEntries, SerialUnits, Complaints" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;align=center;" vertex="1" parent="1"><mxGeometry x="60" y="600" width="1140" height="70" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="HTTPS / JSON REST API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c_fe" target="c_gw" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="Validated Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c_gw" target="c_svc" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="Execute Domain Transaction" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c_svc" target="c_orm" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="Type-safe SQL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c_orm" target="c_db" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

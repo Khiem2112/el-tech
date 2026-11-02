@@ -1,0 +1,38 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-2" name="BPMNTraCuu">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH TRA CỨU TIẾN ĐỘ ĐƠN HÀNG (MÃ ĐƠN &amp;amp; SĐT/EMAIL QUA OTP)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1280" height="40" as="geometry"/></mxCell>
+        <mxCell id="pool" value="Quy trình Tra cứu Đơn hàng EL-TECH" style="swimlane;html=1;childLayout=stackLayout;resizeParent=1;startSize=30;horizontal=0;horizontalStack=0;" vertex="1" parent="1"><mxGeometry x="40" y="80" width="1280" height="460" as="geometry"/></mxCell>
+        <mxCell id="lane_guest" value="Khách vãng lai" style="swimlane;html=1;startSize=25;horizontal=0;fillColor=#eff6ff;" vertex="1" parent="pool"><mxGeometry x="30" y="0" width="1250" height="230" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="lane_guest"><mxGeometry x="30" y="90" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="gw_method" value="Phương thức&lt;br&gt;tra cứu?" style="rhombus;fillColor=#fef08a;" vertex="1" parent="lane_guest"><mxGeometry x="100" y="65" width="110" height="85" as="geometry"/></mxCell>
+        <mxCell id="act_enter_id" value="Nhập Mã đơn hàng&lt;br&gt;(UUID v4)" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="lane_guest"><mxGeometry x="250" y="30" width="140" height="50" as="geometry"/></mxCell>
+        <mxCell id="act_enter_contact" value="Nhập Số điện thoại&lt;br&gt;hoặc Email" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="lane_guest"><mxGeometry x="250" y="130" width="140" height="50" as="geometry"/></mxCell>
+        <mxCell id="act_enter_otp" value="Nhận OTP &amp;amp;&lt;br&gt;Nhập mã 6 chữ số" style="rounded=1;fillColor=#ffffff;" vertex="1" parent="lane_guest"><mxGeometry x="640" y="130" width="140" height="50" as="geometry"/></mxCell>
+        <mxCell id="act_view" value="Xem chi tiết đơn hàng&lt;br&gt;&amp;amp; 9 trạng thái tiến độ" style="rounded=1;fillColor=#dcfce7;fontStyle=1;" vertex="1" parent="lane_guest"><mxGeometry x="980" y="80" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="lane_guest"><mxGeometry x="1190" y="92" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="lane_srv" value="Hệ thống Backend &amp;amp; Dịch vụ OTP" style="swimlane;html=1;startSize=25;horizontal=0;fillColor=#f8fafc;" vertex="1" parent="pool"><mxGeometry x="30" y="230" width="1250" height="230" as="geometry"/></mxCell>
+        <mxCell id="act_check_id" value="Kiểm tra mã đơn:&lt;br&gt;Chỉ hiển thị nếu userId IS NULL" style="rounded=1;fillColor=#fed7aa;" vertex="1" parent="lane_srv"><mxGeometry x="440" y="30" width="180" height="50" as="geometry"/></mxCell>
+        <mxCell id="act_gen_otp" value="Sinh mã OTP 6 số (hạn 5p)&lt;br&gt;Gửi qua SMS / Mailer" style="rounded=1;fillColor=#fed7aa;" vertex="1" parent="lane_srv"><mxGeometry x="440" y="130" width="180" height="50" as="geometry"/></mxCell>
+        <mxCell id="act_verify_otp" value="Xác thực mã OTP hợp lệ&lt;br&gt;&amp;amp; Truy vấn danh sách đơn guest" style="rounded=1;fillColor=#fed7aa;" vertex="1" parent="lane_srv"><mxGeometry x="820" y="130" width="190" height="50" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="gw_method" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" value="Mã đơn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw_method" target="act_enter_id" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" value="SĐT/Email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw_method" target="act_enter_contact" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_enter_id" target="act_check_id" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_check_id" target="act_view" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_enter_contact" target="act_gen_otp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_gen_otp" target="act_enter_otp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_enter_otp" target="act_verify_otp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_verify_otp" target="act_view" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="act_view" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

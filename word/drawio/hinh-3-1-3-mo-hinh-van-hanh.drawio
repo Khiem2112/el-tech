@@ -1,0 +1,27 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-3-1-3" name="MoHinhVanHanh">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;MÔ HÌNH VẬN HÀNH MỘT CỬA HÀNG VÀ MỘT KHO TRUNG TÂM EL-TECH&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sup" value="&lt;b&gt;Nhà cung cấp&lt;/b&gt;&lt;br&gt;&lt;i&gt;Supplier chính hãng&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#64748b;" vertex="1" parent="1"><mxGeometry x="40" y="140" width="160" height="70" as="geometry"/></mxCell>
+        <mxCell id="po" value="&lt;b&gt;Đơn mua PO&lt;/b&gt;&lt;br&gt;&lt;i&gt;Nhập đủ / Điều chỉnh&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1"><mxGeometry x="250" y="140" width="170" height="70" as="geometry"/></mxCell>
+        <mxCell id="wh" value="&lt;b&gt;Kho trung tâm duy nhất&lt;/b&gt;&lt;br&gt;&lt;i&gt;StockQuant &amp;amp; SerialUnit&lt;/i&gt;&lt;br&gt;Hạch toán giá vốn WAC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bfdbfe;strokeColor=#2563eb;align=center;" vertex="1" parent="1"><mxGeometry x="470" y="125" width="200" height="100" as="geometry"/></mxCell>
+        <mxCell id="b1" value="&lt;b&gt;Bán lẻ linh kiện&lt;/b&gt;&lt;br&gt;Xuất kho giao ngay" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="730" y="90" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="b2" value="&lt;b&gt;Lắp ráp dàn máy PC&lt;/b&gt;&lt;br&gt;Xuất theo Virtual BOM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="1"><mxGeometry x="730" y="190" width="160" height="60" as="geometry"/></mxCell>
+        <mxCell id="cust" value="&lt;b&gt;Bàn giao khách hàng&lt;/b&gt;&lt;br&gt;Nhận tại quầy / Giao tận nơi&lt;br&gt;COD hoặc Đã trả QR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="940" y="135" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="sup" target="po" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="po" target="wh" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="wh" target="b1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="wh" target="b2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="b1" target="cust" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="b2" target="cust" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,28 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-3-1-1" name="MoHinhGiaTri">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;MÔ HÌNH DÒNG GIÁ TRỊ DOANH NGHIỆP EL-TECH DRAGON STORE&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1040" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="c1" value="&lt;b&gt;Khách hàng (Buyer)&lt;/b&gt;&lt;br&gt;- Nhu cầu nâng cấp linh kiện&lt;br&gt;- Nhu cầu lắp ráp PC theo ngân sách&lt;br&gt;- Nhu cầu tra cứu đơn minh bạch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="c2" value="&lt;b&gt;Hệ thống EL-TECH Online&lt;/b&gt;&lt;br&gt;- Tư vấn tương thích PC Builder&lt;br&gt;- Giữ tồn kho thời gian thực&lt;br&gt;- Thanh toán QR/COD toàn phần&lt;br&gt;- Tra cứu OTP đa kênh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="420" y="120" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="c3" value="&lt;b&gt;Cửa hàng &amp;amp; Kho Vật Lý&lt;/b&gt;&lt;br&gt;- Nhập hàng chính hãng từ Supplier&lt;br&gt;- Quản lý Serial &amp;amp; Giá vốn WAC&lt;br&gt;- Kỹ thuật lắp ráp chuyên nghiệp&lt;br&gt;- Bàn giao &amp;amp; tiếp nhận khiếu nại" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="120" width="280" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="Yêu cầu cấu hình &amp;amp; Đơn hàng" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c1" target="c2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="Cung cấp báo giá &amp;amp; Tình trạng" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="c2" target="c1" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="370" y="200"/><mxPoint x="370" y="200"/></Array></mxGeometry></mxCell>
+        <mxCell id="e3" value="Lệnh xuất kho &amp;amp; Phiếu lắp ráp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="c2" target="c3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="Cập nhật tiến độ &amp;amp; Serial" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="c3" target="c2" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="750" y="200"/><mxPoint x="750" y="200"/></Array></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

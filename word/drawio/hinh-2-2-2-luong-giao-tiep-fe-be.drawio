@@ -1,0 +1,32 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-2-2" name="LuongGiaoTiepFeBe">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;LUỒNG GIAO TIẾP COMPONENT - FRONTEND SERVICE - REST API TRONG ANGULAR 22&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1040" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="view" value="&lt;b&gt;Angular View / Component&lt;/b&gt;&lt;br&gt;PC Builder / Cart / Checkout&lt;br&gt;- Template HTML / Spartan UI&lt;br&gt;- User Action (Click, Select)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0e7ff;strokeColor=#4338ca;align=center;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="220" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="svc" value="&lt;b&gt;Frontend Service (State)&lt;/b&gt;&lt;br&gt;PcBuilderService / CartService&lt;br&gt;- WritableSignal: state&lt;br&gt;- computed(): subtotal, valid&lt;br&gt;- Reactive Form &amp;amp; Client Zod" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=center;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="240" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="http" value="&lt;b&gt;HttpClient &amp;amp; Interceptors&lt;/b&gt;&lt;br&gt;- AuthToken / Header Injection&lt;br&gt;- Error Catching &amp;amp; Retry&lt;br&gt;- Serialization / Deserialization" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;align=center;" vertex="1" parent="1">
+          <mxGeometry x="680" y="120" width="200" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="api" value="&lt;b&gt;Backend REST API&lt;/b&gt;&lt;br&gt;Express 4.x + Zod Middleware&lt;br&gt;- Route &amp;amp; Controller&lt;br&gt;- Business Service&lt;br&gt;- PostgreSQL (Prisma)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;align=center;" vertex="1" parent="1">
+          <mxGeometry x="940" y="120" width="200" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="trigger signal update" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="view" target="svc" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="reactive binding (read signal)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" edge="1" source="svc" target="view" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="320" y="200"/><mxPoint x="320" y="200"/></Array></mxGeometry></mxCell>
+        <mxCell id="e3" value="call HTTP method" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="svc" target="http" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="JSON Request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="http" target="api" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="JSON Response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=open;" edge="1" source="api" target="http" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="910" y="190"/><mxPoint x="910" y="190"/></Array></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

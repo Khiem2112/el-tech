@@ -1,0 +1,42 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-4-2" name="ChuoiTruyVet">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;CHUỖI TRUY VẾT YÊU CẦU: TỪ MỤC TIÊU ĐẾN MINH CHỨNG KIỂM THỬ THỰC TẾ&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1040" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="n1" value="&lt;b&gt;1. Mục tiêu đề tài&lt;/b&gt;&lt;br&gt;PC Builder, Tra cứu, Tồn kho" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="170" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n2" value="&lt;b&gt;2. Yêu cầu FR / NFR&lt;/b&gt;&lt;br&gt;7 nhóm FR, 3 nhóm NFR" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2fe;strokeColor=#0284c7;" vertex="1" parent="1">
+          <mxGeometry x="250" y="120" width="170" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n3" value="&lt;b&gt;3. Quy tắc nghiệp vụ BR&lt;/b&gt;&lt;br&gt;Không cọc, 9 states, 1 kho" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="1">
+          <mxGeometry x="460" y="120" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n4" value="&lt;b&gt;4. Use Case &amp;amp; BPMN&lt;/b&gt;&lt;br&gt;8 BPMN, 8 UC 13 trường" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1">
+          <mxGeometry x="680" y="120" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n5" value="&lt;b&gt;5. Thiết kế Kỹ thuật&lt;/b&gt;&lt;br&gt;DFD 3 cấp, ERD 6 phân cụm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1">
+          <mxGeometry x="900" y="120" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n6" value="&lt;b&gt;6. Mã nguồn thực tế&lt;/b&gt;&lt;br&gt;Angular 22 (fe) &amp;amp; Express (be)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#bfdbfe;strokeColor=#2563eb;" vertex="1" parent="1">
+          <mxGeometry x="460" y="250" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="n7" value="&lt;b&gt;7. Minh chứng kiểm thử&lt;/b&gt;&lt;br&gt;Test Cases, Logs, Screenshots" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;" vertex="1" parent="1">
+          <mxGeometry x="680" y="250" width="180" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n1" target="n2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n2" target="n3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n3" target="n4" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n4" target="n5" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n5" target="n6" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="990" y="220"/><mxPoint x="550" y="220"/></Array></mxGeometry></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="n6" target="n7" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
