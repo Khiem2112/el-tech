@@ -1,0 +1,23 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-catalog" name="ERDCatalog">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD CHI TIẾT: DANH MỤC, SKU, PC BUNDLE VÀ ĐỊNH GIÁ KHUYẾN MÃI&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="tb_cat" value="&lt;b&gt;Category&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;name: String&lt;br&gt;slug: String [UQ]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="40" y="100" width="200" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_tmpl" value="&lt;b&gt;ProductTemplate&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;categoryId: String [FK]&lt;br&gt;name: String&lt;br&gt;specs: Json (Socket, TDP...)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="300" y="100" width="230" height="100" as="geometry"/></mxCell>
+        <mxCell id="tb_sku" value="&lt;b&gt;ProductVariant (SKU)&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;templateId: String [FK]&lt;br&gt;skuCode: String [UQ]&lt;br&gt;price: Decimal(12,2)&lt;br&gt;status: ACTIVE / INACTIVE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#3b82f6;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="600" y="100" width="230" height="110" as="geometry"/></mxCell>
+        <mxCell id="tb_bundle" value="&lt;b&gt;PcBundle&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;name: String&lt;br&gt;totalPrice: Decimal(12,2)&lt;br&gt;status: PUBLISHED" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="300" y="270" width="230" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_bom" value="&lt;b&gt;PcBundleItem (BOM)&lt;/b&gt;&lt;br&gt;&lt;u&gt;bundleId: String [PK, FK]&lt;/u&gt;&lt;br&gt;&lt;u&gt;variantId: String [PK, FK]&lt;/u&gt;&lt;br&gt;quantity: Int&lt;br&gt;isMandatory: Boolean" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#ef4444;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="600" y="270" width="230" height="100" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_cat" target="tb_tmpl" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_tmpl" target="tb_sku" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_bundle" target="tb_bom" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="tham chiếu SKU" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="tb_bom" target="tb_sku" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

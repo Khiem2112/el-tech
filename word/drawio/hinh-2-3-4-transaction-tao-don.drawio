@@ -1,0 +1,35 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-3-4" name="TransactionTaoDon">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;SƠ ĐỒ TUẦN TỰ TRANSACTION TẠO ĐƠN VÀ GIỮ TỒN KHO AN TOÀN (CONCURRENCY SAFE)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="p1" value="Client (Browser)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="60" y="100" width="140" height="40" as="geometry"/></mxCell>
+        <mxCell id="p2" value="OrderController" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="280" y="100" width="140" height="40" as="geometry"/></mxCell>
+        <mxCell id="p3" value="OrderService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1"><mxGeometry x="500" y="100" width="140" height="40" as="geometry"/></mxCell>
+        <mxCell id="p4" value="PrismaTransaction" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;strokeColor=#ca8a04;" vertex="1" parent="1"><mxGeometry x="720" y="100" width="150" height="40" as="geometry"/></mxCell>
+        <mxCell id="p5" value="PostgreSQL DB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="960" y="90" width="120" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="l1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=none;" edge="1" source="p1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="130" y="440" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="l2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=none;" edge="1" source="p2" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="440" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="l3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=none;" edge="1" source="p3" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="440" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="l4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=none;" edge="1" source="p4" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="795" y="440" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="l5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=none;" edge="1" source="p5" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1020" y="440" as="targetPoint"/></mxGeometry></mxCell>
+
+        <mxCell id="m1" value="POST /api/orders (items, paymentMethod)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="130" y="180" as="sourcePoint"/><mxPoint x="350" y="180" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m2" value="createOrder(dto)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="210" as="sourcePoint"/><mxPoint x="570" y="210" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m3" value="prisma.$transaction(async tx => ...)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="570" y="240" as="sourcePoint"/><mxPoint x="795" y="240" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m4" value="SELECT available FROM StockQuant WHERE ... FOR UPDATE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="795" y="270" as="sourcePoint"/><mxPoint x="1020" y="270" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m5" value="UPDATE StockQuant SET reserved = reserved + qty" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="795" y="310" as="sourcePoint"/><mxPoint x="1020" y="310" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m6" value="INSERT INTO Order, OrderLine, Payment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="795" y="350" as="sourcePoint"/><mxPoint x="1020" y="350" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m7" value="Commit Transaction (Success)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=open;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="1020" y="380" as="sourcePoint"/><mxPoint x="795" y="380" as="targetPoint"/></mxGeometry></mxCell>
+        <mxCell id="m8" value="201 Created (orderId, totalAmount, qrData)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;endArrow=open;" edge="1" parent="1"><mxGeometry relative="1" as="geometry"><mxPoint x="350" y="410" as="sourcePoint"/><mxPoint x="130" y="410" as="targetPoint"/></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

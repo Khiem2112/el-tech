@@ -1,0 +1,26 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="dfd-level-1-order" name="DFDCap1DonHang">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;DFD CẤP 1: PHÂN RÃ QUÁ TRÌNH 2.0 - XỬ LÝ ĐƠN HÀNG, THANH TOÁN VÀ GIỮ TỒN KHO&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="p21" value="&lt;b&gt;2.1&lt;/b&gt;&lt;br&gt;Kiểm tra giá niêm yết&lt;br&gt;&amp;amp; Tính toán Coupon" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="80" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p22" value="&lt;b&gt;2.2&lt;/b&gt;&lt;br&gt;Khóa tồn kho khả dụng&lt;br&gt;&amp;amp; Tăng reserved" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="340" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p23" value="&lt;b&gt;2.3&lt;/b&gt;&lt;br&gt;Khởi tạo Order,&lt;br&gt;OrderLine &amp;amp; Payment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="600" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p24" value="&lt;b&gt;2.4&lt;/b&gt;&lt;br&gt;Tạo mã VietQR hoặc&lt;br&gt;Xác nhận phiếu COD" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="860" y="110" width="180" height="80" as="geometry"/></mxCell>
+
+        <mxCell id="d_stock" value="&lt;b&gt;D3: StockQuant (available)&lt;/b&gt;" style="html=1;dashed=0;whiteSpace=wrap;shape=partialRectangle;right=0;left=0;" vertex="1" parent="1"><mxGeometry x="340" y="240" width="180" height="40" as="geometry"/></mxCell>
+        <mxCell id="d_order" value="&lt;b&gt;D2: Order &amp;amp; Payment&lt;/b&gt;" style="html=1;dashed=0;whiteSpace=wrap;shape=partialRectangle;right=0;left=0;" vertex="1" parent="1"><mxGeometry x="600" y="240" width="180" height="40" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p21" target="p22" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p22" target="d_stock" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p22" target="p23" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p23" target="d_order" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p23" target="p24" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,22 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="erd-cart-order" name="ERDCartOrder">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;ERD CHI TIẾT: GIỎ HÀNG, KHÁCH HÀNG, TRA CỨU OTP VÀ ĐƠN HÀNG (GUEST &amp;amp; MEMBER)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="tb_user" value="&lt;b&gt;User / Customer&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;email: String [UQ]&lt;br&gt;fullName: String&lt;br&gt;role: GUEST / MEMBER / ADMIN" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="40" y="100" width="220" height="100" as="geometry"/></mxCell>
+        <mxCell id="tb_otp" value="&lt;b&gt;OrderLookupOtp&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;contact: String (Phone/Mail)&lt;br&gt;otpCode: String (Hashed)&lt;br&gt;expiresAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef08a;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="40" y="240" width="220" height="90" as="geometry"/></mxCell>
+        <mxCell id="tb_order" value="&lt;b&gt;Order&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK - UUID v4]&lt;/u&gt;&lt;br&gt;userId: String [FK, Nullable]&lt;br&gt;guestContact: Json (Phone, Mail)&lt;br&gt;orderStatus: OrderStatus (9 states)&lt;br&gt;totalAmount: Decimal(12,2)&lt;br&gt;createdAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="340" y="100" width="260" height="130" as="geometry"/></mxCell>
+        <mxCell id="tb_line" value="&lt;b&gt;OrderLine&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;orderId: String [FK]&lt;br&gt;variantId: String [FK]&lt;br&gt;unitPrice: Decimal(12,2)&lt;br&gt;quantity: Int" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="680" y="100" width="220" height="110" as="geometry"/></mxCell>
+        <mxCell id="tb_hist" value="&lt;b&gt;OrderStatusHistory&lt;/b&gt;&lt;br&gt;&lt;u&gt;id: String [PK]&lt;/u&gt;&lt;br&gt;orderId: String [FK]&lt;br&gt;fromStatus: OrderStatus&lt;br&gt;toStatus: OrderStatus&lt;br&gt;note: String&lt;br&gt;createdAt: DateTime" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fed7aa;align=left;spacingLeft=10;" vertex="1" parent="1"><mxGeometry x="340" y="270" width="260" height="120" as="geometry"/></mxCell>
+
+        <mxCell id="e1" value="0..1 sở hữu" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_user" target="tb_order" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_order" target="tb_line" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="1..N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="tb_order" target="tb_hist" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

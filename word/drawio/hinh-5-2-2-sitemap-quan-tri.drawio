@@ -1,0 +1,26 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="sitemap-admin" name="SitemapAdmin">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;SITEMAP VÀ CẤU TRÚC PHÂN HỆ QUẢN TRỊ VIÊN EL-TECH (ADMIN PORTAL MỤC TIÊU)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="r_adm" value="&lt;b&gt;Admin Dashboard (/admin)&lt;/b&gt;&lt;br&gt;Tổng quan KPI, Cảnh báo tồn kho" style="rounded=1;fillColor=#fed7aa;strokeColor=#ea580c;align=center;" vertex="1" parent="1"><mxGeometry x="480" y="100" width="220" height="50" as="geometry"/></mxCell>
+
+        <mxCell id="m_cat" value="Quản lý Catalog (/admin/catalog)&lt;br&gt;Category, Brand, Template, SKU, BOM" style="rounded=1;fillColor=#f8fafc;" vertex="1" parent="1"><mxGeometry x="60" y="200" width="220" height="50" as="geometry"/></mxCell>
+        <mxCell id="m_ord" value="Quản lý Đơn hàng (/admin/orders)&lt;br&gt;Kanban Board 9 trạng thái" style="rounded=1;fillColor=#f8fafc;" vertex="1" parent="1"><mxGeometry x="320" y="200" width="210" height="50" as="geometry"/></mxCell>
+        <mxCell id="m_stk" value="Quản lý Kho &amp;amp; PO (/admin/inventory)&lt;br&gt;StockQuant, SerialUnit, Ledger WAC" style="rounded=1;fillColor=#f8fafc;" vertex="1" parent="1"><mxGeometry x="570" y="200" width="230" height="50" as="geometry"/></mxCell>
+        <mxCell id="m_pro" value="Chính sách &amp;amp; Phí (/admin/promos)&lt;br&gt;Khuyến mãi, Coupon, Phí ship" style="rounded=1;fillColor=#f8fafc;" vertex="1" parent="1"><mxGeometry x="840" y="200" width="210" height="50" as="geometry"/></mxCell>
+        <mxCell id="m_cmp" value="Hòm thư Khiếu nại (/admin/complaints)&lt;br&gt;Danh sách phản ánh khách gửi" style="rounded=1;fillColor=#f8fafc;" vertex="1" parent="1"><mxGeometry x="480" y="300" width="220" height="50" as="geometry"/></mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="r_adm" target="m_cat" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="r_adm" target="m_ord" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="r_adm" target="m_stk" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="r_adm" target="m_pro" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="r_adm" target="m_cmp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

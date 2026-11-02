@@ -1,0 +1,26 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="dfd-level-1-lookup" name="DFDCap1TraCuu">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;DFD CẤP 1: PHÂN RÃ QUÁ TRÌNH 3.0 &amp;amp; 4.0 - TRA CỨU OTP, ĐÁNH GIÁ VÀ TIẾP NHẬN KHIẾU NẠI&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="p31" value="&lt;b&gt;3.1&lt;/b&gt;&lt;br&gt;Xác thực mã đơn UUID&lt;br&gt;(Chỉ lấy đơn guest)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="80" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p32" value="&lt;b&gt;3.2&lt;/b&gt;&lt;br&gt;Xác thực OTP SĐT/Email&lt;br&gt;&amp;amp; Trả về danh sách đơn" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="340" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p41" value="&lt;b&gt;4.1&lt;/b&gt;&lt;br&gt;Tiếp nhận đánh giá SP&lt;br&gt;(Mở tự do, không check mua)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="600" y="110" width="180" height="80" as="geometry"/></mxCell>
+        <mxCell id="p42" value="&lt;b&gt;4.2&lt;/b&gt;&lt;br&gt;Tiếp nhận khiếu nại&lt;br&gt;(Nội dung tự do vào DB)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#eff6ff;" vertex="1" parent="1"><mxGeometry x="860" y="110" width="180" height="80" as="geometry"/></mxCell>
+
+        <mxCell id="d_order" value="&lt;b&gt;D2: Order (guest only)&lt;/b&gt;" style="html=1;dashed=0;whiteSpace=wrap;shape=partialRectangle;right=0;left=0;" vertex="1" parent="1"><mxGeometry x="210" y="240" width="180" height="40" as="geometry"/></mxCell>
+        <mxCell id="d_rev" value="&lt;b&gt;D4.1: Review&lt;/b&gt;" style="html=1;dashed=0;whiteSpace=wrap;shape=partialRectangle;right=0;left=0;" vertex="1" parent="1"><mxGeometry x="600" y="240" width="180" height="40" as="geometry"/></mxCell>
+        <mxCell id="d_cmp" value="&lt;b&gt;D4.2: Complaint&lt;/b&gt;" style="html=1;dashed=0;whiteSpace=wrap;shape=partialRectangle;right=0;left=0;" vertex="1" parent="1"><mxGeometry x="860" y="240" width="180" height="40" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p31" target="d_order" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p32" target="d_order" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p41" target="d_rev" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="p42" target="d_cmp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

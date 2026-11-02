@@ -1,0 +1,64 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="diag-2-3-1" name="KienTrucUngDung">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t1" value="&lt;b&gt;KIẾN TRÚC PHÂN TẦNG ỨNG DỤNG EL-TECH: ANGULAR - EXPRESS - PRISMA - POSTGRESQL&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="g1" value="&lt;b&gt;Presentation Tier (Frontend - Angular 22)&lt;/b&gt;" style="swimlane;startSize=30;rounded=1;fillColor=#eff6ff;strokeColor=#3b82f6;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="320" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="u1" value="Storefront Portal&lt;br&gt;&lt;i&gt;Catalog, PC Builder, Cart, Checkout, Lookup&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="g1">
+          <mxGeometry x="20" y="50" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="u2" value="Admin Management Portal&lt;br&gt;&lt;i&gt;Catalog, Orders, Inventory, PO, Promos&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="g1">
+          <mxGeometry x="20" y="120" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="u3" value="State Management &amp;amp; UI Controls&lt;br&gt;&lt;i&gt;Angular Signals, Spartan UI, Tailwind CSS&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="g1">
+          <mxGeometry x="20" y="190" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="u4" value="HTTP Transport &amp;amp; Interceptors&lt;br&gt;&lt;i&gt;Zod Client Validation, Error Handling&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#93c5fd;" vertex="1" parent="g1">
+          <mxGeometry x="20" y="260" width="280" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="g2" value="&lt;b&gt;API &amp;amp; Service Tier (Backend - Node.js Express)&lt;/b&gt;" style="swimlane;startSize=30;rounded=1;fillColor=#fefce8;strokeColor=#eab308;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="90" width="340" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="b1" value="Routing &amp;amp; Security Middleware&lt;br&gt;&lt;i&gt;CORS, Rate Limit, Auth Guard (Admin/Guest)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fde047;" vertex="1" parent="g2">
+          <mxGeometry x="20" y="50" width="300" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="b2" value="Request Validation Layer&lt;br&gt;&lt;i&gt;Zod Schemas (Body, Query, Params)&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fde047;" vertex="1" parent="g2">
+          <mxGeometry x="20" y="120" width="300" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="b3" value="Business Logic Services&lt;br&gt;&lt;i&gt;OrderService, StockService, BuilderService&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fde047;" vertex="1" parent="g2">
+          <mxGeometry x="20" y="190" width="300" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="b4" value="Transaction Manager&lt;br&gt;&lt;i&gt;Prisma Client Interactive Transactions&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#fde047;" vertex="1" parent="g2">
+          <mxGeometry x="20" y="260" width="300" height="50" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="g3" value="&lt;b&gt;Data Persistence Tier (PostgreSQL)&lt;/b&gt;" style="swimlane;startSize=30;rounded=1;fillColor=#f0fdf4;strokeColor=#22c55e;html=1;" vertex="1" parent="1">
+          <mxGeometry x="820" y="90" width="300" height="340" as="geometry"/>
+        </mxCell>
+        <mxCell id="d1" value="Catalog &amp;amp; PC Bundle Schema&lt;br&gt;&lt;i&gt;Category, Template, Variant, PcBundleItem&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;" vertex="1" parent="g3">
+          <mxGeometry x="20" y="50" width="260" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d2" value="Order &amp;amp; Payment Schema&lt;br&gt;&lt;i&gt;Order, OrderLine, Payment, StatusHistory&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;" vertex="1" parent="g3">
+          <mxGeometry x="20" y="120" width="260" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d3" value="Inventory &amp;amp; PO Schema&lt;br&gt;&lt;i&gt;StockQuant, Move, Ledger, SerialUnit&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;" vertex="1" parent="g3">
+          <mxGeometry x="20" y="190" width="260" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="d4" value="Customer &amp;amp; Complaint Schema&lt;br&gt;&lt;i&gt;User, Customer, OTP, Review, Complaint&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#86efac;" vertex="1" parent="g3">
+          <mxGeometry x="20" y="260" width="260" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="REST JSON API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="g1" target="g2" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="Prisma SQL Query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="g2" target="g3" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

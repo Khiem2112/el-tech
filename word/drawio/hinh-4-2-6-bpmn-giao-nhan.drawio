@@ -1,0 +1,30 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="bpmn-4-2-6" name="BPMNGiaoNhan">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="t" value="&lt;b&gt;BPMN 2.0: QUY TRÌNH GIAO NHẬN VÀ XỬ LÝ GIAO THẤT BẠI KHÔNG GIỚI HẠN&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#64748b;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1"><mxGeometry x="40" y="30" width="1080" height="40" as="geometry"/></mxCell>
+        <mxCell id="s1" value="" style="ellipse;fillColor=#22c55e;" vertex="1" parent="1"><mxGeometry x="60" y="130" width="35" height="35" as="geometry"/></mxCell>
+        <mxCell id="a1" value="Đơn hàng đang giao&lt;br&gt;(SHIPPING)" style="rounded=1;fillColor=#ffffff;strokeColor=#475569;" vertex="1" parent="1"><mxGeometry x="140" y="120" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="gw1" value="Kết quả giao hàng&lt;br&gt;từ bưu tá?" style="rhombus;fillColor=#fef08a;" vertex="1" parent="1"><mxGeometry x="360" y="105" width="130" height="85" as="geometry"/></mxCell>
+        <mxCell id="a_ok" value="Giao hàng thành công:&lt;br&gt;Khách ký nhận / Thu tiền COD" style="rounded=1;fillColor=#dcfce7;strokeColor=#16a34a;" vertex="1" parent="1"><mxGeometry x="560" y="80" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_comp" value="Hoàn tất đơn hàng&lt;br&gt;(COMPLETED)" style="rounded=1;fillColor=#22c55e;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="800" y="80" width="160" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_fail" value="Giao thất bại (không nghe máy...):&lt;br&gt;Chuyển DELIVERY_FAILED" style="rounded=1;fillColor=#fee2e2;strokeColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="560" y="200" width="190" height="55" as="geometry"/></mxCell>
+        <mxCell id="a_retry" value="Nhân viên liên hệ lại khách&lt;br&gt;&amp;amp; Bấm Giao lại (về SHIPPING)" style="rounded=1;fillColor=#fed7aa;strokeColor=#ea580c;" vertex="1" parent="1"><mxGeometry x="800" y="200" width="180" height="55" as="geometry"/></mxCell>
+        <mxCell id="e1" value="" style="ellipse;fillColor=#ef4444;" vertex="1" parent="1"><mxGeometry x="1020" y="90" width="35" height="35" as="geometry"/></mxCell>
+
+        <mxCell id="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="s1" target="a1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a1" target="gw1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c3" value="Thành công" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_ok" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c4" value="Thất bại" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="gw1" target="a_fail" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_ok" target="a_comp" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_comp" target="e1" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" source="a_fail" target="a_retry" parent="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="c8" value="Lặp lại không giới hạn" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;html=1;endArrow=open;" edge="1" source="a_retry" target="a1" parent="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="890" y="280"/><mxPoint x="220" y="280"/></Array></mxGeometry></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

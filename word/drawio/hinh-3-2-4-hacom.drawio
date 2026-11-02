@@ -1,0 +1,25 @@
+<mxfile host="Electron" modified="2026-11-02T08:00:00.000Z" agent="Antigravity" version="30.0.2">
+  <diagram id="survey-hacom" name="Survey">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="800" background="#ffffff">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="t" value="&lt;b&gt;ẢNH MINH CHỨNG KHẢO SÁT HỆ THỐNG: WEBSITE THƯƠNG MẠI ĐIỆN TỬ HACOM (HACOM.VN)&lt;/b&gt;&lt;br&gt;Nguồn khảo sát thực tế: https://hacom.vn (Thời điểm: Q4/2026)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f1f5f9;strokeColor=#475569;fontColor=#0f172a;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="1000" height="60" as="geometry"/>
+        </mxCell>
+<mxCell id="obs_0" value="&lt;b&gt;1. Danh mục linh kiện và bộ lọc kỹ thuật chuyên sâu&lt;/b&gt;&lt;br&gt;Bộ lọc thông số kỹ thuật chi tiết nhất (Socket, Bus RAM, Chuẩn PCIe, Chiều dài VGA, Kích thước tản); phù hợp cho người dùng am hiểu phần cứng." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="960" height="60" as="geometry"/>
+        </mxCell>
+<mxCell id="obs_1" value="&lt;b&gt;2. Công cụ xây dựng cấu hình PC chuyên nghiệp&lt;/b&gt;&lt;br&gt;Cho phép xuất file báo giá cấu hình ra PDF hoặc Excel; kiểm tra xung đột chuẩn chân cắm CPU và Mainboard theo thời gian thực." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="215" width="960" height="60" as="geometry"/>
+        </mxCell>
+<mxCell id="obs_2" value="&lt;b&gt;3. Chính sách bán hàng và bảo hành&lt;/b&gt;&lt;br&gt;Có trang cứu bảo hành qua Serial/IMEI; hỗ trợ doanh nghiệp và dự án lớn; áp dụng đa dạng phương thức thanh toán." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="290" width="960" height="60" as="geometry"/>
+        </mxCell>
+<mxCell id="obs_3" value="&lt;b&gt;4. Giới hạn quan sát và bài học cho EL-TECH&lt;/b&gt;&lt;br&gt;Giao diện có mật độ thông tin dày đặc, có thể gây ngợp cho khách hàng mới; EL-TECH ứng dụng Spartan UI và Tailwind để tinh gọn thông tin nhưng vẫn giữ bộ lọc cốt lõi." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#cbd5e1;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="60" y="365" width="960" height="60" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
