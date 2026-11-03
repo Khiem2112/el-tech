@@ -39,7 +39,7 @@ import {
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
                 <h2 class="font-bold text-foreground text-base truncate">
-                  Vòng Đời & Lịch Sử Di Chuyển Serial
+                  Vòng Đời & Lịch Sử Di Chuyển Sê-ri
                 </h2>
                 @if (detail; as d) {
                   <p class="text-xs text-muted tabular truncate">
@@ -68,39 +68,27 @@ import {
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                 </svg>
-                <span>Đang tải thông tin vòng đời serial...</span>
+                <span>Đang tải thông tin vòng đời sê-ri...</span>
               </div>
             } @else if (detail; as d) {
-              <div class="p-4 bg-surface-alt border border-line rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="min-w-0 space-y-1">
-                  <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-bold text-foreground text-base">{{ d.productTemplate.name }}</span>
-                    <span class="text-xs px-2 py-0.5 rounded font-bold uppercase" [ngClass]="getStatusBadgeClass(d.status)">
-                      {{ getStatusLabel(d.status) }}
-                    </span>
-                  </div>
-                  <div class="text-xs text-muted tabular flex items-center gap-3 flex-wrap">
-                    <span>Thương hiệu: <strong class="text-foreground">{{ d.productTemplate.brandName }}</strong></span>
-                    <span>Nhóm: <strong class="text-foreground">{{ d.productTemplate.categoryName }}</strong></span>
-                    <span>Giá niêm yết: <strong class="text-primary-strong tabular-nums">{{ formatCurrency(d.sellingPrice) }}</strong></span>
-                  </div>
+              <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-foreground text-base">{{ d.productTemplate.name }}</span>
+                  <span class="text-xs px-2 py-0.5 rounded font-bold uppercase" [ngClass]="getStatusBadgeClass(d.status)">
+                    {{ getStatusLabel(d.status) }}
+                  </span>
                 </div>
-
-                <div class="text-left sm:text-right shrink-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-line">
-                  <span class="text-xs uppercase tracking-wider text-muted block font-semibold">Cơ sở quản lý</span>
-                  <span class="font-bold text-foreground text-sm">
-                    {{ d.currentBranch?.name ?? 'Showroom EL-TECH' }}
-                  </span>
-                  <span class="text-xs text-muted tabular block">
-                    {{ d.currentBranch?.code ? '(' + d.currentBranch.code + ')' : '(STORE-MAIN)' }}
-                  </span>
+                <div class="text-xs text-muted tabular flex items-center gap-3 flex-wrap">
+                  <span>Thương hiệu: <strong class="text-foreground">{{ d.productTemplate.brandName }}</strong></span>
+                  <span>Nhóm: <strong class="text-foreground">{{ d.productTemplate.categoryName }}</strong></span>
+                  <span>Giá niêm yết: <strong class="text-primary-strong tabular-nums">{{ formatCurrency(d.sellingPrice) }}</strong></span>
                 </div>
               </div>
 
               @if (isAdjustingStatus()) {
                 <div class="p-4 bg-surface-alt border border-warning/50 rounded-lg space-y-3">
                   <div class="flex items-center justify-between border-b border-line pb-2">
-                    <span class="text-xs font-bold text-warning uppercase tracking-wider">Điều chỉnh trạng thái serial</span>
+                    <span class="text-xs font-bold text-warning uppercase tracking-wider">Điều chỉnh trạng thái sê-ri</span>
                     <button
                       type="button"
                       (click)="isAdjustingStatus.set(false)"
@@ -110,20 +98,14 @@ import {
                     </button>
                   </div>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs items-end">
-                    <div>
-                      <span class="block text-muted mb-1 font-semibold">Trạng thái mới</span>
-                      <app-select
-                        [options]="statusAdjustmentOptions"
-                        [value]="newStatus"
-                        (valueChange)="newStatus = $event"
-                        size="md"
-                      />
-                    </div>
-
-                    <div class="h-9 px-3 bg-surface border border-line rounded flex items-center">
-                      <span class="text-xs text-muted">Cơ sở quản lý: <strong class="text-foreground font-semibold">Showroom EL-TECH</strong></span>
-                    </div>
+                  <div class="text-xs">
+                    <span class="block text-muted mb-1 font-semibold">Trạng thái mới</span>
+                    <app-select
+                      [options]="statusAdjustmentOptions"
+                      [value]="newStatus"
+                      (valueChange)="newStatus = $event"
+                      size="md"
+                    />
                   </div>
 
                   <div>
@@ -132,7 +114,7 @@ import {
                       id="adjust-reason"
                       type="text"
                       [(ngModel)]="adjustmentReason"
-                      placeholder="Nhập lý do can thiệp trạng thái serial..."
+                      placeholder="Nhập lý do can thiệp trạng thái sê-ri..."
                       class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-foreground text-xs focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                     />
                   </div>

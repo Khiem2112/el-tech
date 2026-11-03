@@ -117,7 +117,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               type="text"
               [(ngModel)]="scannerQuery"
               name="scannerQuery"
-              placeholder="Quét mã vạch hoặc gõ chuỗi Serial để tra cứu tức thì..."
+              placeholder="Quét mã vạch hoặc gõ chuỗi Sê-ri để tra cứu tức thì..."
               class="w-full pl-3 pr-20 py-2.5 bg-surface border border-line focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-bold text-foreground text-sm tabular focus:outline-none transition-colors"
             />
             <span class="absolute right-3 top-2.5 text-muted text-xs uppercase tracking-wider tabular">
@@ -185,7 +185,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                   </span>
                 </div>
                 <div class="text-xs text-muted tabular mt-0.5 flex items-center gap-2 flex-wrap">
-                  <span>Serial: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
+                  <span>Sê-ri: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
                   <span>| SKU: <strong class="text-foreground">{{ qk.sku }}</strong></span>
                   @if (qk.barcode) {
                     <span>| Barcode: <strong class="text-foreground">{{ qk.barcode }}</strong></span>
@@ -332,7 +332,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             type="text"
             [(ngModel)]="tableSearch"
             (ngModelChange)="onSearchChange($event)"
-            placeholder="Lọc theo Serial, SKU, Tên linh kiện..."
+            placeholder="Lọc theo Sê-ri, SKU, Tên linh kiện..."
             class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -373,16 +373,15 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             <p class="text-sm font-semibold text-foreground">Không tìm thấy mã sê-ri nào phù hợp</p>
-            <p class="text-xs text-muted">Thử thay đổi từ khóa tìm kiếm hoặc bỏ bộ lọc chi nhánh/trạng thái</p>
+            <p class="text-xs text-muted">Thử thay đổi từ khóa tìm kiếm hoặc bỏ bộ lọc trạng thái</p>
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[1000px] border-collapse">
+            <table class="w-full text-left text-sm min-w-[800px] border-collapse">
               <thead>
                 <tr class="bg-surface-alt border-b border-line text-muted uppercase tracking-wider font-semibold text-xs">
                   <th class="py-3 px-4 whitespace-nowrap">Mã Sê-Ri</th>
                   <th class="py-3 px-4">Linh Kiện & SKU</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Vị Trí Linh Kiện</th>
                   <th class="py-3 px-4 whitespace-nowrap">Trạng Thái</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Giá Niêm Yết</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngày Khởi Tạo</th>
@@ -403,20 +402,6 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                           <span> | Barcode: {{ unit.barcode }}</span>
                         }
                       </div>
-                    </td>
-                    <td class="py-3.5 px-4 whitespace-nowrap">
-                      <span class="text-foreground font-semibold">
-                        {{ unit.currentBranchName || 'Showroom EL-TECH' }}
-                      </span>
-                      <span class="text-xs text-muted tabular block">
-                        @if (unit.status === 'ISSUED') {
-                          (Đã giao khách hàng)
-                        } @else if (unit.status === 'IN_TRANSIT') {
-                          (Đang luân chuyển)
-                        } @else {
-                          ({{ unit.currentBranchCode || 'STORE-MAIN' }})
-                        }
-                      </span>
                     </td>
                     <td class="py-3.5 px-4 whitespace-nowrap">
                       <span class="text-xs px-2 py-0.5 rounded font-bold uppercase whitespace-nowrap" [ngClass]="getStatusBadgeClass(unit.status)">

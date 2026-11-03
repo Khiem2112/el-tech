@@ -228,7 +228,7 @@ export class AdminSerialService {
 
       return data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Khong the tai danh sach so serial';
+      const message = this.extractErrorMessage(err, 'Không thể tải danh sách số sê-ri');
       this.error.set(message);
       throw err;
     } finally {
@@ -254,7 +254,7 @@ export class AdminSerialService {
       this.selectedSerial.set(response.data);
       return response.data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Khong the tai chi tiet so serial';
+      const message = this.extractErrorMessage(err, 'Không thể tải chi tiết số sê-ri');
       this.detailError.set(message);
       throw err;
     } finally {
@@ -265,7 +265,7 @@ export class AdminSerialService {
   async quickLookup(serialNumber: string): Promise<SerialDetailResponse> {
     const term = serialNumber.trim();
     if (!term) {
-      throw new Error('Vui long nhap so serial can tra cuu');
+      throw new Error('Vui lòng nhập số sê-ri cần tra cứu');
     }
 
     this.isQuickLookupLoading.set(true);
@@ -285,7 +285,7 @@ export class AdminSerialService {
       this.quickLookupSerial.set(response.data);
       return response.data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : `Khong tim thay serial '${term}'`;
+      const message = this.extractErrorMessage(err, `Không tìm thấy sê-ri '${term}'`);
       this.quickLookupError.set(message);
       this.quickLookupSerial.set(null);
       throw err;
@@ -320,9 +320,55 @@ export class AdminSerialService {
 
       return response.data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Khong the cap nhat trang thai serial';
+      const message = this.extractErrorMessage(err, 'Không thể cập nhật trạng thái sê-ri');
       throw new Error(message);
     }
+  }
+
+  private extractErrorMessage(err: unknown, fallback: string): string {
+    let raw = fallback;
+    if (err && typeof err === 'object' && 'error' in err) {
+      const httpErr = err as { error?: { error?: { messageKey?: string }; message?: string } };
+      if (httpErr.error?.error?.messageKey) {
+        raw = httpErr.error.error.messageKey;
+      } else if (typeof httpErr.error?.message === 'string') {
+        raw = httpErr.error.message;
+      } else if (err instanceof Error && err.message) {
+        raw = err.message;
+      }
+    } else if (err instanceof Error && err.message) {
+      raw = err.message;
+    }
+    return this.formatErrorMessage(raw);
+  }
+
+  private formatErrorMessage(rawMessage: string): string {
+    const messageMap: Record<string, string> = {
+      'Ma dinh danh serial la bat buoc': 'Mã định danh sê-ri là bắt buộc',
+      'Khong the thay doi chi nhanh truc tiep tren so se-ri. Bat buoc phai thuc hien thong qua quy trinh tao phieu dieu chuyen kho.':
+        'Không thể thay đổi chi nhánh trực tiếp trên số sê-ri. Bắt buộc phải thực hiện thông qua quy trình tạo phiếu điều chuyển kho.',
+      'Khong the tai danh sach so serial': 'Không thể tải danh sách số sê-ri',
+      'Khong the tai chi tiet so serial': 'Không thể tải chi tiết số sê-ri',
+      'Khong the cap nhat trang thai serial': 'Không thể cập nhật trạng thái sê-ri',
+      'Vui long nhap so serial can tra cuu': 'Vui lòng nhập số sê-ri cần tra cứu',
+    };
+
+    if (messageMap[rawMessage]) {
+      return messageMap[rawMessage];
+    }
+
+    if (rawMessage.startsWith('Khong tim thay so serial')) {
+      return rawMessage
+        .replace('Khong tim thay so serial', 'Không tìm thấy số sê-ri')
+        .replace('trong he thong', 'trong hệ thống')
+        .replace('de cap nhat', 'để cập nhật');
+    }
+
+    if (rawMessage.startsWith('Khong tim thay serial')) {
+      return rawMessage.replace('Khong tim thay serial', 'Không tìm thấy sê-ri');
+    }
+
+    return rawMessage;
   }
 
   async loadBranches(): Promise<SimpleBranchOption[]> {
