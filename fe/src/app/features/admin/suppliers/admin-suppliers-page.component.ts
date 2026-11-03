@@ -59,18 +59,18 @@ type ToastNotification = {
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
             <label for="supplier-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
-            <div class="relative">
+            <div class="relative flex items-center">
               <input
                 id="supplier-search"
                 type="text"
                 [ngModel]="supplierService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên nhà cung cấp, mã đối tác, người liên hệ, SĐT..."
-                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full h-9 pl-9 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
               <lucide-icon
                 name="search"
-                class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted text-muted-foreground"
                 aria-hidden="true"
               ></lucide-icon>
             </div>

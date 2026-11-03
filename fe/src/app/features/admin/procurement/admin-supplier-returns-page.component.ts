@@ -48,17 +48,17 @@ import {
 
       <div class="bg-surface border border-line rounded-lg p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div class="relative flex-1">
+          <div class="relative flex-1 flex items-center">
             <input
               type="text"
               [ngModel]="returnService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm theo mã phiếu, mã PO, nhà cung cấp, chứng từ nhập..."
-              class="w-full pl-9 pr-4 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+              class="w-full h-9 pl-9 pr-4 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <lucide-icon
               name="search"
-              class="size-4 text-muted absolute left-3 top-2 pointer-events-none"
+              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted text-muted-foreground"
               aria-hidden="true"
             ></lucide-icon>
           </div>
