@@ -41,6 +41,17 @@ type ToastNotification = {
         <div class="flex items-center gap-3">
           <button
             type="button"
+            (click)="toggleAllExpansion()"
+            appButton
+            variant="outline"
+            size="sm"
+            class="uppercase tracking-wide"
+          >
+            <span>{{ isAllExpanded() ? 'Thu Gọn Tất Cả' : 'Mở Rộng Tất Cả' }}</span>
+          </button>
+
+          <button
+            type="button"
             appButton
             variant="primary"
             size="sm"
@@ -62,7 +73,7 @@ type ToastNotification = {
               type="text"
               [ngModel]="brandService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
-              placeholder="Tìm kiếm thương hiệu hoặc mã đường dẫn slug..."
+              placeholder="Tìm kiếm theo tên thương hiệu..."
               class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
@@ -126,7 +137,6 @@ type ToastNotification = {
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Thương Hiệu</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Đường Dẫn (Slug)</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngành Hàng Liên Kết</th>
                   <th class="py-3 px-4 text-center whitespace-nowrap">Mẫu Sản Phẩm</th>
                   <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
@@ -135,7 +145,11 @@ type ToastNotification = {
               </thead>
               <tbody class="divide-y divide-line text-sm">
                 @for (brand of visibleBrands(); track brand.id) {
-                  <tr class="hover:bg-surface-alt/70 transition-colors group">
+                  <tr
+                    class="hover:bg-surface-alt/70 transition-colors cursor-pointer select-none group"
+                    [class.bg-surface-alt/30]="isExpanded(brand.id)"
+                    (click)="toggleBreakdown(brand.id)"
+                  >
                     <td class="py-3 px-4 font-semibold text-foreground">
                       <div class="flex items-center gap-2">
                         <span
@@ -146,14 +160,13 @@ type ToastNotification = {
                         <span class="font-bold text-foreground">{{ brand.name }}</span>
                       </div>
                       @if (brand.description) {
-                        <div class="text-xs text-muted font-normal mt-0.5 line-clamp-1 max-w-xs">
+                        <div
+                          class="text-xs text-muted font-normal mt-0.5 pl-4 line-clamp-1 max-w-md"
+                          [title]="brand.description"
+                        >
                           {{ brand.description }}
                         </div>
                       }
-                    </td>
-
-                    <td class="py-3 px-4 text-xs text-muted whitespace-nowrap">
-                      {{ brand.slug }}
                     </td>
 
                     <td class="py-3 px-4 whitespace-nowrap">
@@ -189,12 +202,13 @@ type ToastNotification = {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right whitespace-nowrap">
+                    <td class="py-3 px-4 text-right whitespace-nowrap" (click)="$event.stopPropagation()">
                       <div class="flex items-center justify-end gap-1.5">
                         <button
                           type="button"
                           (click)="toggleBreakdown(brand.id)"
                           [title]="isExpanded(brand.id) ? 'Thu gọn cơ cấu' : 'Xem chi tiết cơ cấu'"
+                          [attr.aria-label]="isExpanded(brand.id) ? 'Thu gọn cơ cấu ngành hàng' : 'Xem chi tiết cơ cấu ngành hàng'"
                           class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-primary-strong transition-colors"
                           [class.text-primary-strong]="isExpanded(brand.id)"
                         >
@@ -211,6 +225,7 @@ type ToastNotification = {
                           type="button"
                           (click)="openEditModal(brand)"
                           title="Chỉnh sửa thông tin"
+                          aria-label="Chỉnh sửa thông tin thương hiệu"
                           class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                         >
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -222,6 +237,7 @@ type ToastNotification = {
                           type="button"
                           (click)="toggleBrandStatus(brand)"
                           [title]="brand.isActive ? 'Tạm dừng hoạt động' : 'Kích hoạt hoạt động'"
+                          [attr.aria-label]="brand.isActive ? 'Tạm dừng hoạt động thương hiệu' : 'Kích hoạt hoạt động thương hiệu'"
                           class="p-1.5 rounded hover:bg-surface-alt transition-colors"
                           [class.text-amber-600]="brand.isActive"
                           [class.text-emerald-600]="!brand.isActive"
@@ -243,6 +259,7 @@ type ToastNotification = {
                             type="button"
                             (click)="deleteBrand(brand)"
                             title="Xóa thương hiệu"
+                            aria-label="Xóa thương hiệu"
                             class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-rose-600 transition-colors"
                           >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
@@ -256,7 +273,7 @@ type ToastNotification = {
 
                   @if (isExpanded(brand.id)) {
                     <tr class="bg-surface-alt border-b border-line">
-                      <td colspan="6" class="p-4">
+                      <td colspan="5" class="p-4">
                         <div class="bg-surface border border-line rounded-md p-4 space-y-3 shadow-xs">
                           <div class="flex items-center justify-between pb-2 border-b border-line">
                             <span class="text-xs font-bold text-foreground uppercase tracking-wider">
@@ -271,10 +288,7 @@ type ToastNotification = {
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                               @for (cat of brand.categories; track cat.id) {
                                 <div class="p-2.5 rounded bg-surface-alt border border-line flex items-center justify-between">
-                                  <div>
-                                    <div class="font-semibold text-xs text-foreground">{{ cat.name }}</div>
-                                    <div class="text-xs text-muted">{{ cat.slug }}</div>
-                                  </div>
+                                  <div class="font-semibold text-xs text-foreground">{{ cat.name }}</div>
                                   <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                     Đang phân phối
                                   </span>
@@ -378,6 +392,22 @@ export class AdminBrandsPageComponent implements OnInit {
 
   isExpanded(brandId: number): boolean {
     return this.expandedBrandIds().has(brandId);
+  }
+
+  isAllExpanded(): boolean {
+    const brands = this.visibleBrands();
+    if (brands.length === 0) {
+      return false;
+    }
+    return brands.every((b) => this.expandedBrandIds().has(b.id));
+  }
+
+  toggleAllExpansion(): void {
+    if (this.isAllExpanded()) {
+      this.expandedBrandIds.set(new Set());
+    } else {
+      this.expandedBrandIds.set(new Set(this.visibleBrands().map((b) => b.id)));
+    }
   }
 
   toggleBreakdown(brandId: number): void {
