@@ -31,7 +31,7 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
                 Xác Nhận Đơn Mua Hàng
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Khóa dữ liệu và chuyển đơn PO #{{ po.code }} sang trạng thái đã xác nhận
+                Khóa dữ liệu và chuyển đơn mua #{{ po.code }} sang trạng thái đã xác nhận
               </p>
             </div>
             <button

@@ -16,6 +16,7 @@ import { ConfirmPODialogComponent } from './components/confirm-po-dialog.compone
 import { ShortShipmentDialogComponent } from './components/short-shipment-dialog.component';
 import { ValidatePOReceiptDialogComponent } from './components/validate-po-receipt-dialog.component';
 import { PoStockMoveModalComponent } from './components/po-stock-move-modal.component';
+import { SelectPoComponentModalComponent } from './components/select-po-component-modal.component';
 import {
   AdminPurchaseOrderService,
   CatalogVariantOption,
@@ -56,6 +57,7 @@ type ToastMessage = {
     ValidatePOReceiptDialogComponent,
     ShortShipmentDialogComponent,
     PoStockMoveModalComponent,
+    SelectPoComponentModalComponent,
     AppIconModule,
     SelectComponent,
   ],
@@ -69,7 +71,7 @@ type ToastMessage = {
           </a>
           <span>/</span>
           <span class="tabular font-bold text-foreground">
-            {{ isNew() ? 'Tạo Đơn PO Mới' : (order()?.code || 'Đang tải...') }}
+            {{ isNew() ? 'Tạo Đơn Mua Hàng' : (order()?.code || 'Đang tải...') }}
           </span>
           @if (!isNew() && order()?.supplier) {
             <span>/</span>
@@ -89,7 +91,7 @@ type ToastMessage = {
               [disabled]="isSubmitting() || editableLines().length === 0"
               class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs rounded transition-colors shadow-xs disabled:opacity-50"
             >
-              Lưu Bản Thảo PO
+              Lưu Bản Thảo
             </button>
             <a
               routerLink="/admin/procurement/purchase-orders"
@@ -113,14 +115,14 @@ type ToastMessage = {
                   (click)="openConfirmModal()"
                   class="px-3.5 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs rounded transition-colors shadow-xs"
                 >
-                  Xác Nhận PO
+                  Xác Nhận Đơn Mua
                 </button>
                 <button
                   type="button"
                   (click)="openCancelModal()"
                   class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs rounded transition-colors"
                 >
-                  Hủy Đơn PO
+                  Hủy Đơn Mua
                 </button>
               }
               @case ('CONFIRMED') {
@@ -143,7 +145,7 @@ type ToastMessage = {
                   (click)="openCancelModal()"
                   class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs rounded transition-colors"
                 >
-                  Hủy Đơn PO
+                  Hủy Đơn Mua
                 </button>
               }
               @case ('RECEIVED') {
@@ -153,17 +155,17 @@ type ToastMessage = {
                   [disabled]="isSubmitting()"
                   class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded shadow-xs transition-colors"
                 >
-                  Đóng Đơn PO
+                  Đóng Đơn Mua
                 </button>
               }
               @case ('CLOSED') {
                 <span class="px-3 py-1 bg-surface-alt text-muted rounded text-xs font-semibold border border-line">
-                  Đơn PO đã hoàn tất và đóng
+                  Đơn mua hàng đã hoàn tất và đóng
                 </span>
               }
               @case ('CANCELLED') {
                 <span class="px-3 py-1 bg-rose-50 text-rose-700 rounded text-xs font-semibold border border-rose-200">
-                  Đơn PO đã bị hủy ({{ po.cancellationReason || 'Không có lý do' }})
+                  Đơn mua hàng đã bị hủy ({{ po.cancellationReason || 'Không có lý do' }})
                 </span>
               }
             }
@@ -222,7 +224,7 @@ type ToastMessage = {
             [class.bg-surface-alt]="currentStep() < 4"
             [class.text-muted]="currentStep() < 4"
           >
-            Đóng PO
+            Đã Đóng
           </div>
         </div>
       </header>
@@ -404,43 +406,55 @@ type ToastMessage = {
             </div>
 
             @if (isNew() || order()?.status === 'DRAFT') {
-              <div class="relative w-80">
-                <input
-                  type="text"
-                  [ngModel]="variantSearchTerm()"
-                  (ngModelChange)="onSearchVariants($event)"
-                  placeholder="Thêm SKU linh kiện vào đơn..."
-                  class="w-full pl-8 pr-3 py-1.5 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
-                />
-                <lucide-icon
-                  name="plus"
-                  class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
-                  aria-hidden="true"
-                ></lucide-icon>
+              <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  (click)="openSelectComponentModal()"
+                  class="h-8 px-3 bg-surface-alt hover:bg-surface border border-line rounded text-xs font-semibold text-foreground inline-flex items-center gap-1.5 transition-colors cursor-pointer shadow-2xs"
+                  title="Mở bảng danh mục linh kiện đầy đủ"
+                >
+                  <lucide-icon name="layout-grid" class="size-3.5 text-muted" aria-hidden="true"></lucide-icon>
+                  <span>Duyệt danh mục</span>
+                </button>
 
-                @if (searchedVariants().length > 0) {
-                  <div class="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg z-30 max-h-56 overflow-y-auto">
-                    @for (v of searchedVariants(); track v.id) {
-                      <div
-                        (click)="addVariantToOrder(v)"
-                        class="p-2 hover:bg-surface-alt cursor-pointer border-b border-line last:border-none flex items-center justify-between gap-2"
-                      >
-                        <div class="min-w-0 flex-1">
-                          <div class="tabular font-bold text-foreground text-sm truncate">{{ v.sku }}</div>
-                          <div class="text-xs text-muted truncate">{{ v.productTemplate.name }}</div>
+                <div class="relative w-72">
+                  <input
+                    type="text"
+                    [ngModel]="variantSearchTerm()"
+                    (ngModelChange)="onSearchVariants($event)"
+                    placeholder="Tìm nhanh SKU thêm vào đơn..."
+                    class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                  />
+                  <lucide-icon
+                    name="search"
+                    class="size-3.5 text-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                    aria-hidden="true"
+                  ></lucide-icon>
+
+                  @if (searchedVariants().length > 0) {
+                    <div class="absolute left-0 right-0 mt-1 bg-white border border-line rounded-lg shadow-lg z-30 max-h-56 overflow-y-auto">
+                      @for (v of searchedVariants(); track v.id) {
+                        <div
+                          (click)="addVariantToOrder(v)"
+                          class="p-2 hover:bg-surface-alt cursor-pointer border-b border-line last:border-none flex items-center justify-between gap-2"
+                        >
+                          <div class="min-w-0 flex-1">
+                            <div class="tabular font-bold text-foreground text-xs truncate">{{ v.sku }}</div>
+                            <div class="text-[11px] text-muted truncate">{{ v.productTemplate.name }}</div>
+                          </div>
+                          <div class="text-right flex-shrink-0">
+                            <span class="text-primary text-xs font-bold tabular-nums">
+                              {{ formatCurrency(v.sellingPrice) }} ₫
+                            </span>
+                            @if (v.serialRequired) {
+                              <div class="text-[10px] text-blue-600 font-semibold">Cần Serial</div>
+                            }
+                          </div>
                         </div>
-                        <div class="text-right flex-shrink-0">
-                          <span class="text-primary text-sm font-bold tabular-nums">
-                            {{ formatCurrency(v.sellingPrice) }} ₫
-                          </span>
-                          @if (v.serialRequired) {
-                            <div class="text-xs text-blue-600 font-semibold">Cần Serial</div>
-                          }
-                        </div>
-                      </div>
-                    }
-                  </div>
-                }
+                      }
+                    </div>
+                  }
+                </div>
               </div>
             }
           </div>
@@ -452,9 +466,8 @@ type ToastMessage = {
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
                   <th class="py-2.5 px-4">Mã SKU</th>
                   <th class="py-2.5 px-4">Tên Linh Kiện</th>
-                  <th class="py-2.5 px-4 text-center">Yêu Cầu Serial</th>
-                  <th class="py-2.5 px-4 text-center w-28">Số Lượng</th>
-                  <th class="py-2.5 px-4 text-right w-36">Đơn Giá WAC</th>
+                  <th class="py-2.5 px-4 text-center w-24">Số Lượng</th>
+                  <th class="py-2.5 px-4 text-right w-32">Đơn Giá WAC</th>
                   <th class="py-2.5 px-4 text-right">Thành Tiền</th>
                   @if (isNew() || order()?.status === 'DRAFT') {
                     <th class="py-2.5 px-4 text-center w-16">Thao Tác</th>
@@ -464,7 +477,7 @@ type ToastMessage = {
               <tbody class="divide-y divide-line">
                 @if (editableLines().length === 0) {
                   <tr>
-                    <td [attr.colspan]="(isNew() || order()?.status === 'DRAFT') ? 8 : 7" class="py-8 text-center text-muted">
+                    <td [attr.colspan]="(isNew() || order()?.status === 'DRAFT') ? 7 : 6" class="py-8 text-center text-muted">
                       Chưa có linh kiện nào trong đơn mua hàng. Vui lòng tìm và thêm linh kiện ở trên.
                     </td>
                   </tr>
@@ -492,16 +505,7 @@ type ToastMessage = {
                       <td class="py-2.5 px-4 font-semibold text-foreground">
                         {{ line.name }}
                       </td>
-                      <td class="py-2.5 px-4 text-center">
-                        @if (line.serialRequired) {
-                          <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
-                            Bắt buộc Serial
-                          </span>
-                        } @else {
-                          <span class="text-muted text-xs">Không</span>
-                        }
-                      </td>
-                      <td class="py-2.5 px-4 text-center">
+                      <td class="py-2.5 px-4 text-center w-24">
                         @if (isNew() || order()?.status === 'DRAFT') {
                           <input
                             type="number"
@@ -516,14 +520,14 @@ type ToastMessage = {
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right">
+                      <td class="py-2.5 px-4 text-right w-32">
                         @if (isNew() || order()?.status === 'DRAFT') {
                           <input
                             type="number"
                             min="0"
                             [ngModel]="line.agreedUnitCost"
                             (ngModelChange)="onLineCostChange(line.skuId, $event)"
-                            class="w-32 px-2 py-1 bg-white border border-line rounded text-right font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
+                            class="w-28 px-2 py-1 bg-white border border-line rounded text-right font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
                           <span class="text-foreground tabular-nums tabular">
@@ -539,7 +543,7 @@ type ToastMessage = {
                           <button
                             type="button"
                             (click)="removeLine(line.skuId)"
-                            class="p-1 rounded text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                            class="p-1 rounded text-muted hover:text-danger hover:bg-danger/10 transition-colors cursor-pointer"
                             title="Xóa dòng"
                             aria-label="Xóa dòng sản phẩm khỏi đơn mua hàng"
                           >
@@ -560,7 +564,7 @@ type ToastMessage = {
               Tổng số lượng: <strong class="text-foreground tabular tabular-nums">{{ totalOrderedQuantity() }}</strong> chiếc
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-muted font-medium">Tổng Giá Trị Đơn PO:</span>
+              <span class="text-muted font-medium">Tổng Giá Trị Đơn Hàng:</span>
               <span class="text-base font-black tabular tabular-nums text-primary">
                 {{ formatCurrency(calculatedTotalAmount()) }} ₫
               </span>
@@ -598,6 +602,14 @@ type ToastMessage = {
         [po]="order()"
         (closed)="isReceiptMoveModalOpen.set(false)"
       ></app-po-stock-move-modal>
+
+      <app-select-po-component-modal
+        [isOpen]="isSelectComponentModalOpen()"
+        [alreadySelectedSkuIds]="selectedSkuIds()"
+        (componentSelected)="handleComponentSelected($event)"
+        (componentsBatchSelected)="handleComponentsBatchSelected($event)"
+        (closed)="isSelectComponentModalOpen.set(false)"
+      ></app-select-po-component-modal>
 
       @if (toasts().length > 0) {
         <div class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
@@ -654,6 +666,9 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
   readonly isConfirmModalOpen = signal<boolean>(false);
   readonly isValidateReceiptModalOpen = signal<boolean>(false);
   readonly isShortShipmentModalOpen = signal<boolean>(false);
+  readonly isSelectComponentModalOpen = signal<boolean>(false);
+
+  readonly selectedSkuIds = computed<number[]>(() => this.editableLines().map((l) => l.skuId));
 
   readonly toasts = signal<ToastMessage[]>([]);
   private toastCounter = 0;
@@ -815,6 +830,23 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
     this.editableLines.set(this.editableLines().filter((l) => l.skuId !== skuId));
   }
 
+  openSelectComponentModal(): void {
+    this.isSelectComponentModalOpen.set(true);
+  }
+
+  handleComponentSelected(variant: CatalogVariantOption): void {
+    this.addVariantToOrder(variant);
+    this.showToast(`Đã thêm ${variant.sku} vào đơn mua hàng`, 'success');
+  }
+
+  handleComponentsBatchSelected(variants: CatalogVariantOption[]): void {
+    for (const v of variants) {
+      this.addVariantToOrder(v);
+    }
+    this.isSelectComponentModalOpen.set(false);
+    this.showToast(`Đã thêm ${variants.length} linh kiện vào đơn mua hàng`, 'success');
+  }
+
   async saveNewPurchaseOrder(): Promise<void> {
     if (!this.selectedSupplierId) {
       this.showToast('Vui lòng chọn nhà cung cấp', 'error');
@@ -843,7 +875,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast(`Đã tạo thành công đơn mua hàng ${created.code}`, 'success');
       void this.router.navigate(['/admin/procurement/purchase-orders', created.id]);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Tạo mới đơn PO thất bại';
+      const msg = err instanceof Error ? err.message : 'Tạo mới đơn mua hàng thất bại';
       this.showToast(msg, 'error');
     } finally {
       this.isSubmitting.set(false);
@@ -884,7 +916,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast('Đã lưu thay đổi đơn mua hàng', 'success');
       await this.loadOrder(po.id);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Cập nhật đơn PO thất bại';
+      const msg = err instanceof Error ? err.message : 'Cập nhật đơn mua hàng thất bại';
       this.showToast(msg, 'error');
     } finally {
       this.isSubmitting.set(false);
@@ -908,7 +940,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast(`Đã xác nhận và khóa đơn mua ${po.code}`, 'success');
       await this.loadOrder(po.id);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Xác nhận đơn PO thất bại';
+      const msg = err instanceof Error ? err.message : 'Xác nhận đơn mua hàng thất bại';
       this.showToast(msg, 'error');
     } finally {
       this.isSubmitting.set(false);
@@ -953,7 +985,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
     try {
       const replacement = await this.poService.handleShortShipment(po.id, payload);
       this.isShortShipmentModalOpen.set(false);
-      this.showToast(`Đã hủy PO ${po.code} và tạo PO thay thế ${replacement.code}`, 'success');
+      this.showToast(`Đã hủy đơn ${po.code} và tạo đơn thay thế ${replacement.code}`, 'success');
       void this.router.navigate(['/admin/procurement/purchase-orders', replacement.id]);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Xử lý giao thiếu thất bại';
@@ -975,7 +1007,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast(`Đã đóng đơn mua hàng ${po.code}`, 'success');
       await this.loadOrder(po.id);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Không thể đóng đơn PO';
+      const msg = err instanceof Error ? err.message : 'Không thể đóng đơn mua hàng';
       this.showToast(msg, 'error');
     } finally {
       this.isSubmitting.set(false);
@@ -999,7 +1031,7 @@ export class AdminPurchaseOrderDetailPageComponent implements OnInit {
       this.showToast(`Đã hủy đơn mua hàng #${po.code}`, 'info');
       await this.loadOrder(po.id);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Hủy đơn PO thất bại';
+      const msg = err instanceof Error ? err.message : 'Hủy đơn mua hàng thất bại';
       this.showToast(msg, 'error');
     } finally {
       this.isSubmitting.set(false);
