@@ -481,7 +481,7 @@ export class AdminOrderDetailPageComponent implements OnInit {
         return 'bg-warning/10 text-warning border border-warning/30';
       case 'CANCELLED':
       case 'DELIVERY_FAILED':
-        return 'bg-destructive/10 text-destructive border border-destructive/20';
+        return 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800';
       default:
         return 'bg-surface-alt text-muted border border-line';
     }

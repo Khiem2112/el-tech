@@ -228,7 +228,7 @@ export class OrderStockMovesModalComponent {
   getMoveTypeClass(type: string): string {
     switch (type) {
       case 'ORDER_ISSUE':
-        return 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800';
+        return 'bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800';
       case 'RESERVED':
         return 'bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800';
       case 'ORDER_REVERSAL':

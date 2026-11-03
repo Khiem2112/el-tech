@@ -619,10 +619,8 @@ export class AdminOrdersPageComponent implements OnInit {
       case 'SHIPPING':
         return 'bg-surface-alt text-foreground border border-line';
       case 'DELIVERY_FAILED':
-        return 'bg-destructive/10 text-destructive border border-destructive/20';
-      
       case 'CANCELLED':
-        return 'bg-surface-alt text-muted border border-line';
+        return 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800';
       case 'COMPLETED':
         return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-medium';
       case 'ON_HOLD':

@@ -172,10 +172,10 @@ export class OrderStatusBarComponent {
   readonly exceptionClass = computed<string>(() => {
     const s = this.order().status;
     if (s === 'CANCELLED') {
-      return 'bg-destructive/10 text-destructive border-destructive/20';
+      return 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800';
     }
     if (s === 'DELIVERY_FAILED') {
-      return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
+      return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
     }
     return 'bg-surface-alt text-muted border-line';
   });
