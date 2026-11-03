@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   HostListener,
-  computed,
   effect,
   inject,
   input,
@@ -22,7 +21,6 @@ import {
 } from '../services/admin-category.service';
 
 type EditableAttribute = SpecAttribute & {
-  isOriginal: boolean;
   optionsText: string;
 };
 
@@ -49,7 +47,7 @@ type EditableAttribute = SpecAttribute & {
                 Cấu Hình Thuộc Tính Kỹ Thuật Động
               </h2>
               <p class="text-xs text-muted">
-                Ngành hàng: <strong class="text-primary-strong">{{ category()?.name }}</strong> (Phiên bản schema: v{{ category()?.specificationSchemaVersion }})
+                Ngành hàng: <strong class="text-primary-strong">{{ category()?.name }}</strong>
               </p>
             </div>
             <button
@@ -65,7 +63,7 @@ type EditableAttribute = SpecAttribute & {
 
           <div class="px-6 py-2.5 bg-surface-alt border-b border-line text-muted text-xs flex items-center justify-between gap-2">
             <span>
-              Thuộc tính đã có sản phẩm sử dụng (hiện có {{ hasProducts() ? category()?.productTemplateCount : 0 }} mẫu) sẽ tự động khóa để bảo toàn dữ liệu.
+              Chỉnh sửa thuộc tính sẽ tự động xuất phiên bản schema mới; các sản phẩm thuộc phiên bản trước sẽ giữ nguyên thông số kỹ thuật hiện có.
             </span>
           </div>
 
@@ -79,7 +77,7 @@ type EditableAttribute = SpecAttribute & {
             <div class="flex items-center justify-between">
               <div>
                 <span class="font-bold text-foreground uppercase tracking-wider text-xs">
-                  Danh Sách Thuộc Tính Kỹ Thuật (v{{ category()?.specificationSchemaVersion }})
+                  Danh Sách Thuộc Tính Kỹ Thuật
                 </span>
                 <span class="text-muted ml-2">({{ attributes().length }} trường)</span>
               </div>
@@ -114,11 +112,6 @@ type EditableAttribute = SpecAttribute & {
                       <span class="px-2 py-0.5 rounded text-xs bg-surface border border-line text-muted">
                         {{ attr.key || 'key-chua-dat' }}
                       </span>
-                      @if (isAttributeLocked(attr)) {
-                        <span class="px-2 py-0.5 rounded text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
-                          ĐÃ KHÓA
-                        </span>
-                      }
                       @if (attr.isDeprecated) {
                         <span class="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-300">
                           NGƯNG DÙNG
@@ -127,17 +120,15 @@ type EditableAttribute = SpecAttribute & {
                     </div>
 
                     <div class="flex items-center gap-2">
-                      @if (!isAttributeLocked(attr)) {
-                        <button
-                          type="button"
-                          (click)="removeAttribute(i)"
-                          class="p-1 rounded text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Xóa thuộc tính này"
-                          aria-label="Xóa thuộc tính này"
-                        >
-                          <lucide-icon name="trash-2" class="size-4" aria-hidden="true"></lucide-icon>
-                        </button>
-                      }
+                      <button
+                        type="button"
+                        (click)="removeAttribute(i)"
+                        class="p-1 rounded text-rose-600 hover:bg-rose-50 transition-colors"
+                        title="Xóa thuộc tính này"
+                        aria-label="Xóa thuộc tính này"
+                      >
+                        <lucide-icon name="trash-2" class="size-4" aria-hidden="true"></lucide-icon>
+                      </button>
                     </div>
                   </div>
 
@@ -149,9 +140,8 @@ type EditableAttribute = SpecAttribute & {
                       <input
                         type="text"
                         [(ngModel)]="attr.key"
-                        [disabled]="isAttributeLocked(attr)"
                         placeholder="vram_capacity"
-                        class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-sm font-medium text-foreground placeholder:text-muted disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:border-primary"
+                        class="w-full px-2.5 py-1.5 bg-surface border border-line rounded text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                       />
                     </div>
 
@@ -175,7 +165,6 @@ type EditableAttribute = SpecAttribute & {
                         [options]="specTypeOptions"
                         [value]="attr.type"
                         (valueChange)="onAttributeTypeChange(attr, $event)"
-                        [disabled]="isAttributeLocked(attr)"
                         size="sm"
                         ariaLabel="Kiểu dữ liệu"
                       />
@@ -249,11 +238,28 @@ type EditableAttribute = SpecAttribute & {
                 </div>
               }
             </div>
+
+            <div class="sticky bottom-0 z-10 py-2.5 px-3 bg-surface/95 backdrop-blur-xs border border-line rounded shadow-sm flex items-center justify-between mt-4">
+              <span class="text-xs text-muted">
+                Tổng cộng: <strong class="text-foreground">{{ attributes().length }}</strong> thuộc tính
+              </span>
+              <button
+                type="button"
+                appButton
+                variant="primary"
+                size="sm"
+                (click)="addNewAttribute()"
+                class="inline-flex items-center gap-1.5"
+              >
+                <lucide-icon name="plus" class="size-3.5" aria-hidden="true"></lucide-icon>
+                <span>Thêm Thuộc Tính</span>
+              </button>
+            </div>
           </div>
 
           <div class="h-16 px-6 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <span class="text-muted text-xs">
-              Lưu cấu hình sẽ tự động tăng phiên bản schema lên <strong class="text-primary-strong">v{{ (category()?.specificationSchemaVersion || 1) + 1 }}</strong>
+              Lưu cấu hình sẽ cập nhật bộ thuộc tính kỹ thuật áp dụng cho ngành hàng này.
             </span>
             <div class="flex items-center gap-3">
               <button
@@ -279,7 +285,7 @@ type EditableAttribute = SpecAttribute & {
                   <span class="inline-block w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></span>
                   <span>Đang lưu...</span>
                 } @else {
-                  <span>Lưu Cấu Hình (v{{ (category()?.specificationSchemaVersion || 1) + 1 }})</span>
+                  <span>Lưu Cấu Hình</span>
                 }
               </button>
             </div>
@@ -314,11 +320,6 @@ export class SpecSchemaSheetComponent {
   readonly errorMessage = signal<string | null>(null);
   readonly attributes = signal<EditableAttribute[]>([]);
 
-  readonly hasProducts = computed(() => {
-    const cat = this.category();
-    return Boolean(cat && cat.productTemplateCount > 0);
-  });
-
   constructor() {
     effect(() => {
       const cat = this.category();
@@ -326,7 +327,6 @@ export class SpecSchemaSheetComponent {
         const schema = cat.specificationSchema || [];
         const editable: EditableAttribute[] = schema.map((attr) => ({
           ...attr,
-          isOriginal: true,
           optionsText: (attr.options || []).join(', '),
         }));
         this.attributes.set(editable);
@@ -344,10 +344,6 @@ export class SpecSchemaSheetComponent {
     }
   }
 
-  isAttributeLocked(attr: EditableAttribute): boolean {
-    return attr.isOriginal && this.hasProducts();
-  }
-
   addNewAttribute(): void {
     const nextIndex = this.attributes().length + 1;
     const newAttr: EditableAttribute = {
@@ -361,17 +357,11 @@ export class SpecSchemaSheetComponent {
       options: [],
       optionsText: '',
       isDeprecated: false,
-      isOriginal: false,
     };
     this.attributes.update((list) => [...list, newAttr]);
   }
 
   removeAttribute(index: number): void {
-    const target = this.attributes()[index];
-    if (target && this.isAttributeLocked(target)) {
-      this.errorMessage.set('Thuộc tính đã có sản phẩm sử dụng, không thể xóa theo quy tắc CAT-009');
-      return;
-    }
     this.attributes.update((list) => list.filter((_, i) => i !== index));
   }
 

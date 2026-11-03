@@ -25,6 +25,7 @@ import {
   AdminCategoryService,
   CreateCategoryPayload,
   UpdateCategoryPayload,
+  slugifyCategory,
 } from '../services/admin-category.service';
 
 const categoryFormSchema = z.object({
@@ -33,28 +34,10 @@ const categoryFormSchema = z.object({
     .trim()
     .min(2, 'Ten danh muc toi thieu 2 ky tu')
     .max(150, 'Ten danh muc toi da 150 ky tu'),
-  slug: z
-    .string()
-    .trim()
-    .min(2, 'Slug toi thieu 2 ky tu')
-    .max(150, 'Slug toi da 150 ky tu')
-    .regex(/^[a-z0-9-]+$/, 'Slug chi chua chu thuong khong dau, so va gach noi'),
   parentId: z.number().nullable().optional(),
   description: z.string().trim().max(1000, 'Mo ta toi da 1000 ky tu').optional(),
   isActive: z.boolean(),
 });
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/[\s_]+/g, '-')
-    .replace(/-+/g, '-');
-}
 
 @Component({
   selector: 'app-category-form-dialog',
@@ -150,30 +133,12 @@ function slugify(text: string): string {
                 id="name"
                 type="text"
                 formControlName="name"
-                (input)="onNameInput()"
                 placeholder="Ví dụ: Bo Mạch Chủ (Mainboard)"
                 class="w-full px-3 py-2 bg-surface-alt border rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                 [ngClass]="getFieldClass('name')"
               />
               @if (isFieldInvalid('name')) {
                 <p class="text-rose-500 text-xs mt-1">{{ getFieldError('name') }}</p>
-              }
-            </div>
-
-            <div>
-              <label for="slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                Mã đường dẫn (Slug) <span class="text-rose-500">*</span>
-              </label>
-              <input
-                id="slug"
-                type="text"
-                formControlName="slug"
-                placeholder="mainboard-bo-mach-chu"
-                class="w-full px-3 py-2 bg-surface-alt border rounded text-sm font-medium text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
-                [ngClass]="getFieldClass('slug')"
-              />
-              @if (isFieldInvalid('slug')) {
-                <p class="text-rose-500 text-xs mt-1">{{ getFieldError('slug') }}</p>
               }
             </div>
 
@@ -262,7 +227,6 @@ export class CategoryFormDialogComponent {
 
   readonly isSubmitting = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
-  private isSlugManuallyEdited = signal<boolean>(false);
 
   readonly isEditMode = computed(() => Boolean(this.categoryToEdit()));
 
@@ -291,12 +255,12 @@ export class CategoryFormDialogComponent {
 
   readonly parentOptions = computed<SelectOption[]>(() => {
     const options: SelectOption[] = [
-      { value: '', label: 'Không có (Danh mục gốc cấp cao nhất)' },
+      { value: '', label: 'Không có' },
     ];
     for (const cat of this.selectableParents()) {
       options.push({
         value: String(cat.id),
-        label: `${cat.name} (${cat.slug})`,
+        label: cat.name,
       });
     }
     return options;
@@ -304,7 +268,6 @@ export class CategoryFormDialogComponent {
 
   readonly form: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
-    slug: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
     parentId: [null as number | null],
     description: [''],
     isActive: [true],
@@ -326,21 +289,17 @@ export class CategoryFormDialogComponent {
       if (category) {
         this.form.reset({
           name: category.name,
-          slug: category.slug,
           parentId: category.parentId,
           description: category.description || '',
           isActive: category.isActive,
         });
-        this.isSlugManuallyEdited.set(true);
       } else {
         this.form.reset({
           name: '',
-          slug: '',
           parentId: null,
           description: '',
           isActive: true,
         });
-        this.isSlugManuallyEdited.set(false);
       }
       this.errorMessage.set(null);
     });
@@ -350,14 +309,6 @@ export class CategoryFormDialogComponent {
   handleEscape(): void {
     if (this.isOpen() && !this.isSubmitting()) {
       this.onClose();
-    }
-  }
-
-  onNameInput(): void {
-    if (!this.isSlugManuallyEdited() && !this.isEditMode()) {
-      const nameVal = this.form.get('name')?.value || '';
-      const generatedSlug = slugify(nameVal);
-      this.form.get('slug')?.setValue(generatedSlug, { emitEvent: false });
     }
   }
 
@@ -433,7 +384,7 @@ export class CategoryFormDialogComponent {
       return;
     }
 
-    const { name, slug, parentId, description, isActive } = validationResult.data;
+    const { name, parentId, description, isActive } = validationResult.data;
 
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
@@ -445,7 +396,7 @@ export class CategoryFormDialogComponent {
       if (current) {
         const payload: UpdateCategoryPayload = {
           name,
-          slug,
+          slug: current.slug,
           parentId: parentId ?? null,
           description: description || null,
           isActive,
@@ -454,7 +405,7 @@ export class CategoryFormDialogComponent {
       } else {
         const payload: CreateCategoryPayload = {
           name,
-          slug,
+          slug: slugifyCategory(name),
           parentId: parentId ?? null,
           description: description || null,
           isActive,

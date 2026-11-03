@@ -35,9 +35,21 @@ export type AdminCategory = {
   children?: AdminCategory[];
 };
 
+export function slugifyCategory(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export type CreateCategoryPayload = {
   name: string;
-  slug: string;
+  slug?: string;
   parentId?: number | null;
   description?: string | null;
   specificationSchema?: SpecAttribute[];
@@ -159,8 +171,12 @@ export class AdminCategoryService {
 
   async createCategory(payload: CreateCategoryPayload): Promise<AdminCategory> {
     const headers = this.getAuthHeaders();
+    const finalPayload = {
+      ...payload,
+      slug: payload.slug?.trim() ? payload.slug.trim() : slugifyCategory(payload.name),
+    };
     const response = await firstValueFrom(
-      this.http.post<ApiResponse<AdminCategory>>(this.baseUrl, payload, { headers }),
+      this.http.post<ApiResponse<AdminCategory>>(this.baseUrl, finalPayload, { headers }),
     );
 
     if (!response.success) {
