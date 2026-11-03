@@ -22,11 +22,16 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
   template: `
     <div class="w-full min-h-full p-4 lg:p-6 space-y-6 text-sm text-foreground bg-canvas">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
-        <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
-          Trung Tâm Vận Hành
-        </h1>
+        <div>
+          <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
+            Trung Tâm Vận Hành
+          </h1>
+          <p class="text-xs text-muted mt-0.5">
+            Tổng quan hiệu suất vận hành, xử lý đơn hàng và giám sát tồn kho tại STORE-MAIN
+          </p>
+        </div>
 
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2.5 flex-wrap">
           <button
             type="button"
             (click)="onRefresh()"
@@ -57,6 +62,39 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           <p class="text-xs">Đang tải dữ liệu trung tâm vận hành...</p>
         </div>
       } @else {
+        <div class="flex flex-wrap items-center gap-3">
+          <a
+            routerLink="/admin/orders"
+            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
+          >
+            Quản Lý Đơn Hàng
+          </a>
+          <a
+            routerLink="/admin/inventory/balances"
+            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
+          >
+            Tra Cứu Tồn Kho
+          </a>
+          <a
+            routerLink="/admin/procurement/purchase-orders"
+            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
+          >
+            Đơn Mua Linh Kiện
+          </a>
+          <a
+            routerLink="/admin/catalog/templates"
+            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
+          >
+            Danh Mục Mẫu Sản Phẩm
+          </a>
+          <a
+            routerLink="/admin/procurement/purchase-orders/new"
+            class="px-3.5 py-2 bg-primary hover:bg-primary-strong text-primary-foreground rounded font-semibold text-xs transition-colors shadow-xs"
+          >
+            Tạo đơn mua hàng
+          </a>
+        </div>
+
         <app-urgent-queues-grid
           [urgentQueues]="dashboardService.urgentQueues()"
           [selectedBranchId]="dashboardService.selectedBranchId()"
@@ -74,38 +112,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
             [alerts]="dashboardService.lowStockAlerts()"
             [selectedBranchId]="dashboardService.selectedBranchId()"
           />
-        </div>
-
-        <div class="p-4 bg-surface border border-line rounded-lg">
-          <h2 class="text-xs font-bold uppercase tracking-wider text-muted mb-3">
-            Lối Tắt Thao Tác Nhanh
-          </h2>
-          <div class="flex flex-wrap gap-2 text-xs">
-            <a
-              routerLink="/admin/orders"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
-            >
-              Quản Lý Đơn Hàng
-            </a>
-            <a
-              routerLink="/admin/inventory/balances"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
-            >
-              Tra Cứu Tồn Kho
-            </a>
-            <a
-              routerLink="/admin/procurement/purchase-orders"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
-            >
-              Đơn Mua Hàng PO
-            </a>
-            <a
-              routerLink="/admin/catalog/templates"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-foreground transition-colors hover:border-primary/50"
-            >
-              Danh Mục Mẫu Sản Phẩm
-            </a>
-          </div>
         </div>
       }
     </div>

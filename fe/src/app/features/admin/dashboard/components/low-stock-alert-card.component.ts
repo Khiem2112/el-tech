@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import { LowStockAlertItem } from '../services/admin-dashboard.service';
@@ -19,8 +19,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
             </h2>
           </div>
           <a
-            [routerLink]="['/admin/inventory/balances']"
-            [queryParams]="inventoryQueryParams()"
+            routerLink="/admin/inventory/balances"
             class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
           >
             <span>Sổ tồn kho</span>
@@ -32,21 +31,21 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
           <table class="w-full text-left text-sm">
             <thead class="bg-surface-alt/60 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
               <tr>
-                <th class="py-2.5 px-3">Mã SKU</th>
+                <th class="py-2.5 px-3">Mã linh kiện</th>
                 <th class="py-2.5 px-3">Linh kiện</th>
                 <th class="py-2.5 px-3 text-right">Khả dụng</th>
                 <th class="py-2.5 px-3 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-line">
-              @if (alerts().length === 0) {
+              @if (filteredAlerts().length === 0) {
                 <tr>
                   <td colspan="4" class="py-8 text-center text-muted text-xs">
-                    Mức tồn kho tất cả linh kiện đều trong ngưỡng an toàn
+                    Tồn kho an toàn, không có cảnh báo
                   </td>
                 </tr>
               } @else {
-                @for (item of alerts(); track item.quantId) {
+                @for (item of filteredAlerts(); track item.quantId) {
                   <tr class="hover:bg-surface-alt/40 transition-colors">
                     <td class="py-2.5 px-3 tabular font-semibold text-foreground whitespace-nowrap">
                       {{ item.sku }}
@@ -54,7 +53,7 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
                     <td class="py-2.5 px-3">
                       <div class="font-medium text-foreground line-clamp-1">{{ item.productName }}</div>
                       <div class="text-xs text-muted flex items-center gap-1.5 mt-0.5">
-                        <span>Showroom EL-TECH</span>
+                        <span>STORE-MAIN</span>
                         @if (item.variationLabel) {
                           <span>&bull;</span>
                           <span class="tabular">{{ item.variationLabel }}</span>
@@ -75,9 +74,10 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
                     <td class="py-2.5 px-3 text-right whitespace-nowrap">
                       <a
                         [routerLink]="['/admin/procurement/purchase-orders/new']"
+                        [queryParams]="{ skuId: item.skuId }"
                         class="px-2.5 py-1 text-xs font-semibold rounded bg-surface border border-line hover:border-primary/50 text-foreground transition-colors"
                       >
-                        Lập PO
+                        Tạo đơn mua hàng
                       </a>
                     </td>
                   </tr>
@@ -94,10 +94,10 @@ import { LowStockAlertItem } from '../services/admin-dashboard.service';
         </span>
         <div class="flex items-center gap-2">
           <a
-            [routerLink]="['/admin/procurement/purchase-orders/new']"
+            routerLink="/admin/procurement/purchase-orders/new"
             class="px-3 py-1 bg-primary hover:bg-primary-strong rounded font-semibold text-primary-foreground transition-colors"
           >
-            Tạo đơn PO
+            Tạo đơn mua hàng
           </a>
         </div>
       </div>
@@ -108,14 +108,14 @@ export class LowStockAlertCardComponent {
   readonly alerts = input<LowStockAlertItem[]>([]);
   readonly selectedBranchId = input<number | null>(null);
 
-  inventoryQueryParams(): Record<string, string | number> {
-    const params: Record<string, string | number> = {
-      stockStatus: 'OUT_OF_STOCK',
-    };
-    const branchId = this.selectedBranchId();
-    if (branchId !== null) {
-      params['branchId'] = branchId;
-    }
-    return params;
-  }
+  readonly filteredAlerts = computed<LowStockAlertItem[]>(() => {
+    return this.alerts().filter((item) => {
+      const isBelowThirtyPercent = item.onHand <= 0 || item.available < item.onHand * 0.3;
+      const isAtOrBelowThreshold =
+        typeof item.reorderThreshold === 'number' && item.reorderThreshold > 0
+          ? item.available <= item.reorderThreshold
+          : false;
+      return isBelowThirtyPercent || isAtOrBelowThreshold;
+    });
+  });
 }

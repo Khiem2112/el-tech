@@ -463,6 +463,21 @@ graph TD
 | [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] | Fullstack | Tích hợp gửi thông báo đơn hàng thành công, transactional outbox và đồng bộ admin outbox | Complete | [[TASK-06-CHECKOUT-AND-ORDER-SUCCESS]], [[TASK-61-ADMIN-REVIEW-MODERATION-AND-NOTIFICATION-OUTBOX]] |
 | [[TASK-138-GMAIL-SMTP-EMAIL-SERVICE-INTEGRATION]] | Backend | Tích hợp gửi Gmail qua SMTP cho mã OTP tra cứu đơn và thông báo xác nhận đơn hàng | Complete | [[TASK-99-BACKEND-GUEST-ORDER-LOOKUP-AND-COMPLAINTS-API]], [[TASK-137-ORDER-SUBMISSION-NOTIFICATION-DISPATCH-INTEGRATION]] |
 | [[TASK-139-GOOGLE-OAUTH-AUTHENTICATION-FLOW-INTEGRATION]] | Fullstack | Tích hợp xác thực đăng nhập Google OAuth qua Google Identity Services và xác minh backend | Complete | [[TASK-09-AUTH-MODAL-AND-CUSTOMER-PROFILE]], [[TASK-117-CUSTOMER-AUTH-DB-PERSISTENCE-AND-REQUIRED-FIELDS]] |
+| [[TASK-140-DASHBOARD-LOW-STOCK-LOGIC-AND-NAVIGATION]] | Frontend UI | Dashboard: Chuẩn hóa logic cảnh báo tồn kho thấp (< 30% hoặc quá ngưỡng), link tạo PO theo SKU, bỏ dòng toàn hệ thống | Complete | Report Drive Mục 1 & Wording Dashboard |
+| [[TASK-141-CATEGORIES-UNLOCK-SCHEMA-AND-REMOVE-SLUG]] | Frontend UI | Ngành hàng: Mở khóa toàn bộ field schema thuộc tính, xuất schema mới, neo nút thêm thuộc tính, loại bỏ slug và phiên bản | Pending | Report Drive Mục 2 & Wording Danh Mục |
+| [[TASK-142-BRANDS-EXPAND-COLLAPSE-AND-HIDE-TECH-CODES]] | Frontend UI | Thương hiệu: Thêm nút toggle Mở rộng/Thu gọn cơ cấu chi tiết theo mẫu Phiếu kho, ẩn các cột mã kỹ thuật thừa | Pending | Report Drive Mục 3 & Wording Thương Hiệu |
+| [[TASK-143-PRODUCT-TEMPLATES-VALIDATION-LINKS-BUTTONS-UPLOAD]] | Frontend UI | Mẫu sản phẩm: Bổ sung inline error đỏ từng trường bắt buộc, sửa link Quản lý biến thể, gộp 1 nút tạo SKU, upload ảnh từ máy tính | Pending | Report Drive Mục 4 & Wording Sản Phẩm |
+| [[TASK-144-PC-BUNDLES-VALIDATION-CARD-VIEW-AND-POLISH]] | Frontend UI | PC lắp sẵn: Bổ sung inline error đỏ, dữ liệu khả năng lắp ráp, căn hàng số bộ Card view, icon thùng rác đỏ, đổi tên thành PC lắp sẵn | Pending | Report Drive Mục 5 & Wording PC Sẵn |
+| [[TASK-145-ORDERS-AND-INVENTORY-STATUS-TAGS-AND-QUARANTINE]] | Frontend UI | Đơn hàng & Tồn kho: Đổi màu tag Xuất kho bán hàng và Đã hủy dịu mắt, xóa trường kho phát hiện lỗi, căn chỉnh dòng linh kiện cách ly | Pending | Report Drive Mục 6 & Mục 7 |
+| [[TASK-146-SERIALS-PRUNE-LOCATION-AND-ACCENTED-VIETNAMESE]] | Frontend UI | Tra cứu sê-ri: Bỏ cột vị trí linh kiện, bỏ cơ sở quản lý trong form điều chỉnh, sửa toàn bộ thông báo tiếng Việt có dấu | Pending | Report Drive Mục 8 |
+| [[TASK-147-STOCK-LEDGER-RESTRUCTURE-COLUMNS]] | Frontend UI | Sổ kho bất biến: Bỏ cột chi nhánh và tác nhân, gộp 3 cột biến động thành Thực / Lỗi / Giữ, thu hẹp cột chứng từ | Pending | Report Drive Mục 9 |
+| [[TASK-148-STOCK-MOVES-COLUMNS-AND-SERIAL-SPACE]] | Frontend UI | Phiếu kho: Cột chứng từ dời về cạnh lý do, giảm width số lượng và tên linh kiện, dành không gian tối đa cho sê-ri, viết hoa SP | Pending | Report Drive Mục 10 |
+| [[TASK-149-SUPPLIERS-AND-RETURNS-SEARCH-ICON-FIX]] | Frontend UI | Nhà cung cấp & Xuất trả: Chuẩn hóa căn giữa trục dọc cho icon kính lúp tìm kiếm, bảo toàn logic xóa NCC chưa mua hàng | Pending | Report Drive Mục 11 & Mục 13 |
+| [[TASK-150-PURCHASE-ORDERS-COLUMNS-COMPONENT-MODAL-AND-ALIGNMENT]] | Frontend UI | Đơn mua hàng: Bỏ cột kho nhận, bỏ yêu cầu serial, modal chọn linh kiện mua hàng có search/filter, sửa lệch cột thực nhận và lỗi đỏ | Pending | Report Drive Mục 12 & Wording Đơn Mua |
+| [[TASK-151-CUSTOMERS-REMOVE-MERGE-AND-FIX-DETAIL-HEADER]] | Frontend UI | Khách hàng: Bỏ nút gộp hồ sơ, sửa vỡ khung responsive header chi tiết khách hàng không đè avatar | Pending | Report Drive Mục 14 |
+| [[TASK-152-NOTIFICATIONS-OUTBOX-REMOVE-RETRY-AND-PAGINATION]] | Frontend UI | Hộp thư Outbox: Xóa cột thử lại để thu nhỏ bảng quá khổ, bổ sung thanh phân trang theo số trang | Pending | Report Drive Mục 19 & Wording Outbox |
+| [[TASK-153-ADMIN-GLOBAL-WORDING-AND-SPACING-POLISH]] | Frontend UI | Chuẩn hóa Wording & Spacing: Cách dòng các section chi tiết đơn hàng, tinh gọn sidebar menu (bỏ tab mẹ), đồng bộ PO/BI/SKU | Pending | Report Drive Lỗi Wording Phúc Huỳnh Tấn |
+
 
 
 
