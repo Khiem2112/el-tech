@@ -23,23 +23,22 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
         <div class="divide-y divide-line/50">
           @for (attr of schema(); track attr.key) {
             <div class="py-2.5 grid grid-cols-1 sm:grid-cols-12 gap-2 sm:gap-4 items-center">
-              <div class="sm:col-span-4">
-                <label class="block font-semibold text-foreground text-xs">
-                  {{ attr.label }}
+              <div class="sm:col-span-5">
+                <label class="block font-semibold text-foreground text-xs leading-normal">
+                  <span class="inline">{{ attr.label }}</span>
                   @if (attr.unit) {
-                    <span class="text-muted font-normal">({{ attr.unit }})</span>
+                    <span class="text-muted font-normal whitespace-nowrap ml-1">({{ attr.unit }})</span>
                   }
                   @if (attr.required) {
                     <span class="text-destructive ml-0.5" title="Bắt buộc">*</span>
                   }
                   @if (attr.isDeprecated) {
-                    <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs font-normal">Ngưng dùng</span>
+                    <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs font-normal whitespace-nowrap">Ngưng dùng</span>
                   }
                 </label>
-                <div class="text-xs text-muted/70">{{ attr.key }}</div>
               </div>
 
-              <div class="sm:col-span-8">
+              <div class="sm:col-span-7">
                 @switch (attr.type) {
                   @case ('text') {
                     <input

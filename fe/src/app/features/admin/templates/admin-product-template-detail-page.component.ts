@@ -305,10 +305,17 @@ type VariantSpecPair = {
                     type="text"
                     required
                     [value]="templateName()"
-                    (input)="onNameInput($event)"
+                    (input)="onNameInput($event); clearFieldError('templateName')"
                     placeholder="VD: ASUS ROG Strix GeForce RTX 5090"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary font-semibold text-sm"
+                    class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none font-semibold text-sm transition-colors"
+                    [class.border-destructive]="fieldErrors()['templateName']"
+                    [class.focus:border-destructive]="fieldErrors()['templateName']"
+                    [class.border-line]="!fieldErrors()['templateName']"
+                    [class.focus:border-primary]="!fieldErrors()['templateName']"
                   />
+                  @if (fieldErrors()['templateName']) {
+                    <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['templateName'] }}</p>
+                  }
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -320,10 +327,17 @@ type VariantSpecPair = {
                       type="text"
                       required
                       [value]="slug()"
-                      (input)="slug.set($any($event.target).value)"
+                      (input)="slug.set($any($event.target).value); clearFieldError('slug')"
                       placeholder="asus-rog-strix-geforce-rtx-5090"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
+                      class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none text-sm font-medium transition-colors"
+                      [class.border-destructive]="fieldErrors()['slug']"
+                      [class.focus:border-destructive]="fieldErrors()['slug']"
+                      [class.border-line]="!fieldErrors()['slug']"
+                      [class.focus:border-primary]="!fieldErrors()['slug']"
                     />
+                    @if (fieldErrors()['slug']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['slug'] }}</p>
+                    }
                   </div>
 
                   <div>
@@ -333,9 +347,13 @@ type VariantSpecPair = {
                     <app-select
                       [options]="brandOptions()"
                       [value]="brandId() !== null ? String(brandId()) : ''"
-                      (valueChange)="onBrandSelectChange($event)"
+                      (valueChange)="onBrandSelectChange($event); clearFieldError('brandId')"
+                      [class]="fieldErrors()['brandId'] ? 'border-destructive ring-1 ring-destructive' : ''"
                       placeholder="-- Chọn thương hiệu --"
                     />
+                    @if (fieldErrors()['brandId']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['brandId'] }}</p>
+                    }
                   </div>
                 </div>
 
@@ -347,9 +365,13 @@ type VariantSpecPair = {
                     <app-select
                       [options]="categoryOptions()"
                       [value]="categoryId() !== null ? String(categoryId()) : ''"
-                      (valueChange)="onCategorySelectChange($event)"
+                      (valueChange)="onCategorySelectChange($event); clearFieldError('categoryId')"
+                      [class]="fieldErrors()['categoryId'] ? 'border-destructive ring-1 ring-destructive' : ''"
                       placeholder="-- Chọn danh mục --"
                     />
+                    @if (fieldErrors()['categoryId']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['categoryId'] }}</p>
+                    }
                   </div>
 
                   <div>
@@ -360,10 +382,17 @@ type VariantSpecPair = {
                       type="text"
                       required
                       [value]="modelCode()"
-                      (input)="modelCode.set($any($event.target).value)"
+                      (input)="modelCode.set($any($event.target).value); clearFieldError('modelCode')"
                       placeholder="ROG-STRIX-RTX5090"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
+                      class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none text-sm font-medium transition-colors"
+                      [class.border-destructive]="fieldErrors()['modelCode']"
+                      [class.focus:border-destructive]="fieldErrors()['modelCode']"
+                      [class.border-line]="!fieldErrors()['modelCode']"
+                      [class.focus:border-primary]="!fieldErrors()['modelCode']"
                     />
+                    @if (fieldErrors()['modelCode']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['modelCode'] }}</p>
+                    }
                   </div>
                 </div>
 
@@ -406,28 +435,26 @@ type VariantSpecPair = {
               </div>
 
               <div class="space-y-3">
-                <div class="flex items-center gap-2">
+                <label class="flex flex-col items-center justify-center p-4 border-2 border-dashed border-line hover:border-primary/60 rounded-lg bg-surface-alt/40 cursor-pointer transition-colors group">
+                  <div class="flex items-center gap-2 text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>Tải ảnh lên từ máy tính</span>
+                  </div>
+                  <p class="text-[11px] text-muted mt-1">Định dạng hỗ trợ: JPG, PNG, WEBP, GIF (Tối đa 5MB mỗi ảnh)</p>
                   <input
-                    type="text"
-                    [value]="newImageUrl()"
-                    (input)="newImageUrl.set($any($event.target).value)"
-                    placeholder="Dán URL hình ảnh..."
-                    class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    (change)="onFileSelected($event)"
+                    class="hidden"
                   />
-                  <button
-                    type="button"
-                    appButton
-                    variant="outline"
-                    size="sm"
-                    (click)="addMediaUrl()"
-                  >
-                    + Thêm
-                  </button>
-                </div>
+                </label>
 
                 @if (mediaList().length === 0) {
                   <div class="p-4 bg-surface-alt border border-dashed border-line rounded text-center text-xs text-muted">
-                    Chưa có ảnh nào được thêm. Vui lòng nhập URL ảnh vào ô phía trên.
+                    Chưa có ảnh nào được thêm. Vui lòng tải ảnh từ máy tính bằng khung phía trên.
                   </div>
                 } @else {
                   <div class="grid grid-cols-3 gap-3">
@@ -501,20 +528,22 @@ type VariantSpecPair = {
                       {{ filteredVariants().length }} / {{ variants().length }} biến thể
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    appButton
-                    variant="primary"
-                    size="sm"
-                    (click)="startCreateVariant()"
-                    class="inline-flex items-center gap-1.5"
-                    title="Thêm biến thể mới"
-                  >
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span>+ Thêm SKU</span>
-                  </button>
+                  @if (!isCreatingNewVariant()) {
+                    <button
+                      type="button"
+                      appButton
+                      variant="primary"
+                      size="sm"
+                      (click)="startCreateVariant()"
+                      class="inline-flex items-center gap-1.5"
+                      title="Thêm biến thể mới"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>+ Thêm SKU</span>
+                    </button>
+                  }
                 </div>
 
                 <div class="relative">
@@ -536,15 +565,17 @@ type VariantSpecPair = {
                   <div class="p-6 text-center text-xs text-muted space-y-2">
                     @if (variants().length === 0) {
                       <p>Mẫu sản phẩm này chưa có biến thể SKU nào.</p>
-                      <button
-                        type="button"
-                        appButton
-                        variant="outline"
-                        size="sm"
-                        (click)="startCreateVariant()"
-                      >
-                        + Thêm biến thể đầu tiên
-                      </button>
+                      @if (!isCreatingNewVariant()) {
+                        <button
+                          type="button"
+                          appButton
+                          variant="outline"
+                          size="sm"
+                          (click)="startCreateVariant()"
+                        >
+                          + Thêm biến thể đầu tiên
+                        </button>
+                      }
                     } @else {
                       <p>Không tìm thấy biến thể phù hợp với từ khóa.</p>
                     }
@@ -620,19 +651,7 @@ type VariantSpecPair = {
                   </div>
 
                   <div class="flex items-center gap-2">
-                    @if (isCreatingNewVariant()) {
-                      @if (variants().length > 0) {
-                        <button
-                          type="button"
-                          appButton
-                          variant="outline"
-                          size="sm"
-                          (click)="cancelCreateVariant()"
-                        >
-                          Hủy
-                        </button>
-                      }
-                    } @else {
+                    @if (!isCreatingNewVariant()) {
                       <button
                         type="button"
                         appButton
@@ -645,18 +664,6 @@ type VariantSpecPair = {
                         Xóa SKU
                       </button>
                     }
-
-                    <button
-                      type="button"
-                      appButton
-                      variant="primary"
-                      size="sm"
-                      [disabled]="isSavingVariant()"
-                      (click)="saveVariant()"
-                      class="disabled:opacity-50"
-                    >
-                      {{ isSavingVariant() ? 'Đang lưu...' : (isCreatingNewVariant() ? 'Tạo Biến Thể' : 'Lưu Biến Thể') }}
-                    </button>
                   </div>
                 </div>
 
@@ -680,10 +687,17 @@ type VariantSpecPair = {
                         type="text"
                         required
                         [value]="vFormSku()"
-                        (input)="onSkuInput($event)"
+                        (input)="onSkuInput($event); clearVariantFieldError('sku')"
                         placeholder="VD: VGA-RTX5090-O24G-BLACK"
-                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm uppercase"
+                        class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm uppercase transition-colors"
+                        [class.border-destructive]="variantFieldErrors()['sku']"
+                        [class.focus:border-destructive]="variantFieldErrors()['sku']"
+                        [class.border-line]="!variantFieldErrors()['sku']"
+                        [class.focus:border-primary]="!variantFieldErrors()['sku']"
                       />
+                      @if (variantFieldErrors()['sku']) {
+                        <p class="text-xs text-destructive mt-1 font-medium">{{ variantFieldErrors()['sku'] }}</p>
+                      }
                     </div>
 
                     <div>
@@ -724,10 +738,17 @@ type VariantSpecPair = {
                         min="1"
                         step="1"
                         [value]="vFormSellingPrice()"
-                        (input)="vFormSellingPrice.set(+$any($event.target).value)"
+                        (input)="vFormSellingPrice.set(+$any($event.target).value); clearVariantFieldError('sellingPrice')"
                         placeholder="59990000"
-                        class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
+                        class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
+                        [class.border-destructive]="variantFieldErrors()['sellingPrice']"
+                        [class.focus:border-destructive]="variantFieldErrors()['sellingPrice']"
+                        [class.border-line]="!variantFieldErrors()['sellingPrice']"
+                        [class.focus:border-primary]="!variantFieldErrors()['sellingPrice']"
                       />
+                      @if (variantFieldErrors()['sellingPrice']) {
+                        <p class="text-xs text-destructive mt-1 font-medium">{{ variantFieldErrors()['sellingPrice'] }}</p>
+                      }
                     </div>
                   </div>
 
@@ -836,38 +857,38 @@ type VariantSpecPair = {
                     <span class="text-muted text-[11px] font-medium mr-1">Gợi ý nhanh:</span>
                     <button
                       type="button"
-                      (click)="addPresetSpec('color', 'Màu đen')"
+                      (click)="addPresetSpec('Màu sắc', 'Màu đen')"
                       class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
                     >
-                      + Màu sắc (color)
+                      + Màu sắc
                     </button>
                     <button
                       type="button"
-                      (click)="addPresetSpec('capacity', '16GB')"
+                      (click)="addPresetSpec('Dung lượng', '16GB')"
                       class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
                     >
-                      + Dung lượng (capacity)
+                      + Dung lượng
                     </button>
                     <button
                       type="button"
-                      (click)="addPresetSpec('clock_speed', 'Base 2235 MHz / Boost 2520 MHz')"
+                      (click)="addPresetSpec('Xung nhịp', 'Base 2235 MHz / Boost 2520 MHz')"
                       class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
                     >
-                      + Xung nhịp (clock_speed)
+                      + Xung nhịp
                     </button>
                     <button
                       type="button"
-                      (click)="addPresetSpec('edition', 'OC Edition')"
+                      (click)="addPresetSpec('Phiên bản', 'OC Edition')"
                       class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
                     >
-                      + Phiên bản (edition)
+                      + Phiên bản
                     </button>
                     <button
                       type="button"
-                      (click)="addPresetSpec('accessories', 'Cáp nguồn 16-pin, giá đỡ VGA')"
+                      (click)="addPresetSpec('Phụ kiện', 'Cáp nguồn 16-pin, giá đỡ VGA')"
                       class="px-2 py-0.5 rounded bg-surface-alt hover:bg-surface border border-line text-foreground text-xs cursor-pointer transition-colors"
                     >
-                      + Phụ kiện (accessories)
+                      + Phụ kiện
                     </button>
                   </div>
 
@@ -886,7 +907,7 @@ type VariantSpecPair = {
                                 type="text"
                                 [value]="pair.key"
                                 (input)="updateSpecKey(idx, $any($event.target).value)"
-                                placeholder="Tên thuộc tính (VD: color)"
+                                placeholder="Tên thuộc tính (VD: Màu sắc)"
                                 class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground font-semibold focus:outline-none focus:border-primary"
                               />
                             </div>
@@ -917,17 +938,6 @@ type VariantSpecPair = {
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-line">
-                  @if (isCreatingNewVariant() && variants().length > 0) {
-                    <button
-                      type="button"
-                      appButton
-                      variant="outline"
-                      size="sm"
-                      (click)="cancelCreateVariant()"
-                    >
-                      Hủy
-                    </button>
-                  }
                   <button
                     type="button"
                     appButton
@@ -1016,6 +1026,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   readonly isNew = signal<boolean>(false);
   readonly isSaving = signal<boolean>(false);
   readonly formError = signal<string | null>(null);
+  readonly fieldErrors = signal<Record<string, string>>({});
 
   readonly activeTab = signal<'general' | 'variants'>('general');
 
@@ -1054,6 +1065,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   readonly variantSearchQuery = signal<string>('');
   readonly isSavingVariant = signal<boolean>(false);
   readonly variantFormError = signal<string | null>(null);
+  readonly variantFieldErrors = signal<Record<string, string>>({});
 
   readonly vFormSku = signal<string>('');
   readonly vFormBarcode = signal<string>('');
@@ -1063,6 +1075,66 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   readonly vFormSerialRequired = signal<boolean>(false);
   readonly vFormIsActive = signal<boolean>(true);
   readonly vFormSpecPairs = signal<VariantSpecPair[]>([]);
+
+  clearFieldError(field: string): void {
+    this.fieldErrors.update((cur) => {
+      if (!cur[field]) return cur;
+      const next = { ...cur };
+      delete next[field];
+      return next;
+    });
+  }
+
+  clearVariantFieldError(field: string): void {
+    this.variantFieldErrors.update((cur) => {
+      if (!cur[field]) return cur;
+      const next = { ...cur };
+      delete next[field];
+      return next;
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const inputEl = event.target as HTMLInputElement;
+    const files = inputEl.files;
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const validFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!file.type.startsWith('image/')) {
+        this.showToast(`Tệp "${file.name}" không phải định dạng hình ảnh hợp lệ`, 'error');
+        continue;
+      }
+      if (file.size === 0) {
+        this.showToast(`Tệp "${file.name}" rỗng, vui lòng chọn hình ảnh khác`, 'error');
+        continue;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        this.showToast(`Tệp "${file.name}" vượt quá dung lượng tối đa 5MB`, 'error');
+        continue;
+      }
+      validFiles.push(file);
+    }
+
+    for (const file of validFiles) {
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const result = e.target?.result;
+        if (typeof result === 'string' && result) {
+          this.mediaList.update((list) => [...list, result]);
+        }
+      };
+      reader.onerror = () => {
+        this.showToast(`Lỗi khi đọc tệp "${file.name}"`, 'error');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    inputEl.value = '';
+  }
 
   readonly variantLifecycleOptions: SelectOption[] = [
     { value: 'DRAFT', label: 'Bản thảo nội bộ' },
@@ -1147,6 +1219,16 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
       this.brandService.loadBrands(),
     ]);
 
+    const initialFragment = this.route.snapshot.fragment;
+    if (initialFragment === 'section-variants') {
+      this.activeTab.set('variants');
+    }
+    this.route.fragment.subscribe((frag) => {
+      if (frag === 'section-variants') {
+        this.activeTab.set('variants');
+      }
+    });
+
     const idParam = this.route.snapshot.paramMap.get('id');
     if (!idParam || idParam === 'new') {
       this.isNew.set(true);
@@ -1161,6 +1243,15 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
     this.templateId.set(id);
     await this.loadExistingTemplate(id);
+
+    const variantIdParam = this.route.snapshot.queryParams['variantId'];
+    if (variantIdParam) {
+      const vId = Number(variantIdParam);
+      const vMatch = this.variants().find((v) => v.id === vId);
+      if (vMatch) {
+        this.selectVariant(vMatch);
+      }
+    }
   }
 
   async loadExistingTemplate(id: number): Promise<void> {
@@ -1264,14 +1355,32 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   }
 
   async saveTemplate(): Promise<void> {
+    const errors: Record<string, string> = {};
     const name = this.templateName().trim();
     const slug = this.slug().trim();
     const brandId = this.brandId();
     const categoryId = this.categoryId();
     const model = this.modelCode().trim();
 
-    if (!name || !slug || !brandId || !categoryId || !model) {
-      this.formError.set('Vui lòng điền đầy đủ các trường bắt buộc (Tên, Slug, Thương hiệu, Danh mục, Model)');
+    if (!name) {
+      errors['templateName'] = 'Tên sản phẩm không được để trống';
+    }
+    if (!slug) {
+      errors['slug'] = 'Đường dẫn slug không được để trống';
+    }
+    if (!brandId) {
+      errors['brandId'] = 'Vui lòng chọn thương hiệu';
+    }
+    if (!categoryId) {
+      errors['categoryId'] = 'Vui lòng chọn danh mục';
+    }
+    if (!model) {
+      errors['modelCode'] = 'Mã model không được để trống';
+    }
+
+    this.fieldErrors.set(errors);
+    if (Object.keys(errors).length > 0 || brandId === null || categoryId === null) {
+      this.formError.set('Vui lòng điền đầy đủ các thông tin bắt buộc được đánh dấu đỏ');
       return;
     }
 
@@ -1342,6 +1451,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     }
     this.vFormSpecPairs.set(pairs);
     this.variantFormError.set(null);
+    this.variantFieldErrors.set({});
   }
 
   startCreateVariant(): void {
@@ -1356,6 +1466,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     this.vFormIsActive.set(true);
     this.vFormSpecPairs.set([]);
     this.variantFormError.set(null);
+    this.variantFieldErrors.set({});
   }
 
   cancelCreateVariant(): void {
@@ -1404,15 +1515,22 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   }
 
   async saveVariant(): Promise<void> {
+    const errors: Record<string, string> = {};
     const trimmedSku = this.vFormSku().trim().toUpperCase();
     if (!trimmedSku) {
-      this.variantFormError.set('Vui lòng nhập mã SKU cho biến thể');
-      return;
+      errors['sku'] = 'Mã SKU không được để trống';
     }
 
     const price = Number(this.vFormSellingPrice());
-    if (isNaN(price) || price <= 0 || !Number.isInteger(price)) {
-      this.variantFormError.set('Giá bán phải là số nguyên dương VND');
+    if (isNaN(price) || price <= 0) {
+      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 VND';
+    } else if (!Number.isInteger(price)) {
+      errors['sellingPrice'] = 'Giá bán phải là số nguyên VND';
+    }
+
+    this.variantFieldErrors.set(errors);
+    if (Object.keys(errors).length > 0) {
+      this.variantFormError.set('Vui lòng kiểm tra và hoàn thiện các trường bắt buộc được đánh dấu đỏ');
       return;
     }
 
