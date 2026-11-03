@@ -183,7 +183,7 @@ import {
             @if (detail?.quant; as quant) {
               <a
                 [routerLink]="['/admin/inventory/ledger']"
-                [queryParams]="{ search: quant.sku, branchId: quant.branchId }"
+                [queryParams]="{ search: quant.sku }"
                 (click)="onClose()"
                 class="text-xs text-primary-strong hover:underline font-medium inline-flex items-center gap-1"
               >

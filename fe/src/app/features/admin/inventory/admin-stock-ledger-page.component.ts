@@ -163,19 +163,15 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1000px] border-collapse">
+            <table class="w-full text-left border-collapse">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Thời gian</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Chi nhánh</th>
                   <th class="py-3 px-4">Mã SKU & Linh kiện</th>
                   <th class="py-3 px-4 whitespace-nowrap">Loại biến động</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Biến động thực</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Biến động giữ</th>
-                  <th class="py-3 px-4 text-right whitespace-nowrap">Biến động lỗi</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Thực / Lỗi / Giữ</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Tồn sau GD</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Chứng từ & Nguồn gốc</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Tác nhân</th>
+                  <th class="py-3 px-4 max-w-[180px] whitespace-nowrap">Chứng từ & Nguồn gốc</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-line text-sm text-foreground">
@@ -185,12 +181,7 @@ import {
                       {{ formatDate(entry.occurredAt) }}
                     </td>
 
-                    <td class="py-3 px-4 whitespace-nowrap">
-                      <div class="font-semibold text-foreground">{{ entry.branchName }}</div>
-                      <div class="text-xs text-muted tabular">{{ entry.branchCode }}</div>
-                    </td>
-
-                    <td class="py-3 px-4 max-w-xs">
+                    <td class="py-3 px-4 min-w-[200px] max-w-xs">
                       <div class="font-bold text-foreground tabular">{{ entry.sku }}</div>
                       <div class="text-xs text-muted truncate" [title]="entry.productName">
                         {{ entry.productName }}
@@ -206,68 +197,70 @@ import {
                       </span>
                     </td>
 
-                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
-                      @if (entry.deltaOnHand > 0) {
-                        <span class="text-emerald-600 font-bold">+{{ entry.deltaOnHand }}</span>
-                      } @else if (entry.deltaOnHand < 0) {
-                        <span class="text-rose-600 font-bold">{{ entry.deltaOnHand }}</span>
-                      } @else {
-                        <span class="text-muted">0</span>
-                      }
-                    </td>
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                      <div
+                        class="inline-flex items-center gap-1.5 tabular tabular-nums text-xs"
+                        [title]="'Thực: ' + formatDelta(entry.deltaOnHand) + ' | Lỗi: ' + formatDelta(entry.deltaQuarantine) + ' | Giữ: ' + formatDelta(entry.deltaReserved)"
+                      >
+                        <span
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          [class]="entry.deltaOnHand !== 0
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                            : 'bg-surface-alt text-muted border-line'"
+                        >
+                          {{ formatDelta(entry.deltaOnHand) }}
+                        </span>
 
-                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
-                      @if (entry.deltaReserved > 0) {
-                        <span class="text-amber-600 font-bold">+{{ entry.deltaReserved }}</span>
-                      } @else if (entry.deltaReserved < 0) {
-                        <span class="text-sky-600 font-bold">{{ entry.deltaReserved }}</span>
-                      } @else {
-                        <span class="text-muted">0</span>
-                      }
-                    </td>
+                        <span class="text-muted/40 font-semibold select-none">/</span>
 
-                    <td class="py-3 px-4 text-right font-bold tabular tabular-nums whitespace-nowrap">
-                      @if (entry.deltaQuarantine > 0) {
-                        <span class="text-rose-600 font-bold">+{{ entry.deltaQuarantine }}</span>
-                      } @else if (entry.deltaQuarantine < 0) {
-                        <span class="text-teal-600 font-bold">{{ entry.deltaQuarantine }}</span>
-                      } @else {
-                        <span class="text-muted">0</span>
-                      }
+                        <span
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          [class]="entry.deltaQuarantine !== 0
+                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+                            : 'bg-surface-alt text-muted border-line'"
+                        >
+                          {{ formatDelta(entry.deltaQuarantine) }}
+                        </span>
+
+                        <span class="text-muted/40 font-semibold select-none">/</span>
+
+                        <span
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          [class]="entry.deltaReserved !== 0
+                            ? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                            : 'bg-surface-alt text-muted border-line'"
+                        >
+                          {{ formatDelta(entry.deltaReserved) }}
+                        </span>
+                      </div>
                     </td>
 
                     <td class="py-3 px-4 text-right text-muted tabular tabular-nums whitespace-nowrap">
                       Thực: <strong class="text-foreground">{{ entry.onHandAfter }}</strong> | Giữ: <strong class="text-amber-600">{{ entry.reservedAfter }}</strong>
                     </td>
 
-                    <td class="py-3 px-4 whitespace-nowrap">
-                      <div class="flex flex-col gap-1 items-start">
+                    <td class="py-3 px-4 max-w-[180px]">
+                      <div class="flex flex-col gap-1 items-start max-w-full">
                         <span [class]="getOriginBadgeClass(entry.originType)">
                           {{ getOriginLabel(entry.originType) }}
                         </span>
                         @if (entry.originUrl) {
                           <a
                             [routerLink]="entry.originUrl"
-                            class="text-xs font-bold text-primary hover:text-primary-focus hover:underline tabular tabular-nums tracking-wide inline-flex items-center gap-1"
+                            class="text-xs font-bold text-primary hover:text-primary-focus hover:underline tabular tabular-nums tracking-wide inline-flex items-center gap-1 max-w-full truncate"
                             [title]="'Xem chi tiết ' + (entry.originCode || entry.documentCode)"
                           >
-                            <span>{{ entry.originCode || entry.documentCode }}</span>
+                            <span class="truncate">{{ entry.originCode || entry.documentCode }}</span>
                           </a>
                         } @else {
-                          <span class="text-xs font-medium text-foreground tabular tabular-nums">
+                          <span
+                            class="text-xs font-medium text-foreground tabular tabular-nums max-w-full truncate"
+                            [title]="entry.documentCode"
+                          >
                             {{ entry.documentCode }}
                           </span>
                         }
                       </div>
-                    </td>
-
-                    <td class="py-3 px-4 whitespace-nowrap">
-                      <div class="text-xs text-foreground">{{ entry.actorType }}</div>
-                      @if (entry.reason) {
-                        <div class="text-xs text-muted truncate max-w-[120px]" [title]="entry.reason">
-                          {{ entry.reason }}
-                        </div>
-                      }
                     </td>
                   </tr>
                 }
@@ -420,6 +413,13 @@ export class AdminStockLedgerPageComponent implements OnInit {
       minute: '2-digit',
       second: '2-digit',
     });
+  }
+
+  formatDelta(value: number): string {
+    if (value > 0) {
+      return `+${value}`;
+    }
+    return `${value}`;
   }
 
   getEntryLabel(entryType: string): string {
