@@ -173,7 +173,7 @@ export class AdminPcBundleService {
         this.error.set(response.error.messageKey);
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Không thể tải danh sách bộ máy tính dựng sẵn';
+      const message = err instanceof Error ? err.message : 'Không thể tải danh sách PC lắp sẵn';
       this.error.set(message);
     } finally {
       this.isLoading.set(false);
