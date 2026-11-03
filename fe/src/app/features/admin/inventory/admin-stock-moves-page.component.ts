@@ -164,16 +164,16 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1050px] border-collapse">
+            <table class="w-full text-left min-w-[960px] border-collapse">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-3 w-10 text-center"></th>
                   <th class="py-3 px-4 whitespace-nowrap">Mã Phiếu Kho</th>
                   <th class="py-3 px-4 whitespace-nowrap">Loại Phiếu</th>
                   <th class="py-3 px-4 whitespace-nowrap">Trạng Thái</th>
-                  <th class="py-3 px-4">Chứng Từ Liên Kết</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Quy Mô</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Quy Mô SP</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngày Tạo</th>
+                  <th class="py-3 px-4">Chứng Từ Liên Kết</th>
                   <th class="py-3 px-4">Lý Do / Ghi Chú</th>
                 </tr>
               </thead>
@@ -220,6 +220,20 @@ import {
                       </span>
                     </td>
 
+                    <td class="py-3 px-4 text-center tabular whitespace-nowrap">
+                      <div class="font-bold text-foreground">{{ move.totalQuantity }} SP</div>
+                      <div class="text-xs text-muted">{{ move.totalLines }} dòng SKU</div>
+                    </td>
+
+                    <td class="py-3 px-4 text-muted tabular whitespace-nowrap">
+                      <div>{{ formatDate(move.createdAt) }}</div>
+                      @if (move.validatedAt) {
+                        <div class="text-[11px] text-emerald-600">Đã duyệt: {{ formatDate(move.validatedAt) }}</div>
+                      } @else if (move.cancelledAt) {
+                        <div class="text-[11px] text-rose-600">Đã hủy: {{ formatDate(move.cancelledAt) }}</div>
+                      }
+                    </td>
+
                     <td class="py-3 px-4" (click)="$event.stopPropagation()">
                       @if (move.purchaseOrder) {
                         <div>
@@ -247,20 +261,6 @@ import {
                         </div>
                       } @else {
                         <span class="text-muted text-xs">-</span>
-                      }
-                    </td>
-
-                    <td class="py-3 px-4 text-center tabular whitespace-nowrap">
-                      <div class="font-bold text-foreground">{{ move.totalQuantity }} sp</div>
-                      <div class="text-xs text-muted">{{ move.totalLines }} dòng SKU</div>
-                    </td>
-
-                    <td class="py-3 px-4 text-muted tabular whitespace-nowrap">
-                      <div>{{ formatDate(move.createdAt) }}</div>
-                      @if (move.validatedAt) {
-                        <div class="text-[11px] text-emerald-600">Đã duyệt: {{ formatDate(move.validatedAt) }}</div>
-                      } @else if (move.cancelledAt) {
-                        <div class="text-[11px] text-rose-600">Đã hủy: {{ formatDate(move.cancelledAt) }}</div>
                       }
                     </td>
 
@@ -294,45 +294,47 @@ import {
                               <table class="w-full text-xs text-left border-collapse">
                                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase">
                                   <tr>
-                                    <th class="py-2.5 px-3 whitespace-nowrap">Mã SKU</th>
-                                    <th class="py-2.5 px-3">Tên Linh Kiện & Biến Thể</th>
-                                    <th class="py-2.5 px-3 text-right whitespace-nowrap">Số Lượng</th>
-                                    <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Vốn</th>
-                                    <th class="py-2.5 px-3">Mã Sê-ri Liên Kết</th>
+                                    <th class="py-2.5 px-3 whitespace-nowrap w-36">Mã SKU</th>
+                                    <th class="py-2.5 px-3 max-w-[220px]">Tên Linh Kiện & Biến Thể</th>
+                                    <th class="py-2.5 px-3 text-center whitespace-nowrap w-24">Số Lượng</th>
+                                    <th class="py-2.5 px-3 text-right whitespace-nowrap w-28">Giá Vốn</th>
+                                    <th class="py-2.5 px-3 min-w-[320px]">Số Sê-ri Liên Kết</th>
                                   </tr>
                                 </thead>
                                 <tbody class="divide-y divide-line text-foreground">
                                   @for (line of move.lines; track line.id) {
                                     <tr class="hover:bg-surface-alt/50 transition-colors">
-                                      <td class="py-2.5 px-3 font-semibold tabular whitespace-nowrap">
+                                      <td class="py-2.5 px-3 font-semibold tabular whitespace-nowrap w-36">
                                         <div class="text-foreground font-bold">{{ line.sku.sku }}</div>
                                         @if (line.sku.barcode) {
                                           <div class="text-[11px] text-muted font-mono">{{ line.sku.barcode }}</div>
                                         }
                                       </td>
 
-                                      <td class="py-2.5 px-3">
-                                        <div class="font-medium text-foreground">{{ line.sku.template.name }}</div>
+                                      <td class="py-2.5 px-3 max-w-[220px]">
+                                        <div class="font-medium text-foreground truncate" [title]="line.sku.template.name">
+                                          {{ line.sku.template.name }}
+                                        </div>
                                         @if (line.sku.variationLabel) {
-                                          <div class="text-[11px] text-muted font-normal mt-0.5">
+                                          <div class="text-[11px] text-muted font-normal mt-0.5 truncate" [title]="line.sku.variationLabel">
                                             Phân loại: <span class="text-foreground font-medium">{{ line.sku.variationLabel }}</span>
                                           </div>
                                         }
                                       </td>
 
-                                      <td class="py-2.5 px-3 text-right font-bold tabular whitespace-nowrap">
+                                      <td class="py-2.5 px-3 text-center font-bold tabular whitespace-nowrap w-24">
                                         {{ line.quantity }}
                                       </td>
 
-                                      <td class="py-2.5 px-3 text-right tabular text-muted whitespace-nowrap">
+                                      <td class="py-2.5 px-3 text-right tabular text-muted whitespace-nowrap w-28">
                                         {{ formatCurrency(line.unitCost) }}
                                       </td>
 
-                                      <td class="py-2.5 px-3">
+                                      <td class="py-2.5 px-3 min-w-[320px]">
                                         @if (line.serials && line.serials.length > 0) {
-                                          <div class="flex flex-wrap gap-1 max-w-md">
+                                          <div class="flex flex-wrap gap-1.5 w-full">
                                             @for (serial of line.serials; track serial) {
-                                              <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground">
+                                              <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground select-all">
                                                 {{ serial }}
                                               </span>
                                             }
