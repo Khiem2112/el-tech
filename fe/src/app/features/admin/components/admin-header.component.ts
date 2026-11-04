@@ -33,8 +33,8 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
         <app-admin-breadcrumb />
       </div>
 
-      <div class="flex items-center gap-3 flex-shrink-0">
-        @if (showAccountInfo()) {
+      @if (showAccountInfo()) {
+        <div class="flex items-center gap-3 flex-shrink-0">
           <div class="flex items-center gap-2 pl-3 border-l border-line">
             <div
               class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong"
@@ -50,19 +50,19 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
               </div>
             </div>
           </div>
-        }
 
-        <button
-          type="button"
-          (click)="onLogout()"
-          class="px-2.5 py-1.5 rounded-md text-sm text-muted hover:text-rose-600 hover:bg-rose-500/10 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
-          title="Đăng xuất khỏi hệ thống"
-          aria-label="Đăng xuất khỏi hệ thống"
-        >
-          <lucide-icon name="log-out" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
-          <span class="hidden sm:inline">Đăng xuất</span>
-        </button>
-      </div>
+          <button
+            type="button"
+            (click)="onLogout()"
+            class="px-2.5 py-1.5 rounded-md text-sm text-muted hover:text-rose-600 hover:bg-rose-500/10 border border-line transition-colors inline-flex items-center gap-1.5 font-medium"
+            title="Đăng xuất khỏi hệ thống"
+            aria-label="Đăng xuất khỏi hệ thống"
+          >
+            <lucide-icon name="log-out" class="w-3.5 h-3.5" aria-hidden="true"></lucide-icon>
+            <span class="hidden sm:inline">Đăng xuất</span>
+          </button>
+        </div>
+      }
     </header>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,7 +71,7 @@ export class AdminHeaderComponent {
   readonly adminApi = inject(AdminApiService);
   private readonly router = inject(Router);
 
-  readonly showAccountInfo = input<boolean>(true);
+  readonly showAccountInfo = input<boolean>(false);
 
   @Output() readonly toggleSidebar = new EventEmitter<void>();
 

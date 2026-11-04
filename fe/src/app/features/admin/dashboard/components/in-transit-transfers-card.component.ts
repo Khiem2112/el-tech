@@ -58,7 +58,7 @@ import { InTransitTransferItem } from '../services/admin-dashboard.service';
                       <span class="font-medium text-foreground">{{ item.destinationBranchCode }}</span>
                     </td>
                     <td class="py-2.5 px-3 tabular font-medium whitespace-nowrap text-foreground text-right">
-                      {{ item.totalQuantity }} <span class="text-muted text-xs font-normal">({{ item.skuCount }} SKU)</span>
+                      {{ item.totalQuantity }} <span class="text-muted text-xs font-normal">({{ item.skuCount }} mã linh kiện)</span>
                     </td>
                     <td class="py-2.5 px-3 text-muted tabular whitespace-nowrap">
                       {{ formatDispatchedTime(item.dispatchedAt) }}

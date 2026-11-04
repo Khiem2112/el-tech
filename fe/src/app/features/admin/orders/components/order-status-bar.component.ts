@@ -15,7 +15,7 @@ type FlowStep = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg p-3 sm:p-3.5 space-y-2.5 text-foreground">
+    <div class="bg-surface border border-line rounded-lg p-4 sm:p-5 space-y-3 text-foreground shadow-xs">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
           <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs">

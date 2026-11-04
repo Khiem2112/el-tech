@@ -30,7 +30,7 @@ import {
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-base">
-                {{ isEditing() ? 'Chỉnh Sửa Biến Thể SKU' : 'Thêm Biến Thể SKU Mới' }}
+                {{ isEditing() ? 'Chỉnh Sửa Biến Thể' : 'Thêm Biến Thể Mới' }}
               </h3>
               <p class="text-xs text-muted">
                 Cấu hình thông tin thương mại, giá niêm yết và quy định serial
@@ -64,7 +64,7 @@ import {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                      Mã SKU <span class="text-destructive">*</span>
+                      Mã linh kiện <span class="text-destructive">*</span>
                     </label>
                     <input
                       type="text"
@@ -303,7 +303,7 @@ export class VariantFormDialogComponent {
     const errors: Record<string, string> = {};
     const trimmedSku = this.sku().trim();
     if (!trimmedSku) {
-      errors['sku'] = 'Mã SKU không được để trống';
+      errors['sku'] = 'Mã linh kiện không được để trống';
     }
 
     const price = Number(this.sellingPrice());

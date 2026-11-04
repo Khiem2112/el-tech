@@ -32,6 +32,12 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap">
+          <a
+            routerLink="/admin/procurement/purchase-orders/new"
+            class="px-3.5 py-1.5 bg-primary hover:bg-primary-strong text-primary-foreground rounded font-semibold text-xs transition-colors shadow-xs"
+          >
+            Tạo đơn mua hàng
+          </a>
           <button
             type="button"
             (click)="onRefresh()"
@@ -62,38 +68,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           <p class="text-xs">Đang tải dữ liệu trung tâm vận hành...</p>
         </div>
       } @else {
-        <div class="flex flex-wrap items-center gap-3">
-          <a
-            routerLink="/admin/orders"
-            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
-          >
-            Quản Lý Đơn Hàng
-          </a>
-          <a
-            routerLink="/admin/inventory/balances"
-            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
-          >
-            Tra Cứu Tồn Kho
-          </a>
-          <a
-            routerLink="/admin/procurement/purchase-orders"
-            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
-          >
-            Đơn Mua Linh Kiện
-          </a>
-          <a
-            routerLink="/admin/catalog/templates"
-            class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line rounded font-medium text-xs text-foreground transition-colors hover:border-primary/50 hover:text-primary shadow-xs"
-          >
-            Danh Mục Mẫu Sản Phẩm
-          </a>
-          <a
-            routerLink="/admin/procurement/purchase-orders/new"
-            class="px-3.5 py-2 bg-primary hover:bg-primary-strong text-primary-foreground rounded font-semibold text-xs transition-colors shadow-xs"
-          >
-            Tạo đơn mua hàng
-          </a>
-        </div>
 
         <app-urgent-queues-grid
           [urgentQueues]="dashboardService.urgentQueues()"

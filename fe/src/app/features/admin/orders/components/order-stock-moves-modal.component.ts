@@ -99,7 +99,7 @@ import {
                         <thead>
                           <tr class="border-b border-line text-muted uppercase text-[11px] font-semibold">
                             <th class="py-2 px-2 text-center w-10">STT</th>
-                            <th class="py-2 px-2">Mã SKU</th>
+                            <th class="py-2 px-2">Mã linh kiện</th>
                             <th class="py-2 px-2">Tên Linh Kiện</th>
                             <th class="py-2 px-2 text-right">Số Lượng</th>
                             <th class="py-2 px-2 text-right">Đơn Giá Vốn</th>

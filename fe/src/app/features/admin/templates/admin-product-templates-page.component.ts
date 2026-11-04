@@ -48,7 +48,7 @@ type ToastNotification = {
             Mẫu Sản Phẩm
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Quản lý danh mục mẫu phần cứng độc lập, bộ lọc đa chiều và biến thể SKU
+            Quản lý danh mục mẫu phần cứng độc lập, bộ lọc đa chiều và biến thể sản phẩm
           </p>
         </div>
 
@@ -250,7 +250,7 @@ type ToastNotification = {
                               {{ getLifecycleLabel(tpl.lifecycleState) }}
                             </span>
                             <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-foreground border border-line tabular-nums whitespace-nowrap">
-                              {{ tpl.variantsCount ?? tpl.variantCount }} biến thể SKU
+                              {{ tpl.variantsCount ?? tpl.variantCount }} biến thể
                             </span>
                           </div>
                           <div class="text-xs text-muted flex items-center gap-2 flex-wrap">
@@ -322,10 +322,10 @@ type ToastNotification = {
                             <div class="flex items-center justify-between">
                               <div class="flex items-center gap-2">
                                 <h4 class="text-xs font-bold uppercase tracking-wider text-muted">
-                                  Danh Sách Biến Thể SKU
+                                  Danh Sách Biến Thể
                                 </h4>
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary tabular-nums">
-                                  {{ tpl.variants?.length ?? 0 }} SKU
+                                  {{ tpl.variants?.length ?? 0 }} biến thể
                                 </span>
                               </div>
                               <a
@@ -339,7 +339,7 @@ type ToastNotification = {
 
                             @if (!tpl.variants || tpl.variants.length === 0) {
                               <div class="py-6 px-4 bg-surface border border-line rounded text-center text-xs text-muted space-y-1">
-                                <p>Mẫu sản phẩm này hiện chưa có biến thể SKU nào.</p>
+                                <p>Mẫu sản phẩm này hiện chưa có biến thể nào.</p>
                                 <a
                                   [routerLink]="['/admin/catalog/templates', tpl.id]"
                                   [fragment]="'section-variants'"
@@ -354,7 +354,7 @@ type ToastNotification = {
                                   <table class="w-full text-left text-xs border-collapse min-w-[750px]">
                                     <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider">
                                       <tr>
-                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã SKU</th>
+                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã linh kiện</th>
                                         <th class="py-2.5 px-3 whitespace-nowrap">Nhãn Phân Loại</th>
                                         <th class="py-2.5 px-3 whitespace-nowrap">Mã Vạch</th>
                                         <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Niêm Yết</th>
@@ -473,14 +473,14 @@ type ToastNotification = {
 
                   <div class="p-2.5 bg-surface-alt rounded border border-line space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
-                      <span class="text-muted">Biến thể SKU:</span>
+                      <span class="text-muted">Biến thể:</span>
                       <button
                         type="button"
                         (click)="toggleExpand(tpl.id)"
                         class="font-bold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
-                        title="Xem danh sách biến thể SKU"
+                        title="Xem danh sách biến thể"
                       >
-                        <span>{{ tpl.variantCount }} SKUs</span>
+                        <span>{{ tpl.variantCount }} biến thể</span>
                         <lucide-icon [name]="isExpanded(tpl.id) ? 'chevron-up' : 'chevron-down'" class="w-3.5 h-3.5"></lucide-icon>
                       </button>
                     </div>

@@ -222,7 +222,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               </span>
             </div>
             <div class="px-2">
-              <span class="text-xs uppercase font-semibold text-muted block">Đơn nhập PO</span>
+              <span class="text-xs uppercase font-semibold text-muted block">Đơn Mua Linh Kiện</span>
               <span class="font-bold text-primary-strong tabular truncate block mt-0.5">
                 {{ qk.origin?.purchaseOrderCode ?? 'PO-GỐC' }}
               </span>

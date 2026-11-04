@@ -81,7 +81,7 @@ import {
                 type="text"
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="SKU, chứng từ, mã..."
+                placeholder="Mã linh kiện, chứng từ, mã..."
                 class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
               <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -167,7 +167,7 @@ import {
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-4 whitespace-nowrap">Thời gian</th>
-                  <th class="py-3 px-4">Mã SKU & Linh kiện</th>
+                  <th class="py-3 px-4">Mã linh kiện & Tên linh kiện</th>
                   <th class="py-3 px-4 whitespace-nowrap">Loại biến động</th>
                   <th class="py-3 px-4 text-center whitespace-nowrap">Thực / Lỗi / Giữ</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Tồn sau GD</th>
@@ -429,7 +429,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
       case 'RELEASE_RESERVATION':
         return 'GIẢI PHÓNG GIỮ';
       case 'PURCHASE_RECEIPT':
-        return 'NHẬP KHO PO';
+        return 'NHẬP KHO ĐƠN MUA';
       case 'ORDER_ISSUE':
         return 'XUẤT KHO';
       case 'TRANSFER_OUT':
@@ -466,7 +466,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
       case 'ORDER':
         return 'ĐƠN BÁN';
       case 'PURCHASE_ORDER':
-        return 'ĐƠN MUA PO';
+        return 'ĐƠN MUA LINH KIỆN';
       case 'QUARANTINE':
         return 'KIỂM ĐỊNH';
       case 'INTERNAL':
@@ -501,7 +501,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
       'Thoi gian',
       'Chi nhanh',
       'Ma chi nhanh',
-      'Ma SKU',
+      'Ma linh kien',
       'Ten linh kien',
       'Loai bien dong',
       'Nguon chung tu',

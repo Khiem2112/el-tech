@@ -22,7 +22,7 @@ export type ActionTriggerEvent = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg p-3 sm:p-3.5 flex items-center justify-between flex-wrap gap-3 text-foreground">
+    <div class="bg-surface border border-line rounded-lg p-4 sm:p-5 flex items-center justify-between flex-wrap gap-3 text-foreground shadow-xs">
       <div class="flex items-center gap-2 flex-wrap">
         @if (primaryAction(); as pAction) {
           <button

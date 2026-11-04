@@ -422,7 +422,7 @@ type ToastMessage = {
                     type="text"
                     [ngModel]="variantSearchTerm()"
                     (ngModelChange)="onSearchVariants($event)"
-                    placeholder="Tìm nhanh SKU thêm vào đơn..."
+                    placeholder="Tìm nhanh mã linh kiện thêm vào đơn..."
                     class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   />
                   <lucide-icon
@@ -464,7 +464,7 @@ type ToastMessage = {
               <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
-                  <th class="py-2.5 px-4">Mã SKU</th>
+                  <th class="py-2.5 px-4">Mã linh kiện</th>
                   <th class="py-2.5 px-4">Tên Linh Kiện</th>
                   <th class="py-2.5 px-4 text-center w-24">Số Lượng</th>
                   <th class="py-2.5 px-4 text-right w-32">Đơn Giá WAC</th>

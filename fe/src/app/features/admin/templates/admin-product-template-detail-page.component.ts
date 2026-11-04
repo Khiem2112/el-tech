@@ -164,12 +164,12 @@ type VariantSpecPair = {
               type="button"
               (click)="onVariantsTabClick()"
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
-              title="Nhấp để xem danh sách biến thể SKU của mẫu sản phẩm"
+              title="Nhấp để xem danh sách biến thể của mẫu sản phẩm"
             >
               <div class="text-base font-bold text-primary tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.skuCount ?? tpl.variants.length }}
               </div>
-              <div class="text-xs text-muted font-medium">Biến thể SKU</div>
+              <div class="text-xs text-muted font-medium">Biến thể sản phẩm</div>
             </button>
 
             <a
@@ -212,12 +212,12 @@ type VariantSpecPair = {
               [routerLink]="['/admin/procurement/purchase-orders']"
               [queryParams]="{ search: tpl.name }"
               class="p-2.5 bg-surface hover:bg-surface-alt border border-line rounded text-center transition-colors cursor-pointer group"
-              title="Nhấp để xem lịch sử các đơn mua hàng PO chứa sản phẩm này"
+              title="Nhấp để xem lịch sử các đơn mua linh kiện chứa sản phẩm này"
             >
               <div class="text-base font-bold text-muted tabular-nums group-hover:scale-105 transition-transform">
                 {{ tpl.smartMetrics?.poCount ?? 0 }}
               </div>
-              <div class="text-xs text-muted font-medium">Lịch sử mua PO</div>
+              <div class="text-xs text-muted font-medium">Lịch sử đơn mua</div>
             </a>
 
             <a
@@ -262,9 +262,9 @@ type VariantSpecPair = {
           [class.cursor-pointer]="!isNew()"
           [class.opacity-50]="isNew()"
           [class.cursor-not-allowed]="isNew()"
-          [title]="isNew() ? 'Vui lòng lưu thông tin chung trước khi quản lý biến thể' : 'Cấu hình chi tiết biến thể SKU'"
+          [title]="isNew() ? 'Vui lòng lưu thông tin chung trước khi quản lý biến thể' : 'Cấu hình chi tiết biến thể'"
         >
-          <span>Cấu Hình Chi Tiết (Biến Thể SKU)</span>
+          <span>Cấu Hình Chi Tiết (Biến Thể)</span>
           @if (!isNew()) {
             <span
               class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
@@ -947,13 +947,13 @@ type VariantSpecPair = {
                     (click)="saveVariant()"
                     class="disabled:opacity-50"
                   >
-                    {{ isSavingVariant() ? 'Đang lưu...' : (isCreatingNewVariant() ? 'Tạo Biến Thể SKU' : 'Lưu Thay Đổi Biến Thể') }}
+                    {{ isSavingVariant() ? 'Đang lưu...' : (isCreatingNewVariant() ? 'Tạo Biến Thể' : 'Lưu Thay Đổi Biến Thể') }}
                   </button>
                 </div>
               </div>
             } @else {
               <div class="p-12 bg-surface border border-line rounded-lg text-center space-y-3">
-                <div class="text-sm font-semibold text-foreground">Chưa chọn biến thể SKU</div>
+                <div class="text-sm font-semibold text-foreground">Chưa chọn biến thể</div>
                 <p class="text-xs text-muted max-w-sm mx-auto">
                   Vui lòng chọn một biến thể từ danh sách bên trái để xem và chỉnh sửa thông số chi tiết, hoặc tạo mới biến thể.
                 </p>

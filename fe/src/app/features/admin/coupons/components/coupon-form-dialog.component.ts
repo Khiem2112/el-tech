@@ -376,7 +376,7 @@ function formatIsoToDateInput(isoString?: string): string {
 
               <div class="space-y-3 p-3 bg-surface-alt rounded-md border border-line">
                 <span class="font-semibold text-foreground text-xs uppercase tracking-wider block">
-                  Biến thể SKU áp dụng / loại trừ
+                  Biến thể linh kiện áp dụng / loại trừ
                 </span>
 
                 <div class="flex flex-col sm:flex-row gap-2 items-center">
@@ -385,7 +385,7 @@ function formatIsoToDateInput(isoString?: string): string {
                       [options]="skuOptions()"
                       [value]="selectedSkuIdToAdd()"
                       (valueChange)="selectedSkuIdToAdd.set($event)"
-                      placeholder="-- Chọn biến thể SKU --"
+                      placeholder="-- Chọn biến thể linh kiện --"
                       size="sm"
                       [searchable]="true"
                     />

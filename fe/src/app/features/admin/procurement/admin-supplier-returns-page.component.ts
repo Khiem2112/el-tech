@@ -53,7 +53,7 @@ import {
               type="text"
               [ngModel]="returnService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
-              placeholder="Tìm theo mã phiếu, mã PO, nhà cung cấp, chứng từ nhập..."
+              placeholder="Tìm theo mã phiếu, mã đơn mua, nhà cung cấp, chứng từ nhập..."
               class="w-full h-9 pl-9 pr-4 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <lucide-icon
@@ -100,7 +100,7 @@ import {
             </div>
             <p class="text-sm font-semibold text-foreground">Không tìm thấy phiếu xuất trả nhà cung cấp nào</p>
             <p class="text-xs text-muted">
-              Tạo phiếu xuất trả từ các đơn mua hàng PO đã hoàn tất đối soát nhập kho.
+              Tạo phiếu xuất trả từ các đơn mua linh kiện đã hoàn tất đối soát nhập kho.
             </p>
           </div>
         } @else {
@@ -110,7 +110,7 @@ import {
                 <tr>
                   <th class="py-2.5 px-4">Mã Phiếu</th>
                   <th class="py-2.5 px-4">Nhà Cung Cấp</th>
-                  <th class="py-2.5 px-4">Đơn PO & Phiếu Nhập Gốc</th>
+                  <th class="py-2.5 px-4">Đơn Mua & Phiếu Nhập Gốc</th>
                   <th class="py-2.5 px-4">Kho Xuất</th>
                   <th class="py-2.5 px-4 text-center">Số Lượng</th>
                   <th class="py-2.5 px-4">Ngày Xuất</th>
@@ -229,7 +229,7 @@ import {
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted block text-xs uppercase font-semibold">Đơn PO Gốc</span>
+                  <span class="text-muted block text-xs uppercase font-semibold">Đơn Mua Gốc</span>
                   <span class="tabular text-primary font-bold block">
                     {{ selectedDetail()!.reversalOfMove?.purchaseOrder?.code ?? 'N/A' }}
                   </span>
@@ -255,7 +255,7 @@ import {
                   <table class="w-full text-left border-collapse text-sm">
                     <thead class="bg-surface-alt/70 border-b border-line text-muted uppercase text-xs">
                       <tr>
-                        <th class="py-2 px-3">Linh Kiện SKU</th>
+                        <th class="py-2 px-3">Mã linh kiện</th>
                         <th class="py-2 px-3 text-center">Số Lượng</th>
                         <th class="py-2 px-3">Số Serial Đã Xuất Trả</th>
                         <th class="py-2 px-3 text-right">Biến Động Tồn</th>

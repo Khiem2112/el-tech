@@ -69,7 +69,7 @@ import {
 
               <div>
                 <label for="receipt-select" class="block font-semibold text-muted text-xs uppercase mb-1">
-                  Đơn Mua Hàng PO Gốc Đã Nhập Kho
+                  Đơn Mua Linh Kiện Gốc Đã Nhập Kho
                 </label>
                 @if (isLoadingReceipts()) {
                   <div class="p-2 text-muted italic text-xs">Đang tải danh sách phiếu nhập kho...</div>

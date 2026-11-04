@@ -125,7 +125,7 @@ type ToastNotification = {
                   <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Thông Tin Liên Hệ</th>
                   <th class="py-2.5 px-4">Kho / Địa Chỉ</th>
-                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Đơn PO</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Đơn Mua Hàng</th>
                   <th class="py-2.5 px-4 text-center whitespace-nowrap">Trạng Thái</th>
                   <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>

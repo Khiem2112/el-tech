@@ -64,7 +64,7 @@ import {
 
               <div>
                 <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                  Mã SKU linh kiện
+                  Mã linh kiện
                 </label>
                 @if (quant) {
                   <input
@@ -80,7 +80,7 @@ import {
                     name="selectedSkuId"
                     class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-medium focus:outline-none focus:border-primary text-sm"
                   >
-                    <option [value]="0">-- Chọn SKU --</option>
+                    <option [value]="0">-- Chọn linh kiện --</option>
                     @for (s of skus; track s.id) {
                       <option [value]="s.skuId">{{ s.sku }} - {{ s.productName }}</option>
                     }
@@ -303,7 +303,7 @@ export class QuarantineStockDialogComponent implements OnChanges {
   async onSubmit(): Promise<void> {
     const q = this.currentQuant();
     if (!q) {
-      this.errorMessage.set('Vui lòng chọn mã SKU hợp lệ');
+      this.errorMessage.set('Vui lòng chọn linh kiện hợp lệ');
       return;
     }
 

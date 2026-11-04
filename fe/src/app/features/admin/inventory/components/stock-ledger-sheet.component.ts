@@ -34,7 +34,7 @@ import {
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
                 <h2 class="font-bold text-foreground text-base truncate">
-                  Lịch Sử Biến Động Kho SKU
+                  Lịch Sử Biến Động Kho Linh Kiện
                 </h2>
                 @if (detail?.quant; as quant) {
                   <p class="text-xs text-muted tabular truncate">
@@ -243,7 +243,7 @@ export class StockLedgerSheetComponent {
       case 'RELEASE_RESERVATION':
         return 'GIẢI PHÓNG GIỮ';
       case 'PURCHASE_RECEIPT':
-        return 'NHẬP KHO PO';
+        return 'NHẬP KHO ĐƠN MUA';
       case 'ORDER_ISSUE':
         return 'XUẤT KHO';
       case 'TRANSFER_OUT':

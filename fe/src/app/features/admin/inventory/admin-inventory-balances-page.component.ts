@@ -83,7 +83,7 @@ import {
 
           <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs text-muted">
             <div>Tổng tồn thực tế: <strong class="text-foreground tabular tabular-nums">{{ summary().totalOnHand }}</strong></div>
-            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
+            <div>Tổng cặp linh kiện - kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
             <div>Giá trị ước tính: <strong class="text-foreground tabular tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
           </div>
         </div>
@@ -124,7 +124,7 @@ import {
                 type="text"
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="Tìm SKU, tên linh kiện, mã vạch..."
+                placeholder="Tìm mã linh kiện, tên sản phẩm, mã vạch..."
                 class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
               <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -189,7 +189,7 @@ import {
             <table class="w-full text-left min-w-[1000px] border-collapse text-sm">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-3 px-4 whitespace-nowrap">Mã SKU</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Mã linh kiện</th>
                   <th class="py-3 px-4">Tên linh kiện</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Thực tế</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Đang giữ</th>
@@ -279,7 +279,7 @@ import {
                     variant="secondary"
                     size="sm"
                     class="h-8 px-2.5 text-xs font-semibold inline-flex items-center gap-1"
-                    title="Xem nhanh sổ kho của SKU"
+                    title="Xem nhanh sổ kho của linh kiện"
                   >
                     <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />

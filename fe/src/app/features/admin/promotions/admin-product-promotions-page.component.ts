@@ -74,7 +74,7 @@ type ToastNotification = {
             Chương Trình Khuyến Mãi
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Cấu hình giảm giá tự động theo danh mục hoặc danh sách SKU phần cứng
+            Cấu hình giảm giá tự động theo danh mục hoặc danh sách linh kiện phần cứng
           </p>
         </div>
 
@@ -243,7 +243,7 @@ type ToastNotification = {
                         <div class="line-clamp-1">{{ promo.name }}</div>
                         <div class="text-xs text-muted font-normal mt-0.5">
                           @if (promo.scope === 'SKU') {
-                            <span>Áp dụng cho {{ promo.skuTargets.length }} biến thể SKU</span>
+                            <span>Áp dụng cho {{ promo.skuTargets.length }} biến thể linh kiện</span>
                           } @else if (promo.scope === 'CATEGORY') {
                             <span>Áp dụng cho {{ promo.categoryTargets.length }} danh mục ngành hàng</span>
                           } @else {
@@ -288,10 +288,10 @@ type ToastNotification = {
                           </div>
                         } @else if (promo.scope === 'SKU') {
                           <div class="truncate" [title]="skuCodes(promo)">
-                            SKU: {{ skuCodes(promo) }}
+                            Mã linh kiện: {{ skuCodes(promo) }}
                           </div>
                         } @else {
-                          <div class="text-muted">Kết hợp SKU & Danh mục</div>
+                          <div class="text-muted">Kết hợp Biến thể & Danh mục</div>
                         }
                       </td>
 
@@ -431,7 +431,7 @@ export class AdminProductPromotionsPageComponent implements OnInit {
   readonly scopeOptions: readonly SelectOption[] = [
     { value: 'ALL', label: 'Tất cả phạm vi' },
     { value: 'CATEGORY', label: 'Theo danh mục' },
-    { value: 'SKU', label: 'Theo biến thể SKU' },
+    { value: 'SKU', label: 'Theo biến thể linh kiện' },
   ];
 
   ngOnInit(): void {

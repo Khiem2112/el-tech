@@ -71,7 +71,7 @@ import {
                     type="text"
                     [ngModel]="searchQuery()"
                     (ngModelChange)="onSearchQueryChange($event)"
-                    placeholder="Tìm theo tên linh kiện, mã SKU, barcode..."
+                    placeholder="Tìm theo tên linh kiện, mã linh kiện, barcode..."
                     class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
                   />
                   <lucide-icon
@@ -141,7 +141,7 @@ import {
                       />
                     </th>
                     <th class="py-2 px-3 w-12 text-center">Ảnh</th>
-                    <th class="py-2 px-3 whitespace-nowrap">Mã SKU</th>
+                    <th class="py-2 px-3 whitespace-nowrap">Mã linh kiện</th>
                     <th class="py-2 px-3 whitespace-nowrap">Tên Linh Kiện</th>
                     <th class="py-2 px-3 whitespace-nowrap">Loại Linh Kiện</th>
                     <th class="py-2 px-3 text-right whitespace-nowrap">Giá Bán Niêm Yết</th>

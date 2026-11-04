@@ -104,7 +104,7 @@ import {
                 type="text"
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="Tìm mã phiếu, mã đơn, PO, lý do..."
+                placeholder="Tìm mã phiếu, mã đơn, lý do..."
                 class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
               <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -222,7 +222,7 @@ import {
 
                     <td class="py-3 px-4 text-center tabular whitespace-nowrap">
                       <div class="font-bold text-foreground">{{ move.totalQuantity }} SP</div>
-                      <div class="text-xs text-muted">{{ move.totalLines }} dòng SKU</div>
+                      <div class="text-xs text-muted">{{ move.totalLines }} dòng linh kiện</div>
                     </td>
 
                     <td class="py-3 px-4 text-muted tabular whitespace-nowrap">
@@ -241,7 +241,7 @@ import {
                             routerLink="/admin/procurement/purchase-orders"
                             class="font-semibold text-primary hover:underline tabular"
                           >
-                            PO: {{ move.purchaseOrder.code }}
+                            Đơn mua: {{ move.purchaseOrder.code }}
                           </a>
                           <div class="text-xs text-muted truncate max-w-xs">
                             NCC: {{ move.purchaseOrder.supplier.name }}
@@ -294,7 +294,7 @@ import {
                               <table class="w-full text-xs text-left border-collapse">
                                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase">
                                   <tr>
-                                    <th class="py-2.5 px-3 whitespace-nowrap w-36">Mã SKU</th>
+                                    <th class="py-2.5 px-3 whitespace-nowrap w-36">Mã linh kiện</th>
                                     <th class="py-2.5 px-3 max-w-[220px]">Tên Linh Kiện & Biến Thể</th>
                                     <th class="py-2.5 px-3 text-center whitespace-nowrap w-24">Số Lượng</th>
                                     <th class="py-2.5 px-3 text-right whitespace-nowrap w-28">Giá Vốn</th>

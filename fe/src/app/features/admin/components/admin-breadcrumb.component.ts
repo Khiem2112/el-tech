@@ -72,7 +72,7 @@ export class AdminBreadcrumbComponent {
       return {
         code: 'ADMIN',
         module: 'Quản Trị',
-        title: 'Bảng Điều Khiển',
+        title: 'Trung Tâm Vận Hành',
         fullPath: '/admin/dashboard',
       };
     }

@@ -358,7 +358,7 @@ type ToastNotification = {
             <div>
               Hiển thị <strong class="text-foreground tabular tabular-nums">{{ pageStartIndex() }}</strong> -
               <strong class="text-foreground tabular tabular-nums">{{ pageEndIndex() }}</strong> trong tổng số
-              <strong class="text-primary tabular tabular-nums">{{ total() }}</strong> biến thể SKU
+              <strong class="text-primary tabular tabular-nums">{{ total() }}</strong> biến thể linh kiện
             </div>
 
             <div class="flex items-center gap-2">
@@ -399,7 +399,7 @@ type ToastNotification = {
               <div>
                 <h3 class="font-bold text-foreground text-base">Chi Tiết Tồn Kho Showroom EL-TECH</h3>
                 <p class="text-xs text-muted">
-                  SKU: <strong class="text-primary tabular">{{ variant.sku }}</strong>
+                  Mã linh kiện: <strong class="text-primary tabular">{{ variant.sku }}</strong>
                   @if (variant.barcode) {
                     | Barcode: <span class="tabular">{{ variant.barcode }}</span>
                   }

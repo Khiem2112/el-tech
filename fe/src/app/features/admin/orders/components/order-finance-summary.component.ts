@@ -8,8 +8,8 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden">
-      <div class="p-3.5 border-b border-line bg-surface-alt/40 flex items-center justify-between">
+    <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden shadow-xs">
+      <div class="p-4 border-b border-line bg-surface-alt/40 flex items-center justify-between">
         <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
           Tài Chính & Quyết Toán Đơn Hàng
         </h2>
@@ -18,7 +18,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
         </span>
       </div>
 
-      <div class="p-4 sm:p-5 space-y-4 text-sm">
+      <div class="p-5 lg:p-6 space-y-5 text-sm">
         @if (hasQrReview()) {
           <div class="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded flex items-center justify-between text-xs text-amber-700 dark:text-amber-300">
             <span>Phát hiện giao dịch chuyển khoản VietQR bị lệch cần đối soát.</span>

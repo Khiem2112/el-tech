@@ -120,7 +120,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
       },
       {
         code: 'SCR-20',
-        title: 'Đơn Mua Hàng PO',
+        title: 'Đơn Mua Linh Kiện',
         route: 'procurement/purchase-orders',
         fullPath: '/admin/procurement/purchase-orders',
         module: 'Mua Hàng & Nhà Cung Cấp',
