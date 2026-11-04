@@ -541,7 +541,7 @@ type VariantSpecPair = {
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                       </svg>
-                      <span>+ Thêm linh kiện</span>
+                      <span>Thêm linh kiện</span>
                     </button>
                   }
                 </div>
@@ -573,7 +573,7 @@ type VariantSpecPair = {
                           size="sm"
                           (click)="startCreateVariant()"
                         >
-                          + Thêm biến thể đầu tiên
+                          Thêm biến thể đầu tiên
                         </button>
                       }
                     } @else {
@@ -848,7 +848,7 @@ type VariantSpecPair = {
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                       </svg>
-                      <span>+ Thêm thông số riêng</span>
+                      <span>Thêm thông số riêng</span>
                     </button>
                   </div>
 
@@ -964,7 +964,7 @@ type VariantSpecPair = {
                   size="sm"
                   (click)="startCreateVariant()"
                 >
-                  + Thêm biến thể mới
+                  Thêm biến thể mới
                 </button>
               </div>
             }

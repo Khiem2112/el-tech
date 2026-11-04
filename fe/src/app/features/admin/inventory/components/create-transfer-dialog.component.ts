@@ -142,7 +142,7 @@ type TransferItemDraft = {
                       size="sm"
                       class="text-xs font-bold"
                     >
-                      + Thêm linh kiện
+                      Thêm linh kiện
                     </button>
                   }
                 </div>

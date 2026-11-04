@@ -66,9 +66,7 @@ type FlattenedCategoryRow = AdminCategory & {
             (click)="openCreateModal()"
             class="uppercase tracking-wide"
           >
-            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
             <span>Thêm Danh Mục</span>
           </button>
         </div>
@@ -160,7 +158,7 @@ type FlattenedCategoryRow = AdminCategory & {
                             <button
                               type="button"
                               (click)="toggleExpand(cat.id)"
-                              class="p-0.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+                              class="w-4 h-4 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors inline-flex items-center justify-center"
                               [title]="cat.isExpanded ? 'Thu gọn' : 'Mở rộng'"
                             >
                               <svg
@@ -175,11 +173,11 @@ type FlattenedCategoryRow = AdminCategory & {
                               </svg>
                             </button>
                           } @else if (cat.depth > 0) {
-                            <span class="w-3.5 h-3.5 flex items-center justify-center text-muted text-xs">
+                            <span class="w-4 h-4 flex items-center justify-center text-muted text-xs">
                               --
                             </span>
                           } @else {
-                            <span class="w-3.5"></span>
+                            <span class="w-4 h-4 inline-block"></span>
                           }
 
                           <span
@@ -236,41 +234,39 @@ type FlattenedCategoryRow = AdminCategory & {
                       }
                     </td>
 
-                    <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
-                      <button
-                        type="button"
-                        (click)="openSpecSchemaSheet(cat)"
-                        class="p-1.5 rounded hover:bg-surface-alt text-primary-strong transition-colors"
-                        title="Cấu hình thuộc tính kỹ thuật"
-                        aria-label="Cấu hình thuộc tính kỹ thuật"
-                      >
-                        <lucide-icon name="settings" class="size-4" aria-hidden="true"></lucide-icon>
-                      </button>
+                    <td class="py-3 px-4 text-right whitespace-nowrap">
+                      <div class="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          (click)="openSpecSchemaSheet(cat)"
+                          class="p-1.5 rounded hover:bg-surface-alt text-primary-strong transition-colors inline-flex items-center justify-center"
+                          title="Cấu hình thuộc tính kỹ thuật"
+                          aria-label="Cấu hình thuộc tính kỹ thuật"
+                        >
+                          <lucide-icon name="settings" class="size-4" aria-hidden="true"></lucide-icon>
+                        </button>
 
-                      <button
-                        type="button"
-                        (click)="openEditModal(cat)"
-                        class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
-                        title="Chỉnh sửa danh mục"
-                        aria-label="Chỉnh sửa danh mục"
-                      >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                        </svg>
-                      </button>
+                        <button
+                          type="button"
+                          (click)="openEditModal(cat)"
+                          class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors inline-flex items-center justify-center"
+                          title="Chỉnh sửa danh mục"
+                          aria-label="Chỉnh sửa danh mục"
+                        >
+                          <lucide-icon name="pencil" class="size-4" aria-hidden="true"></lucide-icon>
+                        </button>
 
-                      <button
-                        type="button"
-                        (click)="toggleCategoryStatus(cat)"
-                        class="p-1.5 rounded hover:bg-surface-alt transition-colors"
-                        [ngClass]="cat.isActive ? 'text-amber-600 hover:text-amber-700' : 'text-emerald-600 hover:text-emerald-700'"
-                        [title]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
-                        [aria-label]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
-                      >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                        </svg>
-                      </button>
+                        <button
+                          type="button"
+                          (click)="toggleCategoryStatus(cat)"
+                          class="p-1.5 rounded hover:bg-surface-alt transition-colors inline-flex items-center justify-center"
+                          [ngClass]="cat.isActive ? 'text-amber-600 hover:text-amber-700' : 'text-emerald-600 hover:text-emerald-700'"
+                          [title]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
+                          [aria-label]="cat.isActive ? 'Tạm dừng danh mục' : 'Kích hoạt danh mục'"
+                        >
+                          <lucide-icon [name]="cat.isActive ? 'ban' : 'check'" class="size-4" aria-hidden="true"></lucide-icon>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 }
