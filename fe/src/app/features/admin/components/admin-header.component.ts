@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Output,
   inject,
+  input,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
@@ -33,21 +34,23 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
       </div>
 
       <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="flex items-center gap-2 pl-3 border-l border-line">
-          <div
-            class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong"
-          >
-            AD
-          </div>
-          <div class="hidden md:block text-left">
-            <div class="text-foreground font-semibold text-sm leading-tight">
-              {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
+        @if (showAccountInfo()) {
+          <div class="flex items-center gap-2 pl-3 border-l border-line">
+            <div
+              class="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-bold text-xs text-primary-strong"
+            >
+              AD
             </div>
-            <div class="text-xs text-muted leading-tight tabular">
-              {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
+            <div class="hidden md:block text-left">
+              <div class="text-foreground font-semibold text-sm leading-tight">
+                {{ adminApi.currentAdmin()?.name ?? 'Quản Trị Viên' }}
+              </div>
+              <div class="text-xs text-muted leading-tight tabular">
+                {{ adminApi.currentAdmin()?.email ?? 'admin@eltech.vn' }}
+              </div>
             </div>
           </div>
-        </div>
+        }
 
         <button
           type="button"
@@ -67,6 +70,8 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
 export class AdminHeaderComponent {
   readonly adminApi = inject(AdminApiService);
   private readonly router = inject(Router);
+
+  readonly showAccountInfo = input<boolean>(true);
 
   @Output() readonly toggleSidebar = new EventEmitter<void>();
 
