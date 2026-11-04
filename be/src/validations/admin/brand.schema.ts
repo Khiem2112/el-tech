@@ -54,7 +54,7 @@ export const queryBrandSchema = z.object({
     ])
     .optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().nonnegative().optional().default(50),
+  limit: z.coerce.number().int().nonnegative().optional().default(10),
 });
 
 export type CreateBrandInput = z.infer<typeof createBrandSchema>;

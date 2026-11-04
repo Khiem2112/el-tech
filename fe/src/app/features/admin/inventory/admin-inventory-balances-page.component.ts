@@ -13,6 +13,7 @@ import { ButtonDirective } from '../../../components/atoms/button/button.directi
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { QuarantineStockDialogComponent } from './components/quarantine-stock-dialog.component';
 import { StockLedgerSheetComponent } from './components/stock-ledger-sheet.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminInventoryService,
   InventoryBalanceItem,
@@ -29,6 +30,7 @@ import {
     SelectComponent,
     StockLedgerSheetComponent,
     QuarantineStockDialogComponent,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -305,41 +307,15 @@ import {
             </tr>
           </ng-template>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
-            <div class="text-muted">
-              Hiển thị <strong class="text-foreground">{{ (inventoryService.balancesPage() - 1) * inventoryService.balancesLimit() + 1 }}</strong>
-              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
-              trong tổng số <strong class="text-foreground">{{ inventoryService.balancesTotal() }}</strong> bản ghi
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="inventoryService.balancesPage() <= 1"
-                (click)="onPageChange(inventoryService.balancesPage() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ inventoryService.balancesPage() }} / {{ inventoryService.balancesTotalPages() }}
-              </span>
-
-              <button
-                type="button"
-                [disabled]="inventoryService.balancesPage() >= inventoryService.balancesTotalPages()"
-                (click)="onPageChange(inventoryService.balancesPage() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="inventoryService.balancesPage()"
+            [total]="inventoryService.balancesTotal()"
+            [limit]="inventoryService.balancesLimit()"
+            [totalPages]="inventoryService.balancesTotalPages()"
+            itemName="linh kiện"
+            [isLoading]="inventoryService.isBalancesLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>

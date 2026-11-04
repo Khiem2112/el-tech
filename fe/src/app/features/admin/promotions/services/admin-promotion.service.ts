@@ -108,7 +108,7 @@ export class AdminPromotionService {
 
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(20);
+  readonly limit = signal<number>(10);
   readonly totalPages = signal<number>(1);
 
   readonly searchQuery = signal<string>('');

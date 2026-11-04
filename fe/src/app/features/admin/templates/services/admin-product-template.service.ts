@@ -193,7 +193,7 @@ export class AdminProductTemplateService {
   readonly error = signal<string | null>(null);
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(50);
+  readonly limit = signal<number>(10);
 
   readonly searchQuery = signal<string>('');
   readonly categoryFilter = signal<number | null>(null);

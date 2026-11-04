@@ -168,7 +168,7 @@ export class AdminInventoryService {
   readonly ledgerEntries = signal<StockLedgerEntryItem[]>([]);
   readonly ledgerTotal = signal<number>(0);
   readonly ledgerPage = signal<number>(1);
-  readonly ledgerLimit = signal<number>(50);
+  readonly ledgerLimit = signal<number>(10);
   readonly ledgerTotalPages = signal<number>(1);
   readonly isLedgerLoading = signal<boolean>(false);
   readonly ledgerError = signal<string | null>(null);

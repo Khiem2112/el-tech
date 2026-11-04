@@ -19,7 +19,7 @@ export const createSupplierReturnSchema = z.object({
 
 export const querySupplierReturnSchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().optional().default(50),
+  limit: z.coerce.number().int().positive().optional().default(10),
   search: z.string().trim().optional(),
   supplierId: z.coerce.number().int().positive().optional(),
   branchId: z.coerce.number().int().positive().optional(),

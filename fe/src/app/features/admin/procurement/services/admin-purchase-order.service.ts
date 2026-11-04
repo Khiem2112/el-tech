@@ -252,6 +252,10 @@ export class AdminPurchaseOrderService {
 
   readonly purchaseOrders = signal<PurchaseOrderListItem[]>([]);
   readonly selectedPurchaseOrder = signal<PurchaseOrderDetail | null>(null);
+  readonly total = signal<number>(0);
+  readonly page = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -265,6 +269,11 @@ export class AdminPurchaseOrderService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadPurchaseOrders({ page: newPage });
   }
 
   async loadPurchaseOrders(params?: {
@@ -299,13 +308,10 @@ export class AdminPurchaseOrderService {
         httpParams = httpParams.set('receivingBranchId', params.receivingBranchId.toString());
       }
 
-      if (params?.page) {
-        httpParams = httpParams.set('page', params.page.toString());
-      }
-
-      if (params?.limit) {
-        httpParams = httpParams.set('limit', params.limit.toString());
-      }
+      const targetPage = params?.page ?? this.page();
+      const targetLimit = params?.limit ?? this.limit();
+      httpParams = httpParams.set('page', targetPage.toString());
+      httpParams = httpParams.set('limit', targetLimit.toString());
 
       const response = await firstValueFrom(
         this.http.get<ApiResponse<PurchaseOrderListResponse>>(this.baseUrl, {
@@ -319,6 +325,10 @@ export class AdminPurchaseOrderService {
       }
 
       this.purchaseOrders.set(response.data.items);
+      this.total.set(response.data.total);
+      this.page.set(response.data.page);
+      this.limit.set(response.data.limit);
+      this.totalPages.set(Math.ceil(response.data.total / response.data.limit) || 1);
       return response.data;
     } catch (err: unknown) {
       const errorMessage =

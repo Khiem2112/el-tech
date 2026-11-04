@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { BrandFormDialogComponent } from './components/brand-form-dialog.component';
 import {
   AdminBrand,
@@ -25,7 +26,14 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-brands-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent, BrandFormDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonDirective,
+    SelectComponent,
+    BrandFormDialogComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -100,7 +108,7 @@ type ToastNotification = {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground tabular-nums">{{ visibleBrands().length }}</strong> thương hiệu
+          Tổng số: <strong class="text-foreground tabular-nums">{{ brandService.total() }}</strong> thương hiệu
         </div>
       </div>
 
@@ -300,6 +308,16 @@ type ToastNotification = {
               </tbody>
             </table>
           </div>
+
+          <app-admin-pagination
+            [page]="brandService.page()"
+            [total]="brandService.total()"
+            [limit]="brandService.limit()"
+            [totalPages]="brandService.totalPages()"
+            itemName="thương hiệu"
+            [isLoading]="brandService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -400,6 +418,10 @@ export class AdminBrandsPageComponent implements OnInit {
     } else {
       this.expandedBrandIds.set(new Set(this.visibleBrands().map((b) => b.id)));
     }
+  }
+
+  async onPageChange(page: number): Promise<void> {
+    await this.brandService.setPage(page);
   }
 
   toggleBreakdown(brandId: number): void {

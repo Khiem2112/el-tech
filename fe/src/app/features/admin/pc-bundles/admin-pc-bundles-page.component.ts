@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -37,6 +38,7 @@ type ToastNotification = {
     SelectComponent,
     PcBundleSheetComponent,
     AppIconModule,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -320,6 +322,15 @@ type ToastNotification = {
                 </tbody>
               </table>
             </div>
+            <app-admin-pagination
+              [page]="bundleService.page()"
+              [total]="bundleService.total()"
+              [limit]="bundleService.limit()"
+              [totalPages]="bundleService.totalPages()"
+              itemName="PC lắp sẵn"
+              [isLoading]="bundleService.isLoading()"
+              (pageChange)="onPageChange($event)"
+            />
           </div>
         }
 
@@ -465,6 +476,17 @@ type ToastNotification = {
               </div>
             }
           </div>
+          <div class="bg-surface border border-line rounded-lg overflow-hidden mt-3.5">
+            <app-admin-pagination
+              [page]="bundleService.page()"
+              [total]="bundleService.total()"
+              [limit]="bundleService.limit()"
+              [totalPages]="bundleService.totalPages()"
+              itemName="PC lắp sẵn"
+              [isLoading]="bundleService.isLoading()"
+              (pageChange)="onPageChange($event)"
+            />
+          </div>
         }
       }
 
@@ -548,6 +570,10 @@ export class AdminPcBundlesPageComponent implements OnInit {
     this.searchQuery.set('');
     this.lifecycleFilter.set('ALL');
     this.loadBundles();
+  }
+
+  async onPageChange(page: number): Promise<void> {
+    await this.bundleService.setPage(page);
   }
 
   openCreateSheet(): void {

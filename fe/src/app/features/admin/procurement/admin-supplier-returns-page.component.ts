@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -20,7 +21,14 @@ import {
 @Component({
   selector: 'app-admin-supplier-returns-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AppIconModule, CreateSupplierReturnDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    AppIconModule,
+    CreateSupplierReturnDialogComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
@@ -171,6 +179,15 @@ import {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="returnService.page()"
+            [total]="returnService.total()"
+            [limit]="returnService.limit()"
+            [totalPages]="returnService.totalPages()"
+            itemName="phiếu xuất trả"
+            [isLoading]="returnService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -336,6 +353,10 @@ export class AdminSupplierReturnsPageComponent implements OnInit {
   readonly visibleReturns = computed<SupplierReturnListItem[]>(() => {
     return this.returnService.supplierReturns();
   });
+
+  onPageChange(page: number): void {
+    void this.returnService.setPage(page);
+  }
 
   async ngOnInit(): Promise<void> {
     await this.loadData();

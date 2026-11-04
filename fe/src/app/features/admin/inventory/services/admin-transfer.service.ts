@@ -144,7 +144,7 @@ export class AdminTransferService {
   readonly transfers = signal<TransferListItem[]>([]);
   readonly transfersTotal = signal<number>(0);
   readonly transfersPage = signal<number>(1);
-  readonly transfersLimit = signal<number>(20);
+  readonly transfersLimit = signal<number>(10);
   readonly transfersSummary = signal<TransferSummary>({
     totalTransfers: 0,
     inTransitUnits: 0,

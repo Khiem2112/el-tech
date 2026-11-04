@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminInventoryService,
 } from './services/admin-inventory.service';
@@ -17,7 +18,14 @@ import {
 @Component({
   selector: 'app-admin-stock-ledger-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -268,41 +276,15 @@ import {
             </table>
           </div>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
-            <div class="text-muted">
-              Hiển thị <strong class="text-foreground">{{ (inventoryService.ledgerPage() - 1) * inventoryService.ledgerLimit() + 1 }}</strong>
-              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
-              trong tổng số <strong class="text-foreground">{{ inventoryService.ledgerTotal() }}</strong> bản ghi
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="inventoryService.ledgerPage() <= 1"
-                (click)="onPageChange(inventoryService.ledgerPage() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ inventoryService.ledgerPage() }} / {{ inventoryService.ledgerTotalPages() }}
-              </span>
-
-              <button
-                type="button"
-                [disabled]="inventoryService.ledgerPage() >= inventoryService.ledgerTotalPages()"
-                (click)="onPageChange(inventoryService.ledgerPage() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="inventoryService.ledgerPage()"
+            [total]="inventoryService.ledgerTotal()"
+            [limit]="inventoryService.ledgerLimit()"
+            [totalPages]="inventoryService.ledgerTotalPages()"
+            itemName="giao dịch biến động"
+            [isLoading]="inventoryService.isLedgerLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>
@@ -362,7 +344,7 @@ export class AdminStockLedgerPageComponent implements OnInit {
       startDate: this.startDate() || undefined,
       endDate: this.endDate() || undefined,
       page,
-      limit: 50,
+      limit: 10,
     });
   }
 

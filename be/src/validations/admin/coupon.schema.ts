@@ -204,7 +204,7 @@ export const queryCouponSchema = z.object({
   status: couponStatusFilterEnum.optional().default('ALL'),
   discountType: z.enum(['ALL', 'PERCENTAGE', 'FIXED_AMOUNT']).optional().default('ALL'),
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
 });
 
 export type QueryCouponInput = z.infer<typeof queryCouponSchema>;

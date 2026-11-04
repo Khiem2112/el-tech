@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { BadgeDirective, BadgeVariant } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminStockMoveService,
   StockMoveListItem,
@@ -28,6 +29,7 @@ import {
     BadgeDirective,
     ButtonDirective,
     SelectComponent,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -358,41 +360,15 @@ import {
             </table>
           </div>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
-            <div class="text-muted">
-              Hiển thị <strong class="text-foreground">{{ (stockMoveService.page() - 1) * stockMoveService.limit() + 1 }}</strong>
-              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
-              trong tổng số <strong class="text-foreground">{{ stockMoveService.total() }}</strong> phiếu kho
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="stockMoveService.page() <= 1"
-                (click)="onPageChange(stockMoveService.page() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ stockMoveService.page() }} / {{ stockMoveService.totalPages() }}
-              </span>
-
-              <button
-                type="button"
-                [disabled]="stockMoveService.page() >= stockMoveService.totalPages()"
-                (click)="onPageChange(stockMoveService.page() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="stockMoveService.page()"
+            [total]="stockMoveService.total()"
+            [limit]="stockMoveService.limit()"
+            [totalPages]="stockMoveService.totalPages()"
+            itemName="phiếu kho"
+            [isLoading]="stockMoveService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>

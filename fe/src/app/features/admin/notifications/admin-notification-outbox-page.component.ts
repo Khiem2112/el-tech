@@ -12,6 +12,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { NotificationDetailDialogComponent } from './components/notification-detail-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminNotificationItem,
   AdminNotificationService,
@@ -26,7 +27,15 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-notification-outbox-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent, AppIconModule, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    NotificationDetailDialogComponent,
+    AppIconModule,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -215,61 +224,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          @if (notificationService.total() > 0) {
-            <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-muted">
-              <div>
-                Hiển thị trang <strong class="text-foreground tabular-nums">{{ notificationService.page() }}</strong> /
-                <strong class="text-foreground tabular-nums">{{ notificationService.totalPages() }}</strong>
-                (Tổng cộng <strong class="text-foreground tabular-nums">{{ notificationService.total() }}</strong> thông báo)
-              </div>
-
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <button
-                  type="button"
-                  [disabled]="notificationService.page() <= 1 || notificationService.isLoading()"
-                  (click)="goToPage(notificationService.page() - 1)"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 disabled:cursor-not-allowed text-foreground transition-colors text-xs font-medium cursor-pointer"
-                  aria-label="Trang trước"
-                >
-                  Trang trước
-                </button>
-
-                @for (p of pageList(); track $index) {
-                  @if (p === 'ellipsis') {
-                    <span class="px-2 py-1 text-xs text-muted select-none">...</span>
-                  } @else {
-                    <button
-                      type="button"
-                      [disabled]="notificationService.isLoading()"
-                      (click)="goToPage(p)"
-                      class="min-w-7 h-7 sm:min-w-8 sm:h-8 px-2 rounded border text-xs font-bold transition-colors cursor-pointer tabular-nums disabled:opacity-50"
-                      [class.border-primary]="notificationService.page() === p"
-                      [class.bg-primary]="notificationService.page() === p"
-                      [class.text-primary-foreground]="notificationService.page() === p"
-                      [class.border-line]="notificationService.page() !== p"
-                      [class.bg-surface]="notificationService.page() !== p"
-                      [class.text-foreground]="notificationService.page() !== p"
-                      [class.hover:bg-surface-alt]="notificationService.page() !== p"
-                      [attr.aria-current]="notificationService.page() === p ? 'page' : null"
-                      [attr.aria-label]="'Trang ' + p"
-                    >
-                      {{ p }}
-                    </button>
-                  }
-                }
-
-                <button
-                  type="button"
-                  [disabled]="notificationService.page() >= notificationService.totalPages() || notificationService.isLoading()"
-                  (click)="goToPage(notificationService.page() + 1)"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 disabled:cursor-not-allowed text-foreground transition-colors text-xs font-medium cursor-pointer"
-                  aria-label="Trang sau"
-                >
-                  Trang sau
-                </button>
-              </div>
-            </div>
-          }
+          <app-admin-pagination
+            [page]="notificationService.page()"
+            [total]="notificationService.total()"
+            [limit]="notificationService.limit()"
+            [totalPages]="notificationService.totalPages()"
+            itemName="thông báo"
+            [isLoading]="notificationService.isLoading()"
+            (pageChange)="goToPage($event)"
+          />
         </div>
 
       @if (selectedNotification()) {

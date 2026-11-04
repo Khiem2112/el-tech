@@ -38,7 +38,7 @@ export const queryPurchaseOrderSchema = z.object({
   supplierId: z.coerce.number().int().positive().optional(),
   receivingBranchId: z.coerce.number().int().positive().optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().nonnegative().optional().default(50),
+  limit: z.coerce.number().int().nonnegative().optional().default(10),
 });
 
 export const cancelPurchaseOrderSchema = z.object({

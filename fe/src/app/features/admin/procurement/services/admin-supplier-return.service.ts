@@ -143,6 +143,10 @@ export class AdminSupplierReturnService {
 
   readonly supplierReturns = signal<SupplierReturnListItem[]>([]);
   readonly selectedSupplierReturn = signal<SupplierReturnDetail | null>(null);
+  readonly total = signal<number>(0);
+  readonly page = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -156,6 +160,11 @@ export class AdminSupplierReturnService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadSupplierReturns({ page: newPage });
   }
 
   async loadSupplierReturns(params?: {
@@ -185,13 +194,10 @@ export class AdminSupplierReturnService {
         httpParams = httpParams.set('supplierId', params.supplierId.toString());
       }
 
-      if (params?.page) {
-        httpParams = httpParams.set('page', params.page.toString());
-      }
-
-      if (params?.limit) {
-        httpParams = httpParams.set('limit', params.limit.toString());
-      }
+      const targetPage = params?.page ?? this.page();
+      const targetLimit = params?.limit ?? this.limit();
+      httpParams = httpParams.set('page', targetPage.toString());
+      httpParams = httpParams.set('limit', targetLimit.toString());
 
       const response = await firstValueFrom(
         this.http.get<ApiResponse<SupplierReturnListResponse>>(this.baseUrl, {
@@ -206,6 +212,10 @@ export class AdminSupplierReturnService {
 
       const data = response.data;
       this.supplierReturns.set(data.items);
+      this.total.set(data.total);
+      this.page.set(data.page);
+      this.limit.set(data.limit);
+      this.totalPages.set(Math.ceil(data.total / data.limit) || 1);
       return data;
     } catch (err: unknown) {
       const errorMsg =

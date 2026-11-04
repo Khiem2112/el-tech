@@ -43,7 +43,7 @@ export const queryOrderSchema = z.object({
   sortBy: z.enum(['submittedAt', 'createdAt', 'grandTotal', 'code']).optional().default('submittedAt'),
   sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().nonnegative().optional().default(20),
+  limit: z.coerce.number().int().nonnegative().optional().default(10),
 });
 
 export type QueryOrderInput = z.infer<typeof queryOrderSchema>;

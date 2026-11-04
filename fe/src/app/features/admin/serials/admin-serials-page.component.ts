@@ -13,12 +13,20 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SerialDetailDialogComponent } from './components/serial-detail-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AdminSerialService, SerialDetailResponse } from './services/admin-serial.service';
 
 @Component({
   selector: 'app-admin-serials-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SerialDetailDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    SerialDetailDialogComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-6 text-sm text-foreground">
@@ -436,39 +444,15 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             </table>
           </div>
 
-          <div class="p-4 bg-surface-alt border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted">
-            <div>
-              Hiển thị <strong class="text-foreground">{{ (page() - 1) * limit() + 1 }}</strong> -
-              <strong class="text-foreground">{{ getEndIndex() }}</strong> trong tổng số
-              <strong class="text-foreground">{{ total() }}</strong> sê-ri
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="page() <= 1"
-                (click)="goToPage(page() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ page() }} / {{ totalPages() }}
-              </span>
-              <button
-                type="button"
-                [disabled]="page() >= totalPages()"
-                (click)="goToPage(page() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="page()"
+            [total]="total()"
+            [limit]="limit()"
+            [totalPages]="totalPages()"
+            itemName="sê-ri"
+            [isLoading]="isLoading()"
+            (pageChange)="goToPage($event)"
+          />
         }
       </div>
 

@@ -13,6 +13,7 @@ import { handleProductImageError } from '../../../core/constants/product.constan
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
 import { AdminCategoryService } from '../categories/services/admin-category.service';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
@@ -39,6 +40,7 @@ type ToastNotification = {
     SelectComponent,
     LifecycleTransitionDialogComponent,
     AppIconModule,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -559,56 +561,15 @@ type ToastNotification = {
           </div>
         }
 
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-line text-xs text-muted">
-          <div>
-            Trang {{ page() }} / {{ totalPages() }} (Tổng số {{ total() }} mẫu sản phẩm)
-          </div>
-
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <button
-              type="button"
-              appButton
-              variant="secondary"
-              size="sm"
-              [disabled]="page() <= 1"
-              (click)="onPageChange(page() - 1)"
-            >
-              Trang trước
-            </button>
-
-            @for (p of pageList(); track $index) {
-              @if (p === 'ellipsis') {
-                <span class="px-2 py-1 text-xs text-muted select-none">...</span>
-              } @else {
-                <button
-                  type="button"
-                  (click)="onPageChange(p)"
-                  class="min-w-8 h-8 px-2 rounded border text-xs font-bold transition-colors cursor-pointer tabular"
-                  [class.border-primary]="page() === p"
-                  [class.bg-primary]="page() === p"
-                  [class.text-primary-foreground]="page() === p"
-                  [class.border-line]="page() !== p"
-                  [class.bg-surface]="page() !== p"
-                  [class.text-foreground]="page() !== p"
-                  [attr.aria-current]="page() === p ? 'page' : null"
-                >
-                  {{ p }}
-                </button>
-              }
-            }
-
-            <button
-              type="button"
-              appButton
-              variant="secondary"
-              size="sm"
-              [disabled]="page() >= totalPages()"
-              (click)="onPageChange(page() + 1)"
-            >
-              Trang sau
-            </button>
-          </div>
-        </div>
+        <app-admin-pagination
+          [page]="page()"
+          [total]="total()"
+          [limit]="limit()"
+          [totalPages]="totalPages()"
+          itemName="mẫu sản phẩm"
+          [isLoading]="isLoading()"
+          (pageChange)="onPageChange($event)"
+        />
       }
 
       <app-lifecycle-transition-dialog

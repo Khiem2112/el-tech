@@ -73,7 +73,7 @@ export const queryStockMovesSchema = z.object({
   moveType: stockMoveTypeEnum.optional().default('ALL'),
   status: stockMoveStatusEnum.optional().default('ALL'),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().max(200).optional().default(20),
+  limit: z.coerce.number().int().positive().max(200).optional().default(10),
 });
 
 export type QueryStockMovesInput = z.infer<typeof queryStockMovesSchema>;

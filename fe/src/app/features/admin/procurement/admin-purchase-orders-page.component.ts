@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
@@ -21,7 +22,16 @@ import {
 @Component({
   selector: 'app-admin-purchase-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, BadgeDirective, SelectComponent, AppIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    BadgeDirective,
+    SelectComponent,
+    AppIconModule,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
@@ -208,6 +218,15 @@ import {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="poService.page()"
+            [total]="poService.total()"
+            [limit]="poService.limit()"
+            [totalPages]="poService.totalPages()"
+            itemName="đơn mua hàng"
+            [isLoading]="poService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>
@@ -229,6 +248,10 @@ export class AdminPurchaseOrdersPageComponent implements OnInit {
     { value: 'CLOSED', label: 'Đã đóng' },
     { value: 'CANCELLED', label: 'Đã hủy' },
   ];
+
+  onPageChange(page: number): void {
+    void this.poService.setPage(page);
+  }
 
   ngOnInit(): void {
     const searchParam = this.route.snapshot.queryParams['search'];

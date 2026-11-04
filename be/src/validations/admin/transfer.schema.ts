@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const queryTransferSchema = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().optional().default(20),
+  limit: z.coerce.number().int().positive().optional().default(10),
   search: z.string().trim().optional(),
   status: z
     .enum(['ALL', 'DRAFT', 'REQUESTED', 'IN_TRANSIT', 'VALIDATED', 'RECEIVED', 'CANCELLED'])

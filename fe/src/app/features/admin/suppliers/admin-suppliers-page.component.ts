@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { SupplierFormDialogComponent } from './components/supplier-form-dialog.component';
@@ -27,7 +28,16 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-suppliers-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, BadgeDirective, SelectComponent, SupplierFormDialogComponent, AppIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonDirective,
+    BadgeDirective,
+    SelectComponent,
+    SupplierFormDialogComponent,
+    AppIconModule,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -247,6 +257,15 @@ type ToastNotification = {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="supplierService.page()"
+            [total]="supplierService.total()"
+            [limit]="supplierService.limit()"
+            [totalPages]="supplierService.totalPages()"
+            itemName="nhà cung cấp"
+            [isLoading]="supplierService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -302,6 +321,10 @@ export class AdminSuppliersPageComponent implements OnInit {
     { value: 'ACTIVE', label: 'Đang hợp tác' },
     { value: 'INACTIVE', label: 'Tạm dừng hợp tác' },
   ];
+
+  onPageChange(page: number): void {
+    void this.supplierService.setPage(page);
+  }
 
   ngOnInit(): void {
     void this.supplierService.loadSuppliers();

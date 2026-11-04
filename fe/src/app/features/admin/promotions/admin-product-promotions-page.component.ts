@@ -14,6 +14,7 @@ import {
   SelectOption,
 } from '../../../components/atoms/select/select.component';
 import { PromotionFormDialogComponent } from './components/promotion-form-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminProductPromotion,
   AdminPromotionService,
@@ -34,6 +35,7 @@ type ToastNotification = {
     RouterModule,
     SelectComponent,
     PromotionFormDialogComponent,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-5 text-sm text-foreground">
@@ -361,32 +363,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          @if (!isLoading() && total() > 0) {
-            <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-sm text-muted">
-              <div>
-                Hiển thị trang <strong class="text-foreground tabular-nums">{{ page() }}</strong> / <strong class="text-foreground tabular-nums">{{ totalPages() }}</strong>
-              </div>
-
-              <div class="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  (click)="onPageChange(page() - 1)"
-                  [disabled]="page() <= 1"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
-                >
-                  Trước
-                </button>
-                <button
-                  type="button"
-                  (click)="onPageChange(page() + 1)"
-                  [disabled]="page() >= totalPages()"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
-                >
-                  Sau
-                </button>
-              </div>
-            </footer>
-          }
+          <app-admin-pagination
+            [page]="page()"
+            [total]="total()"
+            [limit]="promotionService.limit()"
+            [totalPages]="totalPages()"
+            itemName="chương trình khuyến mãi"
+            [isLoading]="isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         </div>
       }
 

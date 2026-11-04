@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CategoryFormDialogComponent } from './components/category-form-dialog.component';
 import { SpecSchemaSheetComponent } from './components/spec-schema-sheet.component';
 import {
@@ -42,6 +43,7 @@ type FlattenedCategoryRow = AdminCategory & {
     SelectComponent,
     CategoryFormDialogComponent,
     SpecSchemaSheetComponent,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -106,7 +108,7 @@ type FlattenedCategoryRow = AdminCategory & {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground tabular-nums">{{ visibleCategories().length }}</strong> danh mục
+          Tổng số: <strong class="text-foreground tabular-nums">{{ categoryService.total() }}</strong> danh mục
         </div>
       </div>
 
@@ -276,6 +278,16 @@ type FlattenedCategoryRow = AdminCategory & {
             </tbody>
           </table>
         </div>
+
+        <app-admin-pagination
+          [page]="categoryService.page()"
+          [total]="categoryService.total()"
+          [limit]="categoryService.limit()"
+          [totalPages]="categoryService.totalPages()"
+          itemName="danh mục"
+          [isLoading]="categoryService.isLoading()"
+          (pageChange)="onPageChange($event)"
+        />
       </div>
     </div>
 
@@ -403,6 +415,10 @@ export class AdminCategoriesPageComponent implements OnInit {
 
     return rows;
   });
+
+  onPageChange(page: number): void {
+    void this.categoryService.setPage(page);
+  }
 
   async ngOnInit(): Promise<void> {
     await this.categoryService.loadCategories();

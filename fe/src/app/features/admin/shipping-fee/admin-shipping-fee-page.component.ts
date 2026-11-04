@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -23,7 +24,12 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-shipping-fee-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, DeliveryFeeFormDialogComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    DeliveryFeeFormDialogComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full space-y-6 p-4 lg:p-6 text-sm text-foreground">
       <header class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4">
@@ -238,6 +244,15 @@ type ToastNotification = {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="shippingFeeService.page()"
+            [total]="shippingFeeService.total()"
+            [limit]="shippingFeeService.limit()"
+            [totalPages]="shippingFeeService.totalPages()"
+            itemName="cấu hình biểu phí"
+            [isLoading]="shippingFeeService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </section>
 
@@ -294,6 +309,10 @@ export class AdminShippingFeePageComponent implements OnInit {
 
   ngOnInit(): void {
     void this.shippingFeeService.loadDeliveryFees();
+  }
+
+  async onPageChange(page: number): Promise<void> {
+    await this.shippingFeeService.setPage(page);
   }
 
   onOpenCreateDialog(): void {
