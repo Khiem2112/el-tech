@@ -9,7 +9,7 @@ export const queryInventoryBalancesSchema = z.object({
   categoryId: z.coerce.number().int().positive().optional(),
   stockStatus: stockStatusEnum.optional().default('ALL'),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().max(200).optional().default(50),
+  limit: z.coerce.number().int().positive().max(200).optional().default(10),
 });
 
 export type QueryInventoryBalancesInput = z.infer<typeof queryInventoryBalancesSchema>;
@@ -41,7 +41,7 @@ export const queryStockLedgerSchema = z.object({
   startDate: z.string().trim().optional(),
   endDate: z.string().trim().optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().max(200).optional().default(50),
+  limit: z.coerce.number().int().positive().max(200).optional().default(10),
 });
 
 export type QueryStockLedgerInput = z.infer<typeof queryStockLedgerSchema>;

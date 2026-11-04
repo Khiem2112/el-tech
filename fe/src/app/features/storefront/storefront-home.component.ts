@@ -480,8 +480,8 @@ export class StorefrontHomeComponent {
 
   private async load(): Promise<void> {
     try {
-      const result = await this.catalog.list();
-      this.products.set(result.slice(0, 8));
+      const result = await this.catalog.list({ limit: 8 });
+      this.products.set(result.items.slice(0, 8));
     } catch {
       this.products.set([]);
     } finally {

@@ -458,7 +458,7 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
       categoryId: categoryVal ? Number(categoryVal) : undefined,
       stockStatus: this.selectedStockStatus() as 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK',
       page,
-      limit: 50,
+      limit: 10,
     });
   }
 

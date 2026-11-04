@@ -103,11 +103,11 @@ export class StorefrontShellComponent {
 
   private async performLiveSearch(term: string): Promise<void> {
     try {
-      const products = await this.catalog.list({ query: term });
+      const result = await this.catalog.list({ query: term, limit: 6 });
       if (this.searchQuery.trim() !== term) {
         return;
       }
-      this.searchResults.set(products.slice(0, 6));
+      this.searchResults.set(result.items.slice(0, 6));
     } catch {
       if (this.searchQuery.trim() === term) {
         this.searchResults.set([]);

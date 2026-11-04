@@ -152,7 +152,7 @@ export class AdminInventoryService {
   readonly balances = signal<InventoryBalanceItem[]>([]);
   readonly balancesTotal = signal<number>(0);
   readonly balancesPage = signal<number>(1);
-  readonly balancesLimit = signal<number>(50);
+  readonly balancesLimit = signal<number>(10);
   readonly balancesTotalPages = signal<number>(1);
   readonly balancesSummary = signal<InventoryBalancesSummary>({
     totalQuants: 0,

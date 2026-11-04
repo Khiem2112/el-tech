@@ -55,31 +55,45 @@ export type ProductFilterParams = {
   readonly query?: string;
   readonly category?: string;
   readonly brand?: string;
+  readonly stockStatus?: string;
   readonly minPrice?: number | null;
   readonly maxPrice?: number | null;
   readonly sort?: string;
   readonly specs?: Record<string, string>;
+  readonly page?: number;
+  readonly limit?: number;
+};
+
+export type PaginatedCatalogResult = {
+  readonly items: readonly CatalogProduct[];
+  readonly total: number;
+  readonly page: number;
+  readonly limit: number;
+  readonly totalPages: number;
 };
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
   private readonly api = inject(ApiClientService);
-  async list(queryOrFilters: string | ProductFilterParams = '', category = ''): Promise<readonly CatalogProduct[]> {
+  async list(queryOrFilters: string | ProductFilterParams = '', category = ''): Promise<PaginatedCatalogResult> {
     const filters: ProductFilterParams = typeof queryOrFilters === 'string' ? { query: queryOrFilters, category } : queryOrFilters;
     const parameters = new URLSearchParams();
     if (filters.query) parameters.set('q', filters.query);
     if (filters.category) parameters.set('category', filters.category);
     if (filters.brand) parameters.set('brand', filters.brand);
+    if (filters.stockStatus) parameters.set('stockStatus', filters.stockStatus);
     if (filters.minPrice !== undefined && filters.minPrice !== null) parameters.set('minPrice', String(filters.minPrice));
     if (filters.maxPrice !== undefined && filters.maxPrice !== null) parameters.set('maxPrice', String(filters.maxPrice));
     if (filters.sort) parameters.set('sort', filters.sort);
+    if (filters.page) parameters.set('page', String(filters.page));
+    if (filters.limit) parameters.set('limit', String(filters.limit));
     if (filters.specs) {
       for (const [key, val] of Object.entries(filters.specs)) {
         if (val) parameters.set(`specs[${key}]`, val);
       }
     }
 
-    const response = await this.api.get<readonly CatalogProduct[]>(`/products${parameters.size ? `?${parameters}` : ''}`);
+    const response = await this.api.get<PaginatedCatalogResult>(`/products${parameters.size ? `?${parameters}` : ''}`);
     if (!response.success) throw new Error(response.error.messageKey);
     return response.data;
   }
