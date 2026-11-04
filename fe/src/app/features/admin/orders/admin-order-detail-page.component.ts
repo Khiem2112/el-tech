@@ -178,7 +178,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
                 >
                   <span class="text-muted text-xs block">Thanh toán</span>
                   <span class="font-medium text-foreground block">
-                    {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Thu khi nhận hàng (COD)')) : 'Chưa thu' }}
+                    {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Thu khi nhận hàng')) : 'Chưa thu' }}
                   </span>
                 </a>
 
@@ -289,7 +289,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           [order]="ord"
           [isOpen]="activeModal() === 'MOD-15'"
           (closed)="onModalClosed()"
-          (confirmed)="onOperationConfirmed('Đã đối soát 100% linh kiện, khôi phục tồn kho onHand và chuyển đơn sang trạng thái Đã Về Kho.')"
+          (confirmed)="onOperationConfirmed('Đã đối soát 100% linh kiện, khôi phục tồn kho thực tế và chuyển đơn sang trạng thái Đã Về Kho.')"
         />
 
         <app-complete-order-dialog

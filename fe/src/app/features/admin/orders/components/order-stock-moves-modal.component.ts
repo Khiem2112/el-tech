@@ -60,7 +60,7 @@ import {
               <div class="p-8 text-center bg-surface-alt/50 border border-line rounded-lg space-y-2">
                 <div class="text-muted font-bold text-sm">Chưa có phiếu kho liên kết</div>
                 <p class="text-xs text-muted max-w-md mx-auto">
-                  Phiếu giữ chỗ tồn kho (RESERVED) hoặc phiếu xuất kho bán hàng (ORDER_ISSUE) sẽ được tạo tự động khi xử lý đơn hàng.
+                  Phiếu giữ chỗ tồn kho hoặc phiếu xuất kho bán hàng sẽ được tạo tự động khi xử lý đơn hàng.
                 </p>
               </div>
             } @else {

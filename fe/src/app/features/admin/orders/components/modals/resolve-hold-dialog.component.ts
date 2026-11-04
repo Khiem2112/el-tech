@@ -60,7 +60,7 @@ import {
                     class="mt-0.5 text-primary"
                   />
                   <div>
-                    <div class="font-medium text-foreground text-sm">Tiếp tục xử lý đơn (CONFIRMED)</div>
+                    <div class="font-medium text-foreground text-sm">Tiếp tục xử lý đơn</div>
                     <div class="text-xs text-muted">Đã thỏa thuận xong, tiếp tục quy trình chuẩn.</div>
                   </div>
                 </label>
@@ -162,9 +162,9 @@ export class ResolveHoldDialogComponent {
   readonly errorMessage = signal<string | null>(null);
 
   readonly holdReasonOptions: SelectOption[] = [
-    { value: 'PAYMENT_REVIEW', label: 'PAYMENT_REVIEW - Đối soát thanh toán / VietQR nghi vấn' },
-    { value: 'PAID_BUT_OUT_OF_STOCK', label: 'PAID_BUT_OUT_OF_STOCK - Trả tiền trễ dẫn đến hết hàng' },
-    { value: 'PICKUP_EXPIRED', label: 'PICKUP_EXPIRED - Đơn nhận tại showroom quá hạn 14 ngày' },
+    { value: 'PAYMENT_REVIEW', label: 'Đối soát thanh toán / VietQR nghi vấn' },
+    { value: 'PAID_BUT_OUT_OF_STOCK', label: 'Trả tiền trễ dẫn đến hết hàng' },
+    { value: 'PICKUP_EXPIRED', label: 'Đơn nhận tại showroom quá hạn 14 ngày' },
   ];
 
   selectedAction: 'CONFIRM_RESUME' | 'CANCEL_REFUND' | 'EXTEND_PICKUP' = 'CONFIRM_RESUME';

@@ -315,7 +315,7 @@ import {
                               }
                               @if (entry.deltaOnHand < 0) {
                                 <div class="text-rose-600 font-bold">
-                                  Kho onHand: {{ entry.deltaOnHand }}
+                                  Kho thực tế: {{ entry.deltaOnHand }}
                                 </div>
                               }
                             }
@@ -392,7 +392,7 @@ export class AdminSupplierReturnsPageComponent implements OnInit {
   formatReturnSources(sources: string[]): string {
     if (!sources || sources.length === 0) return 'Kho linh kiện';
     return sources
-      .map((s) => (s === 'quarantineDamaged' ? 'Kho cách ly lỗi' : 'Kho thực tế (OnHand)'))
+      .map((s) => (s === 'quarantineDamaged' ? 'Kho cách ly lỗi' : 'Kho thực tế'))
       .join(', ');
   }
 

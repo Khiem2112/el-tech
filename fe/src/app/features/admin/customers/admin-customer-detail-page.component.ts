@@ -149,7 +149,7 @@ type ToastNotification = {
               {{ formatCurrency(cust.stats.totalSpent) }}
             </div>
             <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
-              Tổng Chi Tiêu (LTV)
+              Tổng Chi Tiêu
             </div>
           </div>
 

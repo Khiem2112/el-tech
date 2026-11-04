@@ -46,7 +46,7 @@ type ToastNotification = {
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
-            PC Lắp Sẵn (Virtual BOM)
+            PC Lắp Sẵn
           </h1>
           <p class="text-xs text-muted mt-0.5">
             Quản lý danh mục cấu hình PC lắp sẵn theo định mức linh kiện ảo và tính tồn khả dụng
@@ -146,7 +146,7 @@ type ToastNotification = {
       @if (bundleService.isLoading()) {
         <div class="p-12 text-center bg-surface border border-line rounded-lg space-y-3">
           <div class="inline-block w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-          <p class="text-xs text-muted">Đang nạp danh sách cấu hình Virtual BOM...</p>
+          <p class="text-xs text-muted">Đang nạp danh sách cấu hình PC lắp sẵn...</p>
         </div>
       } @else if (bundleService.error()) {
         <div class="p-6 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-xs flex items-center justify-between">
@@ -300,8 +300,8 @@ type ToastNotification = {
                             type="button"
                             (click)="openEditSheet(bundle)"
                             class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
-                            title="Sửa cấu hình định mức BOM"
-                            aria-label="Sửa cấu hình định mức BOM"
+                            title="Sửa cấu hình định mức"
+                            aria-label="Sửa cấu hình định mức"
                           >
                             <lucide-icon name="pencil" class="size-4" aria-hidden="true"></lucide-icon>
                           </button>
@@ -469,7 +469,7 @@ type ToastNotification = {
                       class="inline-flex items-center gap-1"
                     >
                       <lucide-icon name="pencil" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                      <span>Sửa BOM</span>
+                      <span>Sửa cấu hình</span>
                     </button>
                   </div>
                 </div>
@@ -535,10 +535,10 @@ export class AdminPcBundlesPageComponent implements OnInit {
 
   readonly lifecycleOptions: SelectOption[] = [
     { value: 'ALL', label: 'Tất cả trạng thái' },
-    { value: 'ACTIVE', label: 'Đang bán (ACTIVE)' },
-    { value: 'DRAFT', label: 'Bản nháp (DRAFT)' },
-    { value: 'PAUSED', label: 'Tạm dừng (PAUSED)' },
-    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh (DISCONTINUED)' },
+    { value: 'ACTIVE', label: 'Đang bán' },
+    { value: 'DRAFT', label: 'Bản nháp' },
+    { value: 'PAUSED', label: 'Tạm dừng' },
+    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh' },
   ];
 
   ngOnInit(): void {

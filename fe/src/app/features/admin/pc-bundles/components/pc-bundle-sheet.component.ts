@@ -58,10 +58,10 @@ type EditableBomItem = {
           <div class="h-14 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
               <h2 id="bundle-sheet-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
-                {{ isEditMode() ? 'Cấu Hình Định Mức BOM PC Lắp Sẵn' : 'Tạo Mới Cấu Hình PC Lắp Sẵn' }}
+                {{ isEditMode() ? 'Cấu Hình Định Mức PC Lắp Sẵn' : 'Tạo Mới Cấu Hình PC Lắp Sẵn' }}
               </h2>
               <p class="text-xs text-muted">
-                {{ isEditMode() ? ('Cấu hình: ' + name()) : 'Thiết lập định mức linh kiện ảo (Virtual BOM)' }}
+                {{ isEditMode() ? ('Cấu hình: ' + name()) : 'Thiết lập định mức linh kiện' }}
               </p>
             </div>
             <button
@@ -155,7 +155,7 @@ type EditableBomItem = {
               <div class="flex items-center justify-between">
                 <div>
                   <span class="font-bold text-foreground uppercase tracking-wider text-xs">
-                    Danh Sách Linh Kiện Cấu Thành (BOM)
+                    Danh Sách Linh Kiện Cấu Thành
                   </span>
                   <span class="text-muted ml-2">({{ bomItems().length }} linh kiện)</span>
                 </div>
@@ -168,14 +168,14 @@ type EditableBomItem = {
                   class="inline-flex items-center gap-1.5"
                 >
                   <lucide-icon name="plus" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
-                  <span>{{ showSearchPanel() ? 'Đóng Bộ Tìm Kiếm' : 'Thêm Linh Kiện Vào BOM' }}</span>
+                  <span>{{ showSearchPanel() ? 'Đóng Bộ Tìm Kiếm' : 'Thêm Linh Kiện' }}</span>
                 </button>
               </div>
 
               @if (showSearchPanel()) {
                 <div class="p-4 bg-surface-alt border border-line rounded-lg space-y-3">
                   <div class="font-bold text-foreground text-xs uppercase flex items-center justify-between pb-1 border-b border-line">
-                    <span class="text-primary">Tra cứu SKU linh kiện đang hoạt động (ACTIVE)</span>
+                    <span class="text-primary">Tra cứu SKU linh kiện đang hoạt động</span>
                     <button
                       type="button"
                       (click)="showSearchPanel.set(false)"
@@ -257,7 +257,7 @@ type EditableBomItem = {
                     </div>
                   } @else if (hasSearched() && !isSearchingVariants()) {
                     <div class="p-3 text-center text-muted text-xs italic bg-surface border border-line rounded">
-                      Không tìm thấy linh kiện biến thể ACTIVE phù hợp với từ khóa.
+                      Không tìm thấy linh kiện biến thể đang hoạt động phù hợp với từ khóa.
                     </div>
                   }
                 </div>
@@ -285,7 +285,7 @@ type EditableBomItem = {
                     @if (bomItems().length === 0) {
                       <tr>
                         <td colspan="6" class="py-6 text-center text-muted italic">
-                          Chưa có linh kiện nào trong cấu hình BOM. Hãy nhấn nút "Thêm Linh Kiện Vào BOM" ở trên để nạp linh kiện.
+                          Chưa có linh kiện nào trong cấu hình. Hãy nhấn nút "Thêm Linh Kiện" ở trên để nạp linh kiện.
                         </td>
                       </tr>
                     } @else {
@@ -319,8 +319,8 @@ type EditableBomItem = {
                               type="button"
                               (click)="removeBomItem(idx)"
                               class="p-1 rounded text-destructive hover:opacity-80 hover:bg-surface-alt transition-colors"
-                              title="Xóa linh kiện khỏi BOM"
-                              aria-label="Xóa linh kiện khỏi BOM"
+                              title="Xóa linh kiện"
+                              aria-label="Xóa linh kiện"
                             >
                               <lucide-icon name="trash-2" class="size-4 text-destructive" aria-hidden="true"></lucide-icon>
                             </button>
@@ -352,7 +352,7 @@ type EditableBomItem = {
 
                 <div class="p-3 bg-surface-alt/70 rounded border border-line space-y-1">
                   <label for="bundle-discount-input" class="block text-xs uppercase font-semibold text-destructive">
-                    Chiết Khấu Trọn Bộ (VNĐ)
+                    Chiết Khấu Trọn Bộ
                   </label>
                   <input
                     id="bundle-discount-input"
@@ -459,10 +459,10 @@ export class PcBundleSheetComponent {
   readonly categories = this.categoryService.categories;
 
   readonly lifecycleOptions: SelectOption[] = [
-    { value: 'DRAFT', label: 'Bản nháp (DRAFT)' },
-    { value: 'ACTIVE', label: 'Đang kinh doanh (ACTIVE)' },
-    { value: 'PAUSED', label: 'Tạm dừng bán (PAUSED)' },
-    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh (DISCONTINUED)' },
+    { value: 'DRAFT', label: 'Bản nháp' },
+    { value: 'ACTIVE', label: 'Đang kinh doanh' },
+    { value: 'PAUSED', label: 'Tạm dừng bán' },
+    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh' },
   ];
 
   readonly categorySearchOptions = computed<SelectOption[]>(() => [
@@ -633,11 +633,11 @@ export class PcBundleSheetComponent {
     items.splice(index, 1);
     this.bomItems.set(items);
     if (items.length === 0) {
-      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình BOM');
+      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình');
     } else {
       const inactive = items.find((item) => !item.isActive || item.lifecycleState !== 'ACTIVE');
       if (inactive) {
-        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái ACTIVE`);
+        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái đang kinh doanh`);
       } else {
         this.bomError.set(null);
       }
@@ -668,7 +668,7 @@ export class PcBundleSheetComponent {
 
   addVariantToBom(sku: AdminVariantCatalogItem): void {
     if (sku.lifecycleState !== 'ACTIVE' || !sku.isActive) {
-      this.errorMessage.set(`Linh kiện ${sku.sku} không ở trạng thái ACTIVE.`);
+      this.errorMessage.set(`Linh kiện ${sku.sku} không ở trạng thái đang kinh doanh.`);
       return;
     }
 
@@ -744,12 +744,12 @@ export class PcBundleSheetComponent {
     }
 
     if (this.bomItems().length === 0) {
-      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình BOM');
+      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình');
       hasError = true;
     } else {
       const inactive = this.bomItems().find((item) => !item.isActive || item.lifecycleState !== 'ACTIVE');
       if (inactive) {
-        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái ACTIVE`);
+        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái đang kinh doanh`);
         hasError = true;
       } else {
         this.bomError.set(null);

@@ -77,7 +77,7 @@ import {
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label class="block font-semibold text-muted-foreground text-xs uppercase mb-1">
-                  Phí giao hàng (VND):
+                  Phí giao hàng:
                 </label>
                 <input
                   type="number"

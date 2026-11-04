@@ -121,7 +121,7 @@ function slugify(text: string): string {
 
             <div>
               <label for="brand-slug" class="block text-xs font-semibold uppercase tracking-wider text-muted mb-1">
-                Đường dẫn định danh (Slug) <span class="text-rose-500">*</span>
+                Đường dẫn định danh <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <input

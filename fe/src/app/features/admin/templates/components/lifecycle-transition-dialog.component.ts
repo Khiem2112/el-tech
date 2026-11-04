@@ -86,7 +86,7 @@ import {
             @if (targetType() === 'template' && selectedState() === 'ACTIVE') {
               <div class="space-y-2 pt-2 border-t border-line/60">
                 <div class="flex items-center justify-between text-xs font-semibold">
-                  <span class="text-muted uppercase tracking-wide">Điều Kiện Kích Hoạt (ACTIVE)</span>
+                  <span class="text-muted uppercase tracking-wide">Điều Kiện Kích Hoạt</span>
                   <span
                     class="px-2 py-0.5 rounded text-xs font-bold"
                     [class.bg-emerald-500/10]="canTransitionToActive()"

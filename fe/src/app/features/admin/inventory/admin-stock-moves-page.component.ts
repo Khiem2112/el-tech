@@ -277,7 +277,7 @@ import {
                         <div class="bg-surface border border-line rounded-lg p-4 space-y-3 shadow-inner">
                           <div class="flex items-center justify-between flex-wrap gap-2">
                             <div class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-2">
-                              <span>Chi Tiết Dòng Dịch Chuyển (StockMoveLine)</span>
+                              <span>Chi Tiết Dòng Dịch Chuyển</span>
                               <span class="px-2 py-0.5 rounded-full bg-surface-alt border border-line text-[11px] text-foreground font-semibold">
                                 {{ move.lines.length }} dòng linh kiện
                               </span>
@@ -383,16 +383,16 @@ export class AdminStockMovesPageComponent implements OnInit {
 
   readonly moveTypeOptions: SelectOption[] = [
     { value: 'ALL', label: 'Tất cả loại phiếu' },
-    { value: 'PURCHASE_RECEIPT', label: 'Nhập hàng NCC (PURCHASE_RECEIPT)' },
-    { value: 'ORDER_ISSUE', label: 'Xuất kho bán hàng (ORDER_ISSUE)' },
+    { value: 'PURCHASE_RECEIPT', label: 'Nhập hàng nhà cung cấp' },
+    { value: 'ORDER_ISSUE', label: 'Xuất kho bán hàng' },
   ];
 
   readonly statusOptions: SelectOption[] = [
     { value: 'ALL', label: 'Tất cả trạng thái' },
-    { value: 'DRAFT', label: 'Nháp (DRAFT)' },
-    { value: 'RESERVED', label: 'Giữ chỗ (RESERVED)' },
-    { value: 'VALIDATED', label: 'Đã xác thực (VALIDATED)' },
-    { value: 'CANCELLED', label: 'Đã hủy (CANCELLED)' },
+    { value: 'DRAFT', label: 'Nháp' },
+    { value: 'RESERVED', label: 'Giữ chỗ' },
+    { value: 'VALIDATED', label: 'Đã xác thực' },
+    { value: 'CANCELLED', label: 'Đã hủy' },
   ];
 
   ngOnInit(): void {

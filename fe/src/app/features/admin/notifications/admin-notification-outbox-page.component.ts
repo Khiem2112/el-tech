@@ -44,7 +44,7 @@ type ToastNotification = {
             Nhật Ký Thông Báo Giao Dịch
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Hàng đợi và lịch sử gửi thông báo tự động (In-app, Email, SMS)
+            Hàng đợi và lịch sử gửi thông báo tự động
           </p>
         </div>
       </div>
@@ -270,9 +270,9 @@ export class AdminNotificationOutboxPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
 
   readonly channelOptions: readonly SelectOption[] = [
-    { value: 'ALL', label: 'Tất cả kênh (In-app, Email, SMS)' },
+    { value: 'ALL', label: 'Tất cả kênh' },
     { value: 'IN_APP', label: 'Thông báo trong ứng dụng' },
-    { value: 'EMAIL', label: 'Thư điện tử (Email)' },
+    { value: 'EMAIL', label: 'Thư điện tử' },
     { value: 'SMS', label: 'Tin nhắn SMS' },
   ];
 
