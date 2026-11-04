@@ -23,13 +23,14 @@ import {
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         role="dialog"
         aria-modal="true"
         aria-labelledby="sheet-redemption-title"
+        (click)="onClose()"
       >
         <div
-          class="relative bg-surface border-l border-line shadow-2xl w-full max-w-2xl h-full flex flex-col text-sm text-foreground"
+          class="relative bg-surface border border-line rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col text-sm text-foreground overflow-hidden"
           (click)="$event.stopPropagation()"
         >
           <header class="h-16 px-6 border-b border-line flex items-center justify-between shrink-0 bg-surface">
@@ -46,8 +47,8 @@ import {
               type="button"
               (click)="onClose()"
               class="p-1.5 rounded text-muted hover:text-foreground hover:bg-surface-alt transition-colors cursor-pointer"
-              title="Đóng bảng trượt"
-              aria-label="Đóng bảng trượt"
+              title="Đóng hộp thoại"
+              aria-label="Đóng hộp thoại"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

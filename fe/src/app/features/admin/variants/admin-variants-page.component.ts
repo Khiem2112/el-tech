@@ -41,7 +41,7 @@ type ToastNotification = {
             Danh Mục Biến Thể SKU Toàn Hệ Thống
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Tra cứu nhanh theo mã vạch barcode, mã SKU hoặc nhãn biến thể phục vụ kho vận và bán hàng
+            Tra cứu nhanh theo mã vạch barcode, mã linh kiện hoặc nhãn biến thể phục vụ kho vận và bán hàng
           </p>
         </div>
 

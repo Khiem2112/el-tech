@@ -119,7 +119,6 @@ type FlattenedCategoryRow = AdminCategory & {
                 <th class="py-3 px-4 whitespace-nowrap">Tên Danh Mục Ngành Hàng</th>
                 <th class="py-3 px-4 text-center whitespace-nowrap">Số Mẫu</th>
                 <th class="py-3 px-4 text-center whitespace-nowrap">Tồn Kho</th>
-                <th class="py-3 px-4 text-center whitespace-nowrap">Điều Chuyển</th>
                 <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
                 <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
               </tr>
@@ -127,14 +126,14 @@ type FlattenedCategoryRow = AdminCategory & {
             <tbody class="divide-y divide-line text-sm">
               @if (categoryService.isLoading()) {
                 <tr>
-                  <td colspan="7" class="py-12 text-center text-muted">
+                  <td colspan="6" class="py-12 text-center text-muted">
                     <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
                     <p>Đang tải cây danh mục ngành hàng...</p>
                   </td>
                 </tr>
               } @else if (visibleCategories().length === 0) {
                 <tr>
-                  <td colspan="7" class="py-12 text-center text-muted">
+                  <td colspan="6" class="py-12 text-center text-muted">
                     <p class="font-medium text-foreground">Không tìm thấy danh mục ngành hàng nào phù hợp</p>
                     <p class="text-xs text-muted mt-1">Vui lòng điều chỉnh lại bộ lọc hoặc tạo danh mục mới</p>
                   </td>
@@ -222,18 +221,6 @@ type FlattenedCategoryRow = AdminCategory & {
                       </button>
                     </td>
 
-                    <td class="py-3 px-4 text-center whitespace-nowrap">
-                      <button
-                        type="button"
-                        (click)="onNavigateToTransfers(cat)"
-                        class="px-2.5 py-1 rounded font-bold text-xs transition-colors cursor-pointer inline-flex items-center gap-1"
-                        [ngClass]="cat.activeTransfers > 0 ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200' : 'bg-surface-alt hover:bg-surface text-muted border border-line'"
-                        title="Bấm để xem phiếu điều chuyển kho liên quan đến danh mục này"
-                      >
-                        <span class="tabular-nums">{{ cat.activeTransfers }}</span>
-                        <span class="font-normal text-[11px]">chuyển</span>
-                      </button>
-                    </td>
 
                     <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (cat.isActive) {
@@ -508,12 +495,6 @@ export class AdminCategoriesPageComponent implements OnInit {
 
   onNavigateToInventory(category: AdminCategory): void {
     this.router.navigate(['/admin/inventory/balances'], {
-      queryParams: { categoryId: category.id, category: category.slug },
-    });
-  }
-
-  onNavigateToTransfers(category: AdminCategory): void {
-    this.router.navigate(['/admin/inventory/transfers'], {
       queryParams: { categoryId: category.id, category: category.slug },
     });
   }

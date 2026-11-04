@@ -123,7 +123,7 @@ type ToastNotification = {
               type="text"
               [value]="searchQuery()"
               (input)="onSearchInput($event)"
-              placeholder="Tên mẫu, model hoặc slug..."
+              placeholder="Tên mẫu, mã model linh kiện..."
               class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
             />
           </div>

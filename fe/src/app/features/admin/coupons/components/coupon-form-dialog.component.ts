@@ -404,7 +404,7 @@ function formatIsoToDateInput(isoString?: string): string {
                     [disabled]="!selectedSkuIdToAdd()"
                     class="px-3.5 py-2 bg-surface hover:bg-surface-alt border border-line text-foreground text-xs font-semibold rounded-md transition-colors cursor-pointer disabled:opacity-50"
                   >
-                    Thêm SKU
+                    Thêm linh kiện
                   </button>
                 </div>
 

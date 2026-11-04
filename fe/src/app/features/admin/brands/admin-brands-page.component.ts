@@ -159,14 +159,6 @@ type ToastNotification = {
                         ></span>
                         <span class="font-bold text-foreground">{{ brand.name }}</span>
                       </div>
-                      @if (brand.description) {
-                        <div
-                          class="text-xs text-muted font-normal mt-0.5 pl-4 line-clamp-1 max-w-md"
-                          [title]="brand.description"
-                        >
-                          {{ brand.description }}
-                        </div>
-                      }
                     </td>
 
                     <td class="py-3 px-4 whitespace-nowrap">

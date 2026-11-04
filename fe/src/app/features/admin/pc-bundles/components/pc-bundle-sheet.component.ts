@@ -202,7 +202,7 @@ type EditableBomItem = {
                         [ngModel]="searchKeyword()"
                         (ngModelChange)="searchKeyword.set($event)"
                         (keydown.enter)="executeVariantSearch()"
-                        placeholder="Nhập tên linh kiện, mã SKU hoặc barcode..."
+                        placeholder="Nhập tên linh kiện, mã linh kiện hoặc barcode..."
                         class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
                       />
                       <button

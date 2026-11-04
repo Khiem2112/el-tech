@@ -34,7 +34,7 @@ import {
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
                 <h2 class="font-bold text-foreground text-base truncate">
-                  Lịch Sử Biến Động Kho Linh Kiện
+                  Lịch Sử Biến Động
                 </h2>
                 @if (detail?.quant; as quant) {
                   <p class="text-xs text-muted tabular truncate">
