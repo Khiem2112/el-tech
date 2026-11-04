@@ -309,15 +309,15 @@ export class SerialDetailDialogComponent {
   getStatusBadgeClass(status: string): string {
     switch (status) {
       case 'AVAILABLE':
-        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
       case 'RESERVED':
-        return 'bg-amber-50 text-amber-700 border border-amber-200';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'IN_TRANSIT':
-        return 'bg-sky-50 text-sky-700 border border-sky-200';
+        return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
       case 'ISSUED':
         return 'bg-surface-alt text-foreground border border-line';
       case 'QUARANTINED':
-        return 'bg-rose-50 text-rose-700 border border-rose-200';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
       case 'RETURNED_TO_SUPPLIER':
         return 'bg-surface-alt text-muted border border-line';
       default:

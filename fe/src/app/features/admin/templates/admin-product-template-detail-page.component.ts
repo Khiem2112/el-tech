@@ -1668,13 +1668,13 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   getLifecycleBadgeClass(state: ProductLifecycle): string {
     switch (state) {
       case 'ACTIVE':
-        return 'px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary border border-primary/20';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
       case 'DRAFT':
-        return 'px-2 py-0.5 rounded text-xs font-bold bg-surface-alt text-muted border border-line';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-muted border border-line';
       case 'PAUSED':
-        return 'px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-700 border border-amber-500/30';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'DISCONTINUED':
-        return 'px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 text-destructive border border-destructive/30';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
     }
   }
 

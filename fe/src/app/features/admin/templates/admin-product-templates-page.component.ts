@@ -885,13 +885,13 @@ export class AdminProductTemplatesPageComponent implements OnInit {
   getLifecycleBadgeClass(state: ProductLifecycle): string {
     switch (state) {
       case 'ACTIVE':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap';
       case 'DRAFT':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-muted border border-line whitespace-nowrap';
       case 'PAUSED':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap';
       case 'DISCONTINUED':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 whitespace-nowrap';
     }
   }
 

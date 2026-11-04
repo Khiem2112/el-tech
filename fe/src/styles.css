@@ -85,3 +85,17 @@ button, input, select, textarea, code, pre, kbd { font: inherit; }
 }
 
 
+
+lucide-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+lucide-icon > svg {
+  position: static !important;
+  transform: none !important;
+  translate: none !important;
+  inset: auto !important;
+}

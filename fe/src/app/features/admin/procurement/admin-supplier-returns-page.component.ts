@@ -58,7 +58,7 @@ import {
             />
             <lucide-icon
               name="search"
-              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted text-muted-foreground"
+              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted"
               aria-hidden="true"
             ></lucide-icon>
           </div>

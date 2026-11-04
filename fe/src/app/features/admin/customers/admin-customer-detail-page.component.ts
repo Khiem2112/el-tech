@@ -571,14 +571,14 @@ export class AdminCustomerDetailPageComponent implements OnInit {
 
   getOrderStatusBadgeClass(status: string): string {
     if (status === 'COMPLETED') {
-      return 'bg-primary/10 text-primary border border-primary/25';
+      return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
     }
     if (status === 'CANCELLED' || status === 'DELIVERY_FAILED') {
-      return 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/25';
+      return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
     }
     if (status === 'SHIPPING' || status === 'ASSEMBLING') {
-      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25';
+      return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
     }
-    return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25';
+    return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
   }
 }

@@ -84,7 +84,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
               <div class="relative flex items-center">
                 <lucide-icon
                   name="search"
-                  class="absolute left-2.5 size-3.5 text-muted pointer-events-none"
+                  class="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted pointer-events-none"
                   aria-hidden="true"
                 ></lucide-icon>
                 <input

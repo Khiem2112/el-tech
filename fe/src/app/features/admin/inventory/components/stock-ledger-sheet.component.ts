@@ -267,9 +267,9 @@ export class StockLedgerSheetComponent {
     const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
       case 'QUARANTINE':
-        return `${base} bg-rose-50 text-danger border-rose-200`;
+        return `${base} bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20`;
       case 'RESERVE':
-        return `${base} bg-amber-50 text-warning border-amber-200`;
+        return `${base} bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20`;
       default:
         return `${base} bg-surface-alt text-foreground border-line`;
     }

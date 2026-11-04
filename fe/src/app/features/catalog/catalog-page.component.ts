@@ -69,7 +69,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <div>
           <label class="block text-xs font-bold text-foreground mb-1.5">Từ khóa tìm kiếm</label>
           <div class="relative flex items-center">
-            <lucide-icon name="search" class="absolute left-2.5 w-4 h-4 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
+            <lucide-icon name="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
             <input
               type="text"
               appInput

@@ -467,12 +467,12 @@ export class AdminOrderDetailPageComponent implements OnInit {
   statusBadgeClass(status: string): string {
     switch (status) {
       case 'CONFIRMED':
-        return 'bg-primary/10 text-primary border border-primary/20';
+        return 'bg-primary/10 text-primary-strong border border-primary/20';
       case 'COMPLETED':
-        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
       case 'PREPARING_COMPONENTS':
       case 'ASSEMBLING':
-        return 'bg-surface-elevated text-primary border border-primary/30';
+        return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
       case 'READY_FOR_PICKUP':
       case 'SHIPPING':
         return 'bg-surface-alt text-foreground border border-line';
@@ -480,10 +480,10 @@ export class AdminOrderDetailPageComponent implements OnInit {
       case 'PENDING_PAYMENT':
         return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'ON_HOLD':
-        return 'bg-warning/10 text-warning border border-warning/30';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'CANCELLED':
       case 'DELIVERY_FAILED':
-        return 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
       default:
         return 'bg-surface-alt text-muted border border-line';
     }

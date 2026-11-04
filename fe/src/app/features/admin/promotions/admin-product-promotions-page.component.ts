@@ -154,7 +154,7 @@ type ToastNotification = {
                 class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded-md text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
               />
               <svg
-                class="w-4 h-4 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                class="w-4 h-4 text-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
