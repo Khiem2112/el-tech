@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ProductImagePipe } from '../../lib/product-image.pipe';
-import { handleProductImageError } from '../../core/constants/product.constants';
+import { DEFAULT_PRODUCT_IMAGE_PATH, handleProductImageError, resolveAllProductImages } from '../../core/constants/product.constants';
 import { VndPipe } from '../../lib/vnd.pipe';
 import { CatalogService, ProductDetail, ProductReviewItem } from './catalog.service';
 import { CartService } from '../../services/cart.service';
@@ -42,7 +41,6 @@ const SPEC_LABEL_MAP: Record<string, string> = {
     DatePipe,
     RouterLink,
     VndPipe,
-    ProductImagePipe,
     ButtonDirective,
     BadgeDirective,
     AppIconModule,
@@ -80,7 +78,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <span appBadge variant="outline" class="absolute top-4 right-4 text-xs font-semibold bg-surface/90">BẢO HÀNH 36T</span>
               
               <img
-                [src]="galleryImages()[selectedImageIndex()] | productImage"
+                [src]="currentMainImage()"
                 [alt]="item.name"
                 class="max-h-full max-w-full object-contain transition-all duration-300"
                 (error)="onImageError($event)"
@@ -100,7 +98,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
                   [class.border-line]="selectedImageIndex() !== $index"
                 >
                   <img
-                    [src]="img | productImage"
+                    [src]="img"
                     [alt]="item.name + ' - góc nhìn ' + ($index + 1)"
                     class="size-full object-contain"
                     (error)="onImageError($event)"
@@ -502,7 +500,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <div class="space-y-3 text-xs">
                 <div class="p-3 rounded-lg border border-line bg-surface-alt flex items-center gap-3">
                   <img
-                    [src]="galleryImages()[selectedImageIndex()] | productImage"
+                    [src]="currentMainImage()"
                     [alt]="item.name"
                     class="size-14 rounded object-contain bg-surface border border-line p-1"
                     (error)="onImageError($event)"
@@ -593,20 +591,16 @@ export class ProductDetailPageComponent {
   protected readonly galleryImages = computed<readonly string[]>(() => {
     const item = this.product();
     if (!item) return [];
-    const primaryMedia = item.media;
-    let primaryUrl = '';
-    if (typeof primaryMedia === 'string' && primaryMedia) {
-      primaryUrl = primaryMedia;
-    } else if (Array.isArray(primaryMedia) && primaryMedia[0]) {
-      primaryUrl = String(primaryMedia[0]);
-    } else if (typeof primaryMedia === 'object' && primaryMedia !== null) {
-      const obj = primaryMedia as { url?: string; thumbnail?: string };
-      primaryUrl = obj.url || obj.thumbnail || '';
+    return resolveAllProductImages(item.media);
+  });
+
+  protected readonly currentMainImage = computed<string>(() => {
+    const images = this.galleryImages();
+    if (images.length === 0) {
+      return DEFAULT_PRODUCT_IMAGE_PATH;
     }
-    if (!primaryUrl) {
-      primaryUrl = '/images/products/placeholder.webp';
-    }
-    return [primaryUrl, primaryUrl, primaryUrl, primaryUrl];
+    const index = this.selectedImageIndex();
+    return images[index] ?? images[0] ?? DEFAULT_PRODUCT_IMAGE_PATH;
   });
 
   protected readonly quickSpecs = computed<readonly { label: string; value: string }[]>(() => {
@@ -827,6 +821,7 @@ export class ProductDetailPageComponent {
       const product = await this.catalog.detail(categorySlug, productSlug);
       this.product.set(product);
       this.selected.set(product.variants[0] ?? null);
+      this.selectedImageIndex.set(0);
 
       try {
         const reviews = await this.catalog.reviews(productSlug);
