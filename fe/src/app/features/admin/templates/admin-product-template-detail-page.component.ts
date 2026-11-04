@@ -264,7 +264,7 @@ type VariantSpecPair = {
           [class.cursor-not-allowed]="isNew()"
           [title]="isNew() ? 'Vui lòng lưu thông tin chung trước khi quản lý biến thể' : 'Cấu hình chi tiết biến thể'"
         >
-          <span>Cấu Hình Chi Tiết (Biến Thể)</span>
+          <span>Cấu Hình Chi Tiết Biến Thể</span>
           @if (!isNew()) {
             <span
               class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
@@ -398,7 +398,7 @@ type VariantSpecPair = {
 
                 <div>
                   <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Dòng Chip / Vi Kiến Trúc (Chipset Family)
+                    Dòng Chip / Vi Kiến Trúc
                   </label>
                   <input
                     type="text"
@@ -495,7 +495,7 @@ type VariantSpecPair = {
               <div class="flex items-center justify-between border-b border-line pb-2">
                 <div>
                   <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
-                    Thông Số Kỹ Thuật Động (Dynamic Specification Form)
+                    Thông Số Kỹ Thuật Động
                   </h2>
                   <p class="text-xs text-muted">
                     Tự động kết xuất theo schema của danh mục đã chọn
@@ -730,7 +730,7 @@ type VariantSpecPair = {
 
                     <div>
                       <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                        Giá Bán Niêm Yết (VND) <span class="text-destructive">*</span>
+                        Giá Bán Niêm Yết <span class="text-destructive">*</span>
                       </label>
                       <input
                         type="number"
@@ -773,7 +773,7 @@ type VariantSpecPair = {
                           (change)="vFormSerialRequired.set($any($event.target).checked)"
                           class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
                         />
-                        <span class="font-medium text-foreground text-xs">Quản lý theo dõi sê-ri từng chiếc (Serial Required)</span>
+                        <span class="font-medium text-foreground text-xs">Quản lý theo dõi số sê-ri</span>
                       </label>
 
                       <label class="inline-flex items-center gap-2 cursor-pointer select-none">
@@ -783,7 +783,7 @@ type VariantSpecPair = {
                           (change)="vFormIsActive.set($any($event.target).checked)"
                           class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
                         />
-                        <span class="font-medium text-foreground text-xs">Kích hoạt hiển thị kinh doanh (isActive)</span>
+                        <span class="font-medium text-foreground text-xs">Kích hoạt kinh doanh</span>
                       </label>
                     </div>
                   </div>
@@ -830,7 +830,7 @@ type VariantSpecPair = {
                   <div class="flex items-center justify-between flex-wrap gap-2">
                     <div>
                       <h3 class="font-bold text-foreground text-xs uppercase tracking-wider">
-                        Thông Số Kỹ Thuật Riêng Của Biến Thể (Variant Spec)
+                        Thông Số Kỹ Thuật Riêng
                       </h3>
                       <p class="text-xs text-muted">
                         Các thuộc tính đặc thù cho riêng SKU này (màu sắc, dung lượng, xung nhịp, phụ kiện...)
@@ -1523,9 +1523,9 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
     const price = Number(this.vFormSellingPrice());
     if (isNaN(price) || price <= 0) {
-      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 VND';
+      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 đ';
     } else if (!Number.isInteger(price)) {
-      errors['sellingPrice'] = 'Giá bán phải là số nguyên VND';
+      errors['sellingPrice'] = 'Giá bán phải là số nguyên';
     }
 
     this.variantFieldErrors.set(errors);

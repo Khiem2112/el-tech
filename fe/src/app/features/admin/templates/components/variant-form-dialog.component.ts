@@ -113,7 +113,7 @@ import {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                      Giá Bán Niêm Yết (VND) <span class="text-destructive">*</span>
+                      Giá Bán Niêm Yết <span class="text-destructive">*</span>
                     </label>
                     <input
                       type="number"
@@ -155,7 +155,7 @@ import {
                       (change)="serialRequired.set($any($event.target).checked)"
                       class="rounded text-primary focus:ring-0 w-4 h-4 bg-surface border-line"
                     />
-                    <span class="font-medium text-foreground text-xs">Quản lý theo dõi số sê-ri từng chiếc (Serial Required)</span>
+                    <span class="font-medium text-foreground text-xs">Quản lý theo dõi số sê-ri</span>
                   </label>
                 </div>
               </div>
@@ -308,9 +308,9 @@ export class VariantFormDialogComponent {
 
     const price = Number(this.sellingPrice());
     if (isNaN(price) || price <= 0) {
-      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 VND';
+      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 đ';
     } else if (!Number.isInteger(price)) {
-      errors['sellingPrice'] = 'Giá bán phải là số nguyên VND';
+      errors['sellingPrice'] = 'Giá bán phải là số nguyên';
     }
 
     this.fieldErrors.set(errors);

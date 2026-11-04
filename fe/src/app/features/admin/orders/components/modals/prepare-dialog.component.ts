@@ -54,7 +54,7 @@ import {
             <div class="flex justify-between">
               <span class="text-muted">Dạng đơn:</span>
               <span class="font-medium text-foreground">
-                {{ order().hasAssembly ? 'Máy tính lắp ráp (Custom PC)' : 'Linh kiện bán lẻ' }}
+                {{ order().hasAssembly ? 'Máy tính lắp ráp' : 'Linh kiện bán lẻ' }}
               </span>
             </div>
           </div>

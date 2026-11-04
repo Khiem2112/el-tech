@@ -631,10 +631,10 @@ export class AdminVariantsPageComponent implements OnInit, AfterViewInit {
 
   readonly lifecycleOptions: SelectOption[] = [
     { value: 'ALL', label: 'Tất cả' },
-    { value: 'ACTIVE', label: 'Đang bán (ACTIVE)' },
-    { value: 'DRAFT', label: 'Bản nháp (DRAFT)' },
-    { value: 'PAUSED', label: 'Tạm ngưng (PAUSED)' },
-    { value: 'DISCONTINUED', label: 'Ngừng KD (DISCONTINUED)' },
+    { value: 'ACTIVE', label: 'Đang bán' },
+    { value: 'DRAFT', label: 'Bản nháp' },
+    { value: 'PAUSED', label: 'Tạm dừng' },
+    { value: 'DISCONTINUED', label: 'Ngừng kinh doanh' },
   ];
 
   readonly categoryOptions = computed<SelectOption[]>(() => [

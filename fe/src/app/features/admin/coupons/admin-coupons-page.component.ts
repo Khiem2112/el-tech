@@ -77,7 +77,7 @@ type ToastNotification = {
           routerLink="/admin/promotions/coupons"
           class="px-4 py-2.5 border-b-2 font-bold whitespace-nowrap flex items-center gap-2 transition-colors border-primary text-primary"
         >
-          <span>Mã Giảm Giá (Coupons)</span>
+          <span>Mã Giảm Giá</span>
           <span class="px-2 py-0.5 rounded-full text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold tabular-nums whitespace-nowrap">
             {{ stats().runningCount }} đang chạy
           </span>
@@ -405,8 +405,8 @@ export class AdminCouponsPageComponent implements OnInit {
 
   readonly discountTypeOptions: readonly SelectOption[] = [
     { value: 'ALL', label: 'Tất cả kiểu giảm' },
-    { value: 'PERCENTAGE', label: 'Theo phần trăm (%)' },
-    { value: 'FIXED_AMOUNT', label: 'Số tiền cố định (VNĐ)' },
+    { value: 'PERCENTAGE', label: 'Theo phần trăm' },
+    { value: 'FIXED_AMOUNT', label: 'Số tiền cố định' },
   ];
 
   ngOnInit(): void {

@@ -23,7 +23,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
         <div class="flex items-center gap-2">
           <span appBadge variant="outline" class="text-xs text-primary border-primary/30">VIRTUAL PC BUNDLES</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight mt-2">Dàn Máy PC Dựng Sẵn (Prebuilt)</h1>
+        <h1 class="text-2xl sm:text-3xl font-black text-foreground tracking-tight mt-2">Dàn Máy PC Dựng Sẵn</h1>
         <p class="text-xs text-muted mt-1 max-w-2xl">Mỗi cấu hình được chọn lọc từ linh kiện thực tế; tương thích tuyệt đối và kiểm tra stress test 24h trước khi xuất xưởng.</p>
       </div>
 

@@ -82,7 +82,7 @@ import {
 
                 <div>
                   <label class="block font-medium text-muted text-xs mb-1">
-                    Số tiền mặt thực thu (VND):
+                    Số tiền mặt thực thu:
                   </label>
                   <input
                     type="number"

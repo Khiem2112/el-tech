@@ -68,7 +68,7 @@ type ToastNotification = {
           routerLink="/admin/promotions/coupons"
           class="px-4 py-2.5 border-b-2 font-semibold whitespace-nowrap flex items-center gap-2 transition-colors border-transparent text-muted hover:text-foreground"
         >
-          <span>Mã Giảm Giá (Coupons)</span>
+          <span>Mã Giảm Giá</span>
         </a>
 
         <a

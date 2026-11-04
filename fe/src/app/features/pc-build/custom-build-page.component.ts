@@ -85,12 +85,16 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   <div>
                     <span class="text-xs sm:text-sm font-bold text-foreground block">Độ Tương Thích &amp; Công Suất</span>
                     <p class="text-xs text-muted">
-                      Socket {{ currentSocket() }} · RAM {{ currentRamType() }}
+                      {{ currentSocket() ? 'Socket ' + currentSocket() : 'Chưa chọn CPU' }} ·
+                      {{ currentRamType() ? 'RAM ' + currentRamType() : 'Chưa chọn RAM' }}
                     </p>
                   </div>
                 </div>
                 <div class="text-xs text-muted">
-                  Nguồn đề xuất: <strong class="text-foreground font-bold tabular">{{ minPsuRecommended() }}W</strong>
+                  Nguồn đề xuất:
+                  <strong class="text-foreground font-bold tabular">
+                    {{ minPsuRecommended() > 0 ? minPsuRecommended() + 'W' : '---' }}
+                  </strong>
                 </div>
               </div>
 
@@ -99,7 +103,10 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <div class="flex items-center justify-between text-xs">
                   <span class="text-muted">Tiêu thụ ước tính: <strong class="text-foreground tabular">{{ fullLoadTdp() }}W</strong></span>
                   <span class="text-muted">
-                    PSU đã chọn: <strong class="text-primary font-bold tabular">{{ currentPsuWattage() }}W</strong>
+                    PSU đã chọn:
+                    <strong class="text-primary font-bold tabular">
+                      {{ currentPsuWattage() > 0 ? currentPsuWattage() + 'W' : 'Chưa chọn' }}
+                    </strong>
                   </span>
                 </div>
 
@@ -107,9 +114,9 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <div class="w-full h-2.5 bg-surface-alt rounded-full overflow-hidden flex border border-line">
                   <div
                     class="h-full rounded-full transition-all duration-500"
-                    [class.bg-primary]="wattagePercent() <= 80"
-                    [class.bg-amber-400]="wattagePercent() > 80 && wattagePercent() <= 100"
-                    [class.bg-danger]="wattagePercent() > 100"
+                    [class.bg-primary]="currentPsuWattage() === 0 || (wattagePercent() <= 80 && fullLoadTdp() <= currentPsuWattage())"
+                    [class.bg-amber-400]="currentPsuWattage() > 0 && wattagePercent() > 80 && fullLoadTdp() <= currentPsuWattage()"
+                    [class.bg-danger]="currentPsuWattage() > 0 && fullLoadTdp() > currentPsuWattage()"
                     [style.width.%]="wattagePercent()"
                   ></div>
                 </div>
@@ -528,42 +535,66 @@ export class CustomBuildPageComponent implements OnInit {
 
   protected readonly currentSocket = computed<string>(() => {
     const cpu = this.bomSlots().find((s) => s.key === 'cpu')?.item;
-    return cpu?.socket || 'LGA1700';
+    return cpu?.socket || '';
   });
 
   protected readonly currentRamType = computed<string>(() => {
     const ram = this.bomSlots().find((s) => s.key === 'ram')?.item;
-    return ram?.memoryType || 'DDR5';
+    return ram?.memoryType || '';
   });
 
   protected readonly currentPsuWattage = computed<number>(() => {
     const psu = this.bomSlots().find((s) => s.key === 'psu')?.item;
-    return psu?.tdp || 850;
+    return psu?.tdp || 0;
   });
 
   protected readonly fullLoadTdp = computed<number>(() => {
-    const cpuTdp = this.bomSlots().find((s) => s.key === 'cpu')?.item?.tdp || 253;
-    const vgaTdp = this.bomSlots().find((s) => s.key === 'vga')?.item?.tdp || 285;
-    const otherTdp = 100;
-    return cpuTdp + vgaTdp + otherTdp;
+    const slots = this.bomSlots();
+    const consumingSlots = slots.filter((s) => s.key !== 'psu' && s.item !== null);
+    if (consumingSlots.length === 0) {
+      return 0;
+    }
+
+    const totalComponentTdp = consumingSlots.reduce(
+      (acc, s) => acc + (typeof s.item?.tdp === 'number' && !Number.isNaN(s.item.tdp) ? s.item.tdp : 0),
+      0
+    );
+    const hasCoreComponent = consumingSlots.some(
+      (s) => s.key === 'cpu' || s.key === 'vga' || s.key === 'mainboard'
+    );
+
+    if (totalComponentTdp === 0 && !hasCoreComponent) {
+      return 0;
+    }
+
+    const baseSystemPower = hasCoreComponent ? 50 : 0;
+    return totalComponentTdp + baseSystemPower;
   });
 
   protected readonly minPsuRecommended = computed<number>(() => {
-    const minCalculated = Math.ceil((this.fullLoadTdp() * 1.25) / 50) * 50;
-    return Math.max(650, minCalculated);
+    const load = this.fullLoadTdp();
+    if (load === 0) {
+      return 0;
+    }
+    const minCalculated = Math.ceil((load * 1.25) / 50) * 50;
+    return Math.max(450, minCalculated);
   });
 
   protected readonly marginPercent = computed<number>(() => {
     const chosen = this.currentPsuWattage();
     const load = this.fullLoadTdp();
-    if (load <= 0) return 0;
+    if (load <= 0 || chosen <= 0) {
+      return 0;
+    }
     return Math.round(((chosen - load) / load) * 100);
   });
 
   protected readonly wattagePercent = computed<number>(() => {
     const chosen = this.currentPsuWattage();
     const load = this.fullLoadTdp();
-    if (chosen <= 0) return 100;
+    if (chosen <= 0 || load <= 0) {
+      return 0;
+    }
     return Math.min(100, Math.round((load / chosen) * 100));
   });
 

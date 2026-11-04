@@ -135,7 +135,7 @@ type EditableAttribute = SpecAttribute & {
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     <div>
                       <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                        Khóa định danh (Key) <span class="text-rose-500">*</span>
+                        Khóa định danh <span class="text-rose-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -300,10 +300,10 @@ export class SpecSchemaSheetComponent {
   private readonly categoryService = inject(AdminCategoryService);
 
   readonly specTypeOptions: readonly SelectOption[] = [
-    { value: 'text', label: 'Văn bản (Text / String)' },
-    { value: 'number', label: 'Số lượng / Giá trị số (Number)' },
-    { value: 'boolean', label: 'Đúng / Sai (Boolean)' },
-    { value: 'select', label: 'Danh sách lựa chọn (Select / Enum)' },
+    { value: 'text', label: 'Văn bản' },
+    { value: 'number', label: 'Giá trị số' },
+    { value: 'boolean', label: 'Đúng / Sai' },
+    { value: 'select', label: 'Danh sách lựa chọn' },
   ];
 
   onAttributeTypeChange(attr: EditableAttribute, type: string): void {
@@ -387,7 +387,7 @@ export class SpecSchemaSheetComponent {
 
     for (const item of rawList) {
       if (!item.key || !item.key.trim()) {
-        this.errorMessage.set('Khóa định danh (key) của mỗi thuộc tính không được để trống');
+        this.errorMessage.set('Khóa định danh của mỗi thuộc tính không được để trống');
         return;
       }
       if (!/^[a-z0-9_]+$/.test(item.key.trim().toLowerCase())) {
@@ -405,7 +405,7 @@ export class SpecSchemaSheetComponent {
     const keys = rawList.map((item) => item.key.trim().toLowerCase());
     const uniqueKeys = new Set(keys);
     if (keys.length !== uniqueKeys.size) {
-      this.errorMessage.set('Các khóa định danh (key) trong danh sách không được trùng lặp');
+      this.errorMessage.set('Các khóa định danh trong danh sách không được trùng lặp');
       return;
     }
 

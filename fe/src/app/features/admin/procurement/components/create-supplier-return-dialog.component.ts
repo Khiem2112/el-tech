@@ -301,8 +301,8 @@ export class CreateSupplierReturnDialogComponent implements OnChanges {
   );
 
   readonly returnSourceOptions: readonly SelectOption[] = [
-    { value: 'quarantineDamaged', label: 'Kho cách ly hàng lỗi (QuarantineDamaged)' },
-    { value: 'onHand', label: 'Kho tồn thực tế khả dụng (OnHand)' },
+    { value: 'quarantineDamaged', label: 'Kho cách ly hàng lỗi' },
+    { value: 'onHand', label: 'Kho tồn thực tế khả dụng' },
   ];
 
   readonly skuOptions = computed<SelectOption[]>(() => {

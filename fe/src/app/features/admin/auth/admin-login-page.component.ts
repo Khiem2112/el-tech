@@ -135,7 +135,7 @@ export class AdminLoginPageComponent {
   constructor() {
     const errorParam = this.route.snapshot.queryParamMap.get('error');
     if (errorParam === 'forbidden') {
-      this.errorMessage.set('Tài khoản của bạn không đủ thẩm quyền quản trị viên (ADMIN).');
+      this.errorMessage.set('Tài khoản của bạn không đủ thẩm quyền quản trị viên.');
     }
   }
 
