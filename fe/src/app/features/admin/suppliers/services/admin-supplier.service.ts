@@ -55,6 +55,10 @@ export class AdminSupplierService {
       : '/v1/admin/suppliers';
 
   readonly suppliers = signal<AdminSupplier[]>([]);
+  readonly total = signal<number>(0);
+  readonly page = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -68,6 +72,11 @@ export class AdminSupplierService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadSuppliers({ page: newPage });
   }
 
   async loadSuppliers(params?: SupplierFilterParams): Promise<void> {
@@ -96,12 +105,10 @@ export class AdminSupplierService {
         httpParams = httpParams.set('isActive', activeParam ? 'true' : 'false');
       }
 
-      if (params?.page) {
-        httpParams = httpParams.set('page', params.page.toString());
-      }
-      if (params?.limit) {
-        httpParams = httpParams.set('limit', params.limit.toString());
-      }
+      const targetPage = params?.page ?? this.page();
+      const targetLimit = params?.limit ?? this.limit();
+      httpParams = httpParams.set('page', targetPage.toString());
+      httpParams = httpParams.set('limit', targetLimit.toString());
 
       const headers = this.getAuthHeaders();
       const response = await firstValueFrom(
@@ -116,6 +123,10 @@ export class AdminSupplierService {
       }
 
       this.suppliers.set(response.data.items);
+      this.total.set(response.data.total);
+      this.page.set(response.data.page);
+      this.limit.set(response.data.limit);
+      this.totalPages.set(Math.ceil(response.data.total / response.data.limit) || 1);
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : 'Khong the tai danh sach nha cung cap';

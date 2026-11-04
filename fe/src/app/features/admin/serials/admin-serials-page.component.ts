@@ -13,12 +13,20 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SerialDetailDialogComponent } from './components/serial-detail-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AdminSerialService, SerialDetailResponse } from './services/admin-serial.service';
 
 @Component({
   selector: 'app-admin-serials-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SerialDetailDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    SerialDetailDialogComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-6 text-sm text-foreground">
@@ -117,7 +125,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               type="text"
               [(ngModel)]="scannerQuery"
               name="scannerQuery"
-              placeholder="Quét mã vạch hoặc gõ chuỗi Serial để tra cứu tức thì..."
+              placeholder="Quét mã vạch hoặc gõ chuỗi Sê-ri để tra cứu tức thì..."
               class="w-full pl-3 pr-20 py-2.5 bg-surface border border-line focus:border-primary focus:ring-1 focus:ring-primary rounded-lg font-bold text-foreground text-sm tabular focus:outline-none transition-colors"
             />
             <span class="absolute right-3 top-2.5 text-muted text-xs uppercase tracking-wider tabular">
@@ -185,7 +193,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                   </span>
                 </div>
                 <div class="text-xs text-muted tabular mt-0.5 flex items-center gap-2 flex-wrap">
-                  <span>Serial: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
+                  <span>Sê-ri: <strong class="text-foreground">{{ qk.serialNumber }}</strong></span>
                   <span>| SKU: <strong class="text-foreground">{{ qk.sku }}</strong></span>
                   @if (qk.barcode) {
                     <span>| Barcode: <strong class="text-foreground">{{ qk.barcode }}</strong></span>
@@ -222,7 +230,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               </span>
             </div>
             <div class="px-2">
-              <span class="text-xs uppercase font-semibold text-muted block">Đơn nhập PO</span>
+              <span class="text-xs uppercase font-semibold text-muted block">Đơn Mua Linh Kiện</span>
               <span class="font-bold text-primary-strong tabular truncate block mt-0.5">
                 {{ qk.origin?.purchaseOrderCode ?? 'PO-GỐC' }}
               </span>
@@ -332,7 +340,7 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             type="text"
             [(ngModel)]="tableSearch"
             (ngModelChange)="onSearchChange($event)"
-            placeholder="Lọc theo Serial, SKU, Tên linh kiện..."
+            placeholder="Lọc theo Sê-ri, SKU, Tên linh kiện..."
             class="w-full h-9 bg-surface border border-line rounded px-3 py-2 text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -373,16 +381,15 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
             <p class="text-sm font-semibold text-foreground">Không tìm thấy mã sê-ri nào phù hợp</p>
-            <p class="text-xs text-muted">Thử thay đổi từ khóa tìm kiếm hoặc bỏ bộ lọc chi nhánh/trạng thái</p>
+            <p class="text-xs text-muted">Thử thay đổi từ khóa tìm kiếm hoặc bỏ bộ lọc trạng thái</p>
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[1000px] border-collapse">
+            <table class="w-full text-left text-sm min-w-[800px] border-collapse">
               <thead>
                 <tr class="bg-surface-alt border-b border-line text-muted uppercase tracking-wider font-semibold text-xs">
                   <th class="py-3 px-4 whitespace-nowrap">Mã Sê-Ri</th>
                   <th class="py-3 px-4">Linh Kiện & SKU</th>
-                  <th class="py-3 px-4 whitespace-nowrap">Vị Trí Linh Kiện</th>
                   <th class="py-3 px-4 whitespace-nowrap">Trạng Thái</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Giá Niêm Yết</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngày Khởi Tạo</th>
@@ -403,20 +410,6 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
                           <span> | Barcode: {{ unit.barcode }}</span>
                         }
                       </div>
-                    </td>
-                    <td class="py-3.5 px-4 whitespace-nowrap">
-                      <span class="text-foreground font-semibold">
-                        {{ unit.currentBranchName || 'Showroom EL-TECH' }}
-                      </span>
-                      <span class="text-xs text-muted tabular block">
-                        @if (unit.status === 'ISSUED') {
-                          (Đã giao khách hàng)
-                        } @else if (unit.status === 'IN_TRANSIT') {
-                          (Đang luân chuyển)
-                        } @else {
-                          ({{ unit.currentBranchCode || 'STORE-MAIN' }})
-                        }
-                      </span>
                     </td>
                     <td class="py-3.5 px-4 whitespace-nowrap">
                       <span class="text-xs px-2 py-0.5 rounded font-bold uppercase whitespace-nowrap" [ngClass]="getStatusBadgeClass(unit.status)">
@@ -451,39 +444,15 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
             </table>
           </div>
 
-          <div class="p-4 bg-surface-alt border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted">
-            <div>
-              Hiển thị <strong class="text-foreground">{{ (page() - 1) * limit() + 1 }}</strong> -
-              <strong class="text-foreground">{{ getEndIndex() }}</strong> trong tổng số
-              <strong class="text-foreground">{{ total() }}</strong> sê-ri
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="page() <= 1"
-                (click)="goToPage(page() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ page() }} / {{ totalPages() }}
-              </span>
-              <button
-                type="button"
-                [disabled]="page() >= totalPages()"
-                (click)="goToPage(page() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="page()"
+            [total]="total()"
+            [limit]="limit()"
+            [totalPages]="totalPages()"
+            itemName="sê-ri"
+            [isLoading]="isLoading()"
+            (pageChange)="goToPage($event)"
+          />
         }
       </div>
 
@@ -651,15 +620,15 @@ export class AdminSerialsPageComponent implements OnInit, AfterViewInit {
   getStatusBadgeClass(status: string): string {
     switch (status) {
       case 'AVAILABLE':
-        return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
       case 'RESERVED':
-        return 'bg-amber-50 text-amber-700 border border-amber-200';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'IN_TRANSIT':
-        return 'bg-sky-50 text-sky-700 border border-sky-200';
+        return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
       case 'ISSUED':
         return 'bg-surface-alt text-foreground border border-line';
       case 'QUARANTINED':
-        return 'bg-rose-50 text-rose-700 border border-rose-200';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
       case 'RETURNED_TO_SUPPLIER':
         return 'bg-surface-alt text-muted border border-line';
       default:

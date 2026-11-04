@@ -182,7 +182,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
             <!-- Search and quick filters -->
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
               <div class="sm:col-span-8 relative">
-                <lucide-icon name="search" class="size-4 absolute left-3 top-2.5 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
+                <lucide-icon name="search" class="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
                 <input
                   appInput
                   type="text"

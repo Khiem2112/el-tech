@@ -35,9 +35,21 @@ export type AdminCategory = {
   children?: AdminCategory[];
 };
 
+export function slugifyCategory(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s_]+/g, '-')
+    .replace(/-+/g, '-');
+}
+
 export type CreateCategoryPayload = {
   name: string;
-  slug: string;
+  slug?: string;
   parentId?: number | null;
   description?: string | null;
   specificationSchema?: SpecAttribute[];
@@ -48,6 +60,14 @@ export type UpdateCategoryPayload = Partial<CreateCategoryPayload>;
 
 export type UpdateSpecSchemaPayload = {
   specificationSchema: SpecAttribute[];
+};
+
+export type CategoryListResponse = {
+  items: AdminCategory[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 };
 
 export type CategoryFilterParams = {
@@ -69,6 +89,10 @@ export class AdminCategoryService {
 
   readonly categories = signal<AdminCategory[]>([]);
   readonly categoryTree = signal<AdminCategory[]>([]);
+  readonly total = signal<number>(0);
+  readonly page = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -84,7 +108,12 @@ export class AdminCategoryService {
     return headers;
   }
 
-  async loadCategories(params?: CategoryFilterParams): Promise<void> {
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadCategories({ page: newPage });
+  }
+
+  async loadCategories(params?: CategoryFilterParams & { page?: number; limit?: number }): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 
@@ -110,11 +139,16 @@ export class AdminCategoryService {
         httpParams = httpParams.set('isActive', activeParam ? 'true' : 'false');
       }
 
+      const targetPage = params?.page ?? this.page();
+      const targetLimit = this.limit();
+      httpParams = httpParams.set('page', targetPage.toString());
+      httpParams = httpParams.set('limit', targetLimit.toString());
+
       const headers = this.getAuthHeaders();
 
       const [flatResponse, treeResponse] = await Promise.all([
         firstValueFrom(
-          this.http.get<ApiResponse<AdminCategory[]>>(this.baseUrl, {
+          this.http.get<ApiResponse<CategoryListResponse>>(this.baseUrl, {
             headers,
             params: httpParams,
           }),
@@ -133,7 +167,11 @@ export class AdminCategoryService {
         throw new Error(treeResponse.error.messageKey);
       }
 
-      this.categories.set(flatResponse.data);
+      this.categories.set(flatResponse.data.items);
+      this.total.set(flatResponse.data.total);
+      this.page.set(flatResponse.data.page);
+      this.limit.set(flatResponse.data.limit);
+      this.totalPages.set(flatResponse.data.totalPages);
       this.categoryTree.set(treeResponse.data);
     } catch (err: unknown) {
       const message =
@@ -159,8 +197,12 @@ export class AdminCategoryService {
 
   async createCategory(payload: CreateCategoryPayload): Promise<AdminCategory> {
     const headers = this.getAuthHeaders();
+    const finalPayload = {
+      ...payload,
+      slug: payload.slug?.trim() ? payload.slug.trim() : slugifyCategory(payload.name),
+    };
     const response = await firstValueFrom(
-      this.http.post<ApiResponse<AdminCategory>>(this.baseUrl, payload, { headers }),
+      this.http.post<ApiResponse<AdminCategory>>(this.baseUrl, finalPayload, { headers }),
     );
 
     if (!response.success) {

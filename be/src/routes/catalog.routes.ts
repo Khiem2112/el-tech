@@ -27,6 +27,12 @@ catalogRouter.get('/products', async (request, response, next): Promise<void> =>
     const maxPriceRaw = typeof request.query.maxPrice === 'string' ? Number(request.query.maxPrice) : undefined;
     const maxPrice = maxPriceRaw !== undefined && !Number.isNaN(maxPriceRaw) ? maxPriceRaw : undefined;
     const sort = typeof request.query.sort === 'string' ? request.query.sort : undefined;
+    const stockStatus = typeof request.query.stockStatus === 'string' ? request.query.stockStatus : undefined;
+
+    const pageRaw = typeof request.query.page === 'string' ? Number(request.query.page) : undefined;
+    const page = pageRaw !== undefined && !Number.isNaN(pageRaw) && pageRaw > 0 ? pageRaw : 1;
+    const limitRaw = typeof request.query.limit === 'string' ? Number(request.query.limit) : undefined;
+    const limit = limitRaw !== undefined && !Number.isNaN(limitRaw) && limitRaw > 0 ? limitRaw : 10;
 
     const specs: Record<string, string> = {};
     for (const [key, val] of Object.entries(request.query)) {
@@ -48,7 +54,19 @@ catalogRouter.get('/products', async (request, response, next): Promise<void> =>
     }
 
     const inputSpecs = Object.keys(specs).length > 0 ? specs : undefined;
-    response.json(success(await catalogService.findProducts({ query, category, brand, minPrice, maxPrice, sort, specs: inputSpecs }), response.locals.correlationId as string));
+    const result = await catalogService.findProducts({
+      query,
+      category,
+      brand,
+      minPrice,
+      maxPrice,
+      sort,
+      specs: inputSpecs,
+      stockStatus,
+      page,
+      limit,
+    });
+    response.json(success(result, response.locals.correlationId as string));
   } catch (error: unknown) { next(error); }
 });
 

@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const queryCustomerSchema = z.object({
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(20),
+  limit: z.coerce.number().int().positive().max(100).default(10),
   search: z.string().trim().optional(),
   type: z.enum(['ALL', 'USER', 'GUEST']).default('ALL'),
   status: z.enum(['ALL', 'ACTIVE', 'MERGED', 'INACTIVE']).default('ALL'),

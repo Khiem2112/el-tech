@@ -53,7 +53,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
       },
       {
         code: 'SCR-08',
-        title: 'Bộ Máy Tính Dựng Sẵn',
+        title: 'PC Lắp Sẵn',
         route: 'catalog/pc-bundles',
         fullPath: '/admin/catalog/pc-bundles',
         module: 'Danh Mục & Sản Phẩm',
@@ -120,7 +120,7 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
       },
       {
         code: 'SCR-20',
-        title: 'Đơn Mua Hàng PO',
+        title: 'Đơn Mua Linh Kiện',
         route: 'procurement/purchase-orders',
         fullPath: '/admin/procurement/purchase-orders',
         module: 'Mua Hàng & Nhà Cung Cấp',

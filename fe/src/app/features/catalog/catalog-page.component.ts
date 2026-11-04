@@ -39,7 +39,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       </button>
 
       <div class="text-xs text-muted bg-surface-alt px-3 py-1.5 rounded-md border border-line">
-        Hiển thị: <strong class="text-foreground tabular">{{ filteredProducts().length }}</strong> linh kiện
+        Hiển thị: <strong class="text-foreground tabular">{{ total() }}</strong> linh kiện
       </div>
     </div>
   </div>
@@ -69,7 +69,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <div>
           <label class="block text-xs font-bold text-foreground mb-1.5">Từ khóa tìm kiếm</label>
           <div class="relative flex items-center">
-            <lucide-icon name="search" class="absolute left-2.5 w-4 h-4 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
+            <lucide-icon name="search" class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted pointer-events-none" aria-hidden="true"></lucide-icon>
             <input
               type="text"
               appInput
@@ -377,7 +377,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
           <p class="mt-1 text-xs text-muted">Dữ liệu hiện có của bạn vẫn an toàn. Hãy kiểm tra kết nối và thử lại.</p>
           <button appButton variant="primary" size="md" class="mt-4" type="button" (click)="load()">Thử lại</button>
         </div>
-      } @else if (!filteredProducts().length) {
+      } @else if (!total()) {
         <div class="rounded-lg border border-dashed border-line p-10 text-center bg-surface">
           <p class="font-bold text-base text-foreground">Không tìm thấy linh kiện nào phù hợp</p>
           <p class="mt-1 text-xs text-muted">Hãy thử chọn danh mục khác, giảm bớt điều kiện lọc hoặc xóa từ khóa tìm kiếm.</p>
@@ -386,7 +386,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       } @else if (viewMode() === 'grid') {
         <!-- Grid View -->
         <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          @for (product of paginatedProducts(); track product.id) {
+          @for (product of products(); track product.id) {
             <article class="bg-surface rounded-lg border border-line overflow-hidden hover:border-primary/50 transition-all flex flex-col justify-between group shadow-xs">
               <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="p-3.5 block">
                 <div class="relative aspect-square rounded-md bg-surface-alt flex items-center justify-center overflow-hidden mb-2.5">
@@ -472,7 +472,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       } @else {
         <!-- List View -->
         <div class="space-y-3">
-          @for (product of paginatedProducts(); track product.id) {
+          @for (product of products(); track product.id) {
             <article class="bg-surface rounded-lg border border-line p-4 hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group shadow-xs">
               <a [routerLink]="['/san-pham', product.category.slug, product.slug]" class="flex items-center gap-4 min-w-0 flex-1">
                 <div class="size-20 rounded-md bg-surface-alt flex items-center justify-center shrink-0 overflow-hidden relative p-1 border border-line">
@@ -559,8 +559,8 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
           <div class="text-xs text-muted">
             Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
-            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), filteredProducts().length) }}</span>
-            trong tổng số <span class="font-bold text-foreground tabular">{{ filteredProducts().length }}</span> linh kiện
+            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), total()) }}</span>
+            trong tổng số <span class="font-bold text-foreground tabular">{{ total() }}</span> linh kiện
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -779,8 +779,10 @@ export class CatalogPageComponent {
   protected readonly error = signal(false);
   protected readonly addingSkuId = signal<number | null>(null);
   protected readonly addedSkuId = signal<number | null>(null);
-  protected readonly pageSize = 9;
+  protected readonly pageSize = 10;
   protected readonly currentPage = signal(1);
+  protected readonly total = signal(0);
+  protected readonly totalPages = signal(1);
   protected readonly buildNotification = signal<string | null>(null);
   protected query = '';
 
@@ -832,25 +834,6 @@ export class CatalogPageComponent {
     { value: '15m-30m', label: '15 - 30 triệu' },
     { value: 'over-30m', label: 'Trên 30 triệu' },
   ];
-
-  protected readonly filteredProducts = computed(() => {
-    let list = this.products();
-    const status = this.stockStatus();
-    if (status === 'in_stock') {
-      list = list.filter((p) => !this.isPreOrder(p));
-    } else if (status === 'pre_order') {
-      list = list.filter((p) => this.isPreOrder(p));
-    }
-    return list;
-  });
-
-  protected readonly totalPages = computed(() => Math.max(1, Math.ceil(this.filteredProducts().length / this.pageSize)));
-
-  protected readonly paginatedProducts = computed(() => {
-    const page = Math.min(this.currentPage(), this.totalPages());
-    const start = (page - 1) * this.pageSize;
-    return this.filteredProducts().slice(start, start + this.pageSize);
-  });
 
   protected readonly pageList = computed<readonly number[]>(() => {
     const total = this.totalPages();
@@ -1165,17 +1148,21 @@ export class CatalogPageComponent {
     this.loading.set(true);
     this.error.set(false);
     try {
-      this.products.set(
-        await this.catalog.list({
-          query: this.query,
-          category: this.category(),
-          brand: this.brand(),
-          minPrice: this.minPrice(),
-          maxPrice: this.maxPrice(),
-          sort: this.sort(),
-          specs: this.selectedSpecs(),
-        }),
-      );
+      const result = await this.catalog.list({
+        query: this.query,
+        category: this.category(),
+        brand: this.brand(),
+        stockStatus: this.stockStatus(),
+        minPrice: this.minPrice(),
+        maxPrice: this.maxPrice(),
+        sort: this.sort(),
+        specs: this.selectedSpecs(),
+        page: this.currentPage(),
+        limit: this.pageSize,
+      });
+      this.products.set(result.items);
+      this.total.set(result.total);
+      this.totalPages.set(result.totalPages);
     } catch {
       this.error.set(true);
     } finally {

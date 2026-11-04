@@ -93,38 +93,49 @@ const STORAGE_ACCORDION_KEY = 'el_tech_admin_sidebar_groups';
         }
       </div>
 
-      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1.5 text-sm font-medium">
+      <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1 text-sm font-medium">
         @for (group of displayedGroups(); track group.id) {
-          <div>
-            <button
-              type="button"
-              (click)="toggleGroup(group.id)"
-              class="w-full px-2.5 py-1.5 rounded hover:bg-surface-alt text-xs font-semibold uppercase tracking-wider text-muted hover:text-foreground flex items-center justify-between transition-colors"
+          @if (isSingleItemGroup(group.id) && group.items.length === 1) {
+            <a
+              [routerLink]="group.items[0].fullPath"
+              routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
+              (click)="onItemClick()"
+              class="flex items-center px-2.5 py-2 rounded text-muted hover:bg-surface-alt hover:text-foreground text-sm font-medium transition-colors truncate"
             >
-              <span class="truncate">{{ group.label }}</span>
-              <lucide-icon
-                name="chevron-down"
-                class="w-3.5 h-3.5 text-muted transition-transform duration-200 flex-shrink-0"
-                [class.rotate-180]="isGroupOpen(group.id)"
-                aria-hidden="true"
-              ></lucide-icon>
-            </button>
+              {{ group.items[0].title }}
+            </a>
+          } @else {
+            <div>
+              <button
+                type="button"
+                (click)="toggleGroup(group.id)"
+                class="w-full px-2.5 py-1.5 rounded hover:bg-surface-alt text-xs font-semibold uppercase tracking-wider text-muted hover:text-foreground flex items-center justify-between transition-colors"
+              >
+                <span class="truncate">{{ group.label }}</span>
+                <lucide-icon
+                  name="chevron-down"
+                  class="w-3.5 h-3.5 text-muted transition-transform duration-200 flex-shrink-0"
+                  [class.rotate-180]="isGroupOpen(group.id)"
+                  aria-hidden="true"
+                ></lucide-icon>
+              </button>
 
-            @if (isGroupOpen(group.id)) {
-              <div class="space-y-0.5 pt-0.5 pl-2">
-                @for (item of group.items; track item.code) {
-                  <a
-                    [routerLink]="item.fullPath"
-                    routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
-                    (click)="onItemClick()"
-                    class="block px-2.5 py-1.5 rounded text-muted hover:bg-surface-alt hover:text-foreground text-sm transition-colors truncate"
-                  >
-                    {{ item.title }}
-                  </a>
-                }
-              </div>
-            }
-          </div>
+              @if (isGroupOpen(group.id)) {
+                <div class="space-y-0.5 pt-0.5 pl-2">
+                  @for (item of group.items; track item.code) {
+                    <a
+                      [routerLink]="item.fullPath"
+                      routerLinkActive="bg-primary/10 text-primary-strong font-semibold"
+                      (click)="onItemClick()"
+                      class="block px-2.5 py-1.5 rounded text-muted hover:bg-surface-alt hover:text-foreground text-sm transition-colors truncate"
+                    >
+                      {{ item.title }}
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          }
         }
       </nav>
 
@@ -193,6 +204,11 @@ export class AdminSidebarComponent {
   readonly filteredCount = computed<number>(() => {
     return this.displayedGroups().reduce((acc, g) => acc + g.items.length, 0);
   });
+
+  isSingleItemGroup(groupId: string): boolean {
+    const original = ADMIN_NAV_GROUPS.find((g) => g.id === groupId);
+    return original ? original.items.length === 1 : false;
+  }
 
   isGroupOpen(groupId: string): boolean {
     if (this.searchQuery().trim()) {

@@ -12,7 +12,7 @@ import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
     <div class="space-y-3">
       <div class="flex items-center justify-between">
         <h2 class="text-xs font-bold uppercase tracking-wider text-muted">
-          Báo Cáo &amp; Phân Tích BI
+          Báo Cáo &amp; Phân Tích
         </h2>
       </div>
 
@@ -49,7 +49,7 @@ import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
             </span>
             <span class="text-xs font-bold text-primary tabular-nums">+8.6%</span>
           </div>
-          <div class="text-2xl font-bold text-foreground mt-2 tabular-nums">
+          <div class="text-2xl font-bold text-foreground mt-2 tabular-nums whitespace-nowrap">
             62% Bán Lẻ / 38% PC Build
           </div>
           <div class="text-xs text-muted mt-1 tabular-nums">

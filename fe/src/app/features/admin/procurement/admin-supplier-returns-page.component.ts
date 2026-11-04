@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -20,7 +21,14 @@ import {
 @Component({
   selector: 'app-admin-supplier-returns-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, AppIconModule, CreateSupplierReturnDialogComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    AppIconModule,
+    CreateSupplierReturnDialogComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
@@ -48,17 +56,17 @@ import {
 
       <div class="bg-surface border border-line rounded-lg p-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div class="relative flex-1">
+          <div class="relative flex-1 flex items-center">
             <input
               type="text"
               [ngModel]="returnService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
-              placeholder="Tìm theo mã phiếu, mã PO, nhà cung cấp, chứng từ nhập..."
-              class="w-full pl-9 pr-4 py-1.5 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+              placeholder="Tìm theo mã phiếu, mã đơn mua, nhà cung cấp, chứng từ nhập..."
+              class="w-full h-9 pl-9 pr-4 bg-white border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <lucide-icon
               name="search"
-              class="size-4 text-muted absolute left-3 top-2 pointer-events-none"
+              class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted"
               aria-hidden="true"
             ></lucide-icon>
           </div>
@@ -100,7 +108,7 @@ import {
             </div>
             <p class="text-sm font-semibold text-foreground">Không tìm thấy phiếu xuất trả nhà cung cấp nào</p>
             <p class="text-xs text-muted">
-              Tạo phiếu xuất trả từ các đơn mua hàng PO đã hoàn tất đối soát nhập kho.
+              Tạo phiếu xuất trả từ các đơn mua linh kiện đã hoàn tất đối soát nhập kho.
             </p>
           </div>
         } @else {
@@ -110,7 +118,7 @@ import {
                 <tr>
                   <th class="py-2.5 px-4">Mã Phiếu</th>
                   <th class="py-2.5 px-4">Nhà Cung Cấp</th>
-                  <th class="py-2.5 px-4">Đơn PO & Phiếu Nhập Gốc</th>
+                  <th class="py-2.5 px-4">Đơn Mua & Phiếu Nhập Gốc</th>
                   <th class="py-2.5 px-4">Kho Xuất</th>
                   <th class="py-2.5 px-4 text-center">Số Lượng</th>
                   <th class="py-2.5 px-4">Ngày Xuất</th>
@@ -171,6 +179,15 @@ import {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="returnService.page()"
+            [total]="returnService.total()"
+            [limit]="returnService.limit()"
+            [totalPages]="returnService.totalPages()"
+            itemName="phiếu xuất trả"
+            [isLoading]="returnService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -229,7 +246,7 @@ import {
                   </span>
                 </div>
                 <div>
-                  <span class="text-muted block text-xs uppercase font-semibold">Đơn PO Gốc</span>
+                  <span class="text-muted block text-xs uppercase font-semibold">Đơn Mua Gốc</span>
                   <span class="tabular text-primary font-bold block">
                     {{ selectedDetail()!.reversalOfMove?.purchaseOrder?.code ?? 'N/A' }}
                   </span>
@@ -255,7 +272,7 @@ import {
                   <table class="w-full text-left border-collapse text-sm">
                     <thead class="bg-surface-alt/70 border-b border-line text-muted uppercase text-xs">
                       <tr>
-                        <th class="py-2 px-3">Linh Kiện SKU</th>
+                        <th class="py-2 px-3">Mã linh kiện</th>
                         <th class="py-2 px-3 text-center">Số Lượng</th>
                         <th class="py-2 px-3">Số Serial Đã Xuất Trả</th>
                         <th class="py-2 px-3 text-right">Biến Động Tồn</th>
@@ -336,6 +353,10 @@ export class AdminSupplierReturnsPageComponent implements OnInit {
   readonly visibleReturns = computed<SupplierReturnListItem[]>(() => {
     return this.returnService.supplierReturns();
   });
+
+  onPageChange(page: number): void {
+    void this.returnService.setPage(page);
+  }
 
   async ngOnInit(): Promise<void> {
     await this.loadData();

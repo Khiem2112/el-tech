@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { SupplierFormDialogComponent } from './components/supplier-form-dialog.component';
@@ -27,7 +28,16 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-suppliers-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, BadgeDirective, SelectComponent, SupplierFormDialogComponent, AppIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonDirective,
+    BadgeDirective,
+    SelectComponent,
+    SupplierFormDialogComponent,
+    AppIconModule,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -59,18 +69,18 @@ type ToastNotification = {
         <div class="flex-1 flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
           <div class="relative flex-1">
             <label for="supplier-search" class="block text-xs font-semibold text-muted uppercase mb-1">Tìm kiếm</label>
-            <div class="relative">
+            <div class="relative flex items-center">
               <input
                 id="supplier-search"
                 type="text"
                 [ngModel]="supplierService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
                 placeholder="Tìm theo tên nhà cung cấp, mã đối tác, người liên hệ, SĐT..."
-                class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+                class="w-full h-9 pl-9 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
               <lucide-icon
                 name="search"
-                class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none size-4 text-muted"
                 aria-hidden="true"
               ></lucide-icon>
             </div>
@@ -125,7 +135,7 @@ type ToastNotification = {
                   <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Thông Tin Liên Hệ</th>
                   <th class="py-2.5 px-4">Kho / Địa Chỉ</th>
-                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Đơn PO</th>
+                  <th class="py-2.5 px-4 text-center whitespace-nowrap">Đơn Mua Hàng</th>
                   <th class="py-2.5 px-4 text-center whitespace-nowrap">Trạng Thái</th>
                   <th class="py-2.5 px-4 text-right whitespace-nowrap">Thao Tác</th>
                 </tr>
@@ -247,6 +257,15 @@ type ToastNotification = {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="supplierService.page()"
+            [total]="supplierService.total()"
+            [limit]="supplierService.limit()"
+            [totalPages]="supplierService.totalPages()"
+            itemName="nhà cung cấp"
+            [isLoading]="supplierService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -302,6 +321,10 @@ export class AdminSuppliersPageComponent implements OnInit {
     { value: 'ACTIVE', label: 'Đang hợp tác' },
     { value: 'INACTIVE', label: 'Tạm dừng hợp tác' },
   ];
+
+  onPageChange(page: number): void {
+    void this.supplierService.setPage(page);
+  }
 
   ngOnInit(): void {
     void this.supplierService.loadSuppliers();

@@ -14,6 +14,7 @@ import {
   SelectOption,
 } from '../../../components/atoms/select/select.component';
 import { PromotionFormDialogComponent } from './components/promotion-form-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminProductPromotion,
   AdminPromotionService,
@@ -34,6 +35,7 @@ type ToastNotification = {
     RouterModule,
     SelectComponent,
     PromotionFormDialogComponent,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-5 text-sm text-foreground">
@@ -74,7 +76,7 @@ type ToastNotification = {
             Chương Trình Khuyến Mãi
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Cấu hình giảm giá tự động theo danh mục hoặc danh sách SKU phần cứng
+            Cấu hình giảm giá tự động theo danh mục hoặc danh sách linh kiện phần cứng
           </p>
         </div>
 
@@ -154,7 +156,7 @@ type ToastNotification = {
                 class="w-full pl-9 pr-3 py-1.5 bg-surface-alt border border-line rounded-md text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary transition-colors"
               />
               <svg
-                class="w-4 h-4 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                class="w-4 h-4 text-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
                 fill="none"
                 stroke="currentColor"
                 stroke-width="2"
@@ -243,7 +245,7 @@ type ToastNotification = {
                         <div class="line-clamp-1">{{ promo.name }}</div>
                         <div class="text-xs text-muted font-normal mt-0.5">
                           @if (promo.scope === 'SKU') {
-                            <span>Áp dụng cho {{ promo.skuTargets.length }} biến thể SKU</span>
+                            <span>Áp dụng cho {{ promo.skuTargets.length }} biến thể linh kiện</span>
                           } @else if (promo.scope === 'CATEGORY') {
                             <span>Áp dụng cho {{ promo.categoryTargets.length }} danh mục ngành hàng</span>
                           } @else {
@@ -288,10 +290,10 @@ type ToastNotification = {
                           </div>
                         } @else if (promo.scope === 'SKU') {
                           <div class="truncate" [title]="skuCodes(promo)">
-                            SKU: {{ skuCodes(promo) }}
+                            Mã linh kiện: {{ skuCodes(promo) }}
                           </div>
                         } @else {
-                          <div class="text-muted">Kết hợp SKU & Danh mục</div>
+                          <div class="text-muted">Kết hợp Biến thể & Danh mục</div>
                         }
                       </td>
 
@@ -361,32 +363,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          @if (!isLoading() && total() > 0) {
-            <footer class="p-3.5 bg-surface border-t border-line flex items-center justify-between text-sm text-muted">
-              <div>
-                Hiển thị trang <strong class="text-foreground tabular-nums">{{ page() }}</strong> / <strong class="text-foreground tabular-nums">{{ totalPages() }}</strong>
-              </div>
-
-              <div class="flex items-center gap-1.5">
-                <button
-                  type="button"
-                  (click)="onPageChange(page() - 1)"
-                  [disabled]="page() <= 1"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
-                >
-                  Trước
-                </button>
-                <button
-                  type="button"
-                  (click)="onPageChange(page() + 1)"
-                  [disabled]="page() >= totalPages()"
-                  class="px-2.5 py-1 bg-surface-alt hover:bg-surface disabled:opacity-40 text-foreground text-sm rounded border border-line transition-colors cursor-pointer"
-                >
-                  Sau
-                </button>
-              </div>
-            </footer>
-          }
+          <app-admin-pagination
+            [page]="page()"
+            [total]="total()"
+            [limit]="promotionService.limit()"
+            [totalPages]="totalPages()"
+            itemName="chương trình khuyến mãi"
+            [isLoading]="isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         </div>
       }
 
@@ -431,7 +416,7 @@ export class AdminProductPromotionsPageComponent implements OnInit {
   readonly scopeOptions: readonly SelectOption[] = [
     { value: 'ALL', label: 'Tất cả phạm vi' },
     { value: 'CATEGORY', label: 'Theo danh mục' },
-    { value: 'SKU', label: 'Theo biến thể SKU' },
+    { value: 'SKU', label: 'Theo biến thể linh kiện' },
   ];
 
   ngOnInit(): void {

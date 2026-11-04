@@ -249,7 +249,7 @@ export type StockQuantLedgerDetailResult = {
 export class AdminInventoryService {
   async getBalances(query: QueryInventoryBalancesInput): Promise<InventoryBalancesResult> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 50;
+    const limit = query.limit ?? 10;
     const search = query.search?.trim();
 
     const where: Prisma.StockQuantWhereInput = {
@@ -525,7 +525,7 @@ export class AdminInventoryService {
 
   async getLedgerEntries(query: QueryStockLedgerInput): Promise<StockLedgerListResult> {
     const page = query.page ?? 1;
-    const limit = query.limit ?? 50;
+    const limit = query.limit ?? 10;
     const search = query.search?.trim();
 
     const where: Prisma.StockLedgerEntryWhereInput = {};

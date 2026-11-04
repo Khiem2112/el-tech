@@ -205,9 +205,12 @@ export type CatalogVariantOption = {
   sellingPrice: string;
   imageUrl: string | null;
   productTemplate: {
+    id?: number;
     name: string;
-    category: { name: string };
-    brand: { name: string };
+    slug?: string;
+    model?: string;
+    category?: { id?: number; name: string; slug?: string };
+    brand?: { id?: number; name: string; slug?: string };
   };
 };
 
@@ -242,8 +245,17 @@ export class AdminPurchaseOrderService {
       ? 'http://localhost:3000/v1/admin/catalog/variants'
       : '/v1/admin/catalog/variants';
 
+  private readonly categoriesUrl =
+    typeof window !== 'undefined' && window.location.port === '4200'
+      ? 'http://localhost:3000/v1/admin/categories'
+      : '/v1/admin/categories';
+
   readonly purchaseOrders = signal<PurchaseOrderListItem[]>([]);
   readonly selectedPurchaseOrder = signal<PurchaseOrderDetail | null>(null);
+  readonly total = signal<number>(0);
+  readonly page = signal<number>(1);
+  readonly limit = signal<number>(10);
+  readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -257,6 +269,11 @@ export class AdminPurchaseOrderService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadPurchaseOrders({ page: newPage });
   }
 
   async loadPurchaseOrders(params?: {
@@ -291,13 +308,10 @@ export class AdminPurchaseOrderService {
         httpParams = httpParams.set('receivingBranchId', params.receivingBranchId.toString());
       }
 
-      if (params?.page) {
-        httpParams = httpParams.set('page', params.page.toString());
-      }
-
-      if (params?.limit) {
-        httpParams = httpParams.set('limit', params.limit.toString());
-      }
+      const targetPage = params?.page ?? this.page();
+      const targetLimit = params?.limit ?? this.limit();
+      httpParams = httpParams.set('page', targetPage.toString());
+      httpParams = httpParams.set('limit', targetLimit.toString());
 
       const response = await firstValueFrom(
         this.http.get<ApiResponse<PurchaseOrderListResponse>>(this.baseUrl, {
@@ -311,6 +325,10 @@ export class AdminPurchaseOrderService {
       }
 
       this.purchaseOrders.set(response.data.items);
+      this.total.set(response.data.total);
+      this.page.set(response.data.page);
+      this.limit.set(response.data.limit);
+      this.totalPages.set(Math.ceil(response.data.total / response.data.limit) || 1);
       return response.data;
     } catch (err: unknown) {
       const errorMessage =
@@ -594,14 +612,67 @@ export class AdminPurchaseOrderService {
     }
   }
 
-  async searchCatalogVariants(search: string): Promise<CatalogVariantOption[]> {
+  async loadCategories(): Promise<SimpleOption[]> {
     try {
+      const response = await firstValueFrom(
+        this.http.get<ApiResponse<{ items?: { id: number; name: string; slug: string }[] } | { id: number; name: string; slug: string }[]>>(
+          this.categoriesUrl,
+          {
+            headers: this.getAuthHeaders(),
+            params: new HttpParams().set('limit', '100'),
+          },
+        ),
+      );
+
+      if (response.success) {
+        let rawItems: { id: number; name: string; slug: string }[] = [];
+        if (Array.isArray(response.data)) {
+          rawItems = response.data;
+        } else if (
+          response.data &&
+          Array.isArray((response.data as { items?: { id: number; name: string; slug: string }[] }).items)
+        ) {
+          rawItems = (response.data as { items: { id: number; name: string; slug: string }[] }).items;
+        }
+        return rawItems.map((c) => ({
+          id: c.id,
+          name: c.name,
+          code: c.slug,
+        }));
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
+  async searchCatalogVariants(
+    paramsOrSearch?: string | { search?: string; categoryId?: number; limit?: number },
+  ): Promise<CatalogVariantOption[]> {
+    try {
+      let params = new HttpParams().set('limit', '50');
+      if (typeof paramsOrSearch === 'string') {
+        if (paramsOrSearch.trim()) {
+          params = params.set('search', paramsOrSearch.trim());
+        }
+      } else if (paramsOrSearch) {
+        if (paramsOrSearch.search?.trim()) {
+          params = params.set('search', paramsOrSearch.search.trim());
+        }
+        if (paramsOrSearch.categoryId) {
+          params = params.set('categoryId', String(paramsOrSearch.categoryId));
+        }
+        if (paramsOrSearch.limit) {
+          params = params.set('limit', String(paramsOrSearch.limit));
+        }
+      }
+
       const response = await firstValueFrom(
         this.http.get<ApiResponse<{ items: CatalogVariantOption[] }>>(
           this.catalogVariantsUrl,
           {
             headers: this.getAuthHeaders(),
-            params: new HttpParams().set('search', search).set('limit', '20'),
+            params,
           },
         ),
       );

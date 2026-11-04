@@ -62,60 +62,41 @@ import {
                 </div>
               }
 
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Kho phát hiện lỗi
-                  </label>
+              <div>
+                <label class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Mã linh kiện
+                </label>
+                @if (quant) {
+                  <input
+                    type="text"
+                    [value]="quant.sku"
+                    readonly
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold text-foreground text-sm tabular"
+                  />
+                } @else {
                   <select
-                    [ngModel]="selectedBranchId"
-                    (ngModelChange)="onBranchChange($event)"
-                    name="selectedBranchId"
-                    [disabled]="!!quant"
-                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-xs disabled:opacity-60"
+                    [(ngModel)]="selectedSkuId"
+                    (ngModelChange)="onSkuChange($event)"
+                    name="selectedSkuId"
+                    class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-medium focus:outline-none focus:border-primary text-sm"
                   >
-                    @for (b of branches; track b.id) {
-                      <option [value]="b.id">{{ b.name }} ({{ b.code }})</option>
+                    <option [value]="0">-- Chọn linh kiện --</option>
+                    @for (s of skus; track s.id) {
+                      <option [value]="s.skuId">{{ s.sku }} - {{ s.productName }}</option>
                     }
                   </select>
-                </div>
-
-                <div>
-                  <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Mã SKU linh kiện
-                  </label>
-                  @if (quant) {
-                    <input
-                      type="text"
-                      [value]="quant.sku"
-                      readonly
-                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded font-bold text-foreground text-sm tabular"
-                    />
-                  } @else {
-                    <select
-                      [(ngModel)]="selectedSkuId"
-                      (ngModelChange)="onSkuChange($event)"
-                      name="selectedSkuId"
-                      class="w-full px-3 py-2 bg-surface-alt border border-line rounded text-foreground font-medium focus:outline-none focus:border-primary text-sm"
-                    >
-                      <option [value]="0">-- Chọn SKU --</option>
-                      @for (s of skus; track s.id) {
-                        <option [value]="s.skuId">{{ s.sku }} - {{ s.productName }}</option>
-                      }
-                    </select>
-                  }
-                </div>
+                }
               </div>
 
               @if (currentQuant()) {
-                <div class="p-3 bg-surface-alt rounded border border-line flex items-center justify-between text-xs">
-                  <div>
+                <div class="p-3 bg-surface-alt rounded border border-line flex items-center justify-between gap-4 text-xs">
+                  <div class="min-w-0 flex-1 truncate">
                     <span class="text-muted">Tên linh kiện:</span>
-                    <strong class="text-foreground ml-1">{{ currentQuant()?.productName }}</strong>
+                    <strong class="text-foreground ml-1.5" [title]="currentQuant()?.productName">{{ currentQuant()?.productName }}</strong>
                   </div>
-                  <div>
+                  <div class="whitespace-nowrap shrink-0">
                     <span class="text-muted">Khả dụng tối đa:</span>
-                    <strong class="text-emerald-700 ml-1 font-bold tabular tabular-nums">
+                    <strong class="text-emerald-700 dark:text-emerald-400 ml-1.5 font-bold tabular tabular-nums">
                       {{ currentQuant()?.available }} chiếc
                     </strong>
                   </div>
@@ -274,8 +255,9 @@ export class QuarantineStockDialogComponent implements OnChanges {
       this.selectedBranchId = this.quant.branchId;
       this.selectedSkuId = this.quant.skuId;
     } else {
-      this.selectedBranchId = this.branches.length > 0 ? this.branches[0].id : 0;
-      this.selectedSkuId = this.skus.length > 0 ? this.skus[0].skuId : 0;
+      const firstSku = this.skus.length > 0 ? this.skus[0] : null;
+      this.selectedSkuId = firstSku ? firstSku.skuId : 0;
+      this.selectedBranchId = firstSku ? firstSku.branchId : (this.branches.length > 0 ? this.branches[0].id : 0);
     }
     this.quantity = 1;
     this.defectClassification = 'PHYSICAL_DAMAGE';
@@ -287,11 +269,7 @@ export class QuarantineStockDialogComponent implements OnChanges {
     if (this.quant) {
       return this.quant;
     }
-    return (
-      this.skus.find(
-        (s) => s.branchId === this.selectedBranchId && s.skuId === this.selectedSkuId,
-      ) ?? null
-    );
+    return this.skus.find((s) => s.skuId === this.selectedSkuId) ?? null;
   }
 
   maxAvailable(): number {
@@ -311,6 +289,10 @@ export class QuarantineStockDialogComponent implements OnChanges {
 
   onSkuChange(skuId: number): void {
     this.selectedSkuId = Number(skuId);
+    const item = this.skus.find((s) => s.skuId === this.selectedSkuId);
+    if (item) {
+      this.selectedBranchId = item.branchId;
+    }
     this.errorMessage.set(null);
   }
 
@@ -321,7 +303,7 @@ export class QuarantineStockDialogComponent implements OnChanges {
   async onSubmit(): Promise<void> {
     const q = this.currentQuant();
     if (!q) {
-      this.errorMessage.set('Vui lòng chọn thông tin kho và mã SKU hợp lệ');
+      this.errorMessage.set('Vui lòng chọn linh kiện hợp lệ');
       return;
     }
 

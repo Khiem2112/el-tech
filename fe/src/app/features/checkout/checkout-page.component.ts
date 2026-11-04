@@ -507,44 +507,45 @@ type SubmitResult = {
                 </div>
 
                 <div class="bg-surface-alt p-4 rounded-xl border border-line space-y-3">
-                  <!-- VietQR Header & Mock QR Container -->
-                  <div class="bg-surface p-3 rounded-lg border border-line shadow-sm flex flex-col items-center mx-auto max-w-[220px]">
+                  <!-- VietQR Dynamic Image Container -->
+                  <div class="bg-surface p-3 rounded-lg border border-line shadow-sm flex flex-col items-center mx-auto max-w-[240px]">
                     <div class="w-full flex items-center justify-between px-2.5 py-1 bg-surface-dark rounded-t text-foreground-dark text-xs font-bold mb-2 tabular">
                       <span class="text-primary">VIETQR</span>
-                      <span class="text-slate-300">MB BANK</span>
+                      <span class="text-slate-300">VIETCOMBANK</span>
                     </div>
 
-                    <!-- Clean Technical VietQR SVG -->
-                    <svg class="w-36 h-36 rounded bg-surface p-1 text-foreground" fill="currentColor" viewBox="0 0 200 200" aria-label="Mã VietQR thanh toán">
-                      <rect fill="#090d16" height="45" rx="4" width="45" x="10" y="10"></rect>
-                      <rect fill="#ffffff" height="29" rx="2" width="29" x="18" y="18"></rect>
-                      <rect fill="#76b900" height="17" width="17" x="24" y="24"></rect>
-                      <rect fill="#090d16" height="45" rx="4" width="45" x="145" y="10"></rect>
-                      <rect fill="#ffffff" height="29" rx="2" width="29" x="153" y="18"></rect>
-                      <rect fill="#76b900" height="17" width="17" x="159" y="24"></rect>
-                      <rect fill="#090d16" height="45" rx="4" width="45" x="10" y="145"></rect>
-                      <rect fill="#ffffff" height="29" rx="2" width="29" x="18" y="153"></rect>
-                      <rect fill="#76b900" height="17" width="17" x="24" y="159"></rect>
-                      <rect fill="#090d16" height="60" rx="6" width="60" x="70" y="70"></rect>
-                      <rect fill="#161b26" height="52" rx="4" width="52" x="74" y="74"></rect>
-                      <circle cx="100" cy="100" fill="#76b900" r="10"></circle>
-                    </svg>
+                    <img
+                      [src]="vietQrUrl()"
+                      alt="Mã VietQR thanh toán"
+                      class="w-48 h-auto rounded bg-white p-1"
+                      loading="lazy"
+                    />
 
                     <div class="mt-2 text-center w-full">
-                      <span class="text-xs text-muted block">Ngân hàng Quân Đội (MB Bank)</span>
-                      <span class="text-xs font-bold text-foreground">CTCP CONG NGHE EL-TECH</span>
+                      <span class="text-xs text-muted block">Ngân hàng TMCP Ngoại Thương (Vietcombank)</span>
+                      <span class="text-xs font-bold text-foreground uppercase">NGUYEN PHAM QUOC KHIEM</span>
                     </div>
                   </div>
 
                   <!-- Bank Info and Fast Copy -->
                   <div class="bg-surface p-3 rounded-lg border border-line space-y-2 text-xs">
                     <div class="flex items-center justify-between">
+                      <span class="text-muted text-xs">Ngân hàng:</span>
+                      <span class="font-bold text-foreground">Vietcombank (VCB)</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                      <span class="text-muted text-xs">Chủ tài khoản:</span>
+                      <span class="font-bold text-foreground uppercase">NGUYEN PHAM QUOC KHIEM</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
                       <span class="text-muted text-xs">Số tài khoản:</span>
                       <div class="flex items-center gap-1.5 font-bold text-foreground tabular">
-                        <span>0868 999 888 999</span>
+                        <span>1040346646</span>
                         <button
                           type="button"
-                          (click)="copyAccount('0868999888999')"
+                          (click)="copyAccount('1040346646')"
                           class="p-1 rounded hover:bg-surface-alt text-primary transition-colors cursor-pointer"
                           title="Sao chép số tài khoản"
                           aria-label="Sao chép số tài khoản"
@@ -657,6 +658,12 @@ export class CheckoutPageComponent implements OnInit {
     const discount = this.appliedCoupon() ? BigInt(this.couponDiscountAmount) : 0n;
     const finalVal = rawTotal > discount ? rawTotal - discount : 0n;
     return finalVal.toString();
+  });
+
+  protected readonly vietQrUrl = computed<string>(() => {
+    const amount = this.computedGrandTotal();
+    const memo = encodeURIComponent(this.qrTransferMemo);
+    return `https://img.vietqr.io/image/VCB-1040346646-compact2.svg?amount=${amount}&addInfo=${memo}&accountName=NGUYEN%20PHAM%20QUOC%20KHIEM`;
   });
 
   ngOnInit(): void {

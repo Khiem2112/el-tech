@@ -9,10 +9,10 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="space-y-4">
+    <div class="space-y-6">
       @for (pcGroup of order().pcBuildGroups; track pcGroup.pcBuildKey) {
-        <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden">
-          <div class="p-3.5 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt/40">
+        <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden shadow-xs">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt/40">
             <div class="flex items-center gap-2.5">
               <span class="px-2 py-0.5 rounded bg-surface-elevated text-primary border border-line text-xs font-semibold uppercase">
                 Gói PC
@@ -86,7 +86,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                     <td class="py-2.5 px-3">
                       <div class="font-medium text-foreground text-sm">{{ item.nameSnapshot }}</div>
                       <div class="text-muted text-xs flex items-center gap-2 mt-0.5">
-                        <span class="tabular tabular-nums">SKU: {{ item.skuSnapshot || 'N/A' }}</span>
+                        <span class="tabular tabular-nums">Mã: {{ item.skuSnapshot || 'N/A' }}</span>
                         @if (item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial']) {
                           <span class="px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-primary text-xs tabular tabular-nums">
                             S/N: {{ item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial'] }}
@@ -133,8 +133,8 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
       }
 
       @if (order().standaloneLines.length > 0) {
-        <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden">
-          <div class="p-3.5 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt/40">
+        <div class="bg-surface border border-line rounded-lg text-foreground overflow-hidden shadow-xs">
+          <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2 bg-surface-alt/40">
             <div>
               <h2 class="text-xs font-bold uppercase tracking-wider text-foreground">
                 Linh Kiện & Phụ Kiện Mua Rời
@@ -184,7 +184,7 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
                     <td class="py-2.5 px-3">
                       <div class="font-medium text-foreground text-sm">{{ item.nameSnapshot }}</div>
                       <div class="text-muted text-xs flex items-center gap-2 mt-0.5">
-                        <span class="tabular tabular-nums">SKU: {{ item.skuSnapshot || 'N/A' }}</span>
+                        <span class="tabular tabular-nums">Mã: {{ item.skuSnapshot || 'N/A' }}</span>
                         @if (item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial']) {
                           <span class="px-1.5 py-0.5 bg-primary/10 border border-primary/20 rounded text-primary text-xs tabular tabular-nums">
                             S/N: {{ item.specSnapshot?.['serialNumber'] || item.specSnapshot?.['serial'] }}

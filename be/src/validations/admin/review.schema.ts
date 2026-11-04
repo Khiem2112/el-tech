@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const queryReviewsSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
   rating: z.coerce.number().int().min(1).max(5).optional(),
   isVisible: z.enum(['true', 'false', 'all']).optional(),
   search: z.string().trim().optional(),

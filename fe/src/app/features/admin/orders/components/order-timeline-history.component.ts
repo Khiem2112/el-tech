@@ -8,9 +8,9 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
-      <div class="bg-surface border border-line rounded-lg p-4 text-foreground space-y-4">
-        <div class="flex items-center justify-between border-b border-line pb-2">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-sm">
+      <div class="bg-surface border border-line rounded-lg p-5 lg:p-6 text-foreground space-y-4 shadow-xs">
+        <div class="flex items-center justify-between border-b border-line pb-3">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Chứng Từ & Bút Toán Liên Quan
           </h2>
@@ -109,8 +109,8 @@ import { AdminOrderDetail } from '../services/admin-order-detail.service';
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 text-foreground space-y-4">
-        <div class="flex items-center justify-between border-b border-line pb-2">
+      <div class="bg-surface border border-line rounded-lg p-5 lg:p-6 text-foreground space-y-4 shadow-xs">
+        <div class="flex items-center justify-between border-b border-line pb-3">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Nhật Ký Tiến Trình Đơn Hàng
           </h2>

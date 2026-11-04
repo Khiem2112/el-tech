@@ -21,15 +21,16 @@ type BreadcrumbState = {
   selector: 'app-admin-breadcrumb',
   standalone: true,
   imports: [CommonModule, RouterModule],
+  host: { class: 'min-w-0 flex items-center overflow-hidden' },
   template: `
     <nav aria-label="Đường dẫn phân cấp" class="flex items-center gap-1.5 text-sm min-w-0">
-      <span class="hidden sm:inline text-muted font-normal truncate max-w-[120px] lg:max-w-none">
+      <span class="hidden sm:inline text-muted font-normal truncate max-w-[100px] lg:max-w-[140px]">
         {{ state().module }}
       </span>
       <span class="hidden sm:inline text-muted/40 text-xs select-none">/</span>
       <a
         [routerLink]="state().parentUrl || state().fullPath"
-        class="font-medium text-foreground truncate max-w-[150px] sm:max-w-xs md:max-w-none hover:text-primary transition-colors"
+        class="font-medium text-foreground truncate max-w-[120px] sm:max-w-[160px] lg:max-w-[200px] hover:text-primary transition-colors"
         [title]="state().parentUrl ? 'Quay lại danh sách cha với bộ lọc bảo toàn' : 'Quay lại danh sách cha'"
       >
         {{ state().title }}
@@ -37,7 +38,10 @@ type BreadcrumbState = {
 
       @if (state().subTitle) {
         <span class="text-muted/40 text-xs select-none">/</span>
-        <span class="text-muted font-normal truncate max-w-[120px] sm:max-w-xs">
+        <span
+          class="text-muted font-normal truncate max-w-[130px] sm:max-w-[180px] lg:max-w-[220px]"
+          [title]="state().subTitle"
+        >
           {{ state().subTitle }}
         </span>
       }
@@ -68,7 +72,7 @@ export class AdminBreadcrumbComponent {
       return {
         code: 'ADMIN',
         module: 'Quản Trị',
-        title: 'Bảng Điều Khiển',
+        title: 'Trung Tâm Vận Hành',
         fullPath: '/admin/dashboard',
       };
     }

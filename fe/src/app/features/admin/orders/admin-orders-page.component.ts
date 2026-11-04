@@ -10,6 +10,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminOrderListItem,
   AdminOrderStatus,
@@ -31,7 +32,13 @@ type OrderGroup = {
 @Component({
   selector: 'app-admin-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -407,37 +414,15 @@ type OrderGroup = {
             }
           </div>
 
-          <div
-            class="px-4 py-3 bg-surface-alt border-t border-line flex items-center justify-between flex-wrap gap-3 text-sm"
-          >
-            <div class="text-muted">
-              Hiển thị {{ (orderService.page() - 1) * orderService.limit() + 1 }} -
-              {{ Math.min(orderService.page() * orderService.limit(), orderService.total()) }}
-              trong tổng số {{ orderService.total() }} đơn
-            </div>
-
-            <div class="flex items-center gap-1.5">
-              <button
-                type="button"
-                [disabled]="orderService.page() <= 1"
-                (click)="orderService.setPage(orderService.page() - 1)"
-                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium text-sm"
-              >
-                Trước
-              </button>
-              <span class="px-2 text-muted tabular tabular-nums">
-                {{ orderService.page() }} / {{ orderService.totalPages() }}
-              </span>
-              <button
-                type="button"
-                [disabled]="orderService.page() >= orderService.totalPages()"
-                (click)="orderService.setPage(orderService.page() + 1)"
-                class="px-3 py-1.5 bg-surface border border-line hover:bg-surface-alt disabled:opacity-40 disabled:cursor-not-allowed rounded text-foreground transition-colors font-medium text-sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="orderService.page()"
+            [total]="orderService.total()"
+            [limit]="orderService.limit()"
+            [totalPages]="orderService.totalPages()"
+            itemName="đơn hàng"
+            [isLoading]="orderService.isLoading()"
+            (pageChange)="orderService.setPage($event)"
+          />
         }
       </div>
     </div>
@@ -611,22 +596,20 @@ export class AdminOrdersPageComponent implements OnInit {
       case 'PENDING_COD_CONFIRMATION':
         return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'CONFIRMED':
-        return 'bg-primary/10 text-primary border border-primary/20';
+        return 'bg-primary/10 text-primary-strong border border-primary/20';
       case 'PREPARING_COMPONENTS':
       case 'ASSEMBLING':
-        return 'bg-surface-elevated text-primary border border-primary/30';
+        return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
       case 'READY_FOR_PICKUP':
       case 'SHIPPING':
         return 'bg-surface-alt text-foreground border border-line';
       case 'DELIVERY_FAILED':
-        return 'bg-destructive/10 text-destructive border border-destructive/20';
-      
       case 'CANCELLED':
-        return 'bg-surface-alt text-muted border border-line';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
       case 'COMPLETED':
-        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-medium';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 font-medium';
       case 'ON_HOLD':
-        return 'bg-warning/10 text-warning border border-warning/30 font-medium';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-medium';
       default:
         return 'bg-surface-alt text-foreground border border-line';
     }

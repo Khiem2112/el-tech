@@ -81,8 +81,73 @@ export function normalizeSpecSchema(raw: unknown): SpecAttribute[] {
   });
 }
 
+export type CategoryListResult = {
+  items: CategoryDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
 export class AdminCategoryService {
-  async getCategories(query: QueryCategoryInput): Promise<CategoryDto[] | CategoryTreeNode[]> {
+
+  private async getCategoryDtos(where: Prisma.CategoryWhereInput, skip?: number, take?: number): Promise<CategoryDto[]> {
+    const categories = await prisma.category.findMany({
+      where,
+      skip,
+      take,
+      orderBy: [{ parentId: 'asc' }, { name: 'asc' }],
+    });
+
+    const [templateCounts, stockQuantSums] = await Promise.all([
+      prisma.productTemplate.groupBy({
+        by: ['categoryId'],
+        _count: { id: true },
+      }),
+      prisma.stockQuant.findMany({
+        where: { isActive: true },
+        select: {
+          onHand: true,
+          sku: {
+            select: {
+              productTemplate: {
+                select: { categoryId: true },
+              },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const templateCountMap = new Map<number, number>();
+    for (const item of templateCounts) {
+      templateCountMap.set(item.categoryId, item._count.id);
+    }
+
+    const inventoryMap = new Map<number, number>();
+    for (const quant of stockQuantSums) {
+      const catId = quant.sku.productTemplate.categoryId;
+      inventoryMap.set(catId, (inventoryMap.get(catId) || 0) + quant.onHand);
+    }
+
+    return categories.map((cat) => ({
+      id: cat.id,
+      parentId: cat.parentId,
+      name: cat.name,
+      slug: cat.slug,
+      description: cat.description,
+      specificationSchema: normalizeSpecSchema(cat.specificationSchema),
+      specificationSchemaVersion: cat.specificationSchemaVersion,
+      isActive: cat.isActive,
+      createdAt: cat.createdAt,
+      updatedAt: cat.updatedAt,
+      productTemplateCount: templateCountMap.get(cat.id) || 0,
+      totalInventory: inventoryMap.get(cat.id) || 0,
+      activeTransfers: 0,
+    }));
+  }
+
+  async getCategories(query: QueryCategoryInput): Promise<CategoryListResult | CategoryTreeNode[]> {
     const where: Prisma.CategoryWhereInput = {};
 
     if (typeof query.isActive === 'boolean') {
@@ -102,74 +167,31 @@ export class AdminCategoryService {
       ];
     }
 
-    const categories = await prisma.category.findMany({
-      where,
-      orderBy: [{ parentId: 'asc' }, { name: 'asc' }],
-    });
-
-    const [templateCounts, stockQuantSums, activeTransfers] = await Promise.all([
-      prisma.productTemplate.groupBy({
-        by: ['categoryId'],
-        _count: { id: true },
-      }),
-      prisma.stockQuant.findMany({
-        where: { isActive: true },
-        select: {
-          onHand: true,
-          sku: {
-            select: {
-              productTemplate: {
-                select: { categoryId: true },
-              },
-            },
-          },
-        },
-      }),
-      Promise.resolve([] as Array<{ sku: { productTemplate: { categoryId: number } } }>),
-    ]);
-
-    const templateCountMap = new Map<number, number>();
-    for (const item of templateCounts) {
-      templateCountMap.set(item.categoryId, item._count.id);
-    }
-
-    const inventoryMap = new Map<number, number>();
-    for (const quant of stockQuantSums) {
-      const catId = quant.sku.productTemplate.categoryId;
-      inventoryMap.set(catId, (inventoryMap.get(catId) || 0) + quant.onHand);
-    }
-
-    const transferMap = new Map<number, number>();
-    for (const line of activeTransfers) {
-      const catId = line.sku.productTemplate.categoryId;
-      transferMap.set(catId, (transferMap.get(catId) || 0) + 1);
-    }
-
-    const dtoList: CategoryDto[] = categories.map((cat) => ({
-      id: cat.id,
-      parentId: cat.parentId,
-      name: cat.name,
-      slug: cat.slug,
-      description: cat.description,
-      specificationSchema: normalizeSpecSchema(cat.specificationSchema),
-      specificationSchemaVersion: cat.specificationSchemaVersion,
-      isActive: cat.isActive,
-      createdAt: cat.createdAt,
-      updatedAt: cat.updatedAt,
-      productTemplateCount: templateCountMap.get(cat.id) || 0,
-      totalInventory: inventoryMap.get(cat.id) || 0,
-      activeTransfers: transferMap.get(cat.id) || 0,
-    }));
-
     if (query.tree) {
-      return this.buildTree(dtoList);
+      const allDtos = await this.getCategoryDtos(where);
+      return this.buildTree(allDtos);
     }
 
-    return dtoList;
+    const total = await prisma.category.count({ where });
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const skip = limit > 0 ? (page - 1) * limit : 0;
+    const take = limit > 0 ? limit : undefined;
+
+    const items = await this.getCategoryDtos(where, skip, take);
+    const totalPages = Math.ceil(total / (limit || 10)) || 1;
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages,
+    };
   }
 
   async getCategoryTree(): Promise<CategoryTreeNode[]> {
-    const list = (await this.getCategories({ tree: false })) as CategoryDto[];
+    const list = await this.getCategoryDtos({});
     return this.buildTree(list);
   }
 

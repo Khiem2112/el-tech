@@ -51,7 +51,7 @@ export const queryPcBundleSchema = z.object({
     .optional(),
   branchId: z.coerce.number().int().positive().optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+  limit: z.coerce.number().int().min(1).max(100).optional().default(10),
   sortBy: z.enum(['name', 'slug', 'createdAt', 'updatedAt']).optional().default('updatedAt'),
   sortOrder: z.enum(['asc', 'desc']).optional().default('desc'),
 });

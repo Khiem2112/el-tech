@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
@@ -21,14 +22,23 @@ import {
 @Component({
   selector: 'app-admin-purchase-orders-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, BadgeDirective, SelectComponent, AppIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    BadgeDirective,
+    SelectComponent,
+    AppIconModule,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
-            Đơn Mua Hàng (PO)
+            Đơn Mua Hàng
           </h1>
           <p class="text-xs text-muted mt-0.5">
             Theo dõi chuỗi cung ứng linh kiện phần cứng từ nhà cung cấp về các kho chi nhánh
@@ -44,7 +54,7 @@ import {
             class="uppercase tracking-wide shadow-xs inline-flex items-center gap-1.5"
           >
             <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
-            <span>Thêm Đơn PO</span>
+            <span>Tạo đơn mua hàng</span>
           </a>
         </div>
       </div>
@@ -59,12 +69,12 @@ import {
                 type="text"
                 [ngModel]="poService.searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="Tìm theo mã PO, nhà cung cấp, mã NCC..."
+                placeholder="Tìm theo mã đơn, nhà cung cấp, mã NCC..."
                 class="w-full h-8 pl-8 pr-3 bg-white border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
               />
               <lucide-icon
                 name="search"
-                class="size-3.5 text-muted absolute left-2.5 top-2.5 pointer-events-none"
+                class="size-3.5 text-muted absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
                 aria-hidden="true"
               ></lucide-icon>
             </div>
@@ -81,8 +91,8 @@ import {
           </div>
         </div>
 
-        <div class="text-xs text-muted text-right whitespace-nowrap">
-          Tổng số: <strong class="text-foreground tabular tabular-nums">{{ visibleOrders().length }}</strong> đơn mua hàng
+        <div class="h-8 flex items-center text-xs text-muted text-right md:justify-end whitespace-nowrap">
+          Tổng số: <strong class="text-foreground tabular tabular-nums ml-1 mr-1">{{ visibleOrders().length }}</strong> đơn mua hàng
         </div>
       </div>
 
@@ -90,7 +100,7 @@ import {
         @if (poService.isLoading()) {
           <div class="p-8 text-center text-muted space-y-3">
             <div class="inline-block w-8 h-8 border-2 border-t-primary border-r-transparent border-b-primary border-l-transparent rounded-full animate-spin"></div>
-            <p class="text-xs">Đang tải danh sách đơn mua hàng PO...</p>
+            <p class="text-xs">Đang tải danh sách đơn mua hàng...</p>
           </div>
         } @else if (visibleOrders().length === 0) {
           <div class="p-12 text-center text-muted space-y-3">
@@ -99,7 +109,7 @@ import {
             </div>
             <h3 class="text-sm font-semibold text-foreground">Không tìm thấy đơn mua hàng nào</h3>
             <p class="text-xs text-muted max-w-sm mx-auto">
-              Không có đơn PO nào khớp với từ khóa tìm kiếm hoặc bộ lọc trạng thái được chọn.
+              Không có đơn mua hàng nào khớp với từ khóa tìm kiếm hoặc bộ lọc trạng thái được chọn.
             </p>
             <button
               type="button"
@@ -113,12 +123,11 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[950px] border-collapse text-sm">
+            <table class="w-full text-left min-w-[850px] border-collapse text-sm">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-2.5 px-4 whitespace-nowrap">Mã PO</th>
+                  <th class="py-2.5 px-4 whitespace-nowrap">Mã Đơn</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Nhà Cung Cấp</th>
-                  <th class="py-2.5 px-4 whitespace-nowrap">Kho Nhận</th>
                   <th class="py-2.5 px-4 text-center whitespace-nowrap">Số Dòng</th>
                   <th class="py-2.5 px-4 text-right whitespace-nowrap">Tổng Tiền</th>
                   <th class="py-2.5 px-4 whitespace-nowrap">Ngày Tạo</th>
@@ -151,10 +160,6 @@ import {
                       <div class="font-bold text-foreground">{{ po.supplierName }}</div>
                       <div class="text-muted text-xs tabular">{{ po.supplierCode }}</div>
                     </td>
-                    <td class="py-2.5 px-4 whitespace-nowrap">
-                      <div class="font-medium text-foreground">{{ po.receivingBranchName }}</div>
-                      <div class="text-muted text-xs tabular">{{ po.receivingBranchCode }}</div>
-                    </td>
                     <td class="py-2.5 px-4 text-center tabular-nums text-foreground whitespace-nowrap">
                       {{ po.lineCount }} dòng ({{ po.totalQuantity }} chiếc)
                     </td>
@@ -183,7 +188,7 @@ import {
                         }
                         @case ('CLOSED') {
                           <span appBadge variant="outline" class="whitespace-nowrap uppercase">
-                            Đóng PO
+                            Đã đóng
                           </span>
                         }
                         @case ('CANCELLED') {
@@ -202,7 +207,7 @@ import {
                           size="sm"
                           class="h-8 w-8 p-0"
                           [title]="po.status === 'CONFIRMED' ? 'Đối soát nhập kho' : 'Xem chi tiết'"
-                          aria-label="Xem chi tiết đơn PO"
+                          aria-label="Xem chi tiết đơn mua hàng"
                         >
                           <lucide-icon name="file-text" class="size-4 text-muted" aria-hidden="true"></lucide-icon>
                         </a>
@@ -213,6 +218,15 @@ import {
               </tbody>
             </table>
           </div>
+          <app-admin-pagination
+            [page]="poService.page()"
+            [total]="poService.total()"
+            [limit]="poService.limit()"
+            [totalPages]="poService.totalPages()"
+            itemName="đơn mua hàng"
+            [isLoading]="poService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>
@@ -231,9 +245,13 @@ export class AdminPurchaseOrdersPageComponent implements OnInit {
     { value: 'DRAFT', label: 'Bản thảo' },
     { value: 'CONFIRMED', label: 'Đã xác nhận' },
     { value: 'RECEIVED', label: 'Đã nhập kho' },
-    { value: 'CLOSED', label: 'Đóng PO' },
+    { value: 'CLOSED', label: 'Đã đóng' },
     { value: 'CANCELLED', label: 'Đã hủy' },
   ];
+
+  onPageChange(page: number): void {
+    void this.poService.setPage(page);
+  }
 
   ngOnInit(): void {
     const searchParam = this.route.snapshot.queryParams['search'];

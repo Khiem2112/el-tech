@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -10,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { ProductLifecycle } from '../variants/services/admin-variant.service';
 import { PcBundleSheetComponent } from './components/pc-bundle-sheet.component';
@@ -35,6 +37,8 @@ type ToastNotification = {
     ButtonDirective,
     SelectComponent,
     PcBundleSheetComponent,
+    AppIconModule,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -42,10 +46,10 @@ type ToastNotification = {
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
-            Bộ Máy Tính Dựng Sẵn (Virtual BOM)
+            PC Lắp Sẵn (Virtual BOM)
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Quản lý danh mục cấu hình máy tính lắp sẵn theo định mức linh kiện ảo và tính tồn khả dụng
+            Quản lý danh mục cấu hình PC lắp sẵn theo định mức linh kiện ảo và tính tồn khả dụng
           </p>
         </div>
 
@@ -85,10 +89,8 @@ type ToastNotification = {
             (click)="openCreateSheet()"
             class="inline-flex items-center gap-1.5"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            <span>Thêm Bộ Máy</span>
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
+            <span>Thêm PC Lắp Sẵn</span>
           </button>
         </div>
       </div>
@@ -96,24 +98,14 @@ type ToastNotification = {
       <div class="bg-surface border border-line rounded-lg p-4 shadow-xs space-y-3">
         <div class="flex items-center justify-between pb-2 border-b border-line gap-4 flex-wrap text-xs">
           <div class="text-muted">
-            Hiển thị <strong class="text-foreground font-bold tabular-nums">{{ bundleService.bundles().length }}</strong> / <span class="tabular-nums">{{ bundleService.total() }}</span> cấu hình PC Bundle
+            Hiển thị <strong class="text-foreground font-bold tabular-nums">{{ bundleService.bundles().length }}</strong> / <span class="tabular-nums">{{ bundleService.total() }}</span> cấu hình PC lắp sẵn
           </div>
-
-          <button
-            type="button"
-            appButton
-            variant="outline"
-            size="sm"
-            (click)="onResetFilters()"
-          >
-            Đặt Lại
-          </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
           <div class="md:col-span-8">
             <label for="bundle-search-query" class="block font-semibold text-muted text-xs uppercase mb-1">
-              Tìm Theo Tên Hoặc Mã Slug
+              Tìm Theo Tên Hoặc Cấu Hình
             </label>
             <div class="flex items-center gap-1.5">
               <input
@@ -122,7 +114,7 @@ type ToastNotification = {
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchQueryChange($event)"
                 (keydown.enter)="applyFilters()"
-                placeholder="Nhập tên bộ máy, cấu hình hoặc slug..."
+                placeholder="Nhập tên PC lắp sẵn, cấu hình linh kiện..."
                 class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
               />
               <button
@@ -174,9 +166,9 @@ type ToastNotification = {
           <svg class="w-10 h-10 text-muted mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <div class="text-sm font-bold text-foreground">Chưa có bộ máy tính dựng sẵn nào</div>
+          <div class="text-sm font-bold text-foreground">Chưa có cấu hình PC lắp sẵn nào</div>
           <p class="text-xs text-muted max-w-sm mx-auto">
-            Không tìm thấy cấu hình PC nào khớp với bộ lọc. Hãy điều chỉnh điều kiện tìm kiếm hoặc bấm nút "Thêm Bộ Máy" để tạo cấu hình mới.
+            Không tìm thấy cấu hình PC lắp sẵn nào khớp với bộ lọc. Hãy điều chỉnh điều kiện tìm kiếm hoặc bấm nút "Thêm PC Lắp Sẵn" để tạo cấu hình mới.
           </p>
           <button
             type="button"
@@ -186,7 +178,8 @@ type ToastNotification = {
             (click)="openCreateSheet()"
             class="inline-flex items-center gap-1.5"
           >
-            + Thêm Bộ Máy
+            <lucide-icon name="plus" class="size-4" aria-hidden="true"></lucide-icon>
+            <span>Thêm PC Lắp Sẵn</span>
           </button>
         </div>
       } @else {
@@ -197,15 +190,15 @@ type ToastNotification = {
                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                   <tr>
                     <th class="py-3 px-4 w-14 text-center">Ảnh</th>
-                    <th class="py-3 px-4 min-w-[220px]">Tên Bộ Máy</th>
-                    <th class="py-3 px-4">Đường Dẫn Slug</th>
+                    <th class="py-3 px-4 min-w-[200px]">Tên PC Lắp Sẵn</th>
+                    <th class="py-3 px-4 min-w-[180px] max-w-[280px]">Mô Tả</th>
                     <th class="py-3 px-4 text-center whitespace-nowrap">Linh Kiện</th>
-                    <th class="py-3 px-4 min-w-[200px]">Tồn Khả Dụng</th>
+                    <th class="py-3 px-4 min-w-[180px] whitespace-nowrap">Tồn Khả Dụng</th>
                     <th class="py-3 px-4 text-right whitespace-nowrap">Giá Gốc</th>
                     <th class="py-3 px-4 text-right whitespace-nowrap">Giảm Giá</th>
                     <th class="py-3 px-4 text-right whitespace-nowrap">Giá Bán</th>
-                    <th class="py-3 px-4 text-center">Trạng Thái</th>
-                    <th class="py-3 px-4 text-right">Thao Tác</th>
+                    <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
+                    <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-line">
@@ -217,7 +210,7 @@ type ToastNotification = {
                             <img
                               src="/images/products/placeholder.webp"
                               [src]="bundle.primaryImage || '/images/products/placeholder.webp'"
-                              [alt]="bundle.name || 'Bộ máy PC'"
+                              [alt]="bundle.name || 'PC lắp sẵn'"
                               class="w-full h-full object-contain p-0.5"
                               (error)="onImageError($event)"
                             />
@@ -233,72 +226,68 @@ type ToastNotification = {
 
                       <td class="py-3 px-4">
                         <div class="font-bold text-foreground text-sm">{{ bundle.name }}</div>
-                        @if (bundle.description) {
-                          <div class="text-xs text-muted mt-0.5 line-clamp-1">{{ bundle.description }}</div>
-                        }
                       </td>
 
-                      <td class="py-3 px-4 text-muted text-xs whitespace-nowrap">
-                        {{ bundle.slug }}
+                      <td class="py-3 px-4 max-w-[280px]">
+                        <div class="text-xs text-muted truncate" [title]="bundle.description || ''">
+                          {{ bundle.description || 'Chưa có mô tả' }}
+                        </div>
                       </td>
 
-                      <td class="py-3 px-4 text-center tabular tabular-nums font-semibold whitespace-nowrap text-foreground">
+                      <td class="py-3 px-4 text-center tabular-nums font-semibold whitespace-nowrap text-foreground">
                         {{ bundle.totalItemsCount }} món
                       </td>
 
-                      <td class="py-3 px-4">
-                        @if (getShowroomAvailability(bundle); as showroom) {
-                          <div class="flex items-center gap-1.5 text-xs">
-                            <span class="text-muted font-medium">Showroom:</span>
-                            <strong
-                              [class.text-emerald-600]="showroom.buildableCount > 0"
-                              [class.text-destructive]="showroom.buildableCount === 0"
-                              class="tabular tabular-nums font-bold"
-                            >
-                              {{ showroom.buildableCount }} bộ
-                            </strong>
-                            @if (showroom.bottleneckSku) {
-                              <span class="text-muted text-xs truncate max-w-[120px]" title="Giới hạn bởi: {{ showroom.bottleneckSku }}">
-                                (hạn chế: {{ showroom.bottleneckSku }})
-                              </span>
-                            }
-                          </div>
-                        } @else {
-                          <span class="text-muted text-xs">Chưa có dữ liệu</span>
-                        }
+                      <td class="py-3 px-4 whitespace-nowrap">
+                        @let showroom = getShowroomAvailability(bundle);
+                        <div class="flex items-center gap-1.5 text-xs whitespace-nowrap">
+                          <span class="text-muted font-medium">Showroom:</span>
+                          <strong
+                            [class.text-emerald-600]="showroom.buildableCount > 0"
+                            [class.text-destructive]="showroom.buildableCount === 0"
+                            class="tabular-nums font-bold whitespace-nowrap"
+                          >
+                            {{ showroom.buildableCount }} bộ
+                          </strong>
+                          @if (showroom.bottleneckSku) {
+                            <span class="text-muted text-xs truncate max-w-[140px]" title="Giới hạn bởi: {{ showroom.bottleneckSku }}">
+                              (hạn chế: {{ showroom.bottleneckSku }})
+                            </span>
+                          }
+                        </div>
                       </td>
 
-                      <td class="py-3 px-4 text-right tabular tabular-nums text-muted whitespace-nowrap">
+                      <td class="py-3 px-4 text-right tabular-nums text-muted whitespace-nowrap">
                         {{ formatCurrency(bundle.grossTotal) }}
                       </td>
 
-                      <td class="py-3 px-4 text-right tabular tabular-nums font-semibold whitespace-nowrap text-destructive">
+                      <td class="py-3 px-4 text-right tabular-nums font-semibold whitespace-nowrap text-destructive">
                         {{ bundle.discountAmount > 0 ? ('- ' + formatCurrency(bundle.discountAmount)) : '0 đ' }}
                       </td>
 
-                      <td class="py-3 px-4 text-right font-bold tabular tabular-nums text-foreground whitespace-nowrap">
+                      <td class="py-3 px-4 text-right font-bold tabular-nums text-foreground whitespace-nowrap">
                         {{ formatCurrency(bundle.finalPrice) }}
                       </td>
 
                       <td class="py-3 px-4 text-center whitespace-nowrap">
                         @switch (bundle.lifecycleState) {
                           @case ('ACTIVE') {
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary whitespace-nowrap">
                               Đang Bán
                             </span>
                           }
                           @case ('DRAFT') {
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-surface-alt border border-line text-muted">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-surface-alt border border-line text-muted whitespace-nowrap">
                               Bản Nháp
                             </span>
                           }
                           @case ('PAUSED') {
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 border border-amber-500/20 text-amber-700">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 border border-amber-500/20 text-amber-700 whitespace-nowrap">
                               Tạm Dừng
                             </span>
                           }
                           @case ('DISCONTINUED') {
-                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 border border-destructive/20 text-destructive">
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 border border-destructive/20 text-destructive whitespace-nowrap">
                               Ngừng Bán
                             </span>
                           }
@@ -312,22 +301,19 @@ type ToastNotification = {
                             (click)="openEditSheet(bundle)"
                             class="p-1.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
                             title="Sửa cấu hình định mức BOM"
+                            aria-label="Sửa cấu hình định mức BOM"
                           >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
+                            <lucide-icon name="pencil" class="size-4" aria-hidden="true"></lucide-icon>
                           </button>
 
                           <button
                             type="button"
                             (click)="onDeleteBundle(bundle)"
                             class="p-1.5 rounded hover:bg-surface-alt text-destructive hover:opacity-80 transition-colors"
-                            title="Xóa bộ máy"
+                            title="Xóa PC lắp sẵn"
+                            aria-label="Xóa PC lắp sẵn"
                           >
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                              <polyline points="3 6 5 6 21 6"/>
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                            </svg>
+                            <lucide-icon name="trash-2" class="size-4 text-destructive" aria-hidden="true"></lucide-icon>
                           </button>
                         </div>
                       </td>
@@ -336,54 +322,63 @@ type ToastNotification = {
                 </tbody>
               </table>
             </div>
+            <app-admin-pagination
+              [page]="bundleService.page()"
+              [total]="bundleService.total()"
+              [limit]="bundleService.limit()"
+              [totalPages]="bundleService.totalPages()"
+              itemName="PC lắp sẵn"
+              [isLoading]="bundleService.isLoading()"
+              (pageChange)="onPageChange($event)"
+            />
           </div>
         }
 
         @if (currentView() === 'cards') {
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
             @for (bundle of bundleService.bundles(); track bundle.id) {
               <div class="bg-surface border border-line rounded-lg overflow-hidden shadow-xs flex flex-col justify-between hover:border-primary/50 transition-all group">
                 <div>
-                  <div class="h-44 bg-surface-alt relative flex items-center justify-center p-3 border-b border-line">
+                  <div class="h-36 bg-surface-alt relative flex items-center justify-center p-2.5 border-b border-line">
                     @if (bundle.primaryImage) {
                       <img
                         src="/images/products/placeholder.webp"
                         [src]="bundle.primaryImage || '/images/products/placeholder.webp'"
-                        [alt]="bundle.name || 'Bộ máy PC'"
+                        [alt]="bundle.name || 'PC lắp sẵn'"
                         class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform"
                         (error)="onImageError($event)"
                       />
                     } @else {
-                      <svg class="w-14 h-14 text-muted" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 24 24">
+                      <svg class="w-12 h-12 text-muted" fill="none" stroke="currentColor" stroke-width="1.25" viewBox="0 0 24 24">
                         <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
                         <line x1="8" y1="21" x2="16" y2="21"/>
                         <line x1="12" y1="17" x2="12" y2="21"/>
                       </svg>
                     }
 
-                    <div class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-xs font-bold bg-primary text-primary-foreground">
+                    <div class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[11px] font-bold bg-primary text-primary-foreground">
                       {{ bundle.totalItemsCount }} LINH KIỆN
                     </div>
 
-                    <div class="absolute top-2.5 right-2.5">
+                    <div class="absolute top-2 right-2">
                       @switch (bundle.lifecycleState) {
                         @case ('ACTIVE') {
-                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/10 border border-primary/20 text-primary">
+                          <span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-primary/10 border border-primary/20 text-primary">
                             Đang Bán
                           </span>
                         }
                         @case ('DRAFT') {
-                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-surface-alt border border-line text-muted">
+                          <span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-surface-alt border border-line text-muted">
                             Bản Nháp
                           </span>
                         }
                         @case ('PAUSED') {
-                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/10 border border-amber-500/20 text-amber-700">
+                          <span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-amber-500/10 border border-amber-500/20 text-amber-700">
                             Tạm Dừng
                           </span>
                         }
                         @case ('DISCONTINUED') {
-                          <span class="px-2 py-0.5 rounded text-xs font-bold bg-destructive/10 border border-destructive/20 text-destructive">
+                          <span class="px-1.5 py-0.5 rounded text-[11px] font-bold bg-destructive/10 border border-destructive/20 text-destructive">
                             Ngừng Bán
                           </span>
                         }
@@ -391,60 +386,68 @@ type ToastNotification = {
                     </div>
                   </div>
 
-                  <div class="p-4 space-y-3">
+                  <div class="p-3 space-y-2">
                     <div>
-                      <h3 class="font-bold text-foreground text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                      <h3 class="font-bold text-foreground text-sm line-clamp-1 group-hover:text-primary transition-colors" [title]="bundle.name">
                         {{ bundle.name }}
                       </h3>
-                      <p class="text-xs text-muted mt-1 line-clamp-2 min-h-[32px]">
-                        {{ bundle.description || 'Chưa có mô tả tóm tắt cho cấu hình máy tính này.' }}
+                      <p class="text-xs text-muted mt-1 line-clamp-2 min-h-[32px]" [title]="bundle.description || ''">
+                        {{ bundle.description || 'Chưa có mô tả tóm tắt cho cấu hình PC lắp sẵn này.' }}
                       </p>
 
-                      <div class="mt-3 flex items-baseline gap-2 flex-wrap">
-                        <span class="text-base font-bold text-foreground tabular tabular-nums">
+                      <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+                        <span class="text-base font-bold text-foreground tabular-nums">
                           {{ formatCurrency(bundle.finalPrice) }}
                         </span>
                         @if (bundle.discountAmount > 0) {
-                          <span class="text-xs text-muted line-through tabular tabular-nums">
+                          <span class="text-xs text-muted line-through tabular-nums">
                             {{ formatCurrency(bundle.grossTotal) }}
                           </span>
-                          <span class="text-xs font-bold text-destructive bg-destructive/10 border border-destructive/20 px-1.5 py-0.5 rounded tabular">
+                          <span class="text-xs font-bold text-destructive bg-destructive/10 border border-destructive/20 px-1 py-0.5 rounded tabular-nums">
                             -{{ formatCurrency(bundle.discountAmount) }}
                           </span>
                         }
                       </div>
                     </div>
 
-                    <div class="p-2.5 bg-surface-alt rounded border border-line space-y-1 text-xs">
-                      <div class="text-xs font-semibold text-muted uppercase tracking-wider mb-1">
-                        Tồn Khả Dụng Tại Showroom EL-TECH:
+                    <div class="p-2.5 bg-surface-alt rounded border border-line space-y-1.5 text-xs">
+                      @let showroom = getShowroomAvailability(bundle);
+                      <div class="flex items-center justify-between gap-2 whitespace-nowrap">
+                        <span class="font-semibold text-muted uppercase tracking-wider text-[11px]">
+                          Tồn Khả Dụng:
+                        </span>
+                        <strong
+                          [class.text-emerald-600]="showroom.buildableCount > 0"
+                          [class.text-destructive]="showroom.buildableCount === 0"
+                          class="tabular-nums font-bold whitespace-nowrap text-xs"
+                        >
+                          {{ showroom.buildableCount }} bộ
+                        </strong>
                       </div>
-                      @if (getShowroomAvailability(bundle); as showroom) {
-                        <div class="flex items-center justify-between text-xs">
-                          <span class="text-muted">Khả năng lắp ráp:</span>
-                          <span
-                            [class.text-emerald-600]="showroom.buildableCount > 0"
-                            [class.text-destructive]="showroom.buildableCount === 0"
-                            class="font-bold tabular tabular-nums"
-                          >
-                            {{ showroom.buildableCount }} bộ
-                          </span>
+
+                      <div class="flex items-center justify-between gap-2 text-xs pt-1 border-t border-line/50">
+                        <span class="text-muted">Khả năng lắp ráp:</span>
+                        <span
+                          [class.text-emerald-600]="showroom.buildableCount > 0"
+                          [class.text-destructive]="showroom.buildableCount === 0"
+                          class="font-medium whitespace-nowrap"
+                        >
+                          {{ showroom.buildableCount > 0 ? 'Có thể lắp ráp' : 'Thiếu linh kiện' }}
+                        </span>
+                      </div>
+
+                      @if (showroom.bottleneckSku) {
+                        <div class="text-muted text-[11px] truncate pt-0.5" title="Giới hạn bởi linh kiện: {{ showroom.bottleneckSku }}">
+                          Hạn chế bởi: {{ showroom.bottleneckSku }}
                         </div>
-                        @if (showroom.bottleneckSku) {
-                          <div class="text-muted text-xs truncate" title="Giới hạn bởi: {{ showroom.bottleneckSku }}">
-                            Hạn chế bởi: {{ showroom.bottleneckSku }}
-                          </div>
-                        }
-                      } @else {
-                        <div class="text-muted text-xs">Chưa có dữ liệu tồn kho</div>
                       }
                     </div>
                   </div>
                 </div>
 
-                <div class="p-4 pt-0 border-t border-line mt-2 pt-3 flex items-center justify-between">
-                  <span class="text-xs text-muted truncate max-w-[140px]">
-                    {{ bundle.slug }}
+                <div class="p-3 pt-2 border-t border-line mt-2 flex items-center justify-between">
+                  <span class="text-xs text-muted font-medium">
+                    {{ bundle.totalItemsCount }} linh kiện
                   </span>
 
                   <div class="flex items-center gap-1.5">
@@ -452,12 +455,10 @@ type ToastNotification = {
                       type="button"
                       (click)="onDeleteBundle(bundle)"
                       class="p-1.5 rounded hover:bg-surface-alt text-destructive hover:opacity-80 transition-colors"
-                      title="Xóa bộ máy"
+                      title="Xóa PC lắp sẵn"
+                      aria-label="Xóa PC lắp sẵn"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <polyline points="3 6 5 6 21 6"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                      </svg>
+                      <lucide-icon name="trash-2" class="size-4 text-destructive" aria-hidden="true"></lucide-icon>
                     </button>
                     <button
                       type="button"
@@ -467,15 +468,24 @@ type ToastNotification = {
                       (click)="openEditSheet(bundle)"
                       class="inline-flex items-center gap-1"
                     >
-                      <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
+                      <lucide-icon name="pencil" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                       <span>Sửa BOM</span>
                     </button>
                   </div>
                 </div>
               </div>
             }
+          </div>
+          <div class="bg-surface border border-line rounded-lg overflow-hidden mt-3.5">
+            <app-admin-pagination
+              [page]="bundleService.page()"
+              [total]="bundleService.total()"
+              [limit]="bundleService.limit()"
+              [totalPages]="bundleService.totalPages()"
+              itemName="PC lắp sẵn"
+              [isLoading]="bundleService.isLoading()"
+              (pageChange)="onPageChange($event)"
+            />
           </div>
         }
       }
@@ -501,7 +511,7 @@ type ToastNotification = {
           >
             <span>{{ toast.message }}</span>
             <button type="button" (click)="dismissToast(toast.id)" class="text-muted hover:text-foreground">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+              <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
         }
@@ -562,6 +572,10 @@ export class AdminPcBundlesPageComponent implements OnInit {
     this.loadBundles();
   }
 
+  async onPageChange(page: number): Promise<void> {
+    await this.bundleService.setPage(page);
+  }
+
   openCreateSheet(): void {
     this.selectedBundle.set(null);
     this.isSheetOpen.set(true);
@@ -578,29 +592,41 @@ export class AdminPcBundlesPageComponent implements OnInit {
   }
 
   onSheetSaved(bundle: AdminPcBundle): void {
-    this.showToast(`Đã lưu thành công cấu hình bộ máy "${bundle.name}"`, 'success');
+    this.showToast(`Đã lưu thành công cấu hình PC lắp sẵn "${bundle.name}"`, 'success');
     this.loadBundles();
   }
 
   async onDeleteBundle(bundle: AdminPcBundle): Promise<void> {
-    const confirmed = window.confirm(`Bạn có chắc chắn muốn xóa/ngừng bán bộ máy "${bundle.name}"?`);
+    const confirmed = window.confirm(`Bạn có chắc chắn muốn xóa/ngừng bán PC lắp sẵn "${bundle.name}"?`);
     if (!confirmed) return;
 
     try {
       await this.bundleService.deleteBundle(bundle.id);
-      this.showToast(`Đã xóa/ngừng bán bộ máy "${bundle.name}"`, 'success');
+      this.showToast(`Đã xóa/ngừng bán PC lắp sẵn "${bundle.name}"`, 'success');
       this.loadBundles();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Không thể xóa bộ máy tính';
+      const msg = err instanceof Error ? err.message : 'Không thể xóa PC lắp sẵn';
       this.showToast(msg, 'error');
     }
   }
 
-  getShowroomAvailability(bundle: AdminPcBundle): BranchAvailability | undefined {
-    return (
-      bundle.branchAvailability.find((b: BranchAvailability) => b.branchId === 1) ??
-      bundle.branchAvailability[0]
-    );
+  getShowroomAvailability(bundle: AdminPcBundle): BranchAvailability {
+    if (bundle.branchAvailability && bundle.branchAvailability.length > 0) {
+      const found =
+        bundle.branchAvailability.find((b: BranchAvailability) => b.branchId === 1) ??
+        bundle.branchAvailability[0];
+      if (found) return found;
+    }
+    return {
+      branchId: 1,
+      branchName: 'Showroom EL-TECH',
+      branchCode: 'EL-TECH-01',
+      buildableCount: 0,
+      bottleneckSku: null,
+      bottleneckSkuId: null,
+      bottleneckAvailableStock: 0,
+      bottleneckRequiredQuantity: 0,
+    };
   }
 
   formatCurrency(value: number): string {

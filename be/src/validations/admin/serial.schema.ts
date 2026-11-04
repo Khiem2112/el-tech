@@ -15,7 +15,7 @@ export const querySerialsSchema = z.object({
   branchId: z.coerce.number().int().positive().optional(),
   skuId: z.coerce.number().int().positive().optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().positive().max(200).optional().default(20),
+  limit: z.coerce.number().int().positive().max(200).optional().default(10),
 });
 
 export type QuerySerialsInput = z.infer<typeof querySerialsSchema>;

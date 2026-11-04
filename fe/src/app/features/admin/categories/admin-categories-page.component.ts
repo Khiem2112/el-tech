@@ -10,7 +10,9 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CategoryFormDialogComponent } from './components/category-form-dialog.component';
 import { SpecSchemaSheetComponent } from './components/spec-schema-sheet.component';
 import {
@@ -37,9 +39,11 @@ type FlattenedCategoryRow = AdminCategory & {
     CommonModule,
     FormsModule,
     ButtonDirective,
+    AppIconModule,
     SelectComponent,
     CategoryFormDialogComponent,
     SpecSchemaSheetComponent,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -77,11 +81,11 @@ type FlattenedCategoryRow = AdminCategory & {
               type="text"
               [ngModel]="categoryService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
-              placeholder="Tìm kiếm theo tên hoặc mã đường dẫn slug..."
-              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+              placeholder="Tìm kiếm danh mục ngành hàng..."
+              class="w-full h-9 pl-9 pr-4 bg-surface-alt border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <svg
-              class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none"
+              class="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
@@ -104,7 +108,7 @@ type FlattenedCategoryRow = AdminCategory & {
         </div>
 
         <div class="text-xs text-muted text-right">
-          Tổng số: <strong class="text-foreground tabular-nums">{{ visibleCategories().length }}</strong> danh mục
+          Tổng số: <strong class="text-foreground tabular-nums">{{ categoryService.total() }}</strong> danh mục
         </div>
       </div>
 
@@ -115,9 +119,8 @@ type FlattenedCategoryRow = AdminCategory & {
               <tr>
                 <th class="py-3 px-4 w-16 text-center whitespace-nowrap">Ảnh</th>
                 <th class="py-3 px-4 whitespace-nowrap">Tên Danh Mục Ngành Hàng</th>
-                <th class="py-3 px-4 whitespace-nowrap">Mã Đường Dẫn (Slug)</th>
-                <th class="py-3 px-4 text-center whitespace-nowrap">Phiên Bản Schema</th>
-                <th class="py-3 px-4 text-center whitespace-nowrap">Smart Buttons (Sản Phẩm & Tồn Kho)</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Số Mẫu</th>
+                <th class="py-3 px-4 text-center whitespace-nowrap">Tồn Kho</th>
                 <th class="py-3 px-4 text-center whitespace-nowrap">Trạng Thái</th>
                 <th class="py-3 px-4 text-right whitespace-nowrap">Thao Tác</th>
               </tr>
@@ -125,14 +128,14 @@ type FlattenedCategoryRow = AdminCategory & {
             <tbody class="divide-y divide-line text-sm">
               @if (categoryService.isLoading()) {
                 <tr>
-                  <td colspan="7" class="py-12 text-center text-muted">
+                  <td colspan="6" class="py-12 text-center text-muted">
                     <div class="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2"></div>
                     <p>Đang tải cây danh mục ngành hàng...</p>
                   </td>
                 </tr>
               } @else if (visibleCategories().length === 0) {
                 <tr>
-                  <td colspan="7" class="py-12 text-center text-muted">
+                  <td colspan="6" class="py-12 text-center text-muted">
                     <p class="font-medium text-foreground">Không tìm thấy danh mục ngành hàng nào phù hợp</p>
                     <p class="text-xs text-muted mt-1">Vui lòng điều chỉnh lại bộ lọc hoặc tạo danh mục mới</p>
                   </td>
@@ -146,91 +149,80 @@ type FlattenedCategoryRow = AdminCategory & {
                           [src]="getCategoryThumbnail(cat.slug)"
                           [alt]="cat.name"
                           class="w-full h-full object-contain"
+                          (error)="onImageError($event)"
                         />
                       </div>
                     </td>
-                    <td class="py-3 px-4 font-bold text-foreground">
-                      <div class="flex items-center gap-2" [style.padding-left.px]="cat.depth * 24">
-                        @if (cat.hasChildren) {
-                          <button
-                            type="button"
-                            (click)="toggleExpand(cat.id)"
-                            class="p-0.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
-                            [title]="cat.isExpanded ? 'Thu gọn' : 'Mở rộng'"
-                          >
-                            <svg
-                              class="w-3.5 h-3.5 transform transition-transform"
-                              [ngClass]="{ 'rotate-90': cat.isExpanded }"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              viewBox="0 0 24 24"
+                    <td class="py-3 px-4 text-foreground">
+                      <div [style.padding-left.px]="cat.depth * 24">
+                        <div class="flex items-center gap-2">
+                          @if (cat.hasChildren) {
+                            <button
+                              type="button"
+                              (click)="toggleExpand(cat.id)"
+                              class="p-0.5 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+                              [title]="cat.isExpanded ? 'Thu gọn' : 'Mở rộng'"
                             >
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                            </svg>
-                          </button>
-                        } @else if (cat.depth > 0) {
-                          <span class="w-3.5 h-3.5 flex items-center justify-center text-muted text-xs">
-                            --
-                          </span>
-                        } @else {
-                          <span class="w-3.5"></span>
-                        }
+                              <svg
+                                class="w-3.5 h-3.5 transform transition-transform"
+                                [ngClass]="{ 'rotate-90': cat.isExpanded }"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                              </svg>
+                            </button>
+                          } @else if (cat.depth > 0) {
+                            <span class="w-3.5 h-3.5 flex items-center justify-center text-muted text-xs">
+                              --
+                            </span>
+                          } @else {
+                            <span class="w-3.5"></span>
+                          }
 
-                        <span
-                          class="w-2 h-2 rounded-full"
-                          [ngClass]="cat.isActive ? 'bg-primary' : 'bg-slate-300'"
-                        ></span>
-                        <span>{{ cat.name }}</span>
+                          <span
+                            class="w-2 h-2 rounded-full flex-shrink-0"
+                            [ngClass]="cat.isActive ? 'bg-primary' : 'bg-slate-300'"
+                          ></span>
+                          <span class="font-bold text-foreground">{{ cat.name }}</span>
+                        </div>
                         @if (cat.description) {
-                          <span class="text-xs text-muted font-normal hidden md:inline truncate max-w-xs" [title]="cat.description">
-                            - {{ cat.description }}
-                          </span>
+                          <div
+                            class="text-xs text-muted font-normal mt-0.5 pl-[22px] line-clamp-1 max-w-md"
+                            [title]="cat.description"
+                          >
+                            {{ cat.description }}
+                          </div>
                         }
                       </div>
                     </td>
 
-                    <td class="py-3 px-4 text-muted text-sm whitespace-nowrap">
-                      {{ cat.slug }}
+                    <td class="py-3 px-4 text-center whitespace-nowrap">
+                      <button
+                        type="button"
+                        (click)="onNavigateToTemplates(cat)"
+                        class="px-2.5 py-1 bg-surface-alt hover:bg-surface border border-line rounded font-bold text-xs text-foreground transition-colors cursor-pointer inline-flex items-center gap-1"
+                        title="Bấm để xem danh sách mẫu sản phẩm thuộc danh mục này"
+                      >
+                        <span class="tabular-nums">{{ cat.productTemplateCount }}</span>
+                        <span class="font-normal text-muted text-[11px]">mẫu</span>
+                      </button>
                     </td>
 
                     <td class="py-3 px-4 text-center whitespace-nowrap">
-                      <span class="px-2.5 py-0.5 rounded font-bold bg-surface-alt text-primary-strong border border-line text-xs tabular">
-                        v{{ cat.specificationSchemaVersion }}
-                      </span>
+                      <button
+                        type="button"
+                        (click)="onNavigateToInventory(cat)"
+                        class="px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded font-bold text-xs transition-colors cursor-pointer inline-flex items-center gap-1"
+                        title="Bấm để xem số lượng tồn kho của danh mục này"
+                      >
+                        <span class="tabular-nums">{{ cat.totalInventory }}</span>
+                        <span class="font-normal text-emerald-600 text-[11px]">tồn</span>
+                      </button>
                     </td>
 
-                    <td class="py-3 px-4 text-center whitespace-nowrap">
-                      <div class="flex items-center justify-center gap-1.5 flex-wrap">
-                        <button
-                          type="button"
-                          (click)="onNavigateToTemplates(cat)"
-                          class="px-2.5 py-0.5 bg-surface-alt hover:bg-surface border border-line rounded font-bold text-xs text-foreground transition-colors cursor-pointer"
-                          title="Bấm để xem danh sách mẫu sản phẩm thuộc danh mục này"
-                        >
-                          {{ cat.productTemplateCount }} mẫu
-                        </button>
-
-                        <button
-                          type="button"
-                          (click)="onNavigateToInventory(cat)"
-                          class="px-2.5 py-0.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded font-bold text-xs transition-colors cursor-pointer"
-                          title="Bấm để xem số lượng tồn kho của danh mục này"
-                        >
-                          {{ cat.totalInventory }} tồn
-                        </button>
-
-                        <button
-                          type="button"
-                          (click)="onNavigateToTransfers(cat)"
-                          class="px-2.5 py-0.5 rounded font-bold text-xs transition-colors cursor-pointer"
-                          [ngClass]="cat.activeTransfers > 0 ? 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200' : 'bg-surface-alt hover:bg-surface text-muted border border-line'"
-                          title="Bấm để xem phiếu điều chuyển kho liên quan đến danh mục này"
-                        >
-                          {{ cat.activeTransfers }} điều chuyển
-                        </button>
-                      </div>
-                    </td>
 
                     <td class="py-3 px-4 text-center whitespace-nowrap">
                       @if (cat.isActive) {
@@ -249,16 +241,10 @@ type FlattenedCategoryRow = AdminCategory & {
                         type="button"
                         (click)="openSpecSchemaSheet(cat)"
                         class="p-1.5 rounded hover:bg-surface-alt text-primary-strong transition-colors"
-                        title="Cấu hình thuộc tính kỹ thuật động"
-                        aria-label="Cấu hình thuộc tính kỹ thuật động"
+                        title="Cấu hình thuộc tính kỹ thuật"
+                        aria-label="Cấu hình thuộc tính kỹ thuật"
                       >
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                          <polyline points="14 2 14 8 20 8"/>
-                          <line x1="16" y1="13" x2="8" y2="13"/>
-                          <line x1="16" y1="17" x2="8" y2="17"/>
-                          <line x1="10" y1="9" x2="8" y2="9"/>
-                        </svg>
+                        <lucide-icon name="settings" class="size-4" aria-hidden="true"></lucide-icon>
                       </button>
 
                       <button
@@ -292,6 +278,16 @@ type FlattenedCategoryRow = AdminCategory & {
             </tbody>
           </table>
         </div>
+
+        <app-admin-pagination
+          [page]="categoryService.page()"
+          [total]="categoryService.total()"
+          [limit]="categoryService.limit()"
+          [totalPages]="categoryService.totalPages()"
+          itemName="danh mục"
+          [isLoading]="categoryService.isLoading()"
+          (pageChange)="onPageChange($event)"
+        />
       </div>
     </div>
 
@@ -420,6 +416,10 @@ export class AdminCategoriesPageComponent implements OnInit {
     return rows;
   });
 
+  onPageChange(page: number): void {
+    void this.categoryService.setPage(page);
+  }
+
   async ngOnInit(): Promise<void> {
     await this.categoryService.loadCategories();
   }
@@ -482,7 +482,7 @@ export class AdminCategoriesPageComponent implements OnInit {
 
   onSpecSchemaSaved(category: AdminCategory): void {
     this.showToast(
-      `Đã cập nhật schema thông số kỹ thuật "${category.name}" lên phiên bản v${category.specificationSchemaVersion}`,
+      `Đã cập nhật cấu hình thuộc tính kỹ thuật cho danh mục "${category.name}" thành công`,
       'success',
     );
   }
@@ -515,12 +515,6 @@ export class AdminCategoriesPageComponent implements OnInit {
     });
   }
 
-  onNavigateToTransfers(category: AdminCategory): void {
-    this.router.navigate(['/admin/inventory/transfers'], {
-      queryParams: { categoryId: category.id, category: category.slug },
-    });
-  }
-
   showToast(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
     const id = Date.now() + Math.random();
     this.toasts.update((current) => [...current, { id, message, type }]);
@@ -531,6 +525,16 @@ export class AdminCategoriesPageComponent implements OnInit {
 
   dismissToast(id: number): void {
     this.toasts.update((current) => current.filter((item) => item.id !== id));
+  }
+
+  readonly fallbackCategoryThumbnail =
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+
+  onImageError(event: Event): void {
+    const target = event.target as HTMLImageElement | null;
+    if (target && target.src !== this.fallbackCategoryThumbnail) {
+      target.src = this.fallbackCategoryThumbnail;
+    }
   }
 
   getCategoryThumbnail(slug: string): string {

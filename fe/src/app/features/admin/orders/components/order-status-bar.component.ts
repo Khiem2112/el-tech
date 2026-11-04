@@ -15,7 +15,7 @@ type FlowStep = {
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-surface border border-line rounded-lg p-3 sm:p-3.5 space-y-2.5 text-foreground">
+    <div class="bg-surface border border-line rounded-lg p-4 sm:p-5 space-y-3 text-foreground shadow-xs">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 text-xs">
         <div class="flex items-center gap-2 flex-wrap">
           <div class="inline-flex items-center rounded bg-surface-alt p-0.5 border border-line text-xs">
@@ -172,10 +172,10 @@ export class OrderStatusBarComponent {
   readonly exceptionClass = computed<string>(() => {
     const s = this.order().status;
     if (s === 'CANCELLED') {
-      return 'bg-destructive/10 text-destructive border-destructive/20';
+      return 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800';
     }
     if (s === 'DELIVERY_FAILED') {
-      return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20';
+      return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
     }
     return 'bg-surface-alt text-muted border-line';
   });

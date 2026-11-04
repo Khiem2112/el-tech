@@ -101,6 +101,8 @@ export const queryCategorySchema = z.object({
     ])
     .optional()
     .default(false),
+  page: z.coerce.number().int().positive().optional().default(1),
+  limit: z.coerce.number().int().positive().max(100).optional().default(10),
 });
 
 export type SpecAttribute = z.infer<typeof specAttributeSchema>;

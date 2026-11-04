@@ -13,6 +13,7 @@ import { handleProductImageError } from '../../../core/constants/product.constan
 import { BadgeDirective } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CancelTransferDialogComponent } from './components/cancel-transfer-dialog.component';
 import { CreateTransferDialogComponent } from './components/create-transfer-dialog.component';
 import { DispatchTransferDialogComponent } from './components/dispatch-transfer-dialog.component';
@@ -38,6 +39,7 @@ import {
     DispatchTransferDialogComponent,
     ReceiveTransferDialogComponent,
     CancelTransferDialogComponent,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -376,36 +378,15 @@ import {
           </table>
         </div>
 
-        @if (total() > limit()) {
-          <div class="p-3 bg-surface-alt border-t border-line flex items-center justify-between text-sm text-muted">
-            <div>
-              Hiển thị {{ (page() - 1) * limit() + 1 }} - {{ Math.min(page() * limit(), total()) }} trên tổng {{ total() }} phiếu
-            </div>
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="page() <= 1"
-                (click)="goToPage(page() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-              <span class="text-foreground font-semibold tabular tabular-nums">Trang {{ page() }} / {{ totalPages() }}</span>
-              <button
-                type="button"
-                [disabled]="page() >= totalPages()"
-                (click)="goToPage(page() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
-        }
+        <app-admin-pagination
+          [page]="page()"
+          [total]="total()"
+          [limit]="limit()"
+          [totalPages]="totalPages()"
+          itemName="phiếu điều chuyển"
+          [isLoading]="isLoading()"
+          (pageChange)="goToPage($event)"
+        />
       </div>
 
       <!-- Detail Modal -->

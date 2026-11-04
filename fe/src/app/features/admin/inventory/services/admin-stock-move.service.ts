@@ -107,7 +107,7 @@ export class AdminStockMoveService {
   readonly moves = signal<StockMoveListItem[]>([]);
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(20);
+  readonly limit = signal<number>(10);
   readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);

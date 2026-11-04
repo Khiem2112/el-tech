@@ -55,7 +55,7 @@ export class AdminShippingFeeService {
 
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(20);
+  readonly limit = signal<number>(10);
   readonly totalPages = signal<number>(1);
 
   private getAuthHeaders(): HttpHeaders {
@@ -67,7 +67,12 @@ export class AdminShippingFeeService {
     return headers;
   }
 
-  async loadDeliveryFees(page = 1, limit = 20): Promise<void> {
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadDeliveryFees(newPage, this.limit());
+  }
+
+  async loadDeliveryFees(page = 1, limit = 10): Promise<void> {
     this.isLoading.set(true);
     this.error.set(null);
 

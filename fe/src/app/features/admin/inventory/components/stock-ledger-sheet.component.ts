@@ -34,7 +34,7 @@ import {
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
                 <h2 class="font-bold text-foreground text-base truncate">
-                  Lịch Sử Biến Động Kho SKU
+                  Lịch Sử Biến Động
                 </h2>
                 @if (detail?.quant; as quant) {
                   <p class="text-xs text-muted tabular truncate">
@@ -183,7 +183,7 @@ import {
             @if (detail?.quant; as quant) {
               <a
                 [routerLink]="['/admin/inventory/ledger']"
-                [queryParams]="{ search: quant.sku, branchId: quant.branchId }"
+                [queryParams]="{ search: quant.sku }"
                 (click)="onClose()"
                 class="text-xs text-primary-strong hover:underline font-medium inline-flex items-center gap-1"
               >
@@ -243,7 +243,7 @@ export class StockLedgerSheetComponent {
       case 'RELEASE_RESERVATION':
         return 'GIẢI PHÓNG GIỮ';
       case 'PURCHASE_RECEIPT':
-        return 'NHẬP KHO PO';
+        return 'NHẬP KHO ĐƠN MUA';
       case 'ORDER_ISSUE':
         return 'XUẤT KHO';
       case 'TRANSFER_OUT':
@@ -267,9 +267,9 @@ export class StockLedgerSheetComponent {
     const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
       case 'QUARANTINE':
-        return `${base} bg-rose-50 text-danger border-rose-200`;
+        return `${base} bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20`;
       case 'RESERVE':
-        return `${base} bg-amber-50 text-warning border-amber-200`;
+        return `${base} bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20`;
       default:
         return `${base} bg-surface-alt text-foreground border-line`;
     }

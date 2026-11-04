@@ -94,7 +94,7 @@ export class AdminVariantService {
   readonly error = signal<string | null>(null);
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(20);
+  readonly limit = signal<number>(10);
 
   readonly searchQuery = signal<string>('');
   readonly serialFilter = signal<boolean | null>(null);
@@ -112,6 +112,11 @@ export class AdminVariantService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadVariants({ page: newPage });
   }
 
   async loadVariants(overrides?: Partial<VariantCatalogFilterParams>): Promise<AdminVariantCatalogResponse> {

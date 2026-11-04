@@ -537,23 +537,45 @@ type StatusBadgeConfig = {
                           <div class="space-y-1.5">
                             <div class="flex justify-between py-1 border-b border-line/60">
                               <span class="text-muted">Ngân hàng:</span>
-                              <strong class="text-foreground">MB Bank (Quân Đội)</strong>
+                              <strong class="text-foreground">Vietcombank (VCB)</strong>
                             </div>
                             <div class="flex justify-between py-1 border-b border-line/60">
                               <span class="text-muted">Chủ tài khoản:</span>
-                              <strong class="text-foreground uppercase">CONG TY CONG NGHE EL-TECH</strong>
+                              <strong class="text-foreground uppercase">NGUYEN PHAM QUOC KHIEM</strong>
                             </div>
-                            <div class="flex justify-between py-1 border-b border-line/60">
+                            <div class="flex justify-between items-center py-1 border-b border-line/60">
                               <span class="text-muted">Số tài khoản:</span>
-                              <strong class="text-foreground font-bold tabular">0388234567</strong>
+                              <div class="flex items-center gap-1.5 font-bold text-foreground tabular">
+                                <span>1040346646</span>
+                                <button
+                                  type="button"
+                                  (click)="copyBankDetail('1040346646', 'account')"
+                                  class="p-1 rounded hover:bg-surface text-primary transition-colors cursor-pointer"
+                                  title="Sao chép số tài khoản"
+                                  aria-label="Sao chép số tài khoản"
+                                >
+                                  <lucide-icon [name]="copiedAccount() ? 'Check' : 'Copy'" class="size-3.5" aria-hidden="true"></lucide-icon>
+                                </button>
+                              </div>
                             </div>
                             <div class="flex justify-between py-1 border-b border-line/60">
                               <span class="text-muted">Số tiền cần chuyển:</span>
                               <strong class="text-primary font-bold tabular">{{ parseAmount(selectedOrderDetail()!.grandTotal) | vnd }}</strong>
                             </div>
-                            <div class="flex justify-between py-1">
+                            <div class="flex justify-between items-center py-1">
                               <span class="text-muted">Nội dung chuyển khoản:</span>
-                              <strong class="text-primary font-bold tabular">{{ selectedOrderDetail()!.payment?.paymentReference || selectedOrderDetail()!.code }}</strong>
+                              <div class="flex items-center gap-1.5 font-bold text-primary tabular">
+                                <span>{{ selectedOrderDetail()!.payment?.paymentReference || selectedOrderDetail()!.code }}</span>
+                                <button
+                                  type="button"
+                                  (click)="copyBankDetail(selectedOrderDetail()!.payment?.paymentReference || selectedOrderDetail()!.code, 'memo')"
+                                  class="p-1 rounded hover:bg-surface text-primary transition-colors cursor-pointer"
+                                  title="Sao chép nội dung chuyển khoản"
+                                  aria-label="Sao chép nội dung chuyển khoản"
+                                >
+                                  <lucide-icon [name]="copiedMemo() ? 'Check' : 'Copy'" class="size-3.5" aria-hidden="true"></lucide-icon>
+                                </button>
+                              </div>
                             </div>
                           </div>
 
@@ -561,7 +583,8 @@ type StatusBadgeConfig = {
                             <img
                               [src]="getVietQrUrl(selectedOrderDetail()!)"
                               alt="Mã QR thanh toán đơn hàng"
-                              class="size-40 object-contain rounded"
+                              class="size-40 object-contain rounded bg-white p-1"
+                              loading="lazy"
                             >
                             <span class="text-xs text-muted mt-2">Quét bằng ứng dụng ngân hàng bất kỳ</span>
                           </div>
@@ -1172,6 +1195,8 @@ export class ProfilePageComponent implements OnInit {
   protected readonly selectedOrderDetail = signal<OrderDetailDto | null>(null);
   protected readonly isLoadingDetail = signal<boolean>(false);
   protected readonly detailError = signal<string | null>(null);
+  protected readonly copiedAccount = signal<boolean>(false);
+  protected readonly copiedMemo = signal<boolean>(false);
 
   protected readonly cancellingOrder = signal<{
     code: string;
@@ -1377,7 +1402,18 @@ export class ProfilePageComponent implements OnInit {
   protected getVietQrUrl(order: OrderDetailDto): string {
     const amount = this.parseAmount(order.grandTotal);
     const reference = encodeURIComponent(order.payment?.paymentReference || order.code);
-    return `https://img.vietqr.io/image/MB-0388234567-compact2.png?amount=${amount}&addInfo=${reference}&accountName=CONG%20TY%20EL%20TECH`;
+    return `https://img.vietqr.io/image/VCB-1040346646-compact2.svg?amount=${amount}&addInfo=${reference}&accountName=NGUYEN%20PHAM%20QUOC%20KHIEM`;
+  }
+
+  protected copyBankDetail(value: string, field: 'account' | 'memo'): void {
+    void navigator.clipboard?.writeText(value);
+    if (field === 'account') {
+      this.copiedAccount.set(true);
+      setTimeout(() => this.copiedAccount.set(false), 2000);
+    } else {
+      this.copiedMemo.set(true);
+      setTimeout(() => this.copiedMemo.set(false), 2000);
+    }
   }
 
   protected getStatusBadge(status: string): StatusBadgeConfig {

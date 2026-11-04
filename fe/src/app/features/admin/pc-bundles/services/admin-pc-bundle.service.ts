@@ -106,7 +106,7 @@ export class AdminPcBundleService {
   readonly bundles = signal<readonly AdminPcBundle[]>([]);
   readonly total = signal<number>(0);
   readonly page = signal<number>(1);
-  readonly limit = signal<number>(20);
+  readonly limit = signal<number>(10);
   readonly totalPages = signal<number>(1);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
@@ -122,6 +122,11 @@ export class AdminPcBundleService {
       headers = headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
+  }
+
+  async setPage(newPage: number): Promise<void> {
+    this.page.set(newPage);
+    await this.loadBundles({ page: newPage });
   }
 
   async loadBundles(params?: PcBundleFilterParams): Promise<void> {
@@ -173,7 +178,7 @@ export class AdminPcBundleService {
         this.error.set(response.error.messageKey);
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Không thể tải danh sách bộ máy tính dựng sẵn';
+      const message = err instanceof Error ? err.message : 'Không thể tải danh sách PC lắp sẵn';
       this.error.set(message);
     } finally {
       this.isLoading.set(false);

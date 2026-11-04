@@ -54,6 +54,7 @@ export type LowStockAlertItem = {
   reserved: number;
   quarantineDamaged: number;
   available: number;
+  reorderThreshold?: number;
 };
 
 export type InTransitTransferItem = {

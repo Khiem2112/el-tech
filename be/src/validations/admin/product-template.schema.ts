@@ -83,7 +83,7 @@ export const queryProductTemplateSchema = z.object({
     ])
     .optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().nonnegative().optional().default(50),
+  limit: z.coerce.number().int().nonnegative().optional().default(10),
 });
 
 export const transitionLifecycleSchema = z.object({
@@ -205,7 +205,7 @@ export const queryProductVariantSchema = z.object({
     ])
     .optional(),
   page: z.coerce.number().int().positive().optional().default(1),
-  limit: z.coerce.number().int().nonnegative().optional().default(50),
+  limit: z.coerce.number().int().nonnegative().optional().default(10),
 });
 
 export const transitionVariantLifecycleSchema = z.object({

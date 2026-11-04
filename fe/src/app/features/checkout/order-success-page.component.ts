@@ -278,9 +278,12 @@ type StoredOrderData = {
                       <button
                         type="button"
                         (click)="copyRef()"
-                        class="text-xs text-muted hover:text-foreground font-bold underline cursor-pointer"
+                        class="flex items-center gap-1 text-xs text-primary hover:underline font-bold cursor-pointer"
+                        title="Sao chép nội dung chuyển khoản"
+                        aria-label="Sao chép nội dung chuyển khoản"
                       >
-                        Sao chép
+                        <lucide-icon [name]="refCopied() ? 'Check' : 'Copy'" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        <span>{{ refCopied() ? 'Đã sao chép' : 'Sao chép' }}</span>
                       </button>
                     </div>
                   </div>
@@ -292,10 +295,22 @@ type StoredOrderData = {
                     </strong>
                   </div>
 
-                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line text-xs text-muted space-y-0.5">
-                    <div class="text-foreground font-bold">Ngân hàng Quân Đội (MB Bank)</div>
-                    <div>Số tài khoản: <strong>0988234567</strong></div>
-                    <div>Chủ TK: <strong>CONG TY TNHH CONG NGHE EL-TECH</strong></div>
+                  <div class="p-2.5 rounded-lg bg-surface-alt border border-line text-xs text-muted space-y-1">
+                    <div class="text-foreground font-bold">Ngân hàng TMCP Ngoại Thương (Vietcombank)</div>
+                    <div class="flex items-center justify-between">
+                      <span>Số tài khoản: <strong class="text-foreground font-bold tabular">1040346646</strong></span>
+                      <button
+                        type="button"
+                        (click)="copyAccount('1040346646')"
+                        class="flex items-center gap-1 text-xs text-primary hover:underline font-bold cursor-pointer"
+                        title="Sao chép số tài khoản"
+                        aria-label="Sao chép số tài khoản"
+                      >
+                        <lucide-icon [name]="accountCopied() ? 'Check' : 'Copy'" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        <span>{{ accountCopied() ? 'Đã sao chép' : 'Sao chép' }}</span>
+                      </button>
+                    </div>
+                    <div>Chủ TK: <strong class="text-foreground uppercase">NGUYEN PHAM QUOC KHIEM</strong></div>
                   </div>
                 </div>
 
@@ -336,12 +351,14 @@ export class OrderSuccessPageComponent implements OnInit, OnDestroy {
   protected readonly orderCode = signal<string>('');
   protected readonly otpCode = signal<string>('489 - 102');
   protected readonly codeCopied = signal(false);
+  protected readonly accountCopied = signal(false);
+  protected readonly refCopied = signal(false);
   protected readonly orderDate = signal<string>('Hôm nay');
   protected readonly fulfillmentLabel = signal<string>('Nhận tại Showroom');
   protected readonly branchLocationName = signal<string>('Showroom EL-TECH TP.HCM');
   protected readonly branchAddress = signal<string>('280 Ba Tháng Hai, Phường 12, Quận 10, TP. Hồ Chí Minh');
   protected readonly receiverName = signal<string>('Nguyễn Hoàng Nam');
-  protected readonly receiverPhone = signal<string>('0988 234 567');
+  protected readonly receiverPhone = signal<string>('0912 345 678');
   protected readonly receiverEmail = signal<string>('hoangnam.tech@gmail.com');
   protected readonly paymentReference = signal<string>('ELT-94820-QR');
   protected readonly expectedAmount = signal<string>('51990000');
@@ -436,9 +453,9 @@ export class OrderSuccessPageComponent implements OnInit, OnDestroy {
   }
 
   protected qrCodeUrl(): string {
-    const amount = this.expectedAmount() || this.grandTotal() || '51990000';
+    const amount = this.expectedAmount() || this.grandTotal() || '0';
     const ref = encodeURIComponent(this.paymentReference());
-    return `https://api.vietqr.io/image/970422-0988234567-compact2.jpg?amount=${amount}&addInfo=${ref}&accountName=CONG%20TY%20EL-TECH`;
+    return `https://img.vietqr.io/image/VCB-1040346646-compact2.svg?amount=${amount}&addInfo=${ref}&accountName=NGUYEN%20PHAM%20QUOC%20KHIEM`;
   }
 
   protected copyCode(): void {
@@ -447,8 +464,16 @@ export class OrderSuccessPageComponent implements OnInit, OnDestroy {
     setTimeout(() => this.codeCopied.set(false), 3000);
   }
 
+  protected copyAccount(val: string): void {
+    void navigator.clipboard?.writeText(val);
+    this.accountCopied.set(true);
+    setTimeout(() => this.accountCopied.set(false), 2000);
+  }
+
   protected copyRef(): void {
-    void navigator.clipboard.writeText(this.paymentReference());
+    void navigator.clipboard?.writeText(this.paymentReference());
+    this.refCopied.set(true);
+    setTimeout(() => this.refCopied.set(false), 2000);
   }
 
   protected printReceipt(): void {

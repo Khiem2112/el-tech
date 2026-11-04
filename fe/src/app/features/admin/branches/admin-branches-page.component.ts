@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BranchFormDialogComponent } from './components/branch-form-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import {
@@ -30,7 +31,14 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-branches-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, BranchFormDialogComponent, AppIconModule, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    BranchFormDialogComponent,
+    AppIconModule,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -65,11 +73,11 @@ type ToastNotification = {
               [ngModel]="branchService.searchQuery()"
               (ngModelChange)="onSearchChange($event)"
               placeholder="Tìm kiếm theo mã, tên hoặc địa chỉ..."
-              class="w-full pl-9 pr-4 py-2 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
+              class="w-full h-9 pl-9 pr-4 bg-surface-alt border border-line rounded text-sm text-foreground placeholder:text-muted focus:outline-none focus:border-primary"
             />
             <lucide-icon
               name="search"
-              class="size-4 text-muted absolute left-3 top-2.5 pointer-events-none"
+              class="size-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
               aria-hidden="true"
             ></lucide-icon>
           </div>
@@ -201,31 +209,15 @@ type ToastNotification = {
           </table>
         </div>
 
-        @if (branchService.totalPages() > 1) {
-          <div class="p-4 border-t border-line flex items-center justify-between text-sm text-muted">
-            <div>
-              Trang <strong class="text-foreground">{{ branchService.page() }}</strong> trên <strong class="text-foreground">{{ branchService.totalPages() }}</strong>
-            </div>
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="branchService.page() <= 1"
-                (click)="onPageChange(branchService.page() - 1)"
-                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm font-medium disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
-              >
-                Trước
-              </button>
-              <button
-                type="button"
-                [disabled]="branchService.page() >= branchService.totalPages()"
-                (click)="onPageChange(branchService.page() + 1)"
-                class="px-3 py-1.5 bg-surface border border-line rounded text-foreground text-sm font-medium disabled:opacity-40 hover:bg-surface-alt transition-colors shadow-xs"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
-        }
+        <app-admin-pagination
+          [page]="branchService.page()"
+          [total]="branchService.total()"
+          [limit]="branchService.limit()"
+          [totalPages]="branchService.totalPages()"
+          itemName="chi nhánh"
+          [isLoading]="branchService.isLoading()"
+          (pageChange)="onPageChange($event)"
+        />
       </div>
     </div>
 

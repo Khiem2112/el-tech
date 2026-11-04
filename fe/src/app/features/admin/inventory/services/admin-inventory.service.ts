@@ -152,7 +152,7 @@ export class AdminInventoryService {
   readonly balances = signal<InventoryBalanceItem[]>([]);
   readonly balancesTotal = signal<number>(0);
   readonly balancesPage = signal<number>(1);
-  readonly balancesLimit = signal<number>(50);
+  readonly balancesLimit = signal<number>(10);
   readonly balancesTotalPages = signal<number>(1);
   readonly balancesSummary = signal<InventoryBalancesSummary>({
     totalQuants: 0,
@@ -168,7 +168,7 @@ export class AdminInventoryService {
   readonly ledgerEntries = signal<StockLedgerEntryItem[]>([]);
   readonly ledgerTotal = signal<number>(0);
   readonly ledgerPage = signal<number>(1);
-  readonly ledgerLimit = signal<number>(50);
+  readonly ledgerLimit = signal<number>(10);
   readonly ledgerTotalPages = signal<number>(1);
   readonly isLedgerLoading = signal<boolean>(false);
   readonly ledgerError = signal<string | null>(null);

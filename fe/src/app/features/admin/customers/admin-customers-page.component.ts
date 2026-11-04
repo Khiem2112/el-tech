@@ -1,3 +1,4 @@
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -16,7 +17,13 @@ import { AdminCustomerService } from './services/admin-customer.service';
 @Component({
   selector: 'app-admin-customers-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -180,33 +187,15 @@ import { AdminCustomerService } from './services/admin-customer.service';
           </table>
         </div>
 
-        <div class="px-4 py-3 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted bg-surface">
-          <div>
-            Hiển thị <span class="text-foreground font-medium tabular-nums">{{ customerService.customers().length }}</span> trên tổng số <span class="text-foreground font-medium tabular-nums">{{ customerService.total() }}</span> hồ sơ
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              [disabled]="customerService.page() <= 1 || customerService.isLoading()"
-              (click)="changePage(customerService.page() - 1)"
-              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold text-sm transition-colors cursor-pointer"
-            >
-              Trang trước
-            </button>
-            <span class="text-muted px-2 tabular-nums">
-              Trang {{ customerService.page() }} / {{ customerService.totalPages() }}
-            </span>
-            <button
-              type="button"
-              [disabled]="customerService.page() >= customerService.totalPages() || customerService.isLoading()"
-              (click)="changePage(customerService.page() + 1)"
-              class="px-3 py-1.5 bg-surface-alt hover:bg-surface disabled:opacity-40 disabled:cursor-not-allowed border border-line rounded text-foreground font-semibold text-sm transition-colors cursor-pointer"
-            >
-              Trang sau
-            </button>
-          </div>
-        </div>
+        <app-admin-pagination
+          [page]="customerService.page()"
+          [total]="customerService.total()"
+          [limit]="customerService.limit()"
+          [totalPages]="customerService.totalPages()"
+          itemName="tài khoản khách hàng"
+          [isLoading]="customerService.isLoading()"
+          (pageChange)="changePage($event)"
+        />
       </div>
     </div>
   `,

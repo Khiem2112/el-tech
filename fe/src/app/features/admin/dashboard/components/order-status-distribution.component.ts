@@ -176,30 +176,6 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
               </tr>
             }
           </tbody>
-          <tfoot class="bg-surface-alt/60 font-semibold text-foreground border-t border-line text-xs">
-            <tr>
-              <td class="py-2.5 px-3 uppercase text-foreground">Toàn hệ thống</td>
-              <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
-                {{ distribution()?.systemTotal?.confirmed ?? 0 }}
-              </td>
-              <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
-                {{ distribution()?.systemTotal?.preparingComponents ?? 0 }}
-              </td>
-              <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
-                {{ distribution()?.systemTotal?.assembling ?? 0 }}
-              </td>
-              <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
-                {{ distribution()?.systemTotal?.readyForPickup ?? 0 }}
-              </td>
-              <td class="py-2.5 px-3 text-center tabular-nums text-foreground">
-                {{ distribution()?.systemTotal?.shipping ?? 0 }}
-              </td>
-              
-              <td class="py-2.5 px-3 text-right tabular-nums text-primary font-bold">
-                {{ distribution()?.systemTotal?.total ?? 0 }}
-              </td>
-            </tr>
-          </tfoot>
         </table>
       </div>
     </div>

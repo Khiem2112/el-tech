@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from '../../../../components/atoms/button/button.directive';
+import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../../components/atoms/select/select.component';
 import { AdminCategoryService } from '../../categories/services/admin-category.service';
 import { AdminVariantCatalogItem, ProductLifecycle } from '../../variants/services/admin-variant.service';
@@ -39,7 +40,7 @@ type EditableBomItem = {
 @Component({
   selector: 'app-pc-bundle-sheet',
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent],
+  imports: [CommonModule, FormsModule, ButtonDirective, SelectComponent, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isOpen()) {
@@ -57,10 +58,10 @@ type EditableBomItem = {
           <div class="h-14 px-6 border-b border-line flex items-center justify-between flex-shrink-0 bg-surface-alt">
             <div>
               <h2 id="bundle-sheet-title" class="font-bold text-foreground uppercase text-sm tracking-wide">
-                {{ isEditMode() ? 'Cấu Hình Định Mức BOM Bộ Máy Tính' : 'Tạo Mới Cấu Hình Bộ Máy Tính' }}
+                {{ isEditMode() ? 'Cấu Hình Định Mức BOM PC Lắp Sẵn' : 'Tạo Mới Cấu Hình PC Lắp Sẵn' }}
               </h2>
               <p class="text-xs text-muted">
-                {{ isEditMode() ? ('Bộ máy: ' + name()) : 'Thiết lập định mức linh kiện ảo (Virtual BOM)' }}
+                {{ isEditMode() ? ('Cấu hình: ' + name()) : 'Thiết lập định mức linh kiện ảo (Virtual BOM)' }}
               </p>
             </div>
             <button
@@ -70,70 +71,47 @@ type EditableBomItem = {
               title="Đóng bảng trượt (ESC)"
               aria-label="Đóng bảng trượt"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <lucide-icon name="x" class="size-5" aria-hidden="true"></lucide-icon>
             </button>
           </div>
 
           @if (errorMessage()) {
             <div class="m-4 p-3 rounded bg-destructive/10 border border-destructive/20 text-destructive text-xs font-medium flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-destructive flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <lucide-icon name="alert-triangle" class="size-4 text-destructive shrink-0" aria-hidden="true"></lucide-icon>
                 <span>{{ errorMessage() }}</span>
               </div>
               <button type="button" (click)="errorMessage.set(null)" class="text-destructive hover:opacity-80" title="Ẩn thông báo">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
               </button>
             </div>
           }
 
           <div class="flex-1 overflow-y-auto p-6 space-y-5">
             <div class="space-y-3">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label for="bundle-name-input" class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Tên Bộ Máy Tính *
-                  </label>
-                  <input
-                    id="bundle-name-input"
-                    type="text"
-                    [ngModel]="name()"
-                    (ngModelChange)="onNameChange($event)"
-                    placeholder="VD: EL-TECH TITAN X: AMD 9800X3D + RTX 5090"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-xs"
-                  />
-                </div>
-
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <label for="bundle-slug-input" class="block font-semibold text-muted text-xs uppercase">
-                      Đường Dẫn Slug *
-                    </label>
-                    <button
-                      type="button"
-                      (click)="autoGenerateSlug()"
-                      class="text-xs text-primary hover:underline"
-                    >
-                      Tạo tự động
-                    </button>
-                  </div>
-                  <input
-                    id="bundle-slug-input"
-                    type="text"
-                    [ngModel]="slug()"
-                    (ngModelChange)="slug.set($event)"
-                    placeholder="VD: el-tech-titan-x-9800x3d-rtx5090"
-                    class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground focus:outline-none focus:border-primary text-sm font-medium"
-                  />
-                </div>
+              <div>
+                <label for="bundle-name-input" class="block font-semibold text-muted text-xs uppercase mb-1">
+                  Tên PC Lắp Sẵn *
+                </label>
+                <input
+                  id="bundle-name-input"
+                  type="text"
+                  [ngModel]="name()"
+                  (ngModelChange)="onNameChange($event)"
+                  placeholder="VD: EL-TECH TITAN X: AMD 9800X3D + RTX 5090"
+                  [class.border-destructive]="Boolean(nameError())"
+                  [class.ring-1]="Boolean(nameError())"
+                  [class.ring-destructive]="Boolean(nameError())"
+                  class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-semibold focus:outline-none focus:border-primary text-xs transition-colors"
+                />
+                @if (nameError()) {
+                  <p class="text-xs text-destructive mt-1 font-medium">{{ nameError() }}</p>
+                }
               </div>
 
               <div>
                 <label for="bundle-desc-input" class="block font-semibold text-muted text-xs uppercase mb-1">
-                  Mô Tả Bộ Máy
+                  Mô Tả PC Lắp Sẵn
                 </label>
                 <textarea
                   id="bundle-desc-input"
@@ -189,9 +167,7 @@ type EditableBomItem = {
                   (click)="showSearchPanel.set(!showSearchPanel())"
                   class="inline-flex items-center gap-1.5"
                 >
-                  <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
+                  <lucide-icon name="plus" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
                   <span>{{ showSearchPanel() ? 'Đóng Bộ Tìm Kiếm' : 'Thêm Linh Kiện Vào BOM' }}</span>
                 </button>
               </div>
@@ -206,7 +182,7 @@ type EditableBomItem = {
                       class="text-muted hover:text-foreground"
                       title="Đóng"
                     >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                      <lucide-icon name="x" class="size-4" aria-hidden="true"></lucide-icon>
                     </button>
                   </div>
 
@@ -226,7 +202,7 @@ type EditableBomItem = {
                         [ngModel]="searchKeyword()"
                         (ngModelChange)="searchKeyword.set($event)"
                         (keydown.enter)="executeVariantSearch()"
-                        placeholder="Nhập tên linh kiện, mã SKU hoặc barcode..."
+                        placeholder="Nhập tên linh kiện, mã linh kiện hoặc barcode..."
                         class="flex-1 px-3 py-1.5 bg-surface border border-line rounded text-foreground text-xs focus:outline-none focus:border-primary"
                       />
                       <button
@@ -287,7 +263,13 @@ type EditableBomItem = {
                 </div>
               }
 
-              <div class="border border-line rounded-lg overflow-hidden shadow-xs bg-surface">
+              <div
+                class="border rounded-lg overflow-hidden shadow-xs bg-surface transition-colors"
+                [class.border-destructive]="Boolean(bomError())"
+                [class.ring-1]="Boolean(bomError())"
+                [class.ring-destructive]="Boolean(bomError())"
+                [class.border-line]="!bomError()"
+              >
                 <table class="w-full text-left text-sm">
                   <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase text-xs">
                     <tr>
@@ -338,11 +320,9 @@ type EditableBomItem = {
                               (click)="removeBomItem(idx)"
                               class="p-1 rounded text-destructive hover:opacity-80 hover:bg-surface-alt transition-colors"
                               title="Xóa linh kiện khỏi BOM"
+                              aria-label="Xóa linh kiện khỏi BOM"
                             >
-                              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <polyline points="3 6 5 6 21 6"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                              </svg>
+                              <lucide-icon name="trash-2" class="size-4 text-destructive" aria-hidden="true"></lucide-icon>
                             </button>
                           </td>
                         </tr>
@@ -351,6 +331,9 @@ type EditableBomItem = {
                   </tbody>
                 </table>
               </div>
+              @if (bomError()) {
+                <p class="text-xs text-destructive mt-1 font-medium">{{ bomError() }}</p>
+              }
             </div>
 
             <div class="pt-2 border-t border-line/60 space-y-3">
@@ -378,8 +361,14 @@ type EditableBomItem = {
                     min="0"
                     [ngModel]="discount()"
                     (ngModelChange)="onDiscountChange($event)"
-                    class="w-full px-2 py-1 bg-surface border border-line rounded font-bold text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive"
+                    [class.border-destructive]="Boolean(discountError())"
+                    [class.ring-1]="Boolean(discountError())"
+                    [class.ring-destructive]="Boolean(discountError())"
+                    class="w-full px-2 py-1 bg-surface border border-line rounded font-bold text-destructive tabular-nums text-sm focus:outline-none focus:border-destructive transition-colors"
                   />
+                  @if (discountError()) {
+                    <p class="text-xs text-destructive mt-1 font-medium">{{ discountError() }}</p>
+                  }
                 </div>
 
                 <div class="p-3 bg-primary/10 rounded border border-primary/30 space-y-1">
@@ -435,6 +424,7 @@ type EditableBomItem = {
 })
 export class PcBundleSheetComponent {
   protected readonly String = String;
+  protected readonly Boolean = Boolean;
 
   private readonly bundleService = inject(AdminPcBundleService);
   private readonly categoryService = inject(AdminCategoryService);
@@ -452,6 +442,10 @@ export class PcBundleSheetComponent {
   readonly isActive = signal<boolean>(true);
   readonly discount = signal<number>(0);
   readonly bomItems = signal<readonly EditableBomItem[]>([]);
+
+  readonly nameError = signal<string | null>(null);
+  readonly bomError = signal<string | null>(null);
+  readonly discountError = signal<string | null>(null);
 
   readonly showSearchPanel = signal<boolean>(false);
   readonly searchKeyword = signal<string>('');
@@ -499,6 +493,9 @@ export class PcBundleSheetComponent {
         this.isActive.set(currentBundle.isActive);
         this.discount.set(currentBundle.discountAmount ?? 0);
         this.errorMessage.set(null);
+        this.nameError.set(null);
+        this.bomError.set(null);
+        this.discountError.set(null);
         this.showSearchPanel.set(false);
         this.hasSearched.set(false);
         this.variantSearchResults.set([]);
@@ -530,6 +527,9 @@ export class PcBundleSheetComponent {
         this.discount.set(0);
         this.bomItems.set([]);
         this.errorMessage.set(null);
+        this.nameError.set(null);
+        this.bomError.set(null);
+        this.discountError.set(null);
         this.showSearchPanel.set(false);
         this.hasSearched.set(false);
         this.variantSearchResults.set([]);
@@ -574,7 +574,10 @@ export class PcBundleSheetComponent {
 
   onNameChange(val: string): void {
     this.name.set(val);
-    if (!this.isEditMode() && (!this.slug() || this.slug() === this.generateSlug(this.name()))) {
+    if (this.nameError() && val.trim().length >= 3) {
+      this.nameError.set(null);
+    }
+    if (!this.isEditMode() || !this.slug()) {
       this.slug.set(this.generateSlug(val));
     }
   }
@@ -602,7 +605,13 @@ export class PcBundleSheetComponent {
 
   onDiscountChange(val: number | string): void {
     const num = Number(val);
-    this.discount.set(Number.isFinite(num) && num >= 0 ? num : 0);
+    const clean = Number.isFinite(num) && num >= 0 ? num : 0;
+    this.discount.set(clean);
+    if (this.discountError()) {
+      if (clean >= 0 && (this.grossTotal() === 0 || clean <= this.grossTotal())) {
+        this.discountError.set(null);
+      }
+    }
   }
 
   updateItemQuantity(index: number, newQty: number | string): void {
@@ -623,6 +632,16 @@ export class PcBundleSheetComponent {
     const items = [...this.bomItems()];
     items.splice(index, 1);
     this.bomItems.set(items);
+    if (items.length === 0) {
+      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình BOM');
+    } else {
+      const inactive = items.find((item) => !item.isActive || item.lifecycleState !== 'ACTIVE');
+      if (inactive) {
+        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái ACTIVE`);
+      } else {
+        this.bomError.set(null);
+      }
+    }
   }
 
   onSearchCategorySelectChange(val: string | number): void {
@@ -681,6 +700,10 @@ export class PcBundleSheetComponent {
       };
       this.bomItems.set([...items, newItem]);
     }
+
+    if (this.bomError()) {
+      this.bomError.set(null);
+    }
   }
 
   parsePrice(val: unknown): number {
@@ -698,36 +721,57 @@ export class PcBundleSheetComponent {
 
   onClose(): void {
     this.errorMessage.set(null);
+    this.nameError.set(null);
+    this.bomError.set(null);
+    this.discountError.set(null);
     this.closed.emit();
   }
 
   async onSave(): Promise<void> {
     this.errorMessage.set(null);
 
+    let hasError = false;
     const nameVal = this.name().trim();
-    const slugVal = this.slug().trim();
 
-    if (!nameVal || nameVal.length < 3) {
-      this.errorMessage.set('Tên bộ máy tính phải có ít nhất 3 ký tự');
-      return;
-    }
-
-    if (!slugVal || !/^[a-z0-9-]+$/.test(slugVal)) {
-      this.errorMessage.set('Đường dẫn slug không hợp lệ (chỉ gồm chữ thường, số và gạch ngang)');
-      return;
+    if (!nameVal) {
+      this.nameError.set('Vui lòng nhập tên PC lắp sẵn');
+      hasError = true;
+    } else if (nameVal.length < 3) {
+      this.nameError.set('Tên PC lắp sẵn phải có ít nhất 3 ký tự');
+      hasError = true;
+    } else {
+      this.nameError.set(null);
     }
 
     if (this.bomItems().length === 0) {
-      this.errorMessage.set('Cấu hình Virtual BOM phải có ít nhất 1 linh kiện thành phần');
+      this.bomError.set('Vui lòng thêm ít nhất 1 linh kiện vào cấu hình BOM');
+      hasError = true;
+    } else {
+      const inactive = this.bomItems().find((item) => !item.isActive || item.lifecycleState !== 'ACTIVE');
+      if (inactive) {
+        this.bomError.set(`Linh kiện SKU ${inactive.sku} không ở trạng thái ACTIVE`);
+        hasError = true;
+      } else {
+        this.bomError.set(null);
+      }
+    }
+
+    const discountVal = this.discount();
+    if (discountVal < 0) {
+      this.discountError.set('Chiết khấu không được âm');
+      hasError = true;
+    } else if (this.grossTotal() > 0 && discountVal > this.grossTotal()) {
+      this.discountError.set('Chiết khấu không được vượt quá tổng giá trị linh kiện');
+      hasError = true;
+    } else {
+      this.discountError.set(null);
+    }
+
+    if (hasError) {
       return;
     }
 
-    for (const item of this.bomItems()) {
-      if (!item.isActive || item.lifecycleState !== 'ACTIVE') {
-        this.errorMessage.set(`Linh kiện SKU ${item.sku} không ở trạng thái ACTIVE`);
-        return;
-      }
-    }
+    const slugVal = (this.slug() || this.generateSlug(nameVal)).trim();
 
     this.isSaving.set(true);
 
@@ -767,7 +811,7 @@ export class PcBundleSheetComponent {
       this.saved.emit(result);
       this.onClose();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Lỗi khi lưu cấu hình bộ máy tính';
+      const message = err instanceof Error ? err.message : 'Lỗi khi lưu cấu hình PC lắp sẵn';
       this.errorMessage.set(message);
     } finally {
       this.isSaving.set(false);

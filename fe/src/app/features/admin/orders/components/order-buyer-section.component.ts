@@ -16,9 +16,9 @@ import { AdminOrderDetail, AdminOrderDetailService } from '../services/admin-ord
   imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div class="bg-surface border border-line rounded-lg p-4 text-foreground space-y-3">
-        <div class="flex items-center justify-between border-b border-line pb-2">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-surface border border-line rounded-lg p-5 lg:p-6 text-foreground space-y-4 shadow-xs">
+        <div class="flex items-center justify-between border-b border-line pb-3">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Người Nhận & Địa Chỉ Giao Hàng
           </h2>
@@ -27,7 +27,7 @@ import { AdminOrderDetail, AdminOrderDetailService } from '../services/admin-ord
           </span>
         </div>
 
-        <div class="space-y-2 text-sm">
+        <div class="space-y-3 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-muted">Họ tên:</span>
             <span class="font-medium text-foreground">{{ order().receiverName }}</span>
@@ -51,22 +51,22 @@ import { AdminOrderDetail, AdminOrderDetailService } from '../services/admin-ord
             <span class="text-foreground text-sm truncate max-w-[240px]">{{ order().receiverEmail }}</span>
           </div>
 
-          <div class="pt-1 border-t border-line">
-            <span class="text-muted block mb-0.5 text-xs">Địa chỉ nhận hàng:</span>
+          <div class="pt-2 border-t border-line">
+            <span class="text-muted block mb-1 text-xs">Địa chỉ nhận hàng:</span>
             <div class="text-foreground leading-relaxed">{{ order().receiverAddress }}</div>
           </div>
 
           @if (order().customerNotes) {
-            <div class="pt-1 border-t border-line">
-              <span class="text-muted block mb-0.5 text-xs">Ghi chú của khách:</span>
-              <div class="text-foreground italic bg-surface-alt/50 p-2 rounded border border-line">{{ order().customerNotes }}</div>
+            <div class="pt-2 border-t border-line">
+              <span class="text-muted block mb-1 text-xs">Ghi chú của khách:</span>
+              <div class="text-foreground italic bg-surface-alt/50 p-2.5 rounded border border-line">{{ order().customerNotes }}</div>
             </div>
           }
         </div>
       </div>
 
-      <div class="bg-surface border border-line rounded-lg p-4 text-foreground space-y-3">
-        <div class="flex items-center justify-between border-b border-line pb-2">
+      <div class="bg-surface border border-line rounded-lg p-5 lg:p-6 text-foreground space-y-4 shadow-xs">
+        <div class="flex items-center justify-between border-b border-line pb-3">
           <h2 class="text-xs font-semibold uppercase tracking-wider text-muted">
             Vận Chuyển & Ghi Chú Nội Bộ
           </h2>
@@ -82,7 +82,7 @@ import { AdminOrderDetail, AdminOrderDetailService } from '../services/admin-ord
           </span>
         </div>
 
-        <div class="space-y-2 text-sm">
+        <div class="space-y-3 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-muted">Chi nhánh xuất hàng:</span>
             <span class="font-medium text-foreground">{{ order().fulfillmentBranch.name }} ({{ order().fulfillmentBranch.code }})</span>

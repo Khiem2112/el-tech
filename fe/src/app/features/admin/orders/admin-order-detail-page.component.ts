@@ -62,7 +62,7 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
+    <div class="w-full p-4 lg:p-6 space-y-6 text-sm text-foreground">
       <div class="flex items-center justify-between text-xs py-1">
         <nav class="flex items-center gap-1.5 text-muted">
           <a
@@ -123,108 +123,110 @@ import { AdminOrderDetailService } from './services/admin-order-detail.service';
           </div>
         </div>
       } @else if (detailService.order(); as ord) {
-        <div class="bg-surface border border-line rounded-lg p-4 space-y-3">
-          <div class="flex items-center justify-between flex-wrap gap-3">
-            <div>
-              <div class="flex items-center gap-2 flex-wrap">
-                <h1 class="text-lg font-bold text-foreground tracking-tight tabular tabular-nums">
-                  ĐƠN HÀNG #{{ ord.code }}
-                </h1>
-                <span class="px-2 py-0.5 rounded text-xs font-semibold" [class]="statusBadgeClass(ord.status)">
-                  {{ statusLabel(ord.status) }}
-                </span>
-                <span
-                  class="px-2 py-0.5 rounded text-xs border font-medium"
-                  [class.bg-surface-elevated]="ord.hasAssembly"
-                  [class.text-primary]="ord.hasAssembly"
-                  [class.border-line]="ord.hasAssembly"
-                  [class.bg-surface-alt]="!ord.hasAssembly"
-                  [class.text-muted]="!ord.hasAssembly"
-                  [class.border-line]="!ord.hasAssembly"
+        <div class="space-y-6">
+          <div class="bg-surface border border-line rounded-lg p-5 lg:p-6 space-y-4 shadow-xs">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h1 class="text-lg font-bold text-foreground tracking-tight tabular tabular-nums">
+                    ĐƠN HÀNG #{{ ord.code }}
+                  </h1>
+                  <span class="px-2 py-0.5 rounded text-xs font-semibold" [class]="statusBadgeClass(ord.status)">
+                    {{ statusLabel(ord.status) }}
+                  </span>
+                  <span
+                    class="px-2 py-0.5 rounded text-xs border font-medium"
+                    [class.bg-surface-elevated]="ord.hasAssembly"
+                    [class.text-primary]="ord.hasAssembly"
+                    [class.border-line]="ord.hasAssembly"
+                    [class.bg-surface-alt]="!ord.hasAssembly"
+                    [class.text-muted]="!ord.hasAssembly"
+                    [class.border-line]="!ord.hasAssembly"
+                  >
+                    {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
+                  </span>
+                </div>
+                <div class="text-xs text-muted mt-1 tabular tabular-nums">
+                  Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}</strong>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 flex-wrap text-xs">
+                <a
+                  [routerLink]="['/admin/customers', ord.customer.id]"
+                  class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                  title="Hồ sơ khách hàng"
                 >
-                  {{ ord.hasAssembly ? 'PC Lắp Ráp' : 'Linh Kiện Lẻ' }}
-                </span>
+                  <span class="text-muted text-xs block">Khách hàng</span>
+                  <span class="font-medium text-foreground truncate max-w-[120px] block">{{ ord.customer.name }}</span>
+                </a>
+
+                <button
+                  type="button"
+                  (click)="isStockMovesModalOpen.set(true)"
+                  class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block cursor-pointer group"
+                  title="Xem danh sách phiếu kho của đơn hàng"
+                >
+                  <span class="text-muted group-hover:text-primary text-xs block transition-colors">Phiếu kho</span>
+                  <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.stockMoves.length }}</span>
+                </button>
+
+                <a
+                  href="#section-finance"
+                  class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                  title="Chi tiết thanh toán"
+                >
+                  <span class="text-muted text-xs block">Thanh toán</span>
+                  <span class="font-medium text-foreground block">
+                    {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Thu khi nhận hàng (COD)')) : 'Chưa thu' }}
+                  </span>
+                </a>
+
+                <a
+                  href="#section-timeline"
+                  class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                  title="Phụ lục đơn hàng"
+                >
+                  <span class="text-muted text-xs block">Phụ lục</span>
+                  <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.amendments.length }}</span>
+                </a>
+
+                <a
+                  [routerLink]="['/admin/settings/notification-outbox']"
+                  [queryParams]="{ search: ord.code }"
+                  class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
+                  title="Nhật ký thông báo"
+                >
+                  <span class="text-muted text-xs block">Outbox</span>
+                  <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.statusHistories.length }}</span>
+                </a>
               </div>
-              <div class="text-xs text-muted mt-1 tabular tabular-nums">
-                Ngày đặt: {{ formatDate(ord.submittedAt) }} | Chi nhánh: <strong class="text-foreground font-sans">{{ ord.fulfillmentBranch?.name || 'Showroom EL-TECH' }}</strong>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2 flex-wrap text-xs">
-              <a
-                [routerLink]="['/admin/customers', ord.customer.id]"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
-                title="Hồ sơ khách hàng"
-              >
-                <span class="text-muted text-xs block">Khách hàng</span>
-                <span class="font-medium text-foreground truncate max-w-[120px] block">{{ ord.customer.name }}</span>
-              </a>
-
-              <button
-                type="button"
-                (click)="isStockMovesModalOpen.set(true)"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block cursor-pointer group"
-                title="Xem danh sách phiếu kho của đơn hàng"
-              >
-                <span class="text-muted group-hover:text-primary text-xs block transition-colors">Phiếu kho</span>
-                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.stockMoves.length }}</span>
-              </button>
-
-              <a
-                href="#section-finance"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
-                title="Chi tiết thanh toán"
-              >
-                <span class="text-muted text-xs block">Thanh toán</span>
-                <span class="font-medium text-foreground block">
-                  {{ ord.payment ? (ord.payment.state === 'PAID' ? 'Đã thu 100%' : (ord.payment.state === 'REFUNDED' ? 'Đã hoàn' : 'Thu khi nhận hàng (COD)')) : 'Chưa thu' }}
-                </span>
-              </a>
-
-              <a
-                href="#section-timeline"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
-                title="Phụ lục đơn hàng"
-              >
-                <span class="text-muted text-xs block">Phụ lục</span>
-                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.amendments.length }}</span>
-              </a>
-
-              <a
-                [routerLink]="['/admin/settings/notification-outbox']"
-                [queryParams]="{ search: ord.code }"
-                class="px-3 py-1.5 bg-surface-alt hover:bg-surface border border-line rounded text-center transition-colors block"
-                title="Nhật ký thông báo"
-              >
-                <span class="text-muted text-xs block">Outbox</span>
-                <span class="font-bold text-foreground tabular tabular-nums block">{{ ord.statusHistories.length }}</span>
-              </a>
             </div>
           </div>
-        </div>
 
-        <app-order-status-bar [order]="ord" />
+          <app-order-status-bar [order]="ord" />
 
-        <app-order-action-bar
-          [order]="ord"
-          (actionTriggered)="onActionTriggered($event)"
-          (viewStockMovesRequested)="isStockMovesModalOpen.set(true)"
-          (refreshRequested)="loadOrder()"
-        />
-
-        <app-order-buyer-section [order]="ord" />
-
-        <app-order-lines-pc-group [order]="ord" />
-
-        <div id="section-finance">
-          <app-order-finance-summary
+          <app-order-action-bar
             [order]="ord"
-            (openModalRequested)="onActionTriggered({ actionKey: $event, modalId: $event, targetStatus: '', label: $event })"
+            (actionTriggered)="onActionTriggered($event)"
+            (viewStockMovesRequested)="isStockMovesModalOpen.set(true)"
+            (refreshRequested)="loadOrder()"
           />
-        </div>
 
-        <div id="section-timeline">
-          <app-order-timeline-history [order]="ord" />
+          <app-order-buyer-section [order]="ord" />
+
+          <app-order-lines-pc-group [order]="ord" />
+
+          <div id="section-finance">
+            <app-order-finance-summary
+              [order]="ord"
+              (openModalRequested)="onActionTriggered({ actionKey: $event, modalId: $event, targetStatus: '', label: $event })"
+            />
+          </div>
+
+          <div id="section-timeline">
+            <app-order-timeline-history [order]="ord" />
+          </div>
         </div>
 
         <app-confirm-cod-dialog
@@ -465,12 +467,12 @@ export class AdminOrderDetailPageComponent implements OnInit {
   statusBadgeClass(status: string): string {
     switch (status) {
       case 'CONFIRMED':
-        return 'bg-primary/10 text-primary border border-primary/20';
+        return 'bg-primary/10 text-primary-strong border border-primary/20';
       case 'COMPLETED':
-        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30';
+        return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
       case 'PREPARING_COMPONENTS':
       case 'ASSEMBLING':
-        return 'bg-surface-elevated text-primary border border-primary/30';
+        return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
       case 'READY_FOR_PICKUP':
       case 'SHIPPING':
         return 'bg-surface-alt text-foreground border border-line';
@@ -478,10 +480,10 @@ export class AdminOrderDetailPageComponent implements OnInit {
       case 'PENDING_PAYMENT':
         return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'ON_HOLD':
-        return 'bg-warning/10 text-warning border border-warning/30';
+        return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
       case 'CANCELLED':
       case 'DELIVERY_FAILED':
-        return 'bg-destructive/10 text-destructive border border-destructive/20';
+        return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
       default:
         return 'bg-surface-alt text-muted border border-line';
     }

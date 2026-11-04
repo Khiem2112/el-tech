@@ -8,10 +8,8 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MergeCustomerDialogComponent } from './components/merge-customer-dialog.component';
 import {
   AdminCustomerDetail,
-  AdminCustomerMergeResult,
   AdminCustomerService,
 } from './services/admin-customer.service';
 
@@ -24,7 +22,7 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-customer-detail-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MergeCustomerDialogComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="w-full p-4 lg:p-6 space-y-5 text-sm text-foreground">
@@ -56,57 +54,62 @@ type ToastNotification = {
           <p class="font-medium text-sm">Đang tải chi tiết hồ sơ khách hàng...</p>
         </div>
       } @else if (customer(); as cust) {
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <nav class="flex items-center space-x-1.5 text-xs text-muted">
-                <a routerLink="/admin/customers" class="hover:text-primary transition-colors">Khách Hàng</a>
-                <span>/</span>
-                <span class="text-foreground font-bold tabular-nums">{{ cust.id }}</span>
-                <span>/</span>
-                <span class="text-foreground font-bold">{{ cust.name }}</span>
-              </nav>
+        <div class="flex items-center justify-between gap-4 flex-wrap pb-4 border-b border-line">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2.5 flex-wrap">
+              <h1 class="text-lg sm:text-xl font-bold text-foreground tracking-tight truncate max-w-[240px] sm:max-w-md" [title]="cust.name">
+                {{ cust.name }}
+              </h1>
+
+              <button
+                type="button"
+                (click)="copyCustomerId(cust.id)"
+                class="inline-flex items-center gap-1 font-mono text-xs text-muted hover:text-foreground bg-surface-alt hover:bg-surface border border-line px-2 py-0.5 rounded truncate max-w-[200px] sm:max-w-[280px] transition-colors cursor-pointer"
+                [title]="'Mã khách hàng: ' + cust.id + ' (Bấm để sao chép)'"
+                aria-label="Sao chép mã khách hàng"
+              >
+                <svg class="w-3 h-3 shrink-0 text-muted" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span class="truncate">ID: {{ cust.id }}</span>
+              </button>
+
               @if (cust.mergedIntoCustomerId) {
-                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wide">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wide whitespace-nowrap">
                   Đã Gộp Hồ Sơ
                 </span>
               } @else if (cust.isRegistered) {
-                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary-strong border border-primary/30 uppercase tracking-wide">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary-strong border border-primary/30 uppercase tracking-wide whitespace-nowrap">
                   Thành Viên Chính Thức
                 </span>
               } @else {
-                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-surface-alt text-muted border border-line uppercase tracking-wide">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-surface-alt text-muted border border-line uppercase tracking-wide whitespace-nowrap">
                   Khách Vãng Lai
                 </span>
               }
             </div>
-            <p class="text-xs text-muted mt-1">
-              Ngày tạo hồ sơ: <strong class="text-foreground">{{ formatDate(cust.createdAt) }}</strong>
+
+            <div class="flex items-center gap-2 text-xs text-muted mt-1.5 flex-wrap">
+              <a routerLink="/admin/customers" class="hover:text-primary transition-colors font-medium">Khách Hàng</a>
+              <span class="text-muted/40">/</span>
+              <span>Ngày tạo hồ sơ: <strong class="text-foreground">{{ formatDate(cust.createdAt) }}</strong></span>
               @if (cust.user) {
-                | Vai trò hệ thống: <strong class="text-primary font-semibold">{{ cust.user.role }}</strong>
+                <span class="text-muted/40">|</span>
+                <span>Vai trò hệ thống: <strong class="text-primary font-semibold">{{ cust.user.role }}</strong></span>
               }
-            </p>
+            </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0">
             <a
               routerLink="/admin/customers"
-              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded text-foreground font-semibold text-xs transition-colors"
+              class="px-3 py-1.5 bg-surface hover:bg-surface-alt border border-line rounded text-foreground font-semibold text-xs transition-colors inline-flex items-center gap-1.5 whitespace-nowrap"
             >
-              Quay lại danh sách
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              <span>Quay lại danh sách</span>
             </a>
-            @if (!cust.mergedIntoCustomerId) {
-              <button
-                type="button"
-                (click)="openMergeModal()"
-                class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded transition-colors shadow-sm inline-flex items-center gap-1.5"
-              >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                </svg>
-                <span>Gộp hồ sơ</span>
-              </button>
-            }
           </div>
         </div>
 
@@ -461,12 +464,6 @@ type ToastNotification = {
           }
         </div>
 
-        <app-merge-customer-dialog
-          [isOpen]="isMergeModalOpen()"
-          [targetCustomer]="customer()"
-          (close)="isMergeModalOpen.set(false)"
-          (merged)="handleMerged($event)"
-        />
       } @else {
         <div class="py-16 text-center text-muted">
           <p class="font-medium text-sm">Không tìm thấy thông tin khách hàng yêu cầu.</p>
@@ -485,7 +482,6 @@ export class AdminCustomerDetailPageComponent implements OnInit {
   readonly customer = signal<AdminCustomerDetail | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly activeTab = signal<'orders' | 'coupons' | 'reviews'>('orders');
-  readonly isMergeModalOpen = signal<boolean>(false);
   readonly toasts = signal<ToastNotification[]>([]);
 
   ngOnInit(): void {
@@ -510,18 +506,10 @@ export class AdminCustomerDetailPageComponent implements OnInit {
     }
   }
 
-  openMergeModal(): void {
-    this.isMergeModalOpen.set(true);
-  }
-
-  handleMerged(result: AdminCustomerMergeResult): void {
-    this.showToast(
-      `Đã gộp thành công ${result.ordersMoved} đơn hàng và dữ liệu từ hồ sơ phụ sang hồ sơ chính.`,
-      'success',
-    );
-    const currentCustomer = this.customer();
-    if (currentCustomer) {
-      void this.loadCustomerDetail(currentCustomer.id);
+  copyCustomerId(id: string): void {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      void navigator.clipboard.writeText(id);
+      this.showToast('Đã sao chép mã khách hàng vào bộ nhớ tạm', 'success');
     }
   }
 
@@ -583,14 +571,14 @@ export class AdminCustomerDetailPageComponent implements OnInit {
 
   getOrderStatusBadgeClass(status: string): string {
     if (status === 'COMPLETED') {
-      return 'bg-primary/10 text-primary border border-primary/25';
+      return 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20';
     }
     if (status === 'CANCELLED' || status === 'DELIVERY_FAILED') {
-      return 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/25';
+      return 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20';
     }
     if (status === 'SHIPPING' || status === 'ASSEMBLING') {
-      return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25';
+      return 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20';
     }
-    return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25';
+    return 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20';
   }
 }

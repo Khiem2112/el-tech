@@ -16,6 +16,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { handleProductImageError } from '../../../core/constants/product.constants';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
 import { AdminCategoryService } from '../categories/services/admin-category.service';
 import {
@@ -32,7 +33,14 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-variants-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ButtonDirective, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ButtonDirective,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -41,7 +49,7 @@ type ToastNotification = {
             Danh Mục Biến Thể SKU Toàn Hệ Thống
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Tra cứu nhanh theo mã vạch barcode, mã SKU hoặc nhãn biến thể phục vụ kho vận và bán hàng
+            Tra cứu nhanh theo mã vạch barcode, mã linh kiện hoặc nhãn biến thể phục vụ kho vận và bán hàng
           </p>
         </div>
 
@@ -354,37 +362,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          <div class="p-4 border-t border-line flex items-center justify-between flex-wrap gap-3 text-xs text-muted">
-            <div>
-              Hiển thị <strong class="text-foreground tabular tabular-nums">{{ pageStartIndex() }}</strong> -
-              <strong class="text-foreground tabular tabular-nums">{{ pageEndIndex() }}</strong> trong tổng số
-              <strong class="text-primary tabular tabular-nums">{{ total() }}</strong> biến thể SKU
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                (click)="prevPage()"
-                [disabled]="page() <= 1"
-                class="px-3 py-1.5 bg-surface border border-line rounded hover:border-primary disabled:opacity-40 disabled:hover:border-line text-foreground font-medium transition-colors"
-              >
-                Trang Trước
-              </button>
-
-              <span class="px-2 tabular-nums text-foreground">
-                Trang {{ page() }} / {{ totalPages() }}
-              </span>
-
-              <button
-                type="button"
-                (click)="nextPage()"
-                [disabled]="page() >= totalPages()"
-                class="px-3 py-1.5 bg-surface border border-line rounded hover:border-primary disabled:opacity-40 disabled:hover:border-line text-foreground font-medium transition-colors"
-              >
-                Trang Kế
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="page()"
+            [total]="total()"
+            [limit]="limit()"
+            [totalPages]="totalPages()"
+            itemName="biến thể linh kiện"
+            [isLoading]="isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
 
@@ -399,7 +385,7 @@ type ToastNotification = {
               <div>
                 <h3 class="font-bold text-foreground text-base">Chi Tiết Tồn Kho Showroom EL-TECH</h3>
                 <p class="text-xs text-muted">
-                  SKU: <strong class="text-primary tabular">{{ variant.sku }}</strong>
+                  Mã linh kiện: <strong class="text-primary tabular">{{ variant.sku }}</strong>
                   @if (variant.barcode) {
                     | Barcode: <span class="tabular">{{ variant.barcode }}</span>
                   }
@@ -690,6 +676,10 @@ export class AdminVariantsPageComponent implements OnInit, AfterViewInit {
       event.preventDefault();
       this.focusBarcodeInput();
     }
+  }
+
+  async onPageChange(page: number): Promise<void> {
+    await this.variantService.setPage(page);
   }
 
   async ngOnInit(): Promise<void> {

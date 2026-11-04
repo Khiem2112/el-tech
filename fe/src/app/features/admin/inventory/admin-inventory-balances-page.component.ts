@@ -13,6 +13,7 @@ import { ButtonDirective } from '../../../components/atoms/button/button.directi
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { QuarantineStockDialogComponent } from './components/quarantine-stock-dialog.component';
 import { StockLedgerSheetComponent } from './components/stock-ledger-sheet.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminInventoryService,
   InventoryBalanceItem,
@@ -29,6 +30,7 @@ import {
     SelectComponent,
     StockLedgerSheetComponent,
     QuarantineStockDialogComponent,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -83,7 +85,7 @@ import {
 
           <div class="flex lg:flex-col justify-between items-start lg:items-end gap-2 pt-3 lg:pt-0 border-t lg:border-t-0 lg:border-l border-line lg:pl-6 text-xs text-muted">
             <div>Tổng tồn thực tế: <strong class="text-foreground tabular tabular-nums">{{ summary().totalOnHand }}</strong></div>
-            <div>Tổng cặp SKU-Kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
+            <div>Tổng cặp linh kiện - kho: <strong class="text-foreground tabular tabular-nums">{{ summary().totalQuants }}</strong></div>
             <div>Giá trị ước tính: <strong class="text-foreground tabular tabular-nums">{{ summary().totalInventoryValue }} đ</strong></div>
           </div>
         </div>
@@ -124,10 +126,10 @@ import {
                 type="text"
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="Tìm SKU, tên linh kiện, mã vạch..."
+                placeholder="Tìm mã linh kiện, tên sản phẩm, mã vạch..."
                 class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
@@ -189,7 +191,7 @@ import {
             <table class="w-full text-left min-w-[1000px] border-collapse text-sm">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
-                  <th class="py-3 px-4 whitespace-nowrap">Mã SKU</th>
+                  <th class="py-3 px-4 whitespace-nowrap">Mã linh kiện</th>
                   <th class="py-3 px-4">Tên linh kiện</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Thực tế</th>
                   <th class="py-3 px-4 text-right whitespace-nowrap">Đang giữ</th>
@@ -279,7 +281,7 @@ import {
                     variant="secondary"
                     size="sm"
                     class="h-8 px-2.5 text-xs font-semibold inline-flex items-center gap-1"
-                    title="Xem nhanh sổ kho của SKU"
+                    title="Xem nhanh sổ kho của linh kiện"
                   >
                     <svg class="w-3.5 h-3.5 text-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -305,41 +307,15 @@ import {
             </tr>
           </ng-template>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
-            <div class="text-muted">
-              Hiển thị <strong class="text-foreground">{{ (inventoryService.balancesPage() - 1) * inventoryService.balancesLimit() + 1 }}</strong>
-              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
-              trong tổng số <strong class="text-foreground">{{ inventoryService.balancesTotal() }}</strong> bản ghi
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="inventoryService.balancesPage() <= 1"
-                (click)="onPageChange(inventoryService.balancesPage() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ inventoryService.balancesPage() }} / {{ inventoryService.balancesTotalPages() }}
-              </span>
-
-              <button
-                type="button"
-                [disabled]="inventoryService.balancesPage() >= inventoryService.balancesTotalPages()"
-                (click)="onPageChange(inventoryService.balancesPage() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="inventoryService.balancesPage()"
+            [total]="inventoryService.balancesTotal()"
+            [limit]="inventoryService.balancesLimit()"
+            [totalPages]="inventoryService.balancesTotalPages()"
+            itemName="linh kiện"
+            [isLoading]="inventoryService.isBalancesLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>
@@ -458,7 +434,7 @@ export class AdminInventoryBalancesPageComponent implements OnInit {
       categoryId: categoryVal ? Number(categoryVal) : undefined,
       stockStatus: this.selectedStockStatus() as 'ALL' | 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK',
       page,
-      limit: 50,
+      limit: 10,
     });
   }
 

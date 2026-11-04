@@ -11,6 +11,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { ReviewDetailDialogComponent } from './components/review-detail-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminReviewItem,
   AdminReviewService,
@@ -25,7 +26,15 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-reviews-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ReviewDetailDialogComponent, AppIconModule, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ReviewDetailDialogComponent,
+    AppIconModule,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -175,34 +184,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          @if (reviewService.total() > 0) {
-            <div class="p-4 border-t border-line flex items-center justify-between text-sm text-muted">
-              <div>
-                Hiển thị trang <strong class="text-foreground tabular-nums">{{ reviewService.page() }}</strong> /
-                <strong class="text-foreground tabular-nums">{{ reviewService.totalPages() }}</strong>
-                (Tổng cộng <strong class="text-foreground tabular-nums">{{ reviewService.total() }}</strong> đánh giá)
-              </div>
-
-              <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  [disabled]="reviewService.page() <= 1 || reviewService.isLoading()"
-                  (click)="goToPage(reviewService.page() - 1)"
-                  class="px-3 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 text-foreground transition-colors text-sm cursor-pointer"
-                >
-                  Trước
-                </button>
-                <button
-                  type="button"
-                  [disabled]="reviewService.page() >= reviewService.totalPages() || reviewService.isLoading()"
-                  (click)="goToPage(reviewService.page() + 1)"
-                  class="px-3 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 text-foreground transition-colors text-sm cursor-pointer"
-                >
-                  Sau
-                </button>
-              </div>
-            </div>
-          }
+          <app-admin-pagination
+            [page]="reviewService.page()"
+            [total]="reviewService.total()"
+            [limit]="reviewService.limit()"
+            [totalPages]="reviewService.totalPages()"
+            itemName="đánh giá"
+            [isLoading]="reviewService.isLoading()"
+            (pageChange)="goToPage($event)"
+          />
         </div>
 
       @if (selectedReview()) {

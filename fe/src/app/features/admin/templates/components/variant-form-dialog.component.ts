@@ -30,7 +30,7 @@ import {
           <div class="flex items-center justify-between border-b border-line pb-3">
             <div>
               <h3 class="font-bold text-foreground uppercase text-base">
-                {{ isEditing() ? 'Chỉnh Sửa Biến Thể SKU' : 'Thêm Biến Thể SKU Mới' }}
+                {{ isEditing() ? 'Chỉnh Sửa Biến Thể' : 'Thêm Biến Thể Mới' }}
               </h3>
               <p class="text-xs text-muted">
                 Cấu hình thông tin thương mại, giá niêm yết và quy định serial
@@ -54,7 +54,7 @@ import {
             </div>
           }
 
-          <form (ngSubmit)="onSubmit()" class="space-y-5">
+          <form (ngSubmit)="onSubmit()" novalidate class="space-y-5">
             <div>
               <div class="border-b border-line/60 pb-1.5 mb-3">
                 <span class="font-bold text-foreground text-xs uppercase tracking-wider">Thông Tin Thương Mại</span>
@@ -64,16 +64,23 @@ import {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                      Mã SKU <span class="text-destructive">*</span>
+                      Mã linh kiện <span class="text-destructive">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       [value]="sku()"
-                      (input)="sku.set($any($event.target).value)"
+                      (input)="sku.set($any($event.target).value); clearFieldError('sku')"
                       placeholder="VD: VGA-RTX5090-O24G-BLACK"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
+                      [class.border-destructive]="fieldErrors()['sku']"
+                      [class.focus:border-destructive]="fieldErrors()['sku']"
+                      [class.border-line]="!fieldErrors()['sku']"
+                      [class.focus:border-primary]="!fieldErrors()['sku']"
                     />
+                    @if (fieldErrors()['sku']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['sku'] }}</p>
+                    }
                   </div>
 
                   <div>
@@ -114,10 +121,17 @@ import {
                       min="1"
                       step="1"
                       [value]="sellingPrice()"
-                      (input)="sellingPrice.set(+$any($event.target).value)"
+                      (input)="sellingPrice.set(+$any($event.target).value); clearFieldError('sellingPrice')"
                       placeholder="59990000"
-                      class="w-full px-3 py-2 bg-surface border border-line rounded text-foreground font-bold tabular focus:outline-none focus:border-primary text-sm"
+                      class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
+                      [class.border-destructive]="fieldErrors()['sellingPrice']"
+                      [class.focus:border-destructive]="fieldErrors()['sellingPrice']"
+                      [class.border-line]="!fieldErrors()['sellingPrice']"
+                      [class.focus:border-primary]="!fieldErrors()['sellingPrice']"
                     />
+                    @if (fieldErrors()['sellingPrice']) {
+                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['sellingPrice'] }}</p>
+                    }
                   </div>
 
                   <div>
@@ -225,6 +239,7 @@ export class VariantFormDialogComponent {
   readonly specNote = signal<string>('');
 
   readonly formError = signal<string | null>(null);
+  readonly fieldErrors = signal<Record<string, string>>({});
   readonly isSubmitting = signal<boolean>(false);
 
   readonly isEditing = signal<boolean>(false);
@@ -263,6 +278,16 @@ export class VariantFormDialogComponent {
         this.specNote.set('');
       }
       this.formError.set(null);
+      this.fieldErrors.set({});
+    });
+  }
+
+  clearFieldError(field: string): void {
+    this.fieldErrors.update((cur) => {
+      if (!cur[field]) return cur;
+      const next = { ...cur };
+      delete next[field];
+      return next;
     });
   }
 
@@ -275,15 +300,22 @@ export class VariantFormDialogComponent {
   }
 
   async onSubmit(): Promise<void> {
+    const errors: Record<string, string> = {};
     const trimmedSku = this.sku().trim();
     if (!trimmedSku) {
-      this.formError.set('Vui lòng nhập mã SKU');
-      return;
+      errors['sku'] = 'Mã linh kiện không được để trống';
     }
 
     const price = Number(this.sellingPrice());
-    if (isNaN(price) || price <= 0 || !Number.isInteger(price)) {
-      this.formError.set('Giá bán phải là số nguyên dương VND');
+    if (isNaN(price) || price <= 0) {
+      errors['sellingPrice'] = 'Giá bán phải lớn hơn 0 VND';
+    } else if (!Number.isInteger(price)) {
+      errors['sellingPrice'] = 'Giá bán phải là số nguyên VND';
+    }
+
+    this.fieldErrors.set(errors);
+    if (Object.keys(errors).length > 0) {
+      this.formError.set('Vui lòng kiểm tra và hoàn thiện các trường bắt buộc được đánh dấu đỏ');
       return;
     }
 

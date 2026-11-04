@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnInit,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -11,6 +12,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
 import { NotificationDetailDialogComponent } from './components/notification-detail-dialog.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminNotificationItem,
   AdminNotificationService,
@@ -25,7 +27,15 @@ type ToastNotification = {
 @Component({
   selector: 'app-admin-notification-outbox-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, NotificationDetailDialogComponent, AppIconModule, SelectComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    NotificationDetailDialogComponent,
+    AppIconModule,
+    SelectComponent,
+    AdminPaginationComponent,
+  ],
   template: `
     <div class="p-4 lg:p-6 space-y-4 w-full text-xs text-foreground">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
@@ -115,7 +125,6 @@ type ToastNotification = {
                   <th class="py-3 px-4">Sự kiện</th>
                   <th class="py-3 px-4">Kênh gửi</th>
                   <th class="py-3 px-4">Nội dung</th>
-                  <th class="py-3 px-4 text-center">Thử lại</th>
                   <th class="py-3 px-4 text-center">Trạng thái</th>
                   <th class="py-3 px-4 text-right">Thao tác</th>
                 </tr>
@@ -123,25 +132,25 @@ type ToastNotification = {
               <tbody class="divide-y divide-line text-sm">
                 @if (notificationService.isLoading()) {
                   <tr>
-                    <td colspan="9" class="py-12 text-center text-muted">
+                    <td colspan="8" class="py-12 text-center text-muted">
                       <div class="inline-block animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full mb-2"></div>
                       <div>Đang tải dữ liệu nhật ký hộp thư outbox...</div>
                     </td>
                   </tr>
                 } @else if (notificationService.notifications().length === 0) {
                   <tr>
-                    <td colspan="9" class="py-12 text-center text-muted">
+                    <td colspan="8" class="py-12 text-center text-muted">
                       Không có thông báo nào phù hợp với bộ lọc hiện tại.
                     </td>
                   </tr>
                 } @else {
                   @for (item of notificationService.notifications(); track item.id) {
                     <tr class="hover:bg-surface-alt/40 transition-colors">
-                      <td class="py-3 px-4 text-muted tabular-nums">
+                      <td class="py-3 px-4 text-muted tabular-nums whitespace-nowrap text-xs">
                         {{ item.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}
                       </td>
 
-                      <td class="py-3 px-4 font-bold text-primary tabular-nums">
+                      <td class="py-3 px-4 font-bold text-primary tabular-nums whitespace-nowrap">
                         @if (item.order) {
                           <a
                             [routerLink]="['/admin/orders', item.order.id]"
@@ -155,15 +164,15 @@ type ToastNotification = {
                       </td>
 
                       <td class="py-3 px-4">
-                        <div class="font-bold text-foreground">{{ item.customer.name }}</div>
-                        <div class="text-xs text-muted">{{ item.customer.email }}</div>
+                        <div class="font-bold text-foreground text-xs">{{ item.customer.name }}</div>
+                        <div class="text-xs text-muted truncate max-w-[160px]">{{ item.customer.email }}</div>
                       </td>
 
-                      <td class="py-3 px-4 text-xs text-foreground tabular-nums">
+                      <td class="py-3 px-4 text-xs text-foreground tabular-nums whitespace-nowrap">
                         {{ item.eventType }}
                       </td>
 
-                      <td class="py-3 px-4">
+                      <td class="py-3 px-4 whitespace-nowrap">
                         <div class="flex items-center gap-1 flex-wrap">
                           @for (ch of item.channels; track ch) {
                             <span
@@ -176,16 +185,12 @@ type ToastNotification = {
                         </div>
                       </td>
 
-                      <td class="py-3 px-4 text-muted max-w-xs truncate" [title]="item.body">
+                      <td class="py-3 px-4 text-muted max-w-xs" [title]="item.body">
                         <div class="font-semibold text-foreground truncate">{{ item.title }}</div>
                         <div class="text-xs text-muted truncate">{{ item.body }}</div>
                       </td>
 
-                      <td class="py-3 px-4 text-center tabular-nums font-bold text-foreground">
-                        {{ item.retryCount }}
-                      </td>
-
-                      <td class="py-3 px-4 text-center">
+                      <td class="py-3 px-4 text-center whitespace-nowrap">
                         @if (item.status === 'SENT') {
                           <span class="inline-block px-2 py-0.5 rounded text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
                             ĐÃ GỬI
@@ -201,12 +206,12 @@ type ToastNotification = {
                         }
                       </td>
 
-                      <td class="py-3 px-4 text-right">
+                      <td class="py-3 px-4 text-right whitespace-nowrap">
                         <button
                           type="button"
                           (click)="openDetailDialog(item)"
                           class="inline-flex items-center justify-center p-1.5 rounded-md hover:bg-surface-alt text-muted hover:text-primary transition-colors cursor-pointer"
-                          title="Xem chi tiết & Thử lại"
+                          title="Xem chi tiết"
                           aria-label="Xem chi tiết nội dung thông báo"
                         >
                           <lucide-icon name="eye" class="size-4" aria-hidden="true"></lucide-icon>
@@ -219,34 +224,15 @@ type ToastNotification = {
             </table>
           </div>
 
-          @if (notificationService.total() > 0) {
-            <div class="p-4 border-t border-line flex items-center justify-between text-sm text-muted">
-              <div>
-                Hiển thị trang <strong class="text-foreground tabular-nums">{{ notificationService.page() }}</strong> /
-                <strong class="text-foreground tabular-nums">{{ notificationService.totalPages() }}</strong>
-                (Tổng cộng <strong class="text-foreground tabular-nums">{{ notificationService.total() }}</strong> thông báo)
-              </div>
-
-              <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  [disabled]="notificationService.page() <= 1 || notificationService.isLoading()"
-                  (click)="goToPage(notificationService.page() - 1)"
-                  class="px-3 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 text-foreground transition-colors text-sm cursor-pointer"
-                >
-                  Trước
-                </button>
-                <button
-                  type="button"
-                  [disabled]="notificationService.page() >= notificationService.totalPages() || notificationService.isLoading()"
-                  (click)="goToPage(notificationService.page() + 1)"
-                  class="px-3 py-1 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded disabled:opacity-40 text-foreground transition-colors text-sm cursor-pointer"
-                >
-                  Sau
-                </button>
-              </div>
-            </div>
-          }
+          <app-admin-pagination
+            [page]="notificationService.page()"
+            [total]="notificationService.total()"
+            [limit]="notificationService.limit()"
+            [totalPages]="notificationService.totalPages()"
+            itemName="thông báo"
+            [isLoading]="notificationService.isLoading()"
+            (pageChange)="goToPage($event)"
+          />
         </div>
 
       @if (selectedNotification()) {
@@ -356,7 +342,42 @@ export class AdminNotificationOutboxPageComponent implements OnInit {
     await this.loadData();
   }
 
+  readonly pageList = computed<(number | 'ellipsis')[]>(() => {
+    const total = this.notificationService.totalPages();
+    const current = this.notificationService.page();
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+
+    const pages = new Set<number>();
+    pages.add(1);
+    pages.add(total);
+
+    const delta = 2;
+    for (let i = Math.max(1, current - delta); i <= Math.min(total, current + delta); i++) {
+      pages.add(i);
+    }
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    const result: (number | 'ellipsis')[] = [];
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+        result.push('ellipsis');
+      }
+      result.push(sorted[i]);
+    }
+    return result;
+  });
+
   async goToPage(page: number): Promise<void> {
+    if (
+      this.notificationService.isLoading() ||
+      page < 1 ||
+      page > this.notificationService.totalPages() ||
+      page === this.notificationService.page()
+    ) {
+      return;
+    }
     await this.notificationService.loadNotifications({
       page,
       channel: this.selectedChannel,

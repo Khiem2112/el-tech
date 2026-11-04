@@ -43,16 +43,16 @@ type ShortShipmentLineState = {
           <div class="p-4 border-b border-line flex items-center justify-between flex-shrink-0">
             <div>
               <h3 class="font-bold text-foreground uppercase text-sm tracking-wide">
-                Ghi Nhận Giao Thiếu Hàng PO #{{ po.code }}
+                Ghi Nhận Giao Thiếu Hàng Đơn #{{ po.code }}
               </h3>
               <p class="text-xs text-muted mt-0.5">
-                Tự động tạo đơn PO thay thế mới tương ứng với số lượng thực nhận
+                Tự động tạo đơn mua hàng thay thế mới tương ứng với số lượng thực nhận
               </p>
             </div>
             <button
               type="button"
               (click)="onCancel()"
-              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors"
+              class="p-1 rounded hover:bg-surface-alt text-muted hover:text-foreground transition-colors cursor-pointer"
               title="Đóng"
               aria-label="Đóng"
             >
@@ -82,15 +82,15 @@ type ShortShipmentLineState = {
                       </div>
                     </div>
 
-                    <div class="w-28 flex-shrink-0 text-right">
-                      <label class="block text-xs text-muted uppercase mb-1">Thực nhận</label>
+                    <div class="w-28 flex-shrink-0 text-center">
+                      <label class="block text-xs text-muted uppercase mb-1 text-center">Thực nhận</label>
                       <input
                         type="number"
                         min="0"
                         [max]="line.orderedQuantity"
                         [ngModel]="line.actualQuantity"
                         (ngModelChange)="onActualQuantityChange(line.skuId, $event)"
-                        class="w-full px-2.5 py-1.5 bg-white border border-line rounded text-right font-bold tabular-nums text-foreground text-sm font-medium focus:outline-none focus:border-primary"
+                        class="w-full px-2 py-1.5 bg-white border border-line rounded text-center font-bold tabular-nums text-foreground text-sm focus:outline-none focus:border-primary"
                       />
                     </div>
                   </div>
@@ -111,21 +111,21 @@ type ShortShipmentLineState = {
             </div>
           </div>
 
-          <div class="p-3.5 border-t border-line flex items-center justify-between flex-shrink-0 bg-surface-alt/40">
-            <div class="text-xs">
+          <div class="p-3.5 border-t border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0 bg-surface-alt/40">
+            <div class="flex-1 min-w-0 text-xs">
               @if (!isValid()) {
-                <span class="text-rose-600 font-semibold">{{ validationError() }}</span>
+                <span class="text-rose-600 font-semibold block leading-tight">{{ validationError() }}</span>
               } @else {
-                <span class="text-amber-800 font-semibold">Tạo PO thay thế cho {{ totalActualQuantity() }} chiếc thực nhận.</span>
+                <span class="text-amber-800 font-semibold block leading-tight">Tạo đơn thay thế cho {{ totalActualQuantity() }} chiếc thực nhận.</span>
               }
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 (click)="onCancel()"
                 [disabled]="isSubmitting"
-                class="px-4 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors"
+                class="px-4 py-1.5 bg-surface-alt hover:bg-surface-alt/80 border border-line rounded font-semibold text-xs text-foreground transition-colors cursor-pointer"
               >
                 Hủy Bỏ
               </button>
@@ -133,13 +133,13 @@ type ShortShipmentLineState = {
                 type="button"
                 (click)="onSubmit()"
                 [disabled]="!isValid() || isSubmitting"
-                class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
+                class="px-4 py-1.5 bg-primary hover:bg-primary-hover text-primary-foreground font-bold rounded text-xs transition-colors shadow-xs disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5 cursor-pointer"
               >
                 @if (isSubmitting) {
                   <div class="w-3 h-3 border-2 border-t-white border-r-transparent border-b-white border-l-transparent rounded-full animate-spin"></div>
                   <span>Đang xử lý...</span>
                 } @else {
-                  <span>Tạo PO Thay Thế Mới</span>
+                  <span>Tạo Đơn Thay Thế Mới</span>
                 }
               </button>
             </div>

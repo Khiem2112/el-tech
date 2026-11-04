@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
 import { BadgeDirective, BadgeVariant } from '../../../components/atoms/badge/badge.directive';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import {
   AdminStockMoveService,
   StockMoveListItem,
@@ -28,6 +29,7 @@ import {
     BadgeDirective,
     ButtonDirective,
     SelectComponent,
+    AdminPaginationComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -104,10 +106,10 @@ import {
                 type="text"
                 [ngModel]="searchQuery()"
                 (ngModelChange)="onSearchChange($event)"
-                placeholder="Tìm mã phiếu, mã đơn, PO, lý do..."
+                placeholder="Tìm mã phiếu, mã đơn, lý do..."
                 class="w-full h-9 pl-9 pr-3 bg-surface border border-line rounded text-xs text-foreground placeholder:text-muted focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
               />
-              <svg class="w-4 h-4 text-muted absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
@@ -164,16 +166,16 @@ import {
           </div>
         } @else {
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[1050px] border-collapse">
+            <table class="w-full text-left min-w-[960px] border-collapse">
               <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase tracking-wider text-xs">
                 <tr>
                   <th class="py-3 px-3 w-10 text-center"></th>
                   <th class="py-3 px-4 whitespace-nowrap">Mã Phiếu Kho</th>
                   <th class="py-3 px-4 whitespace-nowrap">Loại Phiếu</th>
                   <th class="py-3 px-4 whitespace-nowrap">Trạng Thái</th>
-                  <th class="py-3 px-4">Chứng Từ Liên Kết</th>
-                  <th class="py-3 px-4 text-center whitespace-nowrap">Quy Mô</th>
+                  <th class="py-3 px-4 text-center whitespace-nowrap">Quy Mô SP</th>
                   <th class="py-3 px-4 whitespace-nowrap">Ngày Tạo</th>
+                  <th class="py-3 px-4">Chứng Từ Liên Kết</th>
                   <th class="py-3 px-4">Lý Do / Ghi Chú</th>
                 </tr>
               </thead>
@@ -220,6 +222,20 @@ import {
                       </span>
                     </td>
 
+                    <td class="py-3 px-4 text-center tabular whitespace-nowrap">
+                      <div class="font-bold text-foreground">{{ move.totalQuantity }} SP</div>
+                      <div class="text-xs text-muted">{{ move.totalLines }} dòng linh kiện</div>
+                    </td>
+
+                    <td class="py-3 px-4 text-muted tabular whitespace-nowrap">
+                      <div>{{ formatDate(move.createdAt) }}</div>
+                      @if (move.validatedAt) {
+                        <div class="text-[11px] text-emerald-600">Đã duyệt: {{ formatDate(move.validatedAt) }}</div>
+                      } @else if (move.cancelledAt) {
+                        <div class="text-[11px] text-rose-600">Đã hủy: {{ formatDate(move.cancelledAt) }}</div>
+                      }
+                    </td>
+
                     <td class="py-3 px-4" (click)="$event.stopPropagation()">
                       @if (move.purchaseOrder) {
                         <div>
@@ -227,7 +243,7 @@ import {
                             routerLink="/admin/procurement/purchase-orders"
                             class="font-semibold text-primary hover:underline tabular"
                           >
-                            PO: {{ move.purchaseOrder.code }}
+                            Đơn mua: {{ move.purchaseOrder.code }}
                           </a>
                           <div class="text-xs text-muted truncate max-w-xs">
                             NCC: {{ move.purchaseOrder.supplier.name }}
@@ -247,20 +263,6 @@ import {
                         </div>
                       } @else {
                         <span class="text-muted text-xs">-</span>
-                      }
-                    </td>
-
-                    <td class="py-3 px-4 text-center tabular whitespace-nowrap">
-                      <div class="font-bold text-foreground">{{ move.totalQuantity }} sp</div>
-                      <div class="text-xs text-muted">{{ move.totalLines }} dòng SKU</div>
-                    </td>
-
-                    <td class="py-3 px-4 text-muted tabular whitespace-nowrap">
-                      <div>{{ formatDate(move.createdAt) }}</div>
-                      @if (move.validatedAt) {
-                        <div class="text-[11px] text-emerald-600">Đã duyệt: {{ formatDate(move.validatedAt) }}</div>
-                      } @else if (move.cancelledAt) {
-                        <div class="text-[11px] text-rose-600">Đã hủy: {{ formatDate(move.cancelledAt) }}</div>
                       }
                     </td>
 
@@ -294,45 +296,47 @@ import {
                               <table class="w-full text-xs text-left border-collapse">
                                 <thead class="bg-surface-alt border-b border-line text-muted font-semibold uppercase">
                                   <tr>
-                                    <th class="py-2.5 px-3 whitespace-nowrap">Mã SKU</th>
-                                    <th class="py-2.5 px-3">Tên Linh Kiện & Biến Thể</th>
-                                    <th class="py-2.5 px-3 text-right whitespace-nowrap">Số Lượng</th>
-                                    <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Vốn</th>
-                                    <th class="py-2.5 px-3">Mã Sê-ri Liên Kết</th>
+                                    <th class="py-2.5 px-3 whitespace-nowrap w-36">Mã linh kiện</th>
+                                    <th class="py-2.5 px-3 max-w-[220px]">Tên Linh Kiện & Biến Thể</th>
+                                    <th class="py-2.5 px-3 text-center whitespace-nowrap w-24">Số Lượng</th>
+                                    <th class="py-2.5 px-3 text-right whitespace-nowrap w-28">Giá Vốn</th>
+                                    <th class="py-2.5 px-3 min-w-[320px]">Số Sê-ri Liên Kết</th>
                                   </tr>
                                 </thead>
                                 <tbody class="divide-y divide-line text-foreground">
                                   @for (line of move.lines; track line.id) {
                                     <tr class="hover:bg-surface-alt/50 transition-colors">
-                                      <td class="py-2.5 px-3 font-semibold tabular whitespace-nowrap">
+                                      <td class="py-2.5 px-3 font-semibold tabular whitespace-nowrap w-36">
                                         <div class="text-foreground font-bold">{{ line.sku.sku }}</div>
                                         @if (line.sku.barcode) {
                                           <div class="text-[11px] text-muted font-mono">{{ line.sku.barcode }}</div>
                                         }
                                       </td>
 
-                                      <td class="py-2.5 px-3">
-                                        <div class="font-medium text-foreground">{{ line.sku.template.name }}</div>
+                                      <td class="py-2.5 px-3 max-w-[220px]">
+                                        <div class="font-medium text-foreground truncate" [title]="line.sku.template.name">
+                                          {{ line.sku.template.name }}
+                                        </div>
                                         @if (line.sku.variationLabel) {
-                                          <div class="text-[11px] text-muted font-normal mt-0.5">
+                                          <div class="text-[11px] text-muted font-normal mt-0.5 truncate" [title]="line.sku.variationLabel">
                                             Phân loại: <span class="text-foreground font-medium">{{ line.sku.variationLabel }}</span>
                                           </div>
                                         }
                                       </td>
 
-                                      <td class="py-2.5 px-3 text-right font-bold tabular whitespace-nowrap">
+                                      <td class="py-2.5 px-3 text-center font-bold tabular whitespace-nowrap w-24">
                                         {{ line.quantity }}
                                       </td>
 
-                                      <td class="py-2.5 px-3 text-right tabular text-muted whitespace-nowrap">
+                                      <td class="py-2.5 px-3 text-right tabular text-muted whitespace-nowrap w-28">
                                         {{ formatCurrency(line.unitCost) }}
                                       </td>
 
-                                      <td class="py-2.5 px-3">
+                                      <td class="py-2.5 px-3 min-w-[320px]">
                                         @if (line.serials && line.serials.length > 0) {
-                                          <div class="flex flex-wrap gap-1 max-w-md">
+                                          <div class="flex flex-wrap gap-1.5 w-full">
                                             @for (serial of line.serials; track serial) {
-                                              <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground">
+                                              <span class="px-1.5 py-0.5 rounded bg-surface-alt border border-line text-[11px] font-mono text-foreground select-all">
                                                 {{ serial }}
                                               </span>
                                             }
@@ -356,41 +360,15 @@ import {
             </table>
           </div>
 
-          <div class="p-4 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-sm bg-surface-alt">
-            <div class="text-muted">
-              Hiển thị <strong class="text-foreground">{{ (stockMoveService.page() - 1) * stockMoveService.limit() + 1 }}</strong>
-              - <strong class="text-foreground">{{ getEndIndex() }}</strong>
-              trong tổng số <strong class="text-foreground">{{ stockMoveService.total() }}</strong> phiếu kho
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                [disabled]="stockMoveService.page() <= 1"
-                (click)="onPageChange(stockMoveService.page() - 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Trước
-              </button>
-
-              <span class="px-2 text-foreground font-semibold tabular tabular-nums">
-                Trang {{ stockMoveService.page() }} / {{ stockMoveService.totalPages() }}
-              </span>
-
-              <button
-                type="button"
-                [disabled]="stockMoveService.page() >= stockMoveService.totalPages()"
-                (click)="onPageChange(stockMoveService.page() + 1)"
-                appButton
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </button>
-            </div>
-          </div>
+          <app-admin-pagination
+            [page]="stockMoveService.page()"
+            [total]="stockMoveService.total()"
+            [limit]="stockMoveService.limit()"
+            [totalPages]="stockMoveService.totalPages()"
+            itemName="phiếu kho"
+            [isLoading]="stockMoveService.isLoading()"
+            (pageChange)="onPageChange($event)"
+          />
         }
       </div>
     </div>

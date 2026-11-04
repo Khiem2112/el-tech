@@ -13,6 +13,7 @@ import { handleProductImageError } from '../../../core/constants/product.constan
 import { AppIconModule } from '../../../components/atoms/icon/icon.module';
 import { ButtonDirective } from '../../../components/atoms/button/button.directive';
 import { SelectComponent, SelectOption } from '../../../components/atoms/select/select.component';
+import { AdminPaginationComponent } from '../components/admin-pagination.component';
 import { AdminBrandService } from '../brands/services/admin-brand.service';
 import { AdminCategoryService } from '../categories/services/admin-category.service';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
@@ -39,6 +40,7 @@ type ToastNotification = {
     SelectComponent,
     LifecycleTransitionDialogComponent,
     AppIconModule,
+    AdminPaginationComponent,
   ],
   template: `
     <div class="w-full p-4 lg:p-6 space-y-4 text-sm text-foreground">
@@ -48,7 +50,7 @@ type ToastNotification = {
             Mẫu Sản Phẩm
           </h1>
           <p class="text-xs text-muted mt-0.5">
-            Quản lý danh mục mẫu phần cứng độc lập, bộ lọc đa chiều và biến thể SKU
+            Quản lý danh mục mẫu phần cứng độc lập, bộ lọc đa chiều và biến thể sản phẩm
           </p>
         </div>
 
@@ -105,35 +107,14 @@ type ToastNotification = {
             @if (viewMode() === 'list') {
               <button
                 type="button"
+                (click)="toggleAllExpansion()"
                 appButton
                 variant="outline"
                 size="sm"
-                (click)="expandAll()"
-                title="Mở rộng tất cả dòng mẫu sản phẩm"
               >
-                Mở Rộng Tất Cả
-              </button>
-              <button
-                type="button"
-                appButton
-                variant="outline"
-                size="sm"
-                (click)="collapseAll()"
-                title="Thu gọn tất cả dòng mẫu sản phẩm"
-              >
-                Thu Gọn Tất Cả
+                <span>{{ isAllExpanded() ? 'Thu Gọn Tất Cả' : 'Mở Rộng Tất Cả' }}</span>
               </button>
             }
-
-            <button
-              type="button"
-              appButton
-              variant="outline"
-              size="sm"
-              (click)="resetFilters()"
-            >
-              Đặt Lại
-            </button>
           </div>
         </div>
 
@@ -144,7 +125,7 @@ type ToastNotification = {
               type="text"
               [value]="searchQuery()"
               (input)="onSearchInput($event)"
-              placeholder="Tên mẫu, model hoặc slug..."
+              placeholder="Tên mẫu, mã model linh kiện..."
               class="w-full px-3 py-1.5 bg-surface border border-line rounded text-xs text-foreground focus:outline-none focus:border-primary"
             />
           </div>
@@ -260,18 +241,18 @@ type ToastNotification = {
                       </td>
                       <td class="py-3 px-4">
                         <div class="space-y-1">
+                          <a
+                            [routerLink]="['/admin/catalog/templates', tpl.id]"
+                            class="font-bold text-foreground hover:text-primary-strong transition-colors line-clamp-1 block"
+                          >
+                            {{ tpl.name }}
+                          </a>
                           <div class="flex items-center gap-2 flex-wrap">
-                            <a
-                              [routerLink]="['/admin/catalog/templates', tpl.id]"
-                              class="font-bold text-foreground hover:text-primary-strong transition-colors line-clamp-1"
-                            >
-                              {{ tpl.name }}
-                            </a>
                             <span [class]="getLifecycleBadgeClass(tpl.lifecycleState)">
                               {{ getLifecycleLabel(tpl.lifecycleState) }}
                             </span>
-                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-foreground border border-line tabular-nums">
-                              {{ tpl.variantsCount ?? tpl.variantCount }} biến thể SKU
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-foreground border border-line tabular-nums whitespace-nowrap">
+                              {{ tpl.variantsCount ?? tpl.variantCount }} biến thể
                             </span>
                           </div>
                           <div class="text-xs text-muted flex items-center gap-2 flex-wrap">
@@ -282,8 +263,6 @@ type ToastNotification = {
                               <span>&bull;</span>
                               <span>Model: {{ tpl.model }}</span>
                             }
-                            <span>&bull;</span>
-                            <span class="font-mono text-[11px]">slug: {{ tpl.slug }}</span>
                           </div>
                         </div>
                       </td>
@@ -345,15 +324,14 @@ type ToastNotification = {
                             <div class="flex items-center justify-between">
                               <div class="flex items-center gap-2">
                                 <h4 class="text-xs font-bold uppercase tracking-wider text-muted">
-                                  Danh Sách Biến Thể SKU
+                                  Danh Sách Biến Thể
                                 </h4>
                                 <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary tabular-nums">
-                                  {{ tpl.variants?.length ?? 0 }} SKU
+                                  {{ tpl.variants?.length ?? 0 }} biến thể
                                 </span>
                               </div>
                               <a
                                 [routerLink]="['/admin/catalog/templates', tpl.id]"
-                                [fragment]="'section-variants'"
                                 class="text-xs font-semibold text-primary hover:underline inline-flex items-center gap-1"
                               >
                                 <span>Quản lý biến thể</span>
@@ -363,7 +341,7 @@ type ToastNotification = {
 
                             @if (!tpl.variants || tpl.variants.length === 0) {
                               <div class="py-6 px-4 bg-surface border border-line rounded text-center text-xs text-muted space-y-1">
-                                <p>Mẫu sản phẩm này hiện chưa có biến thể SKU nào.</p>
+                                <p>Mẫu sản phẩm này hiện chưa có biến thể nào.</p>
                                 <a
                                   [routerLink]="['/admin/catalog/templates', tpl.id]"
                                   [fragment]="'section-variants'"
@@ -378,7 +356,7 @@ type ToastNotification = {
                                   <table class="w-full text-left text-xs border-collapse min-w-[750px]">
                                     <thead class="bg-surface-alt/70 border-b border-line text-muted font-semibold uppercase tracking-wider">
                                       <tr>
-                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã SKU</th>
+                                        <th class="py-2.5 px-3 whitespace-nowrap">Mã linh kiện</th>
                                         <th class="py-2.5 px-3 whitespace-nowrap">Nhãn Phân Loại</th>
                                         <th class="py-2.5 px-3 whitespace-nowrap">Mã Vạch</th>
                                         <th class="py-2.5 px-3 text-right whitespace-nowrap">Giá Niêm Yết</th>
@@ -432,6 +410,7 @@ type ToastNotification = {
                                             <a
                                               [routerLink]="['/admin/catalog/templates', tpl.id]"
                                               [fragment]="'section-variants'"
+                                              [queryParams]="{ variantId: v.id }"
                                               class="px-2 py-1 bg-surface-alt hover:bg-surface border border-line text-[11px] font-semibold rounded text-primary hover:text-primary-strong transition-colors"
                                               title="Xem hoặc chỉnh sửa biến thể này trên trang chi tiết"
                                             >
@@ -496,8 +475,16 @@ type ToastNotification = {
 
                   <div class="p-2.5 bg-surface-alt rounded border border-line space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
-                      <span class="text-muted">Biến thể SKU:</span>
-                      <span class="font-bold text-foreground">{{ tpl.variantCount }} SKUs</span>
+                      <span class="text-muted">Biến thể:</span>
+                      <button
+                        type="button"
+                        (click)="toggleExpand(tpl.id)"
+                        class="font-bold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        title="Xem danh sách biến thể"
+                      >
+                        <span>{{ tpl.variantCount }} biến thể</span>
+                        <lucide-icon [name]="isExpanded(tpl.id) ? 'chevron-up' : 'chevron-down'" class="w-3.5 h-3.5"></lucide-icon>
+                      </button>
                     </div>
                     <div class="flex items-center justify-between text-xs">
                       <span class="text-muted">Tồn khả dụng:</span>
@@ -511,6 +498,32 @@ type ToastNotification = {
                         [style.width.%]="tpl.totalAvailable > 0 ? 70 : 0"
                       ></div>
                     </div>
+
+                    @if (isExpanded(tpl.id) && tpl.variants && tpl.variants.length > 0) {
+                      <div class="pt-2 border-t border-line space-y-1.5 max-h-36 overflow-y-auto">
+                        @for (v of tpl.variants; track v.id) {
+                          <div class="flex items-center justify-between text-xs bg-surface p-1.5 rounded border border-line">
+                            <div class="truncate mr-2">
+                              <span class="font-mono font-bold">{{ v.sku }}</span>
+                              @if (v.variationLabel) {
+                                <span class="text-muted ml-1 text-[11px]">({{ v.variationLabel }})</span>
+                              }
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                              <span class="font-bold tabular">{{ formatPrice(v.sellingPrice) }}</span>
+                              <a
+                                [routerLink]="['/admin/catalog/templates', tpl.id]"
+                                [fragment]="'section-variants'"
+                                [queryParams]="{ variantId: v.id }"
+                                class="text-[11px] text-primary hover:underline font-semibold"
+                              >
+                                Chi tiết
+                              </a>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
 
                   <div class="flex items-center justify-end gap-2 pt-2 border-t border-line">
@@ -530,6 +543,17 @@ type ToastNotification = {
                     >
                       Chi tiết
                     </a>
+                    <button
+                      type="button"
+                      (click)="deleteTemplate(tpl)"
+                      class="p-1.5 rounded hover:bg-surface-alt text-rose-600 hover:text-rose-700 transition-colors"
+                      title="Xóa mẫu sản phẩm"
+                      aria-label="Xóa mẫu sản phẩm"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -537,34 +561,15 @@ type ToastNotification = {
           </div>
         }
 
-        <div class="flex items-center justify-between pt-4 border-t border-line text-xs text-muted">
-          <div>
-            Trang {{ page() }} / {{ totalPages() }} (Tổng số {{ total() }} mẫu sản phẩm)
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              appButton
-              variant="secondary"
-              size="sm"
-              [disabled]="page() <= 1"
-              (click)="onPageChange(page() - 1)"
-            >
-              Trang trước
-            </button>
-            <button
-              type="button"
-              appButton
-              variant="secondary"
-              size="sm"
-              [disabled]="page() >= totalPages()"
-              (click)="onPageChange(page() + 1)"
-            >
-              Trang sau
-            </button>
-          </div>
-        </div>
+        <app-admin-pagination
+          [page]="page()"
+          [total]="total()"
+          [limit]="limit()"
+          [totalPages]="totalPages()"
+          itemName="mẫu sản phẩm"
+          [isLoading]="isLoading()"
+          (pageChange)="onPageChange($event)"
+        />
       }
 
       <app-lifecycle-transition-dialog
@@ -644,6 +649,38 @@ export class AdminProductTemplatesPageComponent implements OnInit {
     const l = this.limit();
     const t = this.total();
     return l > 0 ? Math.ceil(t / l) : 1;
+  });
+
+  readonly isAllExpanded = computed(() => {
+    const list = this.templates();
+    if (list.length === 0) return false;
+    return this.expandedTemplateIds().size === list.length;
+  });
+
+  readonly pageList = computed<(number | 'ellipsis')[]>(() => {
+    const total = this.totalPages();
+    const current = this.page();
+    if (total <= 6) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages = new Set<number>();
+    pages.add(1);
+    pages.add(2);
+    if (current > 1 && current < total) {
+      pages.add(current);
+    }
+    pages.add(total - 1);
+    pages.add(total);
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    const result: (number | 'ellipsis')[] = [];
+    for (let i = 0; i < sorted.length; i++) {
+      if (i > 0 && sorted[i] - sorted[i - 1] > 1) {
+        result.push('ellipsis');
+      }
+      result.push(sorted[i]);
+    }
+    return result;
   });
 
   readonly categoryOptions = computed<SelectOption[]>(() => {
@@ -763,6 +800,14 @@ export class AdminProductTemplatesPageComponent implements OnInit {
     this.expandedTemplateIds.set(new Set());
   }
 
+  toggleAllExpansion(): void {
+    if (this.isAllExpanded()) {
+      this.collapseAll();
+    } else {
+      this.expandAll();
+    }
+  }
+
   formatPrice(value: number | string | null | undefined): string {
     if (value === null || value === undefined) {
       return '0 đ';
@@ -801,13 +846,13 @@ export class AdminProductTemplatesPageComponent implements OnInit {
   getLifecycleBadgeClass(state: ProductLifecycle): string {
     switch (state) {
       case 'ACTIVE':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 whitespace-nowrap';
       case 'DRAFT':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-surface-alt text-muted border border-line whitespace-nowrap';
       case 'PAUSED':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 whitespace-nowrap';
       case 'DISCONTINUED':
-        return 'px-2 py-0.5 rounded text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap';
+        return 'px-2 py-0.5 rounded text-xs font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-400 border border-rose-500/20 whitespace-nowrap';
     }
   }
 
