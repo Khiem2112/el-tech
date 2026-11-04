@@ -1,41 +1,104 @@
 export const DEFAULT_PRODUCT_IMAGE_PATH = '/images/products/placeholder.webp';
 
-export function resolveProductImageUrl(media: unknown): string {
+type MediaObject = {
+  url?: string;
+  thumbnail?: string;
+  src?: string;
+  is_primary?: boolean;
+  sort_order?: number;
+  [key: string]: unknown;
+};
+
+function isValidImageUrl(url: string): boolean {
+  if (!url) return false;
+  const trimmed = url.trim();
+  return (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('./')
+  );
+}
+
+export function resolveAllProductImages(media: unknown): readonly string[] {
   if (!media) {
-    return DEFAULT_PRODUCT_IMAGE_PATH;
+    return [DEFAULT_PRODUCT_IMAGE_PATH];
   }
 
   if (typeof media === 'string') {
     const trimmed = media.trim();
-    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('/')) {
-      return trimmed;
+    if (isValidImageUrl(trimmed)) {
+      return [trimmed];
     }
     try {
       const parsed = JSON.parse(trimmed);
-      return resolveProductImageUrl(parsed);
+      return resolveAllProductImages(parsed);
     } catch {
-      return DEFAULT_PRODUCT_IMAGE_PATH;
+      return [DEFAULT_PRODUCT_IMAGE_PATH];
     }
   }
 
   if (Array.isArray(media)) {
-    for (const item of media) {
-      if (typeof item === 'string' && item.trim()) {
-        return item.trim();
-      }
-      if (item && typeof item === 'object' && 'url' in item && typeof item.url === 'string' && item.url.trim()) {
-        return item.url.trim();
+    type ExtractedImage = { url: string; isPrimary: boolean; sortOrder: number; originalIndex: number };
+    const items: ExtractedImage[] = [];
+
+    for (let index = 0; index < media.length; index++) {
+      const item = media[index];
+      if (typeof item === 'string') {
+        const trimmed = item.trim();
+        if (isValidImageUrl(trimmed)) {
+          items.push({ url: trimmed, isPrimary: false, sortOrder: index, originalIndex: index });
+        }
+      } else if (item && typeof item === 'object') {
+        const obj = item as MediaObject;
+        const candidateUrl =
+          (typeof obj.url === 'string' && obj.url.trim()) ||
+          (typeof obj.thumbnail === 'string' && obj.thumbnail.trim()) ||
+          (typeof obj.src === 'string' && obj.src.trim()) ||
+          '';
+
+        if (candidateUrl && isValidImageUrl(candidateUrl)) {
+          const isPrimary = Boolean(obj.is_primary);
+          const sortOrder = typeof obj.sort_order === 'number' ? obj.sort_order : index;
+          items.push({ url: candidateUrl, isPrimary, sortOrder, originalIndex: index });
+        }
       }
     }
-    return DEFAULT_PRODUCT_IMAGE_PATH;
+
+    if (items.length > 0) {
+      items.sort((first, second) => {
+        if (first.isPrimary && !second.isPrimary) return -1;
+        if (!first.isPrimary && second.isPrimary) return 1;
+        if (first.sortOrder !== second.sortOrder) return first.sortOrder - second.sortOrder;
+        return first.originalIndex - second.originalIndex;
+      });
+
+      return items.map((item) => item.url);
+    }
+
+    return [DEFAULT_PRODUCT_IMAGE_PATH];
   }
 
-  if (typeof media === 'object' && media !== null && 'url' in media && typeof (media as { url: unknown }).url === 'string') {
-    const url = (media as { url: string }).url.trim();
-    return url || DEFAULT_PRODUCT_IMAGE_PATH;
+  if (typeof media === 'object' && media !== null) {
+    const obj = media as MediaObject;
+    const candidateUrl =
+      (typeof obj.url === 'string' && obj.url.trim()) ||
+      (typeof obj.thumbnail === 'string' && obj.thumbnail.trim()) ||
+      (typeof obj.src === 'string' && obj.src.trim()) ||
+      '';
+
+    if (candidateUrl && isValidImageUrl(candidateUrl)) {
+      return [candidateUrl];
+    }
   }
 
-  return DEFAULT_PRODUCT_IMAGE_PATH;
+  return [DEFAULT_PRODUCT_IMAGE_PATH];
+}
+
+export function resolveProductImageUrl(media: unknown): string {
+  const images = resolveAllProductImages(media);
+  return images[0] ?? DEFAULT_PRODUCT_IMAGE_PATH;
 }
 
 export function handleProductImageError(event: Event): void {
