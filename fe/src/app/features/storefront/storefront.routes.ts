@@ -21,6 +21,8 @@ export const STOREFRONT_ROUTES: Routes = [
       { path: 'login-success', redirectTo: 'dang-nhap-thanh-cong', pathMatch: 'full' },
       { path: 'chinh-sach', loadComponent: () => import('../refund/refund-page.component').then((module) => module.RefundPageComponent) },
       { path: 'refund', redirectTo: 'chinh-sach', pathMatch: 'full' },
+      { path: 'khieu-nai', redirectTo: 'chinh-sach', pathMatch: 'full' },
+      { path: 'complaints', redirectTo: 'chinh-sach', pathMatch: 'full' },
       { path: 'tai-khoan', loadComponent: () => import('../profile/profile-page.component').then((module) => module.ProfilePageComponent) },
       { path: 'profile', redirectTo: 'tai-khoan', pathMatch: 'full' },
     ],
