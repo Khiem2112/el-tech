@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+import { ApiResponse } from '../../core/api/api.types';
 import { ButtonDirective } from '../../components/atoms/button/button.directive';
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
@@ -269,6 +272,33 @@ type ComplaintItem = {
               <!-- Complaint Creation Form Tab -->
               @if (activeTab() === 'create') {
                 <form class="space-y-3.5" (ngSubmit)="submitComplaint()">
+                  @if (serverError()) {
+                    <div class="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs font-semibold leading-relaxed animate-in fade-in flex items-start gap-2">
+                      <lucide-icon name="alert-triangle" class="size-4 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
+                      <span>{{ serverError() }}</span>
+                    </div>
+                  }
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="complaintCustomerName">
+                      Họ và Tên Khách Hàng <span class="text-danger">*</span>
+                    </label>
+                    <input
+                      id="complaintCustomerName"
+                      appInput
+                      class="w-full text-sm font-medium"
+                      [class.border-rose-500]="isFormSubmitted() && !isCustomerNameValid()"
+                      [(ngModel)]="customerName"
+                      (ngModelChange)="serverError.set(null)"
+                      name="customerName"
+                      placeholder="VD: Nguyễn Văn A"
+                      required
+                    >
+                    @if (isFormSubmitted() && !isCustomerNameValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Họ và tên khách hàng phải có ít nhất 2 ký tự</p>
+                    }
+                  </div>
+
                   <div>
                     <label class="block text-xs font-bold text-foreground mb-1" for="complaintOrderId">
                       Mã Đơn Hàng <span class="text-danger">*</span>
@@ -277,11 +307,16 @@ type ComplaintItem = {
                       id="complaintOrderId"
                       appInput
                       class="w-full text-sm font-medium uppercase tabular"
+                      [class.border-rose-500]="isFormSubmitted() && !isOrderIdValid()"
                       [(ngModel)]="orderId"
+                      (ngModelChange)="serverError.set(null)"
                       name="orderId"
-                      placeholder="VD: ELT-91024"
+                      placeholder="VD: EL-20260301"
                       required
                     >
+                    @if (isFormSubmitted() && !isOrderIdValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Mã đơn hàng phải có ít nhất 3 ký tự (VD: EL-20260301)</p>
+                    }
                   </div>
 
                   <div>
@@ -292,12 +327,37 @@ type ComplaintItem = {
                       id="complaintPhone"
                       appInput
                       class="w-full text-sm font-medium tabular"
+                      [class.border-rose-500]="isFormSubmitted() && !isPhoneValid()"
                       [(ngModel)]="phone"
+                      (ngModelChange)="serverError.set(null)"
                       name="phone"
                       type="tel"
                       placeholder="VD: 0988 123 456"
                       required
                     >
+                    @if (isFormSubmitted() && !isPhoneValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Số điện thoại không đúng định dạng (gồm 10 số, bắt đầu bằng 03, 05, 07, 08, 09)</p>
+                    }
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-foreground mb-1" for="complaintEmail">
+                      Email Liên Hệ (tùy chọn)
+                    </label>
+                    <input
+                      id="complaintEmail"
+                      appInput
+                      class="w-full text-sm font-medium"
+                      [class.border-rose-500]="isFormSubmitted() && !isEmailValid()"
+                      [(ngModel)]="email"
+                      (ngModelChange)="serverError.set(null)"
+                      name="email"
+                      type="email"
+                      placeholder="VD: khachhang@gmail.com"
+                    >
+                    @if (isFormSubmitted() && !isEmailValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Địa chỉ email không đúng định dạng (VD: example@email.com)</p>
+                    }
                   </div>
 
                   <div>
@@ -309,6 +369,7 @@ type ComplaintItem = {
                       appInput
                       class="w-full text-sm font-medium tabular"
                       [(ngModel)]="serialNumber"
+                      (ngModelChange)="serverError.set(null)"
                       name="serialNumber"
                       placeholder="VD: SN-ASUS-99120"
                     >
@@ -321,10 +382,13 @@ type ComplaintItem = {
                     <app-select
                       [options]="categoryOptions"
                       [value]="category"
-                      (valueChange)="category = $event"
+                      (valueChange)="category = $event; serverError.set(null)"
                       size="sm"
                       ariaLabel="Phân Loại Khiếu Nại / Yêu Cầu"
                     />
+                    @if (isFormSubmitted() && !isCategoryValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Vui lòng chọn phân loại khiếu nại</p>
+                    }
                   </div>
 
                   <div>
@@ -335,12 +399,17 @@ type ComplaintItem = {
                       id="complaintDescription"
                       appInput
                       class="w-full text-sm font-medium resize-none"
+                      [class.border-rose-500]="isFormSubmitted() && !isDescriptionValid()"
                       rows="3"
                       [(ngModel)]="description"
+                      (ngModelChange)="serverError.set(null)"
                       name="description"
-                      placeholder="Vui lòng nêu rõ tình trạng: GPU không lên tín hiệu, yêu cầu hoàn tiền đơn hủy, sự cố giao nhận hoặc thông tin thanh toán..."
+                      placeholder="Vui lòng nêu rõ tình trạng: GPU không lên tín hiệu, quạt kêu to, yêu cầu hoàn tiền hoặc đối soát thông tin..."
                       required
                     ></textarea>
+                    @if (isFormSubmitted() && !isDescriptionValid()) {
+                      <p class="text-xs text-rose-500 mt-1 font-medium">Mô tả tình trạng kỹ thuật phải có ít nhất 10 ký tự</p>
+                    }
                   </div>
 
                   <!-- Media Upload Drag & Drop Area -->
@@ -373,7 +442,7 @@ type ComplaintItem = {
                     variant="primary"
                     size="md"
                     class="w-full cursor-pointer"
-                    [disabled]="isSubmitting() || !canSubmit()"
+                    [disabled]="isSubmitting()"
                   >
                     @if (isSubmitting()) {
                       <lucide-icon name="loader-2" class="size-4 animate-spin" aria-hidden="true"></lucide-icon>
@@ -400,6 +469,13 @@ type ComplaintItem = {
               } @else {
                 <!-- Complaint History Lookup Tab -->
                 <div class="space-y-4">
+                  @if (lookupError()) {
+                    <div class="p-3.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs font-semibold leading-relaxed flex items-start gap-2 animate-in fade-in">
+                      <lucide-icon name="alert-triangle" class="size-4 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
+                      <span>{{ lookupError() }}</span>
+                    </div>
+                  }
+
                   <div>
                     <label class="block text-xs font-bold text-foreground mb-1" for="complaintLookupInput">
                       Số điện thoại hoặc Mã đơn khiếu nại
@@ -673,8 +749,10 @@ type ComplaintItem = {
   `,
 })
 export class RefundPageComponent {
+  protected customerName = '';
   protected orderId = '';
   protected phone = '';
+  protected email = '';
   protected serialNumber = '';
   protected readonly categoryOptions: readonly SelectOption[] = [
     { value: 'warranty-defect', label: 'Đổi trả linh kiện lỗi (Bảo hành)' },
@@ -689,6 +767,9 @@ export class RefundPageComponent {
   protected readonly uploadedFiles = signal<string[]>([]);
   protected readonly isSubmitting = signal(false);
   protected readonly createdComplaintCode = signal<string | null>(null);
+  protected readonly serverError = signal<string | null>(null);
+  protected readonly lookupError = signal<string | null>(null);
+  protected readonly isFormSubmitted = signal(false);
 
   protected readonly activeTab = signal<'create' | 'lookup'>('create');
   protected lookupQuery = '';
@@ -721,12 +802,14 @@ export class RefundPageComponent {
 
   protected getComplaintStatusLabel(status: string): string {
     switch (status) {
+      case 'RECEIVED':
       case 'PENDING':
         return 'Đã tiếp nhận';
       case 'PROCESSING':
         return 'Đang xử lý ngoại tuyến';
       case 'RESOLVED':
         return 'Đã giải quyết';
+      case 'DISMISSED':
       case 'REJECTED':
         return 'Từ chối tiếp nhận';
       default:
@@ -736,12 +819,14 @@ export class RefundPageComponent {
 
   protected getComplaintStatusBadgeClass(status: string): string {
     switch (status) {
+      case 'RECEIVED':
       case 'PENDING':
         return 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
       case 'PROCESSING':
         return 'bg-primary/10 text-primary border border-primary/20';
       case 'RESOLVED':
         return 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
+      case 'DISMISSED':
       case 'REJECTED':
         return 'bg-rose-500/10 text-rose-600 border border-rose-500/20';
       default:
@@ -749,11 +834,38 @@ export class RefundPageComponent {
     }
   }
 
+  protected isCustomerNameValid(): boolean {
+    return this.customerName.trim().length >= 2;
+  }
+
+  protected isOrderIdValid(): boolean {
+    return this.orderId.trim().length >= 3;
+  }
+
+  protected isPhoneValid(): boolean {
+    return /^(0|\+84)[35789][0-9]{8}$/.test(this.phone.trim());
+  }
+
+  protected isEmailValid(): boolean {
+    return !this.email.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim());
+  }
+
+  protected isCategoryValid(): boolean {
+    return Boolean(this.category && this.category.trim());
+  }
+
+  protected isDescriptionValid(): boolean {
+    return this.description.trim().length >= 10;
+  }
+
   protected canSubmit(): boolean {
     return (
-      this.orderId.trim().length > 0 &&
-      this.phone.trim().length > 0 &&
-      this.description.trim().length > 5
+      this.isCustomerNameValid() &&
+      this.isOrderIdValid() &&
+      this.isPhoneValid() &&
+      this.isEmailValid() &&
+      this.isCategoryValid() &&
+      this.isDescriptionValid()
     );
   }
 
@@ -768,45 +880,130 @@ export class RefundPageComponent {
     }
   }
 
-  protected submitComplaint(): void {
-    if (!this.canSubmit() || this.isSubmitting()) return;
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl =
+    typeof window !== 'undefined' && window.location.port === '4200'
+      ? 'http://localhost:3000/v1/complaints'
+      : '/v1/complaints';
+
+  protected async submitComplaint(): Promise<void> {
+    this.isFormSubmitted.set(true);
+    this.serverError.set(null);
+    this.createdComplaintCode.set(null);
+
+    if (!this.canSubmit()) {
+      this.serverError.set('Vui lòng kiểm tra và sửa lại các trường thông tin chưa đúng định dạng được đánh dấu bên dưới.');
+      return;
+    }
+
     this.isSubmitting.set(true);
 
-    setTimeout(() => {
-      const complaintNumber = Math.floor(1000 + Math.random() * 9000);
-      this.createdComplaintCode.set(`KN-${complaintNumber}`);
+    const selectedCat = this.categoryOptions.find((c) => c.value === this.category);
+    const catLabel = selectedCat ? selectedCat.label : this.category;
+    const payload = {
+      orderCode: this.orderId.trim(),
+      customerName: this.customerName.trim(),
+      customerPhone: this.phone.trim(),
+      customerEmail: this.email.trim() || undefined,
+      serialNumber: this.serialNumber.trim() || undefined,
+      category: catLabel,
+      description: this.description.trim(),
+      attachments: this.uploadedFiles(),
+    };
+
+    try {
+      const res = await firstValueFrom(
+        this.http.post<ApiResponse<{ code: string }>>(this.baseUrl, payload),
+      );
+      if (res.success && res.data) {
+        this.createdComplaintCode.set(res.data.code);
+        this.customerName = '';
+        this.orderId = '';
+        this.phone = '';
+        this.email = '';
+        this.serialNumber = '';
+        this.description = '';
+        this.uploadedFiles.set([]);
+        this.isFormSubmitted.set(false);
+      } else if (!res.success) {
+        this.serverError.set(res.error.messageKey || 'Đã xảy ra lỗi khi tiếp nhận khiếu nại.');
+      }
+    } catch (err: unknown) {
+      let message = 'Không thể gửi đơn khiếu nại. Vui lòng kiểm tra lại kết nối mạng hoặc thử lại sau.';
+      if (err instanceof HttpErrorResponse && err.error) {
+        if (typeof err.error.error?.messageKey === 'string') {
+          message = err.error.error.messageKey;
+        } else if (typeof err.error.messageKey === 'string') {
+          message = err.error.messageKey;
+        } else if (typeof err.error.message === 'string') {
+          message = err.error.message;
+        }
+      }
+      this.serverError.set(message);
+    } finally {
       this.isSubmitting.set(false);
-      this.orderId = '';
-      this.phone = '';
-      this.serialNumber = '';
-      this.description = '';
-      this.uploadedFiles.set([]);
-    }, 600);
+    }
   }
 
-  protected lookupComplaintHistory(): void {
+  protected async lookupComplaintHistory(): Promise<void> {
+    this.lookupError.set(null);
     const q = this.lookupQuery.trim();
-    if (!q || this.isLoadingComplaintHistory()) return;
+    if (!q) {
+      this.lookupError.set('Vui lòng nhập số điện thoại hoặc mã đơn khiếu nại để tra cứu.');
+      return;
+    }
+
+    if (q.length < 3) {
+      this.lookupError.set('Từ khóa tra cứu phải có ít nhất 3 ký tự.');
+      return;
+    }
+
     this.isLoadingComplaintHistory.set(true);
     this.complaintHistorySearched.set(true);
 
-    setTimeout(() => {
-      this.isLoadingComplaintHistory.set(false);
-      if (q === '0988123456' || q === '0912345678' || q.startsWith('KN-') || q.startsWith('TK-') || q.startsWith('ELT-')) {
-        this.complaints.set([
-          {
-            code: q.startsWith('KN-') ? q : 'KN-8412',
-            orderId: 'ELT-91024',
-            category: 'Đổi trả linh kiện lỗi (Bảo hành)',
-            status: 'PROCESSING',
-            createdAt: '24/10/2026',
-            note: 'Chuyên viên kỹ thuật đang kiểm định lỗi quạt tản nhiệt GPU tại Showroom EL-TECH và liên hệ xử lý ngoại tuyến.',
-          },
-        ]);
+    try {
+      const res = await firstValueFrom(
+        this.http.get<ApiResponse<readonly {
+          code: string;
+          orderCode: string | null;
+          category: string;
+          status: string;
+          createdAt: string;
+          resolutionNote: string | null;
+          description: string;
+        }[]>>(`${this.baseUrl}/lookup`, {
+          params: { query: q },
+        }),
+      );
+
+      if (res.success && res.data && res.data.length > 0) {
+        this.complaints.set(
+          res.data.map((item) => ({
+            code: item.code,
+            orderId: item.orderCode || 'Không có',
+            category: item.category,
+            status: item.status,
+            createdAt: new Date(item.createdAt).toLocaleDateString('vi-VN'),
+            note: item.resolutionNote || item.description,
+          })),
+        );
       } else {
         this.complaints.set([]);
       }
-    }, 600);
+    } catch (err: unknown) {
+      let message = 'Lỗi tra cứu thông tin khiếu nại. Vui lòng kiểm tra lại kết nối mạng.';
+      if (err instanceof HttpErrorResponse && err.error) {
+        if (typeof err.error.error?.messageKey === 'string') {
+          message = err.error.error.messageKey;
+        } else if (typeof err.error.messageKey === 'string') {
+          message = err.error.messageKey;
+        }
+      }
+      this.lookupError.set(message);
+      this.complaints.set([]);
+    } finally {
+      this.isLoadingComplaintHistory.set(false);
+    }
   }
 
   protected toggleFaq(index: number): void {

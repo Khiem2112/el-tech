@@ -171,6 +171,13 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
+        path: 'complaints',
+        loadComponent: () =>
+          import('./complaints/admin-complaints-page.component').then(
+            (module) => module.AdminComplaintsPageComponent,
+          ),
+      },
+      {
         path: 'promotions',
         loadComponent: () =>
           import('./promotions/admin-product-promotions-page.component').then(

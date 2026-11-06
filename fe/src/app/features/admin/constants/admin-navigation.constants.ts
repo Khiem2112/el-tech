@@ -145,6 +145,13 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         fullPath: '/admin/reviews',
         module: 'Khách Hàng & Đánh Giá',
       },
+      {
+        code: 'SCR-29',
+        title: 'Quản Lý Khiếu Nại',
+        route: 'complaints',
+        fullPath: '/admin/complaints',
+        module: 'Khách Hàng & Đánh Giá',
+      },
     ],
   },
   {

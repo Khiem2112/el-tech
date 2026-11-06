@@ -304,6 +304,7 @@ model Customer {
   couponRedemptions CouponRedemption[]
   reviews           Review[]
   notifications     Notification[]
+  complaints        Complaint[]
 
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -701,6 +702,7 @@ model Order {
   reviews           Review[]
   verifications     Verification[]
   notifications     Notification[]
+  complaints        Complaint[]
 
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -1194,4 +1196,44 @@ model Notification {
   @@index([orderId, createdAt])
   @@index([publishedAt, createdAt])
   @@map("notification")
+}
+
+enum ComplaintStatus {
+  RECEIVED
+  PROCESSING
+  RESOLVED
+  DISMISSED
+}
+
+model Complaint {
+  id             String          @id @default(uuid()) @db.Uuid
+  code           String          @unique
+  customerId     String?         @map("customer_id") @db.Uuid
+  customerName   String          @map("customer_name")
+  customerPhone  String          @map("customer_phone")
+  customerEmail  String?         @map("customer_email")
+  orderId        String?         @map("order_id") @db.Uuid
+  orderCode      String?         @map("order_code")
+  serialNumber   String?         @map("serial_number")
+  category       String
+  status         ComplaintStatus @default(RECEIVED)
+  title          String?
+  description    String          @db.Text
+  resolutionNote String?         @map("resolution_note") @db.Text
+  resolvedAt     DateTime?       @map("resolved_at") @db.Timestamptz(3)
+  resolvedBy     String?         @map("resolved_by")
+  attachments    Json            @default("[]") @db.JsonB
+
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  order    Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull)
+
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, isActive])
+  @@index([customerPhone])
+  @@index([orderCode])
+  @@index([createdAt])
+  @@map("complaint")
 }
