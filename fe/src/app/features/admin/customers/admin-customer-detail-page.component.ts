@@ -74,11 +74,7 @@ type ToastNotification = {
                 <span class="truncate">ID: {{ cust.id }}</span>
               </button>
 
-              @if (cust.mergedIntoCustomerId) {
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 uppercase tracking-wide whitespace-nowrap">
-                  Đã Gộp Hồ Sơ
-                </span>
-              } @else if (cust.isRegistered) {
+              @if (cust.isRegistered) {
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary/10 text-primary-strong border border-primary/30 uppercase tracking-wide whitespace-nowrap">
                   Thành Viên Chính Thức
                 </span>
@@ -129,7 +125,7 @@ type ToastNotification = {
           </div>
         }
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <div
             class="p-3 bg-surface border rounded transition-colors"
             [ngClass]="activeTab() === 'orders' ? 'border-primary' : 'border-line'"
@@ -177,15 +173,6 @@ type ToastNotification = {
               <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
                 Đánh Giá SP
               </div>
-            </div>
-          </div>
-
-          <div class="p-3 bg-surface border border-line rounded">
-            <div class="text-xl font-bold text-amber-600 dark:text-amber-400 tabular-nums">
-              {{ cust.stats.mergedCount }}
-            </div>
-            <div class="text-xs font-semibold text-muted uppercase tracking-wider mt-0.5">
-              Hồ Sơ Đã Gộp
             </div>
           </div>
         </div>

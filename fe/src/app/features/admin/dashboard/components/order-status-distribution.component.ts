@@ -9,6 +9,7 @@ import { OrderStatusDistributionData } from '../services/admin-dashboard.service
   standalone: true,
   imports: [CommonModule, RouterModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
     <div class="bg-surface border border-line rounded-lg overflow-hidden">
       <div class="p-4 border-b border-line flex items-center justify-between flex-wrap gap-2">

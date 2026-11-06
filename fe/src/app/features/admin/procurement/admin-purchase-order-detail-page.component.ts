@@ -443,8 +443,9 @@ type ToastMessage = {
                             <div class="text-[11px] text-muted truncate">{{ v.productTemplate.name }}</div>
                           </div>
                           <div class="text-right flex-shrink-0">
-                            <span class="text-primary text-xs font-bold tabular-nums">
-                              {{ formatCurrency(v.sellingPrice) }} ₫
+                            <span class="text-primary text-xs font-bold tabular-nums whitespace-nowrap inline-flex items-baseline gap-0.5">
+                              <span>{{ formatCurrency(v.sellingPrice) }}</span>
+                              <span>đ</span>
                             </span>
                             @if (v.serialRequired) {
                               <div class="text-[10px] text-blue-600 font-semibold">Cần Serial</div>
@@ -466,7 +467,7 @@ type ToastMessage = {
                   <th class="py-2.5 px-4 w-12 text-center">Ảnh</th>
                   <th class="py-2.5 px-4">Mã linh kiện</th>
                   <th class="py-2.5 px-4">Tên Linh Kiện</th>
-                  <th class="py-2.5 px-4 text-center w-24">Số Lượng</th>
+                  <th class="py-2.5 px-4 text-center w-20">Số Lượng</th>
                   <th class="py-2.5 px-4 text-right w-32">Đơn Giá WAC</th>
                   <th class="py-2.5 px-4 text-right">Thành Tiền</th>
                   @if (isNew() || order()?.status === 'DRAFT') {
@@ -505,14 +506,14 @@ type ToastMessage = {
                       <td class="py-2.5 px-4 font-semibold text-foreground">
                         {{ line.name }}
                       </td>
-                      <td class="py-2.5 px-4 text-center w-24">
+                      <td class="py-2.5 px-4 text-center w-20">
                         @if (isNew() || order()?.status === 'DRAFT') {
                           <input
                             type="number"
                             min="1"
                             [ngModel]="line.quantity"
                             (ngModelChange)="onLineQuantityChange(line.skuId, $event)"
-                            class="w-20 px-2 py-1 bg-white border border-line rounded text-center font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
+                            class="w-14 h-8 px-1 mx-auto block bg-white border border-line rounded text-center font-bold text-foreground text-xs focus:outline-none focus:border-primary tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                         } @else {
                           <span class="font-bold text-foreground tabular-nums text-sm">
@@ -530,13 +531,17 @@ type ToastMessage = {
                             class="w-28 px-2 py-1 bg-white border border-line rounded text-right font-bold text-foreground text-sm focus:outline-none focus:border-primary tabular-nums"
                           />
                         } @else {
-                          <span class="text-foreground tabular-nums tabular">
-                            {{ formatCurrency(line.agreedUnitCost) }} ₫
+                          <span class="text-foreground tabular-nums tabular whitespace-nowrap inline-flex items-baseline gap-1">
+                            <span>{{ formatCurrency(line.agreedUnitCost) }}</span>
+                            <span>đ</span>
                           </span>
                         }
                       </td>
-                      <td class="py-2.5 px-4 text-right font-bold tabular-nums text-primary text-sm">
-                        {{ formatCurrency(line.lineTotal) }} ₫
+                      <td class="py-2.5 px-4 text-right font-bold tabular-nums text-primary text-sm whitespace-nowrap">
+                        <span class="inline-flex items-baseline gap-1">
+                          <span>{{ formatCurrency(line.lineTotal) }}</span>
+                          <span>đ</span>
+                        </span>
                       </td>
                       @if (isNew() || order()?.status === 'DRAFT') {
                         <td class="py-2.5 px-4 text-center">
@@ -563,10 +568,11 @@ type ToastMessage = {
             <div class="text-muted">
               Tổng số lượng: <strong class="text-foreground tabular tabular-nums">{{ totalOrderedQuantity() }}</strong> chiếc
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2.5 whitespace-nowrap">
               <span class="text-muted font-medium">Tổng Giá Trị Đơn Hàng:</span>
-              <span class="text-base font-black tabular tabular-nums text-primary">
-                {{ formatCurrency(calculatedTotalAmount()) }} ₫
+              <span class="text-base font-black tabular tabular-nums text-primary inline-flex items-baseline gap-1 whitespace-nowrap">
+                <span>{{ formatCurrency(calculatedTotalAmount()) }}</span>
+                <span>đ</span>
               </span>
             </div>
           </div>

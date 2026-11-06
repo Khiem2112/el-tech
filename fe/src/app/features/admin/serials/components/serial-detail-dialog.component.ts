@@ -256,10 +256,8 @@ export class SerialDetailDialogComponent {
   readonly statusAdjustmentOptions: SelectOption[] = [
     { value: 'AVAILABLE', label: 'Trong kho (Khả dụng)' },
     { value: 'RESERVED', label: 'Đã gán xuất kho' },
-    { value: 'IN_TRANSIT', label: 'Đang điều chuyển' },
     { value: 'ISSUED', label: 'Đã xuất bán' },
     { value: 'QUARANTINED', label: 'Cách ly lỗi' },
-    { value: 'RETURNED_TO_SUPPLIER', label: 'Xuất trả nhà cung cấp' },
   ];
 
   onClose(): void {

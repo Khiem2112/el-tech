@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { LowStockAlertCardComponent } from './components/low-stock-alert-card.component';
 import { OrderStatusDistributionComponent } from './components/order-status-distribution.component';
 import { SmartBiAnalyticsCardsComponent } from './components/smart-bi-analytics-cards.component';
@@ -12,7 +11,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
     UrgentQueuesGridComponent,
     SmartBiAnalyticsCardsComponent,
     OrderStatusDistributionComponent,
@@ -20,7 +18,7 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="w-full min-h-full p-4 lg:p-6 space-y-6 text-sm text-foreground bg-canvas">
+    <div class="w-full min-h-full p-4 lg:p-6 space-y-5 text-sm text-foreground bg-canvas">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-line">
         <div>
           <h1 class="text-xl font-bold text-foreground tracking-tight uppercase">
@@ -32,12 +30,6 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap">
-          <a
-            routerLink="/admin/procurement/purchase-orders/new"
-            class="px-3.5 py-1.5 bg-primary hover:bg-primary-strong text-primary-foreground rounded font-semibold text-xs transition-colors shadow-xs"
-          >
-            Tạo đơn mua hàng
-          </a>
           <button
             type="button"
             (click)="onRefresh()"
@@ -68,24 +60,28 @@ import { AdminDashboardService } from './services/admin-dashboard.service';
           <p class="text-xs">Đang tải dữ liệu trung tâm vận hành...</p>
         </div>
       } @else {
-
-        <app-urgent-queues-grid
-          [urgentQueues]="dashboardService.urgentQueues()"
-          [selectedBranchId]="dashboardService.selectedBranchId()"
-        />
-
-        <app-smart-bi-analytics-cards />
-
-        <app-order-status-distribution
-          [distribution]="dashboardService.orderDistribution()"
-          [selectedBranchId]="dashboardService.selectedBranchId()"
-        />
-
-        <div class="grid grid-cols-1 gap-6">
-          <app-low-stock-alert-card
-            [alerts]="dashboardService.lowStockAlerts()"
+        <div class="flex flex-col gap-4 lg:gap-5">
+          <app-urgent-queues-grid
+            class="block"
+            [urgentQueues]="dashboardService.urgentQueues()"
             [selectedBranchId]="dashboardService.selectedBranchId()"
           />
+
+          <app-smart-bi-analytics-cards class="block" />
+
+          <app-order-status-distribution
+            class="block"
+            [distribution]="dashboardService.orderDistribution()"
+            [selectedBranchId]="dashboardService.selectedBranchId()"
+          />
+
+          <div class="block">
+            <app-low-stock-alert-card
+              class="block"
+              [alerts]="dashboardService.lowStockAlerts()"
+              [selectedBranchId]="dashboardService.selectedBranchId()"
+            />
+          </div>
         </div>
       }
     </div>

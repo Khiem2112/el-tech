@@ -8,8 +8,9 @@ import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
   standalone: true,
   imports: [CommonModule, RouterModule, AppIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
-    <div class="space-y-3">
+    <div class="space-y-2.5">
       <div class="flex items-center justify-between">
         <h2 class="text-xs font-bold uppercase tracking-wider text-muted">
           Báo Cáo &amp; Phân Tích
@@ -49,8 +50,9 @@ import { AppIconModule } from '../../../../components/atoms/icon/icon.module';
             </span>
             <span class="text-xs font-bold text-primary tabular-nums">+8.6%</span>
           </div>
-          <div class="text-2xl font-bold text-foreground mt-2 tabular-nums whitespace-nowrap">
-            62% Bán Lẻ / 38% PC Build
+          <div class="text-xl font-bold text-foreground mt-2 tabular-nums leading-tight space-y-0.5">
+            <div>62% Bán Lẻ</div>
+            <div>38% PC Build</div>
           </div>
           <div class="text-xs text-muted mt-1 tabular-nums">
             VGA &amp; CPU dẫn đầu &bull; ASUS đóng góp 21.4%

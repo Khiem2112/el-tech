@@ -7,8 +7,9 @@ import { UrgentQueuesData } from '../services/admin-dashboard.service';
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'block' },
   template: `
-    <div class="space-y-3">
+    <div class="space-y-2.5">
       <div class="flex items-center justify-between">
         <h2 class="text-xs font-bold uppercase tracking-wider text-muted">
           Hàng Đợi Khẩn Cấp
