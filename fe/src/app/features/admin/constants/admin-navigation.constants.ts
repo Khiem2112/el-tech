@@ -125,13 +125,6 @@ export const ADMIN_NAV_GROUPS: readonly AdminNavGroup[] = [
         fullPath: '/admin/procurement/purchase-orders',
         module: 'Mua Hàng & Nhà Cung Cấp',
       },
-      {
-        code: 'SCR-22',
-        title: 'Trả Hàng Nhà Cung Cấp',
-        route: 'procurement/supplier-returns',
-        fullPath: '/admin/procurement/supplier-returns',
-        module: 'Mua Hàng & Nhà Cung Cấp',
-      },
     ],
   },
   {

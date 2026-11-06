@@ -150,13 +150,6 @@ export const ADMIN_ROUTES: Routes = [
           ),
       },
       {
-        path: 'procurement/supplier-returns',
-        loadComponent: () =>
-          import('./procurement/admin-supplier-returns-page.component').then(
-            (module) => module.AdminSupplierReturnsPageComponent,
-          ),
-      },
-      {
         path: 'customers',
         loadComponent: () =>
           import('./customers/admin-customers-page.component').then(

@@ -89,15 +89,6 @@ import { AdminSerialService, SerialDetailResponse } from './services/admin-seria
 
         <button
           type="button"
-          (click)="filterByStatus('IN_TRANSIT')"
-          class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
-          [ngClass]="activeStatus() === 'IN_TRANSIT' ? 'bg-sky-700 text-white border-sky-700 font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"
-        >
-          Đang chuyển ({{ summary().inTransitCount }})
-        </button>
-
-        <button
-          type="button"
           (click)="filterByStatus('ISSUED')"
           class="px-3 py-1.5 rounded-lg border font-semibold whitespace-nowrap transition-colors"
           [ngClass]="activeStatus() === 'ISSUED' ? 'bg-surface-alt text-foreground border-line font-bold' : 'bg-surface border-line text-foreground hover:bg-surface-alt'"

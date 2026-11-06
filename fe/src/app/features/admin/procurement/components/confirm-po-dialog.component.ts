@@ -63,8 +63,9 @@ import { PurchaseOrderDetail } from '../services/admin-purchase-order.service';
             </div>
             <div class="flex justify-between items-center text-muted pt-2 border-t border-line">
               <span class="font-semibold text-foreground">Tổng giá trị đơn:</span>
-              <strong class="text-primary text-sm tabular-nums tabular font-bold">
-                {{ formatCurrency(po.totalAmount) }} ₫
+              <strong class="text-primary text-sm tabular-nums tabular font-bold whitespace-nowrap inline-flex items-baseline gap-1">
+                <span>{{ formatCurrency(po.totalAmount) }}</span>
+                <span>đ</span>
               </strong>
             </div>
           </div>
