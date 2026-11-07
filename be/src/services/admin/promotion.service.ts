@@ -433,7 +433,7 @@ export class AdminPromotionService {
         data: updateData,
       });
 
-      if (input.scope === 'SKU' || input.skuIds !== undefined) {
+      if (input.scope === 'SKU' || (input.scope === undefined && input.skuIds !== undefined)) {
         await tx.promotionCategory.deleteMany({ where: { promotionId: id } });
         await tx.promotionSku.deleteMany({ where: { promotionId: id } });
 
@@ -446,7 +446,7 @@ export class AdminPromotionService {
             })),
           });
         }
-      } else if (input.scope === 'CATEGORY' || input.categoryIds !== undefined) {
+      } else if (input.scope === 'CATEGORY' || (input.scope === undefined && input.categoryIds !== undefined)) {
         await tx.promotionSku.deleteMany({ where: { promotionId: id } });
         await tx.promotionCategory.deleteMany({ where: { promotionId: id } });
 

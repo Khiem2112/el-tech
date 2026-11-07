@@ -12,6 +12,7 @@ export type SwapItem = {
   readonly category: string;
   readonly price: number;
   readonly tdp: number;
+  readonly wattage?: number;
   readonly specs: string;
   readonly tag?: string;
   readonly imageUrl?: string;
@@ -99,6 +100,58 @@ const CATEGORY_SPEC_CONFIG: Record<string, readonly SpecFieldDefinition[]> = {
     { key: 'form_factor_support', label: 'Hỗ trợ Mainboard' },
     { key: 'fan_included_count', label: 'Số quạt sẵn', unit: 'quạt' },
   ],
+  monitor: [
+    { key: 'screen_size', label: 'Kích thước màn hình', unit: 'inch' },
+    { key: 'resolution', label: 'Độ phân giải' },
+    { key: 'refresh_rate', label: 'Tần số quét', unit: 'Hz' },
+    { key: 'panel_type', label: 'Tấm nền' },
+  ],
+  'man-hinh': [
+    { key: 'screen_size', label: 'Kích thước màn hình', unit: 'inch' },
+    { key: 'resolution', label: 'Độ phân giải' },
+    { key: 'refresh_rate', label: 'Tần số quét', unit: 'Hz' },
+    { key: 'panel_type', label: 'Tấm nền' },
+  ],
+  keyboard: [
+    { key: 'keyboard_type', label: 'Loại bàn phím' },
+    { key: 'switch_type', label: 'Loại Switch' },
+    { key: 'layout', label: 'Bố cục phím' },
+    { key: 'connectivity', label: 'Kiểu kết nối' },
+  ],
+  'ban-phim': [
+    { key: 'keyboard_type', label: 'Loại bàn phím' },
+    { key: 'switch_type', label: 'Loại Switch' },
+    { key: 'layout', label: 'Bố cục phím' },
+    { key: 'connectivity', label: 'Kiểu kết nối' },
+  ],
+  mouse: [
+    { key: 'max_dpi', label: 'Độ nhạy tối đa', unit: 'DPI' },
+    { key: 'connectivity', label: 'Kiểu kết nối' },
+    { key: 'weight', label: 'Trọng lượng', unit: 'g' },
+  ],
+  'chuot-may-tinh': [
+    { key: 'max_dpi', label: 'Độ nhạy tối đa', unit: 'DPI' },
+    { key: 'connectivity', label: 'Kiểu kết nối' },
+    { key: 'weight', label: 'Trọng lượng', unit: 'g' },
+  ],
+  headphone: [
+    { key: 'headphone_type', label: 'Kiểu dáng tai nghe' },
+    { key: 'connectivity', label: 'Chuẩn kết nối' },
+    {
+      key: 'noise_cancelling',
+      label: 'Chống ồn ANC',
+      formatValue: (v) => (String(v).toLowerCase() === 'true' || v === true ? 'Có ANC' : 'Không ANC'),
+    },
+  ],
+  'tai-nghe': [
+    { key: 'headphone_type', label: 'Kiểu dáng tai nghe' },
+    { key: 'connectivity', label: 'Chuẩn kết nối' },
+    {
+      key: 'noise_cancelling',
+      label: 'Chống ồn ANC',
+      formatValue: (v) => (String(v).toLowerCase() === 'true' || v === true ? 'Có ANC' : 'Không ANC'),
+    },
+  ],
 };
 
 function extractItemSpec(item: SwapItem, key: string): string | undefined {
@@ -108,7 +161,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
   if (raw === undefined || raw === null || raw === '') {
     if (key === 'socket') raw = item.socket;
     else if (key === 'memory_type' || key === 'ram_type') raw = item.memoryType || common?.['ram_type'] || common?.['memory_type'];
-    else if (key === 'wattage' && (item.category === 'psu' || item.category === 'nguon')) raw = item.tdp || common?.['wattage'];
+    else if (key === 'wattage') raw = item.wattage || item.tdp || common?.['wattage'];
     else if (key === 'tdp' || key === 'tdp_support') raw = item.tdp || common?.['tdp'] || common?.['tdp_support'];
   }
 
@@ -339,7 +392,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                 </div>
                 <div class="flex items-center justify-between gap-3 flex-wrap sm:flex-nowrap">
                   <div class="flex items-center gap-3 min-w-0 flex-1">
-                    <div class="size-12 rounded-lg bg-surface border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                    <div class="size-14 sm:size-16 rounded-xl bg-surface border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
                       <img
                         [src]="current.imageUrl || '/images/products/placeholder.webp'"
                         [alt]="current.name"
@@ -395,7 +448,7 @@ function extractItemSpec(item: SwapItem, key: string): string | undefined {
                   @for (item of filteredItems(); track item.id) {
                     <div class="p-3.5 rounded-xl bg-surface border border-line hover:border-primary/50 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
                       <div class="flex items-center gap-3 flex-1 min-w-0">
-                        <div class="size-14 rounded-lg bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                        <div class="size-16 sm:size-20 rounded-xl bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
                           <img
                             [src]="item.imageUrl || '/images/products/placeholder.webp'"
                             [alt]="item.name"
@@ -772,8 +825,9 @@ export class ComponentSwapModalComponent {
       }
     }
 
-    if (this.categoryKey === 'psu' && typeof item.tdp === 'number' && this.minPsuWattage > 0) {
-      if (item.tdp < this.minPsuWattage) {
+    if (this.categoryKey === 'psu' && this.minPsuWattage > 0) {
+      const psuWattage = item.wattage ?? item.tdp;
+      if (typeof psuWattage === 'number' && psuWattage < this.minPsuWattage) {
         return { isCompatible: false, label: `Khuyến nghị tối thiểu ${this.minPsuWattage}W` };
       }
     }

@@ -558,9 +558,13 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       @if (totalPages() > 1) {
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
           <div class="text-xs text-muted">
-            Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
-            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), total()) }}</span>
-            trong tổng số <span class="font-bold text-foreground tabular">{{ total() }}</span> linh kiện
+            @if (total() === 0) {
+              Hiển thị 0 trong tổng số 0 linh kiện
+            } @else {
+              Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
+              <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), total()) }}</span>
+              trong tổng số <span class="font-bold text-foreground tabular">{{ total() }}</span> linh kiện
+            }
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -743,7 +747,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm">
+        <a routerLink="/tu-lap-pc" appButton variant="primary" size="sm">
           Đến PC Builder
         </a>
         <button type="button" (click)="buildNotification.set(null)" class="text-muted hover:text-foreground p-1 cursor-pointer">
@@ -951,6 +955,7 @@ export class CatalogPageComponent {
       }
       return next;
     });
+    this.currentPage.set(1);
     this.search();
   }
 
@@ -1108,10 +1113,12 @@ export class CatalogPageComponent {
       name: product.name,
       categorySlug: product.category.slug,
       categoryName: product.category.name,
+      brand: product.brand?.name || 'EL-TECH',
       price: product.variants[0]?.sellingPrice || '0',
       skuId: product.variants[0]?.id || 0,
       media: product.media,
       model: product.model,
+      specs: product.model || product.name,
     };
     try {
       sessionStorage.setItem('el-tech.pending-pc-build-item', JSON.stringify(item));
@@ -1160,6 +1167,12 @@ export class CatalogPageComponent {
         page: this.currentPage(),
         limit: this.pageSize,
       });
+
+      if (result.totalPages > 0 && this.currentPage() > result.totalPages) {
+        this.setPage(1);
+        return;
+      }
+
       this.products.set(result.items);
       this.total.set(result.total);
       this.totalPages.set(result.totalPages);
@@ -1170,7 +1183,10 @@ export class CatalogPageComponent {
     }
   }
 
-  protected search(): void {
+  protected search(resetPage = true): void {
+    if (resetPage) {
+      this.currentPage.set(1);
+    }
     const specParams: Record<string, string | null> = {};
     for (const [key, val] of Object.entries(this.selectedSpecs())) {
       if (val) {
@@ -1183,7 +1199,7 @@ export class CatalogPageComponent {
         q: this.query.trim() || null,
         category: this.category() || null,
         brand: this.brand() || null,
-                stockStatus: this.stockStatus() || null,
+        stockStatus: this.stockStatus() || null,
         minPrice: this.minPrice() !== null ? this.minPrice() : null,
         maxPrice: this.maxPrice() !== null ? this.maxPrice() : null,
         sort: this.sort() || null,

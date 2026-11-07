@@ -11,6 +11,7 @@ type BuildLine = {
   unitPrice: string;
   lineTotal: string;
   specs: string;
+  imageUrl?: string;
   socket?: string;
   memoryType?: string;
   tdp?: number;
@@ -26,6 +27,7 @@ export type ComponentItemDto = {
   category: string;
   price: number;
   tdp: number;
+  wattage?: number;
   specs: string;
   tag?: string;
   imageUrl?: string;
@@ -34,6 +36,41 @@ export type ComponentItemDto = {
   lengthMm?: number;
   stockStatus: string;
   commonSpec?: Record<string, unknown>;
+};
+
+const mapCategoryToCanonical = (slug: string): string => {
+  if (slug === 'tan-nhiet') return 'cooling';
+  if (slug === 'man-hinh') return 'monitor';
+  if (slug === 'ban-phim') return 'keyboard';
+  if (slug === 'chuot-may-tinh') return 'mouse';
+  if (slug === 'tai-nghe') return 'headphone';
+  return slug;
+};
+
+const extractImageUrl = (media: unknown): string | undefined => {
+  if (!media) return undefined;
+  if (Array.isArray(media) && media.length > 0) {
+    const primary = media.find((item) => item && typeof item === 'object' && item.is_primary);
+    const chosen = primary || media[0];
+    if (typeof chosen === 'string' && chosen.trim()) return chosen.trim();
+    if (chosen && typeof chosen === 'object' && 'url' in chosen && typeof chosen.url === 'string') {
+      return chosen.url.trim();
+    }
+  }
+  if (typeof media === 'string') {
+    const trimmed = media.trim();
+    if (trimmed.startsWith('http') || trimmed.startsWith('/')) return trimmed;
+    try {
+      const parsed = JSON.parse(trimmed);
+      return extractImageUrl(parsed);
+    } catch {
+      return undefined;
+    }
+  }
+  if (typeof media === 'object' && media !== null && 'url' in media && typeof (media as Record<string, unknown>).url === 'string') {
+    return (media as Record<string, unknown>).url as string;
+  }
+  return undefined;
 };
 
 const extractSpecString = (commonSpec: unknown): string => {
@@ -55,6 +92,7 @@ const serializeLines = (
       productTemplate: {
         name: string;
         commonSpec: Prisma.JsonValue;
+        media?: Prisma.JsonValue;
         category: { slug: string };
       };
     };
@@ -66,11 +104,12 @@ const serializeLines = (
       skuId: line.skuId,
       sku: line.sku.sku,
       name: line.sku.productTemplate.name,
-      category: line.sku.productTemplate.category.slug === 'tan-nhiet' ? 'cooling' : line.sku.productTemplate.category.slug,
+      category: mapCategoryToCanonical(line.sku.productTemplate.category.slug),
       quantity: line.quantity,
       unitPrice: line.sku.sellingPrice.toFixed(0),
       lineTotal: line.sku.sellingPrice.mul(line.quantity).toFixed(0),
       specs: extractSpecString(line.sku.productTemplate.commonSpec),
+      imageUrl: extractImageUrl(line.sku.productTemplate.media),
       socket: typeof spec.socket === 'string' ? spec.socket : undefined,
       memoryType: typeof spec.ram_type === 'string' ? spec.ram_type : undefined,
       tdp: typeof spec.tdp === 'number' ? spec.tdp : undefined,
@@ -145,10 +184,28 @@ export const pcBuildService = {
 
     const slugMap: Record<string, string> = {
       cooling: 'tan-nhiet',
+      monitor: 'man-hinh',
+      keyboard: 'ban-phim',
+      mouse: 'chuot-may-tinh',
+      headphone: 'tai-nghe',
+      headset: 'tai-nghe',
     };
     const resolvedSlug = categorySlug ? slugMap[categorySlug] || categorySlug : undefined;
 
-    const pcBuilderCategorySlugs = ['cpu', 'mainboard', 'ram', 'ssd', 'vga', 'psu', 'tan-nhiet', 'case'];
+    const pcBuilderCategorySlugs = [
+      'cpu',
+      'mainboard',
+      'ram',
+      'ssd',
+      'vga',
+      'psu',
+      'tan-nhiet',
+      'case',
+      'man-hinh',
+      'ban-phim',
+      'chuot-may-tinh',
+      'tai-nghe',
+    ];
 
     const variants = await prisma.productVariant.findMany({
       where: {
@@ -189,14 +246,24 @@ export const pcBuildService = {
     let result = variants.map((variant): ComponentItemDto => {
       const template = variant.productTemplate;
       const spec = (template.commonSpec as Record<string, unknown>) || {};
-      const catSlug = template.category.slug === 'tan-nhiet' ? 'cooling' : template.category.slug;
+      const catSlug = mapCategoryToCanonical(template.category.slug);
+
+      const rawWattage = spec.wattage ?? spec.power_consumption;
+      const specWattage = typeof rawWattage === 'number' ? rawWattage
+        : (rawWattage && !Number.isNaN(Number(rawWattage))) ? Number(rawWattage)
+        : undefined;
+
+      const rawTdp = spec.tdp;
+      const specTdp = typeof rawTdp === 'number' ? rawTdp
+        : (rawTdp && !Number.isNaN(Number(rawTdp))) ? Number(rawTdp)
+        : undefined;
 
       let tag: string | undefined;
       if (typeof spec.socket === 'string') tag = `Socket ${spec.socket}`;
       else if (typeof spec.form_factor === 'string') tag = spec.form_factor;
       else if (typeof spec.ram_type === 'string') tag = spec.ram_type;
-      else if (typeof spec.wattage === 'number') tag = `${spec.wattage}W`;
-      else if (typeof spec.tdp === 'number') tag = `TDP ${spec.tdp}W`;
+      else if (specWattage !== undefined) tag = `${specWattage}W`;
+      else if (specTdp !== undefined) tag = `TDP ${specTdp}W`;
 
       return {
         id: `sku-${variant.id}`,
@@ -205,9 +272,11 @@ export const pcBuildService = {
         brand: template.brand?.name || 'EL-TECH',
         category: catSlug,
         price: Number(variant.sellingPrice),
-        tdp: typeof spec.tdp === 'number' ? spec.tdp : 45,
+        tdp: catSlug === 'psu' ? (specWattage ?? 650) : (specTdp ?? specWattage ?? 45),
+        wattage: specWattage,
         specs: extractSpecString(template.commonSpec),
         tag,
+        imageUrl: extractImageUrl(template.media),
         socket: typeof spec.socket === 'string' ? spec.socket : undefined,
         memoryType: typeof spec.ram_type === 'string' ? spec.ram_type : undefined,
         lengthMm: typeof spec.length_mm === 'number' ? spec.length_mm : undefined,
@@ -225,7 +294,7 @@ export const pcBuildService = {
           if (actual === undefined || actual === null) {
             if (key === 'socket') actual = item.socket;
             else if (key === 'memory_type' || key === 'ram_type') actual = item.memoryType;
-            else if (key === 'wattage' && item.category === 'psu') actual = item.tdp;
+            else if (key === 'wattage') actual = item.wattage ?? item.tdp;
           }
           if (actual === undefined || actual === null) return false;
           const actualStr = String(actual).trim().toLowerCase();

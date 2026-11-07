@@ -83,6 +83,7 @@ type Bundle = { id: number; name: string; slug: string; description: string | nu
                   </button>
                   <a
                     routerLink="/tu-lap-pc"
+                    [queryParams]="{ bundle: bundle.id }"
                     appButton
                     variant="secondary"
                     size="md"
