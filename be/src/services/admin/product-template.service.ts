@@ -9,6 +9,7 @@ import {
   UpdateProductTemplateInput,
   UpdateProductVariantInput,
 } from '../../validations/admin/product-template.schema.js';
+import { SpecAttribute } from '../../validations/admin/category.schema.js';
 import { normalizeSpecSchema } from './category.service.js';
 import { adminProductVariantService, ProductVariantRecordDto } from './product-variant.service.js';
 
@@ -178,6 +179,70 @@ export type ProductTemplateRecordDto = {
 };
 
 export class AdminProductTemplateService {
+  private async resolveCategorySpecificationSchema(category: {
+    id: number;
+    parentId?: number | null;
+    specificationSchema: unknown;
+  }): Promise<SpecAttribute[]> {
+    let specSchemaRaw = category.specificationSchema;
+    if (
+      Array.isArray(specSchemaRaw) &&
+      specSchemaRaw.length === 0 &&
+      category.parentId
+    ) {
+      const parentCategory = await prisma.category.findUnique({
+        where: { id: category.parentId },
+        select: { specificationSchema: true },
+      });
+      if (
+        parentCategory &&
+        Array.isArray(parentCategory.specificationSchema) &&
+        parentCategory.specificationSchema.length > 0
+      ) {
+        specSchemaRaw = parentCategory.specificationSchema;
+      }
+    }
+    return normalizeSpecSchema(specSchemaRaw);
+  }
+
+  private validateRequiredSpecifications(
+    specAttrs: SpecAttribute[],
+    commonSpecInput: unknown,
+  ): void {
+    const commonSpec = (
+      commonSpecInput && typeof commonSpecInput === 'object'
+        ? commonSpecInput
+        : {}
+    ) as Record<string, unknown>;
+
+    const missingFields: string[] = [];
+    for (const attr of specAttrs) {
+      if (attr.required && !attr.isDeprecated) {
+        const val = commonSpec[attr.key];
+        const isEmpty =
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim().length === 0) ||
+          (Array.isArray(val) && val.length === 0);
+        if (isEmpty) {
+          missingFields.push(attr.label || attr.key);
+        }
+      }
+    }
+
+    if (missingFields.length > 0) {
+      throw new DomainError('MISSING_REQUIRED_SPECIFICATIONS', {
+        ruleId: 'CAT-008',
+        messageKey: 'error.missingRequiredSpecs',
+        status: 400,
+        details: {
+          missingFields,
+          message: `Thieu cac thong so ky thuat bat buoc: ${missingFields.join(', ')}`,
+        },
+      });
+    }
+  }
+
   async getTemplates(query: QueryProductTemplateInput): Promise<ProductTemplateListResult> {
     const where: Prisma.ProductTemplateWhereInput = {};
 
@@ -354,6 +419,7 @@ export class AdminProductTemplateService {
             slug: true,
             specificationSchema: true,
             specificationSchemaVersion: true,
+            parentId: true,
           },
         },
         brand: {
@@ -439,6 +505,8 @@ export class AdminProductTemplateService {
       };
     });
 
+    const normalizedCategorySchema = await this.resolveCategorySpecificationSchema(template.category);
+
     return {
       id: template.id,
       name: template.name,
@@ -452,7 +520,13 @@ export class AdminProductTemplateService {
       isActive: template.isActive,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
-      category: template.category,
+      category: {
+        id: template.category.id,
+        name: template.category.name,
+        slug: template.category.slug,
+        specificationSchema: normalizedCategorySchema,
+        specificationSchemaVersion: template.category.specificationSchemaVersion,
+      },
       brand: template.brand,
       variants: mappedVariants,
       stats: {
@@ -479,6 +553,13 @@ export class AdminProductTemplateService {
 
     const category = await prisma.category.findUnique({
       where: { id: input.categoryId },
+      select: {
+        id: true,
+        parentId: true,
+        name: true,
+        slug: true,
+        specificationSchema: true,
+      },
     });
     if (!category) {
       throw new DomainError('CATEGORY_NOT_FOUND', {
@@ -496,6 +577,9 @@ export class AdminProductTemplateService {
         status: 404,
       });
     }
+
+    const specAttrs = await this.resolveCategorySpecificationSchema(category);
+    this.validateRequiredSpecifications(specAttrs, input.commonSpec);
 
     const created = await prisma.productTemplate.create({
       data: {

@@ -35,6 +35,58 @@ export type AdminCategory = {
   children?: AdminCategory[];
 };
 
+export function normalizeSpecSchema(raw: unknown): SpecAttribute[] {
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  return raw.map((item) => {
+    if (!item || typeof item !== 'object') {
+      return {
+        key: 'unknown',
+        label: 'Unknown',
+        type: 'text',
+        unit: null,
+        required: false,
+        filterable: false,
+        comparable: false,
+        options: [],
+        isDeprecated: false,
+      };
+    }
+    const record = item as Record<string, unknown>;
+    const key = String(record['key'] || record['stable_key'] || '').trim().toLowerCase();
+    const label = String(record['label'] || key || '').trim();
+    const rawType = String(record['type'] || record['data_type'] || 'text').trim().toLowerCase();
+    let type: SpecAttributeType = 'text';
+    if (rawType === 'number') {
+      type = 'number';
+    } else if (rawType === 'boolean') {
+      type = 'boolean';
+    } else if (rawType === 'select' || rawType === 'enum') {
+      type = 'select';
+    }
+    const unit = record['unit'] !== undefined && record['unit'] !== null ? String(record['unit']).trim() : null;
+    const required = Boolean(record['required'] ?? record['is_required']);
+    const filterable = Boolean(record['filterable'] ?? record['is_filterable']);
+    const comparable = Boolean(record['comparable'] ?? record['is_comparable']);
+    const rawOptions = record['options'] ?? record['allowed_values'];
+    const options = Array.isArray(rawOptions) ? rawOptions.map(String) : [];
+    const isDeprecated = Boolean(record['isDeprecated'] ?? record['is_deprecated']);
+
+    return {
+      key,
+      label,
+      type,
+      unit,
+      required,
+      filterable,
+      comparable,
+      options,
+      isDeprecated,
+    };
+  });
+}
+
 export function slugifyCategory(text: string): string {
   return text
     .toLowerCase()
@@ -167,7 +219,11 @@ export class AdminCategoryService {
         throw new Error(treeResponse.error.messageKey);
       }
 
-      this.categories.set(flatResponse.data.items);
+      const normalizedItems = (flatResponse.data.items || []).map((cat) => ({
+        ...cat,
+        specificationSchema: normalizeSpecSchema(cat.specificationSchema),
+      }));
+      this.categories.set(normalizedItems);
       this.total.set(flatResponse.data.total);
       this.page.set(flatResponse.data.page);
       this.limit.set(flatResponse.data.limit);
@@ -192,7 +248,10 @@ export class AdminCategoryService {
       throw new Error(response.error.messageKey);
     }
 
-    return response.data;
+    return {
+      ...response.data,
+      specificationSchema: normalizeSpecSchema(response.data.specificationSchema),
+    };
   }
 
   async createCategory(payload: CreateCategoryPayload): Promise<AdminCategory> {
@@ -210,7 +269,10 @@ export class AdminCategoryService {
     }
 
     await this.loadCategories();
-    return response.data;
+    return {
+      ...response.data,
+      specificationSchema: normalizeSpecSchema(response.data.specificationSchema),
+    };
   }
 
   async updateCategory(id: number, payload: UpdateCategoryPayload): Promise<AdminCategory> {
@@ -224,7 +286,10 @@ export class AdminCategoryService {
     }
 
     await this.loadCategories();
-    return response.data;
+    return {
+      ...response.data,
+      specificationSchema: normalizeSpecSchema(response.data.specificationSchema),
+    };
   }
 
   async updateSpecSchema(id: number, payload: UpdateSpecSchemaPayload): Promise<AdminCategory> {
@@ -240,7 +305,10 @@ export class AdminCategoryService {
     }
 
     await this.loadCategories();
-    return response.data;
+    return {
+      ...response.data,
+      specificationSchema: normalizeSpecSchema(response.data.specificationSchema),
+    };
   }
 
   async toggleCategoryStatus(id: number): Promise<AdminCategory> {
@@ -258,6 +326,9 @@ export class AdminCategoryService {
     }
 
     await this.loadCategories();
-    return response.data;
+    return {
+      ...response.data,
+      specificationSchema: normalizeSpecSchema(response.data.specificationSchema),
+    };
   }
 }

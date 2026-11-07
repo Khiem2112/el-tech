@@ -16,6 +16,7 @@ import { AdminBrandService } from '../brands/services/admin-brand.service';
 import {
   AdminCategoryService,
   SpecAttribute,
+  normalizeSpecSchema,
 } from '../categories/services/admin-category.service';
 import { DynamicSpecRendererComponent } from './components/dynamic-spec-renderer.component';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
@@ -506,6 +507,8 @@ type VariantSpecPair = {
               <app-dynamic-spec-renderer
                 [schema]="activeSpecSchema()"
                 [(specValues)]="commonSpec"
+                [specErrors]="specErrors()"
+                (fieldChange)="clearSpecError($event)"
               />
             </div>
           </div>
@@ -1044,6 +1047,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
   readonly detailData = signal<ProductTemplateDetail | null>(null);
   readonly activeSpecSchema = signal<SpecAttribute[]>([]);
+  readonly specErrors = signal<Record<string, string>>({});
 
   readonly categoryList = this.categoryService.categories;
   readonly brandList = this.brandService.brands;
@@ -1181,14 +1185,75 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     const missing: string[] = [];
     for (const attr of schema) {
       if (attr.required && !attr.isDeprecated) {
-        const val = specs[attr.key];
-        if (val === undefined || val === null || val === '') {
+        const val = this.findSpecValue(specs, attr.key);
+        const isEmpty =
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim().length === 0) ||
+          (Array.isArray(val) && val.length === 0);
+        if (isEmpty) {
           missing.push(attr.label);
         }
       }
     }
     return missing;
   });
+
+  findSpecValue(specs: Record<string, unknown>, key: string): unknown {
+    if (!specs || !key) {
+      return undefined;
+    }
+    if (key in specs) {
+      return specs[key];
+    }
+    const lowerKey = key.toLowerCase();
+    for (const existingKey of Object.keys(specs)) {
+      if (existingKey.toLowerCase() === lowerKey) {
+        return specs[existingKey];
+      }
+    }
+    return undefined;
+  }
+
+  validateSpecifications(): boolean {
+    const schema = this.activeSpecSchema();
+    const specs = this.commonSpec();
+    const errors: Record<string, string> = {};
+
+    for (const attr of schema) {
+      if (attr.required && !attr.isDeprecated) {
+        const val = this.findSpecValue(specs, attr.key);
+        const isEmpty =
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim().length === 0) ||
+          (Array.isArray(val) && val.length === 0);
+
+        if (isEmpty) {
+          errors[attr.key] =
+            attr.type === 'select'
+              ? `Vui lòng chọn ${attr.label.toLowerCase()}`
+              : `Vui lòng nhập ${attr.label.toLowerCase()}`;
+        } else if (attr.type === 'number' && typeof val === 'number' && isNaN(val)) {
+          errors[attr.key] = `${attr.label} phải là số hợp lệ`;
+        }
+      }
+    }
+
+    this.specErrors.set(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  clearSpecError(key: string): void {
+    if (this.specErrors()[key] || this.specErrors()[key.toLowerCase()]) {
+      this.specErrors.update((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        delete next[key.toLowerCase()];
+        return next;
+      });
+    }
+  }
 
   readonly currentCategoryName = computed(() => {
     const id = this.categoryId();
@@ -1273,8 +1338,9 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
         this.mediaList.set(urls.filter(Boolean));
       }
 
-      if (Array.isArray(data.category.specificationSchema)) {
-        this.activeSpecSchema.set(data.category.specificationSchema as SpecAttribute[]);
+      const normalizedCatSchema = normalizeSpecSchema(data.category?.specificationSchema);
+      if (normalizedCatSchema.length > 0) {
+        this.activeSpecSchema.set(normalizedCatSchema);
       } else {
         await this.syncCategorySchema(data.category.id);
       }
@@ -1300,12 +1366,13 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
   async syncCategorySchema(catId: number): Promise<void> {
     const cat = this.categoryList().find((c) => c.id === catId);
-    if (cat && cat.specificationSchema) {
-      this.activeSpecSchema.set(cat.specificationSchema);
+    const normalizedCat = cat && cat.specificationSchema ? normalizeSpecSchema(cat.specificationSchema) : [];
+    if (normalizedCat.length > 0) {
+      this.activeSpecSchema.set(normalizedCat);
     } else {
       try {
         const fullCat = await this.categoryService.getCategoryById(catId);
-        this.activeSpecSchema.set(fullCat.specificationSchema ?? []);
+        this.activeSpecSchema.set(normalizeSpecSchema(fullCat.specificationSchema));
       } catch {
         this.activeSpecSchema.set([]);
       }
@@ -1320,6 +1387,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   async onCategorySelectChange(val: string | number): Promise<void> {
     const catId = val ? Number(val) : null;
     this.categoryId.set(catId);
+    this.specErrors.set({});
     if (catId) {
       await this.syncCategorySchema(catId);
     } else {
@@ -1379,8 +1447,19 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     }
 
     this.fieldErrors.set(errors);
-    if (Object.keys(errors).length > 0 || brandId === null || categoryId === null) {
-      this.formError.set('Vui lòng điền đầy đủ các thông tin bắt buộc được đánh dấu đỏ');
+    const hasBasicErrors = Object.keys(errors).length > 0 || brandId === null || categoryId === null;
+    const isValidSpecs = this.validateSpecifications();
+
+    if (hasBasicErrors || !isValidSpecs) {
+      this.activeTab.set('general');
+      if (hasBasicErrors && !isValidSpecs) {
+        this.formError.set('Vui lòng điền đầy đủ thông tin cơ bản và thông số kỹ thuật bắt buộc');
+      } else if (hasBasicErrors) {
+        this.formError.set('Vui lòng điền đầy đủ các thông tin bắt buộc được đánh dấu đỏ');
+      } else {
+        const missingLabels = Object.values(this.specErrors());
+        this.formError.set(`Vui lòng điền đầy đủ các thông số kỹ thuật bắt buộc: ${missingLabels.join(', ')}`);
+      }
       return;
     }
 
