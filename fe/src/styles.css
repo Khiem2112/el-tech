@@ -20,6 +20,8 @@
   --color-line-dark: var(--line-dark);
   --color-foreground-dark: var(--foreground-dark);
   --color-border: var(--line);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: #ffffff;
   --color-secondary-container: var(--secondary-container);
   --color-surface-container-low: var(--surface-container-low);
 
@@ -49,6 +51,7 @@
   --primary-foreground: #090d16;
   --success: #76b900;
   --danger: #e52020;
+  --destructive: #e52020;
   --warning: #df6500;
   --line-dark: #272f3d;
   --foreground-dark: #ffffff;

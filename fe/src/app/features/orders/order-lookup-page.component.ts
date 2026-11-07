@@ -282,6 +282,18 @@ type Order = {
             <div class="flex-1 space-y-1">
               <span class="font-bold block">Thông báo</span>
               <p class="text-foreground/80 text-xs leading-relaxed">{{ searchError() }}</p>
+              @if (searchError()?.includes('tài khoản cá nhân') || searchError()?.includes('tài khoản thành viên')) {
+                <div class="pt-2">
+                  <a
+                    routerLink="/auth/sign-in"
+                    [queryParams]="{ returnUrl: '/orders/lookup' }"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground font-bold rounded text-xs hover:opacity-90 transition-opacity"
+                  >
+                    <span>Đăng nhập tài khoản</span>
+                    <lucide-icon name="ChevronRight" class="size-3.5" aria-hidden="true"></lucide-icon>
+                  </a>
+                </div>
+              }
             </div>
           </div>
         }
@@ -337,8 +349,17 @@ type Order = {
       </div>
 
       <!-- SKELETON LOADING STATE -->
-      @if (isSearching() || isVerifyingOtp()) {
+      @if (isSearching() || isVerifyingOtp() || isLoadingDetail()) {
         <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm animate-pulse space-y-4" aria-busy="true">
+          <!-- Loading Header Banner -->
+          <div class="p-4 bg-primary/10 border-b border-primary/20 flex items-center justify-between">
+            <div class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+              <lucide-icon name="Loader2" class="size-4 animate-spin text-primary" aria-hidden="true"></lucide-icon>
+              <span>Đang tải thông tin chi tiết đơn hàng...</span>
+            </div>
+            <span class="text-xs text-muted">Vui lòng chờ trong giây lát</span>
+          </div>
+
           <!-- Header Bar Skeleton -->
           <div class="bg-surface-dark p-5 sm:p-6 flex flex-wrap items-center justify-between gap-4 border-b border-line">
             <div class="space-y-2">
@@ -401,7 +422,7 @@ type Order = {
       }
 
       <!-- Back to Guest Orders List Button -->
-      @if (!isSearching() && !isVerifyingOtp() && guestOrders().length > 1 && order()) {
+      @if (!isSearching() && !isVerifyingOtp() && !isLoadingDetail() && guestOrders().length > 1 && order()) {
         <div class="max-w-7xl mx-auto flex items-center justify-start">
           <button
             type="button"
@@ -417,7 +438,7 @@ type Order = {
       }
 
       <!-- Guest Orders List (when multiple orders found and none selected yet) -->
-      @if (!isSearching() && !isVerifyingOtp() && !order() && guestOrders().length > 0) {
+      @if (!isSearching() && !isVerifyingOtp() && !isLoadingDetail() && !order() && guestOrders().length > 0) {
         <div class="max-w-4xl mx-auto space-y-4">
           <div class="flex items-center justify-between pb-2 border-b border-line">
             <div>
@@ -480,7 +501,7 @@ type Order = {
       }
 
       <!-- Detailed Order View When Retrieved -->
-      @if (!isSearching() && !isVerifyingOtp() && order(); as item) {
+      @if (!isSearching() && !isVerifyingOtp() && !isLoadingDetail() && order(); as item) {
         <div class="bg-surface rounded-xl border border-line overflow-hidden shadow-sm">
           
           <!-- Header Bar with Status Badges -->
@@ -1001,6 +1022,7 @@ export class OrderLookupPageComponent implements OnInit {
   protected readonly isRequestingOtp = signal(false);
   protected readonly isVerifyingOtp = signal(false);
   protected readonly isSubmittingReview = signal(false);
+  protected readonly isLoadingDetail = signal(false);
 
   protected readonly searchError = signal<string | null>(null);
   protected readonly verifyError = signal<string | null>(null);
@@ -1026,8 +1048,21 @@ export class OrderLookupPageComponent implements OnInit {
     this.otp = '';
   }
 
-  protected selectGuestOrder(orderItem: Order): void {
-    this.order.set(orderItem);
+  protected async selectGuestOrder(orderItem: Order): Promise<void> {
+    this.isLoadingDetail.set(true);
+    this.order.set(null);
+    try {
+      const response = await this.api.get<Order>(`/orders/${encodeURIComponent(orderItem.code)}/detail`);
+      if (response.success) {
+        this.order.set(response.data);
+      } else {
+        this.order.set(orderItem);
+      }
+    } catch {
+      this.order.set(orderItem);
+    } finally {
+      this.isLoadingDetail.set(false);
+    }
   }
 
   protected readonly currentStageIndex = computed(() => {
@@ -1065,6 +1100,7 @@ export class OrderLookupPageComponent implements OnInit {
     if (this.isSearching() || !code) return;
 
     this.isSearching.set(true);
+    this.isLoadingDetail.set(true);
     this.searchError.set(null);
     this.order.set(null);
     this.guestOrders.set([]);
@@ -1078,14 +1114,18 @@ export class OrderLookupPageComponent implements OnInit {
         this.searchError.set(
           this.formatErrorMessage(
             response.error?.code || response.error?.messageKey,
-            'Không tìm thấy đơn hàng với mã đã nhập. Vui lòng kiểm tra lại.'
+            response.error?.details?.['message'],
+            'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại mã đơn hàng.'
           )
         );
       }
-    } catch {
-      this.searchError.set('Lỗi kết nối máy chủ. Vui lòng thử lại sau.');
+    } catch (err: unknown) {
+      this.searchError.set(
+        this.extractErrorMessage(err, 'Lỗi kết nối máy chủ. Vui lòng thử lại sau.')
+      );
     } finally {
       this.isSearching.set(false);
+      this.isLoadingDetail.set(false);
     }
   }
 
@@ -1113,12 +1153,15 @@ export class OrderLookupPageComponent implements OnInit {
         this.searchError.set(
           this.formatErrorMessage(
             response.error?.code || response.error?.messageKey,
+            response.error?.details?.['message'],
             'Không tìm thấy đơn hàng nào liên kết với số điện thoại này.'
           )
         );
       }
-    } catch {
-      this.searchError.set('Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.');
+    } catch (err: unknown) {
+      this.searchError.set(
+        this.extractErrorMessage(err, 'Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.')
+      );
     } finally {
       this.isRequestingOtp.set(false);
     }
@@ -1148,12 +1191,15 @@ export class OrderLookupPageComponent implements OnInit {
         this.searchError.set(
           this.formatErrorMessage(
             response.error?.code || response.error?.messageKey,
+            response.error?.details?.['message'],
             'Không tìm thấy đơn hàng nào liên kết với email này.'
           )
         );
       }
-    } catch {
-      this.searchError.set('Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.');
+    } catch (err: unknown) {
+      this.searchError.set(
+        this.extractErrorMessage(err, 'Lỗi kết nối máy chủ khi gửi mã xác thực. Vui lòng thử lại sau.')
+      );
     } finally {
       this.isRequestingOtp.set(false);
     }
@@ -1177,7 +1223,9 @@ export class OrderLookupPageComponent implements OnInit {
         const orders = response.data.orders;
         this.guestOrders.set(orders);
         if (orders.length === 1) {
+          this.isLoadingDetail.set(true);
           this.order.set(orders[0]);
+          setTimeout(() => this.isLoadingDetail.set(false), 250);
         } else if (orders.length > 1) {
           this.order.set(null);
         } else {
@@ -1187,12 +1235,15 @@ export class OrderLookupPageComponent implements OnInit {
         this.verifyError.set(
           this.formatErrorMessage(
             response.error?.code || response.error?.messageKey,
+            response.error?.details?.['message'],
             'Mã OTP không chính xác hoặc đã hết hạn.'
           )
         );
       }
-    } catch {
-      this.verifyError.set('Lỗi kết nối khi xác thực OTP. Vui lòng thử lại.');
+    } catch (err: unknown) {
+      this.verifyError.set(
+        this.extractErrorMessage(err, 'Lỗi kết nối khi xác thực OTP. Vui lòng thử lại.')
+      );
     } finally {
       this.isVerifyingOtp.set(false);
     }
@@ -1201,12 +1252,17 @@ export class OrderLookupPageComponent implements OnInit {
   protected async refreshOrder(): Promise<void> {
     const cur = this.order();
     if (!cur) return;
-    const response = await this.api.get<Order>(`/orders/${encodeURIComponent(cur.code)}/detail`);
-    if (response.success) {
-      this.order.set(response.data);
-      this.guestOrders.update((list) =>
-        list.map((o) => (o.code === response.data.code ? response.data : o))
-      );
+    this.isLoadingDetail.set(true);
+    try {
+      const response = await this.api.get<Order>(`/orders/${encodeURIComponent(cur.code)}/detail`);
+      if (response.success) {
+        this.order.set(response.data);
+        this.guestOrders.update((list) =>
+          list.map((o) => (o.code === response.data.code ? response.data : o))
+        );
+      }
+    } finally {
+      this.isLoadingDetail.set(false);
     }
   }
 
@@ -1266,25 +1322,70 @@ export class OrderLookupPageComponent implements OnInit {
     }
   }
 
-  private formatErrorMessage(code?: string, fallback = 'Không tìm thấy đơn hàng với thông tin đã cung cấp.'): string {
-    if (!code) return fallback;
+  private extractErrorMessage(err: unknown, fallback: string): string {
+    if (err && typeof err === 'object') {
+      const httpErr = err as {
+        status?: number;
+        error?: {
+          error?: {
+            code?: string;
+            messageKey?: string;
+            details?: { message?: string };
+          };
+          message?: string;
+        };
+        message?: string;
+      };
+
+      const errorObj = httpErr.error?.error;
+      const code = errorObj?.code || errorObj?.messageKey;
+      const detailMessage = typeof errorObj?.details?.['message'] === 'string' ? errorObj.details['message'] : undefined;
+
+      if (code === 'ORDER_ACCESS_DENIED' || code === 'error.orderBelongsToAccount') {
+        return detailMessage || 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập đúng tài khoản để tra cứu.';
+      }
+      if (code === 'ORDER_NOT_FOUND' || code === 'error.orderNotFound') {
+        return detailMessage || 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại thông tin.';
+      }
+      if (code === 'OTP_INVALID' || code === 'error.otpInvalid') {
+        return 'Mã xác thực OTP không chính xác. Vui lòng kiểm tra và nhập lại.';
+      }
+      if (code === 'SESSION_EXPIRED' || code === 'error.sessionExpired') {
+        return 'Mã xác thực OTP hoặc phiên tra cứu đã hết hạn. Vui lòng yêu cầu gửi lại mã mới.';
+      }
+      if (detailMessage) {
+        return detailMessage;
+      }
+      if (httpErr.status === 404) {
+        return 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại thông tin.';
+      }
+      if (httpErr.status === 403) {
+        return 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập đúng tài khoản để tra cứu.';
+      }
+    }
+    return fallback;
+  }
+
+  private formatErrorMessage(code?: string, detailMessage?: unknown, fallback = 'Không tìm thấy đơn hàng với thông tin đã cung cấp.'): string {
+    const detail = typeof detailMessage === 'string' ? detailMessage : undefined;
+    if (!code) return detail || fallback;
     switch (code) {
       case 'ORDER_NOT_FOUND':
       case 'error.orderNotFound':
-        return 'Không tìm thấy đơn hàng với thông tin đã cung cấp. Vui lòng kiểm tra lại.';
+        return detail || 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại thông tin.';
+      case 'ORDER_ACCESS_DENIED':
+      case 'error.orderBelongsToAccount':
+        return detail || 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập đúng tài khoản để tra cứu.';
+      case 'error.orderAccessDenied':
+        return detail || 'Bạn không có quyền truy cập vào thông tin đơn hàng này.';
       case 'OTP_INVALID':
       case 'error.otpInvalid':
         return 'Mã xác thực OTP không chính xác. Vui lòng kiểm tra và nhập lại.';
       case 'SESSION_EXPIRED':
       case 'error.sessionExpired':
         return 'Mã xác thực OTP hoặc phiên tra cứu đã hết hạn. Vui lòng yêu cầu gửi lại mã mới.';
-      case 'ORDER_ACCESS_DENIED':
-      case 'error.orderAccessDenied':
-        return 'Bạn không có quyền truy cập vào thông tin đơn hàng này.';
-      case 'error.orderBelongsToAccount':
-        return 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.';
       default:
-        return fallback;
+        return detail || fallback;
     }
   }
 }

@@ -293,7 +293,7 @@ export class AssembleDialogComponent {
         }
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi tai linh kien lap rap';
+      const msg = err instanceof Error ? err.message : 'Lỗi khi tải linh kiện lắp ráp';
       this.errorMessage.set(msg);
     } finally {
       this.isLoading.set(false);
@@ -377,7 +377,7 @@ export class AssembleDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the chuyen ban lap rap PC';
+      const msg = err instanceof Error ? err.message : 'Không thể chuyển bàn lắp ráp PC';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

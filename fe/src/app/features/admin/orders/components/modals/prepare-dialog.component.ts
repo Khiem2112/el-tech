@@ -126,7 +126,7 @@ export class PrepareDialogComponent {
       await this.detailService.prepareOrder(this.order().id, this.note.trim() || undefined);
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the chuyen trang thai soan hang';
+      const msg = err instanceof Error ? err.message : 'Không thể chuyển trạng thái soạn hàng';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

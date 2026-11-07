@@ -16,6 +16,7 @@ import { AdminBrandService } from '../brands/services/admin-brand.service';
 import {
   AdminCategoryService,
   SpecAttribute,
+  normalizeSpecSchema,
 } from '../categories/services/admin-category.service';
 import { DynamicSpecRendererComponent } from './components/dynamic-spec-renderer.component';
 import { LifecycleTransitionDialogComponent } from './components/lifecycle-transition-dialog.component';
@@ -282,7 +283,7 @@ type VariantSpecPair = {
       <!-- Tab 1: Thông Tin Chung (General Info, Media, Dynamic Specs) -->
       <div [class.hidden]="activeTab() !== 'general'" class="w-full p-4 lg:p-6 space-y-6">
         @if (formError()) {
-          <div class="p-3.5 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
+          <div class="p-3.5 bg-danger/10 border border-danger/20 rounded text-danger text-xs">
             {{ formError() }}
           </div>
         }
@@ -299,7 +300,7 @@ type VariantSpecPair = {
               <div class="space-y-3">
                 <div>
                   <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                    Tên Sản Phẩm <span class="text-destructive">*</span>
+                    Tên Sản Phẩm <span class="text-danger">*</span>
                   </label>
                   <input
                     type="text"
@@ -308,20 +309,20 @@ type VariantSpecPair = {
                     (input)="onNameInput($event); clearFieldError('templateName')"
                     placeholder="VD: ASUS ROG Strix GeForce RTX 5090"
                     class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none font-semibold text-sm transition-colors"
-                    [class.border-destructive]="fieldErrors()['templateName']"
-                    [class.focus:border-destructive]="fieldErrors()['templateName']"
+                    [class.border-danger]="fieldErrors()['templateName']"
+                    [class.focus:border-danger]="fieldErrors()['templateName']"
                     [class.border-line]="!fieldErrors()['templateName']"
                     [class.focus:border-primary]="!fieldErrors()['templateName']"
                   />
                   @if (fieldErrors()['templateName']) {
-                    <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['templateName'] }}</p>
+                    <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['templateName'] }}</p>
                   }
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                      Đường Dẫn Slug <span class="text-destructive">*</span>
+                      Đường Dẫn Slug <span class="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -330,29 +331,29 @@ type VariantSpecPair = {
                       (input)="slug.set($any($event.target).value); clearFieldError('slug')"
                       placeholder="asus-rog-strix-geforce-rtx-5090"
                       class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none text-sm font-medium transition-colors"
-                      [class.border-destructive]="fieldErrors()['slug']"
-                      [class.focus:border-destructive]="fieldErrors()['slug']"
+                      [class.border-danger]="fieldErrors()['slug']"
+                      [class.focus:border-danger]="fieldErrors()['slug']"
                       [class.border-line]="!fieldErrors()['slug']"
                       [class.focus:border-primary]="!fieldErrors()['slug']"
                     />
                     @if (fieldErrors()['slug']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['slug'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['slug'] }}</p>
                     }
                   </div>
 
                   <div>
                     <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                      Thương Hiệu <span class="text-destructive">*</span>
+                      Thương Hiệu <span class="text-danger">*</span>
                     </label>
                     <app-select
                       [options]="brandOptions()"
                       [value]="brandId() !== null ? String(brandId()) : ''"
                       (valueChange)="onBrandSelectChange($event); clearFieldError('brandId')"
-                      [class]="fieldErrors()['brandId'] ? 'border-destructive ring-1 ring-destructive' : ''"
+                      [class]="fieldErrors()['brandId'] ? 'border-danger ring-1 ring-danger' : ''"
                       placeholder="-- Chọn thương hiệu --"
                     />
                     @if (fieldErrors()['brandId']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['brandId'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['brandId'] }}</p>
                     }
                   </div>
                 </div>
@@ -360,23 +361,23 @@ type VariantSpecPair = {
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                      Danh Mục <span class="text-destructive">*</span>
+                      Danh Mục <span class="text-danger">*</span>
                     </label>
                     <app-select
                       [options]="categoryOptions()"
                       [value]="categoryId() !== null ? String(categoryId()) : ''"
                       (valueChange)="onCategorySelectChange($event); clearFieldError('categoryId')"
-                      [class]="fieldErrors()['categoryId'] ? 'border-destructive ring-1 ring-destructive' : ''"
+                      [class]="fieldErrors()['categoryId'] ? 'border-danger ring-1 ring-danger' : ''"
                       placeholder="-- Chọn danh mục --"
                     />
                     @if (fieldErrors()['categoryId']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['categoryId'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['categoryId'] }}</p>
                     }
                   </div>
 
                   <div>
                     <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                      Model <span class="text-destructive">*</span>
+                      Model <span class="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -385,13 +386,13 @@ type VariantSpecPair = {
                       (input)="modelCode.set($any($event.target).value); clearFieldError('modelCode')"
                       placeholder="ROG-STRIX-RTX5090"
                       class="w-full px-3 py-2 bg-surface border rounded text-foreground focus:outline-none text-sm font-medium transition-colors"
-                      [class.border-destructive]="fieldErrors()['modelCode']"
-                      [class.focus:border-destructive]="fieldErrors()['modelCode']"
+                      [class.border-danger]="fieldErrors()['modelCode']"
+                      [class.focus:border-danger]="fieldErrors()['modelCode']"
                       [class.border-line]="!fieldErrors()['modelCode']"
                       [class.focus:border-primary]="!fieldErrors()['modelCode']"
                     />
                     @if (fieldErrors()['modelCode']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['modelCode'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['modelCode'] }}</p>
                     }
                   </div>
                 </div>
@@ -475,7 +476,7 @@ type VariantSpecPair = {
                         <button
                           type="button"
                           (click)="removeMediaUrl(i)"
-                          class="absolute top-1 right-1 p-1 bg-surface/90 hover:bg-destructive text-destructive hover:text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          class="absolute top-1 right-1 p-1 bg-surface/90 hover:bg-danger text-danger hover:text-white rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                           title="Xóa ảnh"
                         >
                           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -506,6 +507,8 @@ type VariantSpecPair = {
               <app-dynamic-spec-renderer
                 [schema]="activeSpecSchema()"
                 [(specValues)]="commonSpec"
+                [specErrors]="specErrors()"
+                (fieldChange)="clearSpecError($event)"
               />
             </div>
           </div>
@@ -617,7 +620,7 @@ type VariantSpecPair = {
                         <span
                           class="font-semibold tabular tabular-nums"
                           [class.text-emerald-600]="v.totalAvailable > 0"
-                          [class.text-destructive]="v.totalAvailable <= 0"
+                          [class.text-danger]="v.totalAvailable <= 0"
                         >
                           {{ v.totalAvailable }} khả dụng
                         </span>
@@ -658,7 +661,7 @@ type VariantSpecPair = {
                         variant="outline"
                         size="sm"
                         (click)="deleteCurrentVariant()"
-                        class="text-destructive hover:bg-destructive/10"
+                        class="text-danger hover:bg-danger/10"
                         title="Xóa biến thể này"
                       >
                         Xóa SKU
@@ -668,7 +671,7 @@ type VariantSpecPair = {
                 </div>
 
                 @if (variantFormError()) {
-                  <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
+                  <div class="p-3 bg-danger/10 border border-danger/20 rounded text-danger text-xs">
                     {{ variantFormError() }}
                   </div>
                 }
@@ -681,7 +684,7 @@ type VariantSpecPair = {
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                        Mã SKU <span class="text-destructive">*</span>
+                        Mã SKU <span class="text-danger">*</span>
                       </label>
                       <input
                         type="text"
@@ -690,13 +693,13 @@ type VariantSpecPair = {
                         (input)="onSkuInput($event); clearVariantFieldError('sku')"
                         placeholder="VD: VGA-RTX5090-O24G-BLACK"
                         class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm uppercase transition-colors"
-                        [class.border-destructive]="variantFieldErrors()['sku']"
-                        [class.focus:border-destructive]="variantFieldErrors()['sku']"
+                        [class.border-danger]="variantFieldErrors()['sku']"
+                        [class.focus:border-danger]="variantFieldErrors()['sku']"
                         [class.border-line]="!variantFieldErrors()['sku']"
                         [class.focus:border-primary]="!variantFieldErrors()['sku']"
                       />
                       @if (variantFieldErrors()['sku']) {
-                        <p class="text-xs text-destructive mt-1 font-medium">{{ variantFieldErrors()['sku'] }}</p>
+                        <p class="text-xs text-danger mt-1 font-medium">{{ variantFieldErrors()['sku'] }}</p>
                       }
                     </div>
 
@@ -730,7 +733,7 @@ type VariantSpecPair = {
 
                     <div>
                       <label class="block font-semibold text-muted text-xs uppercase mb-1">
-                        Giá Bán Niêm Yết <span class="text-destructive">*</span>
+                        Giá Bán Niêm Yết <span class="text-danger">*</span>
                       </label>
                       <input
                         type="number"
@@ -741,13 +744,13 @@ type VariantSpecPair = {
                         (input)="vFormSellingPrice.set(+$any($event.target).value); clearVariantFieldError('sellingPrice')"
                         placeholder="59990000"
                         class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
-                        [class.border-destructive]="variantFieldErrors()['sellingPrice']"
-                        [class.focus:border-destructive]="variantFieldErrors()['sellingPrice']"
+                        [class.border-danger]="variantFieldErrors()['sellingPrice']"
+                        [class.focus:border-danger]="variantFieldErrors()['sellingPrice']"
                         [class.border-line]="!variantFieldErrors()['sellingPrice']"
                         [class.focus:border-primary]="!variantFieldErrors()['sellingPrice']"
                       />
                       @if (variantFieldErrors()['sellingPrice']) {
-                        <p class="text-xs text-destructive mt-1 font-medium">{{ variantFieldErrors()['sellingPrice'] }}</p>
+                        <p class="text-xs text-danger mt-1 font-medium">{{ variantFieldErrors()['sellingPrice'] }}</p>
                       }
                     </div>
                   </div>
@@ -815,7 +818,7 @@ type VariantSpecPair = {
                         <div
                           class="text-lg font-bold tabular tabular-nums"
                           [class.text-emerald-600]="selV.totalAvailable > 0"
-                          [class.text-destructive]="selV.totalAvailable <= 0"
+                          [class.text-danger]="selV.totalAvailable <= 0"
                         >
                           {{ selV.totalAvailable }}
                         </div>
@@ -923,7 +926,7 @@ type VariantSpecPair = {
                             <button
                               type="button"
                               (click)="removeSpecPair(idx)"
-                              class="p-1.5 rounded hover:bg-destructive/10 text-destructive transition-colors"
+                              class="p-1.5 rounded hover:bg-danger/10 text-danger transition-colors"
                               title="Xóa thuộc tính này"
                             >
                               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1044,6 +1047,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
   readonly detailData = signal<ProductTemplateDetail | null>(null);
   readonly activeSpecSchema = signal<SpecAttribute[]>([]);
+  readonly specErrors = signal<Record<string, string>>({});
 
   readonly categoryList = this.categoryService.categories;
   readonly brandList = this.brandService.brands;
@@ -1181,14 +1185,75 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     const missing: string[] = [];
     for (const attr of schema) {
       if (attr.required && !attr.isDeprecated) {
-        const val = specs[attr.key];
-        if (val === undefined || val === null || val === '') {
+        const val = this.findSpecValue(specs, attr.key);
+        const isEmpty =
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim().length === 0) ||
+          (Array.isArray(val) && val.length === 0);
+        if (isEmpty) {
           missing.push(attr.label);
         }
       }
     }
     return missing;
   });
+
+  findSpecValue(specs: Record<string, unknown>, key: string): unknown {
+    if (!specs || !key) {
+      return undefined;
+    }
+    if (key in specs) {
+      return specs[key];
+    }
+    const lowerKey = key.toLowerCase();
+    for (const existingKey of Object.keys(specs)) {
+      if (existingKey.toLowerCase() === lowerKey) {
+        return specs[existingKey];
+      }
+    }
+    return undefined;
+  }
+
+  validateSpecifications(): boolean {
+    const schema = this.activeSpecSchema();
+    const specs = this.commonSpec();
+    const errors: Record<string, string> = {};
+
+    for (const attr of schema) {
+      if (attr.required && !attr.isDeprecated) {
+        const val = this.findSpecValue(specs, attr.key);
+        const isEmpty =
+          val === undefined ||
+          val === null ||
+          (typeof val === 'string' && val.trim().length === 0) ||
+          (Array.isArray(val) && val.length === 0);
+
+        if (isEmpty) {
+          errors[attr.key] =
+            attr.type === 'select'
+              ? `Vui lòng chọn ${attr.label.toLowerCase()}`
+              : `Vui lòng nhập ${attr.label.toLowerCase()}`;
+        } else if (attr.type === 'number' && typeof val === 'number' && isNaN(val)) {
+          errors[attr.key] = `${attr.label} phải là số hợp lệ`;
+        }
+      }
+    }
+
+    this.specErrors.set(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  clearSpecError(key: string): void {
+    if (this.specErrors()[key] || this.specErrors()[key.toLowerCase()]) {
+      this.specErrors.update((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        delete next[key.toLowerCase()];
+        return next;
+      });
+    }
+  }
 
   readonly currentCategoryName = computed(() => {
     const id = this.categoryId();
@@ -1273,8 +1338,9 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
         this.mediaList.set(urls.filter(Boolean));
       }
 
-      if (Array.isArray(data.category.specificationSchema)) {
-        this.activeSpecSchema.set(data.category.specificationSchema as SpecAttribute[]);
+      const normalizedCatSchema = normalizeSpecSchema(data.category?.specificationSchema);
+      if (normalizedCatSchema.length > 0) {
+        this.activeSpecSchema.set(normalizedCatSchema);
       } else {
         await this.syncCategorySchema(data.category.id);
       }
@@ -1300,12 +1366,13 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
 
   async syncCategorySchema(catId: number): Promise<void> {
     const cat = this.categoryList().find((c) => c.id === catId);
-    if (cat && cat.specificationSchema) {
-      this.activeSpecSchema.set(cat.specificationSchema);
+    const normalizedCat = cat && cat.specificationSchema ? normalizeSpecSchema(cat.specificationSchema) : [];
+    if (normalizedCat.length > 0) {
+      this.activeSpecSchema.set(normalizedCat);
     } else {
       try {
         const fullCat = await this.categoryService.getCategoryById(catId);
-        this.activeSpecSchema.set(fullCat.specificationSchema ?? []);
+        this.activeSpecSchema.set(normalizeSpecSchema(fullCat.specificationSchema));
       } catch {
         this.activeSpecSchema.set([]);
       }
@@ -1320,6 +1387,7 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
   async onCategorySelectChange(val: string | number): Promise<void> {
     const catId = val ? Number(val) : null;
     this.categoryId.set(catId);
+    this.specErrors.set({});
     if (catId) {
       await this.syncCategorySchema(catId);
     } else {
@@ -1379,8 +1447,19 @@ export class AdminProductTemplateDetailPageComponent implements OnInit {
     }
 
     this.fieldErrors.set(errors);
-    if (Object.keys(errors).length > 0 || brandId === null || categoryId === null) {
-      this.formError.set('Vui lòng điền đầy đủ các thông tin bắt buộc được đánh dấu đỏ');
+    const hasBasicErrors = Object.keys(errors).length > 0 || brandId === null || categoryId === null;
+    const isValidSpecs = this.validateSpecifications();
+
+    if (hasBasicErrors || !isValidSpecs) {
+      this.activeTab.set('general');
+      if (hasBasicErrors && !isValidSpecs) {
+        this.formError.set('Vui lòng điền đầy đủ thông tin cơ bản và thông số kỹ thuật bắt buộc');
+      } else if (hasBasicErrors) {
+        this.formError.set('Vui lòng điền đầy đủ các thông tin bắt buộc được đánh dấu đỏ');
+      } else {
+        const missingLabels = Object.values(this.specErrors());
+        this.formError.set(`Vui lòng điền đầy đủ các thông số kỹ thuật bắt buộc: ${missingLabels.join(', ')}`);
+      }
       return;
     }
 

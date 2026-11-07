@@ -215,7 +215,7 @@ export class ResolveHoldDialogComponent {
       this.note = '';
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xu ly ngoai le tam giu';
+      const msg = err instanceof Error ? err.message : 'Không thể xử lý ngoại lệ tạm giữ';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

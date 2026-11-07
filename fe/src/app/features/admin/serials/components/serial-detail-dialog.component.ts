@@ -256,8 +256,10 @@ export class SerialDetailDialogComponent {
   readonly statusAdjustmentOptions: SelectOption[] = [
     { value: 'AVAILABLE', label: 'Trong kho (Khả dụng)' },
     { value: 'RESERVED', label: 'Đã gán xuất kho' },
+    { value: 'IN_TRANSIT', label: 'Đang luân chuyển' },
     { value: 'ISSUED', label: 'Đã xuất bán' },
     { value: 'QUARANTINED', label: 'Cách ly lỗi' },
+    { value: 'RETURNED_TO_SUPPLIER', label: 'Trả nhà cung cấp' },
   ];
 
   onClose(): void {
@@ -380,7 +382,7 @@ export class SerialDetailDialogComponent {
       case 'RESERVED':
         return 'Đã gán xuất kho';
       case 'IN_TRANSIT':
-        return 'Đang chuyển';
+        return 'Đang luân chuyển';
       case 'ISSUED':
         return 'Đã xuất bán';
       case 'QUARANTINED':

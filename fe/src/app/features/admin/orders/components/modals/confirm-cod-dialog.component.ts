@@ -173,7 +173,7 @@ export class ConfirmCodDialogComponent {
       const result = await this.detailService.fetchStockReadiness(this.order().id);
       this.stockReadiness.set(result);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi kiem tra ton kho';
+      const msg = err instanceof Error ? err.message : 'Lỗi khi kiểm tra tồn kho';
       this.errorMessage.set(msg);
     } finally {
       this.isLoadingStock.set(false);
@@ -194,7 +194,7 @@ export class ConfirmCodDialogComponent {
       await this.detailService.confirmCodOrder(this.order().id, this.note.trim() || undefined);
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xac nhan don hang COD';
+      const msg = err instanceof Error ? err.message : 'Không thể xác nhận đơn hàng COD';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

@@ -220,7 +220,7 @@ function calculateAvailableTransitions(
     case OrderStatus.PENDING_PAYMENT:
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -230,14 +230,14 @@ function calculateAvailableTransitions(
     case OrderStatus.CONFIRMED:
       transitions.push({
         targetStatus: OrderStatus.PREPARING_COMPONENTS,
-        label: 'Bat Dau Soan Hang',
+        label: 'Bắt Đầu Soạn Hàng',
         actionKey: 'START_PREP',
         modalId: 'MOD-08',
         isPrimary: true,
       });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -248,7 +248,7 @@ function calculateAvailableTransitions(
       if (hasAssembly) {
         transitions.push({
           targetStatus: OrderStatus.ASSEMBLING,
-          label: 'Ban Giao Lap Rap PC',
+          label: 'Bàn Giao Lắp Ráp PC',
           actionKey: 'ASSEMBLE_PC',
           modalId: 'MOD-09',
           isPrimary: true,
@@ -256,7 +256,7 @@ function calculateAvailableTransitions(
       } else if (fulfillmentMethod === FulfillmentMethod.PICKUP) {
         transitions.push({
           targetStatus: OrderStatus.READY_FOR_PICKUP,
-          label: 'Bao San Sang Nhan Tai Shop',
+          label: 'Báo Sẵn Sàng Nhận Tại Shop',
           actionKey: 'READY_PICKUP',
           modalId: 'MOD-10',
           isPrimary: true,
@@ -264,7 +264,7 @@ function calculateAvailableTransitions(
       } else {
         transitions.push({
           targetStatus: OrderStatus.SHIPPING,
-          label: 'Xuat Kho Giao Hang',
+          label: 'Xuất Kho Giao Hàng',
           actionKey: 'SHIP_ORDER',
           modalId: 'MOD-11',
           isPrimary: true,
@@ -272,7 +272,7 @@ function calculateAvailableTransitions(
       }
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -283,7 +283,7 @@ function calculateAvailableTransitions(
       if (fulfillmentMethod === FulfillmentMethod.PICKUP) {
         transitions.push({
           targetStatus: OrderStatus.READY_FOR_PICKUP,
-          label: 'Bao San Sang Nhan Tai Shop',
+          label: 'Báo Sẵn Sàng Nhận Tại Shop',
           actionKey: 'READY_PICKUP',
           modalId: 'MOD-10',
           isPrimary: true,
@@ -291,7 +291,7 @@ function calculateAvailableTransitions(
       } else {
         transitions.push({
           targetStatus: OrderStatus.SHIPPING,
-          label: 'Xuat Kho Giao Hang',
+          label: 'Xuất Kho Giao Hàng',
           actionKey: 'SHIP_ORDER',
           modalId: 'MOD-11',
           isPrimary: true,
@@ -299,7 +299,7 @@ function calculateAvailableTransitions(
       }
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -309,20 +309,20 @@ function calculateAvailableTransitions(
     case OrderStatus.READY_FOR_PICKUP:
       transitions.push({
         targetStatus: OrderStatus.COMPLETED,
-        label: 'Hoan Tat Nhan Hang',
+        label: 'Hoàn Tất Nhận Hàng',
         actionKey: 'COMPLETE_ORDER',
         modalId: 'MOD-16',
         isPrimary: true,
       });
       transitions.push({
         targetStatus: OrderStatus.READY_FOR_PICKUP,
-        label: 'Doi Sang Giao Tan Noi',
+        label: 'Đổi Sang Giao Tận Nơi',
         actionKey: 'PICKUP_TO_DELIVERY',
         modalId: 'MOD-19',
       });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -332,14 +332,14 @@ function calculateAvailableTransitions(
     case OrderStatus.SHIPPING:
       transitions.push({
         targetStatus: OrderStatus.COMPLETED,
-        label: 'Xac Nhan Giao Thanh Cong',
+        label: 'Xác Nhận Giao Thành Công',
         actionKey: 'COMPLETE_ORDER',
         modalId: 'MOD-16',
         isPrimary: true,
       });
       transitions.push({
         targetStatus: OrderStatus.DELIVERY_FAILED,
-        label: 'Bao Giao That Bai',
+        label: 'Báo Giao Thất Bại',
         actionKey: 'DELIVERY_FAILED',
         modalId: 'MOD-12',
         isDestructive: true,
@@ -350,7 +350,7 @@ function calculateAvailableTransitions(
       if (redeliveryAttemptCount < 2) {
         transitions.push({
           targetStatus: OrderStatus.SHIPPING,
-          label: 'Hen Giao Lai',
+          label: 'Hẹn Giao Lại',
           actionKey: 'REDELIVERY',
           modalId: 'MOD-13',
           isPrimary: true,
@@ -358,14 +358,14 @@ function calculateAvailableTransitions(
       }
       transitions.push({
         targetStatus: OrderStatus.SHIPPING,
-        label: 'Len Lich Giao Lai',
+        label: 'Lên Lịch Giao Lại',
         actionKey: 'REDELIVERY',
         modalId: 'MOD-13',
         isPrimary: true,
       });
       transitions.push({
         targetStatus: OrderStatus.CANCELLED,
-        label: 'Huy Don Hang',
+        label: 'Hủy Đơn Hàng',
         actionKey: 'CANCEL_ORDER',
         modalId: 'MOD-17',
         isDestructive: true,
@@ -381,7 +381,7 @@ function calculateAvailableTransitions(
   if (hasPendingRefund) {
     transitions.push({
       targetStatus: status,
-      label: 'Xac Nhan Hoan Tien Thu Cong',
+      label: 'Xác Nhận Hoàn Tiền Thủ Công',
       actionKey: 'MANUAL_REFUND',
       modalId: 'MOD-21',
     });

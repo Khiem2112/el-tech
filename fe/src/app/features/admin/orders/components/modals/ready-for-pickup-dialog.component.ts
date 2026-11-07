@@ -138,7 +138,7 @@ export class ReadyForPickupDialogComponent {
       await this.detailService.readyForPickup(this.order().id, this.note.trim() || undefined);
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the bao san sang nhan hang';
+      const msg = err instanceof Error ? err.message : 'Không thể báo sẵn sàng nhận hàng';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

@@ -129,7 +129,7 @@ export class ReturnInitiateDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xac nhan chuyen hoan ve kho';
+      const msg = err instanceof Error ? err.message : 'Không thể xác nhận chuyển hoàn về kho';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

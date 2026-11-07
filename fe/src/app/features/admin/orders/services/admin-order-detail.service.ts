@@ -449,7 +449,7 @@ export class AdminOrderDetailService {
       return response.data;
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : 'Khong the tai thong tin chi tiet don hang';
+        err instanceof Error ? err.message : 'Không thể tải thông tin chi tiết đơn hàng';
       this.error.set(message);
       this.order.set(null);
       return null;
@@ -487,7 +487,7 @@ export class AdminOrderDetailService {
       }
       return true;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Loi khi cap nhat ghi chu';
+      const message = err instanceof Error ? err.message : 'Lỗi khi cập nhật ghi chú';
       this.error.set(message);
       return false;
     } finally {
@@ -510,7 +510,7 @@ export class AdminOrderDetailService {
 
       return response.data;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Khong the kiem tra ton kho don hang';
+      const message = err instanceof Error ? err.message : 'Không thể kiểm tra tồn kho đơn hàng';
       this.error.set(message);
       return null;
     }
@@ -547,7 +547,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi xac nhan don hang COD');
+      throw new Error(response.error.messageKey || 'Lỗi khi xác nhận đơn hàng COD');
     }
 
     return response.data;
@@ -563,7 +563,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi chuyen trang thai soan hang');
+      throw new Error(response.error.messageKey || 'Lỗi khi chuyển trạng thái soạn hàng');
     }
 
     return response.data;
@@ -647,7 +647,7 @@ export class AdminOrderDetailService {
       const detailsMsg = response.error.details && typeof response.error.details === 'object' && 'message' in response.error.details
         ? String(response.error.details['message'])
         : null;
-      throw new Error(detailsMsg || response.error.messageKey || 'Loi khi xuat kho ban giao van chuyen');
+      throw new Error(detailsMsg || response.error.messageKey || 'Lỗi khi xuất kho bàn giao vận chuyển');
     }
 
     return response.data;
@@ -663,7 +663,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi ghi nhan giao hang that bai');
+      throw new Error(response.error.messageKey || 'Lỗi khi ghi nhận giao hàng thất bại');
     }
 
     return response.data;
@@ -698,7 +698,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi xac nhan kien hang chuyen hoan ve kho');
+      throw new Error(response.error.messageKey || 'Lỗi khi xác nhận kiện hàng chuyển hoàn về kho');
     }
 
     return response.data;
@@ -714,7 +714,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi xac nhan nhan hang hoan ve kho chi nhanh');
+      throw new Error(response.error.messageKey || 'Lỗi khi xác nhận nhận hàng hoàn về kho chi nhánh');
     }
 
     return response.data;
@@ -758,7 +758,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi hoan tat don hang');
+      throw new Error(response.error.messageKey || 'Lỗi khi hoàn tất đơn hàng');
     }
 
     return response.data;
@@ -780,7 +780,7 @@ export class AdminOrderDetailService {
         'message' in response.error.details
           ? String(response.error.details['message'])
           : null;
-      throw new Error(detailsMsg || response.error.messageKey || 'Loi khi huy don hang');
+      throw new Error(detailsMsg || response.error.messageKey || 'Lỗi khi hủy đơn hàng');
     }
 
     return response.data;
@@ -796,7 +796,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi tam giu don hang');
+      throw new Error(response.error.messageKey || 'Lỗi khi tạm giữ đơn hàng');
     }
 
     return response.data;
@@ -869,7 +869,7 @@ export class AdminOrderDetailService {
     );
 
     if (!response.success) {
-      throw new Error(response.error.messageKey || 'Loi khi xac nhan hoan tien thu cong');
+      throw new Error(response.error.messageKey || 'Lỗi khi xác nhận hoàn tiền thủ công');
     }
 
     return response.data;

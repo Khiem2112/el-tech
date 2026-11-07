@@ -3,7 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { AdminApiService } from '../../../../core/api/admin-api.service';
 import { ApiResponse } from '../../../../core/api/api.types';
-import { SpecAttribute } from '../../categories/services/admin-category.service';
+import { SpecAttribute, normalizeSpecSchema } from '../../categories/services/admin-category.service';
 
 export type ProductLifecycle = 'DRAFT' | 'ACTIVE' | 'PAUSED' | 'DISCONTINUED';
 
@@ -293,17 +293,22 @@ export class AdminProductTemplateService {
         poCount: statsObj.poCount ?? 0,
         stockMoveCount: statsObj.stockMoveCount ?? 0,
       };
+      const rawCategory = response.data.category;
       const normalizedData: ProductTemplateDetail = {
         ...response.data,
+        category: {
+          ...rawCategory,
+          specificationSchema: normalizeSpecSchema(rawCategory?.specificationSchema),
+        },
         smartMetrics,
       };
 
       this.currentTemplate.set(normalizedData);
       return normalizedData;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi tai chi tiet mau san pham';
+      const msg = this.extractErrorMessage(err, 'Lỗi khi tải chi tiết mẫu sản phẩm');
       this.error.set(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       this.isLoading.set(false);
     }
@@ -328,9 +333,9 @@ export class AdminProductTemplateService {
       await this.loadTemplates();
       return response.data;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi tao mau san pham moi';
+      const msg = this.extractErrorMessage(err, 'Lỗi khi tạo mẫu sản phẩm mới');
       this.error.set(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       this.isLoading.set(false);
     }
@@ -362,20 +367,41 @@ export class AdminProductTemplateService {
         poCount: statsObj.poCount ?? 0,
         stockMoveCount: statsObj.stockMoveCount ?? 0,
       };
+      const rawCategory = response.data.category;
       const normalizedData: ProductTemplateDetail = {
         ...response.data,
+        category: {
+          ...rawCategory,
+          specificationSchema: normalizeSpecSchema(rawCategory?.specificationSchema),
+        },
         smartMetrics,
       };
 
       this.currentTemplate.set(normalizedData);
       return normalizedData;
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi cap nhat mau san pham';
+      const msg = this.extractErrorMessage(err, 'Lỗi khi cập nhật mẫu sản phẩm');
       this.error.set(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  private extractErrorMessage(err: unknown, defaultMsg: string): string {
+    if (err && typeof err === 'object') {
+      const httpErr = err as { error?: { error?: { details?: { message?: string }; messageKey?: string } }; message?: string };
+      if (httpErr.error?.error?.details?.message) {
+        return httpErr.error.error.details.message;
+      }
+      if (httpErr.error?.error?.messageKey) {
+        return httpErr.error.error.messageKey;
+      }
+      if (httpErr.message) {
+        return httpErr.message;
+      }
+    }
+    return defaultMsg;
   }
 
   async transitionTemplateLifecycle(

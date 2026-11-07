@@ -175,7 +175,7 @@ export class DeliveryFailedDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the ghi nhan giao hang that bai';
+      const msg = err instanceof Error ? err.message : 'Không thể ghi nhận giao hàng thất bại';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);
