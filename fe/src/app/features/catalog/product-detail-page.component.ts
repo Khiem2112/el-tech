@@ -817,15 +817,22 @@ export class ProductDetailPageComponent {
     const item = this.product();
     if (!item) return;
     const variant = this.selected();
+    const commonSpec = (item.commonSpec || {}) as Record<string, unknown>;
     const pcItem = {
       productId: item.id,
       name: item.name,
       categorySlug: item.category.slug,
       categoryName: item.category.name,
+      brand: item.brand?.name || 'EL-TECH',
       price: variant?.sellingPrice || '0',
       skuId: variant?.id || 0,
       media: item.media,
       model: item.model,
+      specs: item.model || item.name,
+      socket: commonSpec['socket'] ? String(commonSpec['socket']) : undefined,
+      memoryType: commonSpec['memory_type'] || commonSpec['ram_type'] ? String(commonSpec['memory_type'] || commonSpec['ram_type']) : undefined,
+      tdp: commonSpec['tdp'] || commonSpec['wattage'] ? Number(commonSpec['tdp'] || commonSpec['wattage']) : undefined,
+      commonSpec,
     };
     try {
       sessionStorage.setItem('el-tech.pending-pc-build-item', JSON.stringify(pcItem));
@@ -833,7 +840,7 @@ export class ProductDetailPageComponent {
       void _err;
     }
     this.bomModalOpen.set(false);
-    void this.router.navigate(['/xay-dung-pc']);
+    void this.router.navigate(['/tu-lap-pc']);
   }
 
   private async load(): Promise<void> {

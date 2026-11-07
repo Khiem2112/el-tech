@@ -17,6 +17,15 @@ export type BomSlot = {
   item: SwapItem | null;
 };
 
+const DRAFT_STORAGE_KEY = 'el-tech.pc-builder-active-draft';
+
+type ActiveDraftState = {
+  readonly slots: Partial<Record<BomCategory, SwapItem | null>>;
+  readonly currentBundleIndex?: number;
+  readonly serviceAssembly?: boolean;
+  readonly serviceStressTest?: boolean;
+};
+
 const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
   { key: 'cpu', number: '01', categoryName: 'Vi xử lý / CPU', defaultSpecTag: 'LGA1700 / AM5' },
   { key: 'mainboard', number: '02', categoryName: 'Bo mạch chủ / Mainboard', defaultSpecTag: 'Socket LGA1700 / AM5' },
@@ -71,6 +80,26 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
           </div>
         </div>
       </header>
+
+      <!-- Action & Notification Toast Banner -->
+      @if (actionNotification(); as notif) {
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+          <div class="rounded-xl p-3.5 bg-primary/10 border border-primary/25 text-foreground flex items-center justify-between gap-3 text-xs animate-in fade-in">
+            <div class="flex items-center gap-2.5">
+              <lucide-icon name="check" class="size-4 text-primary shrink-0" aria-hidden="true"></lucide-icon>
+              <span class="font-medium">{{ notif }}</span>
+            </div>
+            <button
+              type="button"
+              (click)="dismissNotification()"
+              class="text-muted hover:text-foreground p-1 transition-colors cursor-pointer"
+              aria-label="Đóng thông báo"
+            >
+              <lucide-icon name="x" class="size-3.5" aria-hidden="true"></lucide-icon>
+            </button>
+          </div>
+        </div>
+      }
 
       <!-- Main Workspace (8 Cols BOM / 4 Cols Summary) -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -232,7 +261,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   <input
                     type="checkbox"
                     [checked]="serviceAssembly()"
-                    (change)="serviceAssembly.set(!serviceAssembly())"
+                    (change)="toggleServiceAssembly()"
                     class="mt-0.5 size-4 rounded border-line text-primary focus:ring-primary accent-primary cursor-pointer"
                   >
                   <div class="space-y-0.5 min-w-0">
@@ -248,7 +277,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   <input
                     type="checkbox"
                     [checked]="serviceStressTest()"
-                    (change)="serviceStressTest.set(!serviceStressTest())"
+                    (change)="toggleServiceStressTest()"
                     class="mt-0.5 size-4 rounded border-line text-primary focus:ring-primary accent-primary cursor-pointer"
                   >
                   <div class="space-y-0.5 min-w-0">
@@ -388,6 +417,43 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
         (closeModal)="swapModalOpen.set(false)"
         (selectItem)="onComponentSelected($event)"
       ></app-component-swap-modal>
+
+      <!-- Overwrite Confirmation Modal -->
+      @if (overwriteModalOpen() && pendingBundleToApply(); as bundle) {
+        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div class="w-full max-w-md rounded-2xl bg-surface border border-line p-6 shadow-xl space-y-4 animate-in zoom-in-95 duration-200">
+            <div class="flex items-start gap-3">
+              <div class="size-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 border border-amber-500/20">
+                <lucide-icon name="alert-triangle" class="size-5" aria-hidden="true"></lucide-icon>
+              </div>
+              <div class="space-y-1">
+                <h2 class="text-base font-bold text-foreground">Ghi đè cấu hình PC hiện tại?</h2>
+                <p class="text-xs text-muted leading-relaxed">
+                  Bạn đang có một cấu hình PC đang lắp ráp dở dang. Bạn có muốn thay thế bằng cấu hình mẫu
+                  <strong class="text-foreground">{{ bundle.name }}</strong> không?
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                (click)="cancelPendingBundle()"
+                class="h-9 px-4 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold transition-colors border border-line cursor-pointer"
+              >
+                Giữ cấu hình đang ráp
+              </button>
+              <button
+                type="button"
+                (click)="confirmApplyPendingBundle()"
+                class="h-9 px-4 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold transition-colors cursor-pointer"
+              >
+                Ghi đè cấu hình mới
+              </button>
+            </div>
+          </div>
+        </div>
+      }
     </section>
   `,
 })
@@ -406,6 +472,11 @@ export class CustomBuildPageComponent implements OnInit {
   protected readonly currentBundleIndex = signal<number>(0);
   protected readonly linkCopied = signal(false);
   protected readonly adding = signal(false);
+
+  protected readonly actionNotification = signal<string | null>(null);
+  protected readonly overwriteModalOpen = signal(false);
+  protected readonly pendingBundleToApply = signal<BundleResponse | null>(null);
+  private notificationTimer: ReturnType<typeof setTimeout> | null = null;
 
   protected readonly activePresetLabel = computed<string>(() => {
     const list = this.bundles();
@@ -426,23 +497,176 @@ export class CustomBuildPageComponent implements OnInit {
   );
 
   async ngOnInit(): Promise<void> {
+    this.loadDraftFromStorage();
     await this.loadCatalogAndBundles();
     this.checkPendingBuildItem();
     this.checkSwapSlotQueryParam();
   }
 
+  protected showNotification(message: string): void {
+    if (this.notificationTimer) {
+      clearTimeout(this.notificationTimer);
+    }
+    this.actionNotification.set(message);
+    this.notificationTimer = setTimeout(() => {
+      this.actionNotification.set(null);
+      this.notificationTimer = null;
+    }, 4500);
+  }
+
+  protected dismissNotification(): void {
+    if (this.notificationTimer) {
+      clearTimeout(this.notificationTimer);
+      this.notificationTimer = null;
+    }
+    this.actionNotification.set(null);
+  }
+
+  protected toggleServiceAssembly(): void {
+    this.serviceAssembly.set(!this.serviceAssembly());
+    this.saveDraftToStorage();
+  }
+
+  protected toggleServiceStressTest(): void {
+    this.serviceStressTest.set(!this.serviceStressTest());
+    this.saveDraftToStorage();
+  }
+
+  protected confirmApplyPendingBundle(): void {
+    const bundle = this.pendingBundleToApply();
+    if (bundle) {
+      const list = this.bundles();
+      const idx = list.indexOf(bundle);
+      this.currentBundleIndex.set(idx >= 0 ? idx : 0);
+      this.applyBundle(bundle);
+      this.saveDraftToStorage();
+      this.showNotification(`Đã nạp cấu hình mẫu "${bundle.name}".`);
+    }
+    this.pendingBundleToApply.set(null);
+    this.overwriteModalOpen.set(false);
+  }
+
+  protected cancelPendingBundle(): void {
+    this.pendingBundleToApply.set(null);
+    this.overwriteModalOpen.set(false);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { bundle: null, bundleId: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  private saveDraftToStorage(): void {
+    try {
+      const slotsMap: Partial<Record<BomCategory, SwapItem | null>> = {};
+      for (const slot of this.bomSlots()) {
+        slotsMap[slot.key] = slot.item;
+      }
+      const data: ActiveDraftState = {
+        slots: slotsMap,
+        currentBundleIndex: this.currentBundleIndex(),
+        serviceAssembly: this.serviceAssembly(),
+        serviceStressTest: this.serviceStressTest(),
+      };
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(data));
+    } catch (_err) {
+      void _err;
+    }
+  }
+
+  private loadDraftFromStorage(): boolean {
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw) as Partial<ActiveDraftState>;
+      if (parsed && typeof parsed === 'object') {
+        const slotsMap = (parsed.slots || {}) as Partial<Record<BomCategory, SwapItem | null>>;
+        let hasItem = false;
+        this.bomSlots.set(
+          DEFAULT_BOM_SLOTS.map((slot) => {
+            const item = slotsMap[slot.key] ?? null;
+            if (item) hasItem = true;
+            return { ...slot, item };
+          })
+        );
+        if (typeof parsed.currentBundleIndex === 'number') {
+          this.currentBundleIndex.set(parsed.currentBundleIndex);
+        }
+        if (typeof parsed.serviceAssembly === 'boolean') {
+          this.serviceAssembly.set(parsed.serviceAssembly);
+        }
+        if (typeof parsed.serviceStressTest === 'boolean') {
+          this.serviceStressTest.set(parsed.serviceStressTest);
+        }
+        return hasItem;
+      }
+    } catch (_err) {
+      void _err;
+    }
+    return false;
+  }
+
+  private clearDraftStorage(): void {
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY);
+    } catch (_err) {
+      void _err;
+    }
+  }
+
+  private mapCategorySlugToBomCategory(rawCat: string): BomCategory | null {
+    const normalized = rawCat.trim().toLowerCase();
+    if (normalized === 'cpu' || normalized.includes('cpu') || normalized.includes('vi-xu-ly')) return 'cpu';
+    if (normalized === 'mainboard' || normalized.includes('mainboard') || normalized.includes('bo-mach')) return 'mainboard';
+    if (normalized === 'ram' || normalized.includes('ram') || normalized.includes('bo-nho')) return 'ram';
+    if (normalized === 'ssd' || normalized.includes('ssd') || normalized.includes('storage') || normalized.includes('o-cung') || normalized.includes('hdd')) return 'ssd';
+    if (normalized === 'vga' || normalized.includes('vga') || normalized.includes('gpu') || normalized.includes('card-man-hinh')) return 'vga';
+    if (normalized === 'psu' || normalized.includes('psu') || normalized.includes('nguon')) return 'psu';
+    if (normalized === 'cooling' || normalized.includes('cooling') || normalized.includes('tan-nhiet')) return 'cooling';
+    if (normalized === 'case' || normalized.includes('case') || normalized.includes('vo-may-tinh')) return 'case';
+    return null;
+  }
+
   private checkPendingBuildItem(): void {
     try {
       const raw = sessionStorage.getItem('el-tech.pending-pc-build-item');
-      if (raw) {
-        const item = JSON.parse(raw) as SwapItem;
-        if (item && item.category) {
-          const categoryKey = item.category as BomCategory;
-          this.bomSlots.update((slots) =>
-            slots.map((s) => (s.key === categoryKey ? { ...s, item } : s))
-          );
-          sessionStorage.removeItem('el-tech.pending-pc-build-item');
-        }
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      sessionStorage.removeItem('el-tech.pending-pc-build-item');
+      if (!parsed) return;
+
+      const rawCat = String(parsed.category || parsed.categorySlug || '');
+      const mappedCat = this.mapCategorySlugToBomCategory(rawCat);
+      if (!mappedCat) return;
+
+      const item: SwapItem = {
+        id: parsed.id || `sku-${parsed.skuId || parsed.productId}`,
+        skuId: Number(parsed.skuId || parsed.productId) || 0,
+        name: parsed.name || 'Linh kiện PC',
+        brand: parsed.brand || 'EL-TECH',
+        category: mappedCat,
+        price: Number(parsed.price) || 0,
+        tdp: Number(parsed.tdp) || 45,
+        specs: parsed.specs || parsed.model || '',
+        tag: parsed.tag || undefined,
+        imageUrl: parsed.imageUrl || (parsed.media && parsed.media[0]?.url) || '/images/products/placeholder.webp',
+        socket: parsed.socket,
+        memoryType: parsed.memoryType,
+        stockStatus: 'Sẵn hàng tại kho',
+        commonSpec: parsed.commonSpec,
+      };
+
+      const previousItem = this.bomSlots().find((s) => s.key === mappedCat)?.item;
+      this.bomSlots.update((slots) =>
+        slots.map((s) => (s.key === mappedCat ? { ...s, item } : s))
+      );
+      this.saveDraftToStorage();
+
+      if (previousItem && previousItem.skuId !== item.skuId) {
+        this.showNotification(`Đã thay thế "${previousItem.name}" bằng "${item.name}" trong cấu hình PC.`);
+      } else {
+        this.showNotification(`Đã thêm "${item.name}" vào cấu hình PC.`);
       }
     } catch (_error) {
       void _error;
@@ -482,9 +706,29 @@ export class CustomBuildPageComponent implements OnInit {
           (b) => String(b.id) === bundleParam || b.slug === bundleParam
         );
         if (matched) {
-          const matchedIndex = bundles.indexOf(matched);
-          this.currentBundleIndex.set(matchedIndex >= 0 ? matchedIndex : 0);
-          this.applyBundle(matched, components);
+          const hasItems = this.bomSlots().some((s) => s.item !== null);
+          if (hasItems) {
+            const isDifferent = DEFAULT_BOM_SLOTS.some((slot) => {
+              const currentItem = this.bomSlots().find((s) => s.key === slot.key)?.item;
+              const bundleLine = matched.build.lines.find((l) => l.category === slot.key);
+              if (!currentItem && !bundleLine) return false;
+              if (!currentItem || !bundleLine) return true;
+              return currentItem.skuId !== bundleLine.skuId;
+            });
+
+            if (isDifferent) {
+              this.pendingBundleToApply.set(matched);
+              this.overwriteModalOpen.set(true);
+            } else {
+              const matchedIndex = bundles.indexOf(matched);
+              this.currentBundleIndex.set(matchedIndex >= 0 ? matchedIndex : 0);
+            }
+          } else {
+            const matchedIndex = bundles.indexOf(matched);
+            this.currentBundleIndex.set(matchedIndex >= 0 ? matchedIndex : 0);
+            this.applyBundle(matched, components);
+            this.saveDraftToStorage();
+          }
         }
       }
     } catch (error) {
@@ -518,11 +762,12 @@ export class CustomBuildPageComponent implements OnInit {
           tag: line.socket ? `Socket ${line.socket}` : line.memoryType ? line.memoryType : undefined,
           socket: line.socket,
           memoryType: line.memoryType,
-          stockStatus: 'Sẵn hàng tại HN & HCM',
+          stockStatus: 'Sẵn hàng tại kho',
         };
         return { ...slot, item: fallbackItem };
       })
     );
+    this.saveDraftToStorage();
   }
 
   protected readonly activeItemCount = computed<number>(() => {
@@ -601,6 +846,8 @@ export class CustomBuildPageComponent implements OnInit {
   protected resetBuild(): void {
     this.currentBundleIndex.set(0);
     this.bomSlots.set(DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null })));
+    this.clearDraftStorage();
+    this.showNotification('Đã làm mới và xóa toàn bộ linh kiện trong cấu hình PC.');
   }
 
   protected togglePreset(): void {
@@ -609,12 +856,18 @@ export class CustomBuildPageComponent implements OnInit {
     const nextIndex = (this.currentBundleIndex() + 1) % list.length;
     this.currentBundleIndex.set(nextIndex);
     this.applyBundle(list[nextIndex]);
+    this.showNotification(`Đã chuyển sang cấu hình mẫu "${list[nextIndex].name}".`);
   }
 
   protected clearSlot(key: BomCategory): void {
+    const slot = this.bomSlots().find((s) => s.key === key);
     this.bomSlots.update((slots) =>
       slots.map((s) => (s.key === key ? { ...s, item: null } : s))
     );
+    this.saveDraftToStorage();
+    if (slot?.item) {
+      this.showNotification(`Đã bỏ ${slot.categoryName} khỏi cấu hình.`);
+    }
   }
 
   protected async openSwapModal(slot: BomSlot): Promise<void> {
@@ -648,9 +901,16 @@ export class CustomBuildPageComponent implements OnInit {
 
   protected onComponentSelected(item: SwapItem): void {
     const categoryKey = this.currentModalCategoryKey() as BomCategory;
+    const previousItem = this.bomSlots().find((s) => s.key === categoryKey)?.item;
     this.bomSlots.update((slots) =>
       slots.map((s) => (s.key === categoryKey ? { ...s, item } : s))
     );
+    this.saveDraftToStorage();
+    if (previousItem && previousItem.skuId !== item.skuId) {
+      this.showNotification(`Đã thay thế "${previousItem.name}" bằng "${item.name}" trong cấu hình PC.`);
+    } else {
+      this.showNotification(`Đã thêm "${item.name}" vào cấu hình PC.`);
+    }
   }
 
   protected printQuotation(): void {
@@ -697,6 +957,10 @@ export class CustomBuildPageComponent implements OnInit {
         items,
         hasAssemblyService: this.serviceAssembly(),
       });
+
+      this.clearDraftStorage();
+      this.bomSlots.set(DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null })));
+      this.currentBundleIndex.set(0);
     } finally {
       this.adding.set(false);
     }

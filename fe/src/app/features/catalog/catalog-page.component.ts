@@ -747,7 +747,7 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
         </div>
       </div>
       <div class="flex items-center gap-2 shrink-0">
-        <a routerLink="/xay-dung-pc" appButton variant="primary" size="sm">
+        <a routerLink="/tu-lap-pc" appButton variant="primary" size="sm">
           Đến PC Builder
         </a>
         <button type="button" (click)="buildNotification.set(null)" class="text-muted hover:text-foreground p-1 cursor-pointer">
@@ -1113,10 +1113,12 @@ export class CatalogPageComponent {
       name: product.name,
       categorySlug: product.category.slug,
       categoryName: product.category.name,
+      brand: product.brand?.name || 'EL-TECH',
       price: product.variants[0]?.sellingPrice || '0',
       skuId: product.variants[0]?.id || 0,
       media: product.media,
       model: product.model,
+      specs: product.model || product.name,
     };
     try {
       sessionStorage.setItem('el-tech.pending-pc-build-item', JSON.stringify(item));
