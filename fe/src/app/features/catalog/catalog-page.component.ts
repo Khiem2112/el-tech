@@ -558,9 +558,13 @@ import { AppIconModule, BadgeDirective, ButtonDirective, InputDirective, SelectC
       @if (totalPages() > 1) {
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-line">
           <div class="text-xs text-muted">
-            Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
-            <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), total()) }}</span>
-            trong tổng số <span class="font-bold text-foreground tabular">{{ total() }}</span> linh kiện
+            @if (total() === 0) {
+              Hiển thị 0 trong tổng số 0 linh kiện
+            } @else {
+              Hiển thị <span class="font-bold text-foreground tabular">{{ (currentPage() - 1) * pageSize + 1 }}</span> -
+              <span class="font-bold text-foreground tabular">{{ min((currentPage() * pageSize), total()) }}</span>
+              trong tổng số <span class="font-bold text-foreground tabular">{{ total() }}</span> linh kiện
+            }
           </div>
           <div class="flex items-center gap-1.5">
             <button
@@ -951,6 +955,7 @@ export class CatalogPageComponent {
       }
       return next;
     });
+    this.currentPage.set(1);
     this.search();
   }
 
@@ -1160,6 +1165,12 @@ export class CatalogPageComponent {
         page: this.currentPage(),
         limit: this.pageSize,
       });
+
+      if (result.totalPages > 0 && this.currentPage() > result.totalPages) {
+        this.setPage(1);
+        return;
+      }
+
       this.products.set(result.items);
       this.total.set(result.total);
       this.totalPages.set(result.totalPages);
@@ -1170,7 +1181,10 @@ export class CatalogPageComponent {
     }
   }
 
-  protected search(): void {
+  protected search(resetPage = true): void {
+    if (resetPage) {
+      this.currentPage.set(1);
+    }
     const specParams: Record<string, string | null> = {};
     for (const [key, val] of Object.entries(this.selectedSpecs())) {
       if (val) {
@@ -1183,7 +1197,7 @@ export class CatalogPageComponent {
         q: this.query.trim() || null,
         category: this.category() || null,
         brand: this.brand() || null,
-                stockStatus: this.stockStatus() || null,
+        stockStatus: this.stockStatus() || null,
         minPrice: this.minPrice() !== null ? this.minPrice() : null,
         maxPrice: this.maxPrice() !== null ? this.maxPrice() : null,
         sort: this.sort() || null,

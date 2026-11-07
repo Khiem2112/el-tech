@@ -10,9 +10,14 @@ import { ButtonDirective } from '../../components/atoms/button/button.directive'
 import { BadgeDirective } from '../../components/atoms/badge/badge.directive';
 import { InputDirective } from '../../components/atoms/input/input.directive';
 import { AppIconModule } from '../../components/atoms/icon/icon.module';
+import { checkoutCustomerSchema } from '../../forms/checkout.schema';
 
 type Quote = {
   readonly subtotal: string;
+  readonly productDiscount?: string;
+  readonly couponDiscount?: string;
+  readonly discountAmount?: string;
+  readonly couponCode?: string;
   readonly shippingFee: string;
   readonly grandTotal: string;
   readonly branches: readonly { id: number; name: string; available: boolean }[];
@@ -139,8 +144,17 @@ type SubmitResult = {
                     appInput
                     class="w-full text-sm font-medium"
                     [(ngModel)]="name"
+                    (blur)="validateField('name')"
+                    (ngModelChange)="clearFieldError('name')"
+                    [class.border-danger]="validationErrors()['name']"
                     placeholder="Ví dụ: Nguyễn Hoàng Nam"
                   >
+                  @if (validationErrors()['name']; as errorMsg) {
+                    <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                      <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                      <span>{{ errorMsg }}</span>
+                    </p>
+                  }
                 </div>
 
                 <div class="grid sm:grid-cols-2 gap-4">
@@ -153,8 +167,17 @@ type SubmitResult = {
                       class="w-full text-sm font-medium"
                       [(ngModel)]="phone"
                       type="tel"
+                      (blur)="validateField('phone')"
+                      (ngModelChange)="clearFieldError('phone')"
+                      [class.border-danger]="validationErrors()['phone']"
                       placeholder="Ví dụ: 0988 234 567"
                     >
+                    @if (validationErrors()['phone']; as errorMsg) {
+                      <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                        <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                        <span>{{ errorMsg }}</span>
+                      </p>
+                    }
                   </div>
 
                   <div>
@@ -166,8 +189,17 @@ type SubmitResult = {
                       class="w-full text-sm font-medium"
                       [(ngModel)]="email"
                       type="email"
+                      (blur)="validateField('email')"
+                      (ngModelChange)="clearFieldError('email')"
+                      [class.border-danger]="validationErrors()['email']"
                       placeholder="hoangnam.tech@gmail.com"
                     >
+                    @if (validationErrors()['email']; as errorMsg) {
+                      <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                        <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                        <span>{{ errorMsg }}</span>
+                      </p>
+                    }
                   </div>
                 </div>
               </div>
@@ -257,8 +289,17 @@ type SubmitResult = {
                         appInput
                         class="w-full text-sm font-medium"
                         [(ngModel)]="province"
+                        (blur)="validateField('province')"
+                        (ngModelChange)="clearFieldError('province')"
+                        [class.border-danger]="validationErrors()['province']"
                         placeholder="TP. Hồ Chí Minh / Hà Nội / Đà Nẵng..."
                       >
+                      @if (validationErrors()['province']; as errorMsg) {
+                        <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                          <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                          <span>{{ errorMsg }}</span>
+                        </p>
+                      }
                     </div>
 
                     <div>
@@ -269,8 +310,17 @@ type SubmitResult = {
                         appInput
                         class="w-full text-sm font-medium"
                         [(ngModel)]="district"
+                        (blur)="validateField('district')"
+                        (ngModelChange)="clearFieldError('district')"
+                        [class.border-danger]="validationErrors()['district']"
                         placeholder="Quận 10 / Q. Đống Đa..."
                       >
+                      @if (validationErrors()['district']; as errorMsg) {
+                        <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                          <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                          <span>{{ errorMsg }}</span>
+                        </p>
+                      }
                     </div>
                   </div>
 
@@ -282,8 +332,17 @@ type SubmitResult = {
                       appInput
                       class="w-full text-sm font-medium"
                       [(ngModel)]="streetAddress"
+                      (blur)="validateField('streetAddress')"
+                      (ngModelChange)="clearFieldError('streetAddress')"
+                      [class.border-danger]="validationErrors()['streetAddress']"
                       placeholder="Số 280 Ba Tháng Hai, Phường 12..."
                     >
+                    @if (validationErrors()['streetAddress']; as errorMsg) {
+                      <p class="text-xs text-danger font-medium mt-1 flex items-center gap-1">
+                        <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                        <span>{{ errorMsg }}</span>
+                      </p>
+                    }
                   </div>
                 </div>
               }
@@ -338,7 +397,7 @@ type SubmitResult = {
                       </span>
                     </div>
                     <span class="text-xs text-muted mt-0.5 block leading-relaxed">
-                      Giữ hàng ngay lập tức. Khớp lệnh tự động trong 30 giây qua ngân hàng MB Bank.
+                      Giữ hàng ngay lập tức. Thanh toán qua ngân hàng.
                     </span>
                   </div>
                 </label>
@@ -458,6 +517,63 @@ type SubmitResult = {
                 }
               </div>
 
+              <!-- Coupon Code Input Box -->
+              <div class="pt-3 border-t border-line space-y-2">
+                <label class="block text-xs font-bold text-foreground">
+                  Mã giảm giá / Coupon (Tùy chọn)
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    appInput
+                    class="flex-1 text-xs font-medium uppercase"
+                    [(ngModel)]="couponCodeInput"
+                    [disabled]="!!appliedCouponCode() || applyingCoupon()"
+                    placeholder="Nhập mã ưu đãi..."
+                  >
+                  @if (!appliedCouponCode()) {
+                    <button
+                      type="button"
+                      appButton
+                      variant="secondary"
+                      size="sm"
+                      class="shrink-0 cursor-pointer text-xs font-semibold"
+                      [disabled]="!couponCodeInput.trim() || applyingCoupon()"
+                      (click)="applyCoupon()"
+                    >
+                      <lucide-icon [name]="applyingCoupon() ? 'loader-2' : 'Tag'" class="size-3.5" [class.animate-spin]="applyingCoupon()" aria-hidden="true"></lucide-icon>
+                      <span>{{ applyingCoupon() ? 'Đang kiểm tra...' : 'Áp dụng' }}</span>
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      appButton
+                      variant="outline"
+                      size="sm"
+                      class="shrink-0 cursor-pointer text-xs text-danger border-danger/30 hover:bg-danger/10"
+                      (click)="removeCoupon()"
+                    >
+                      <span>Bỏ mã</span>
+                    </button>
+                  }
+                </div>
+
+                @if (couponError()) {
+                  <p class="text-xs text-danger font-medium flex items-center gap-1">
+                    <lucide-icon name="AlertCircle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
+                    <span>{{ couponError() }}</span>
+                  </p>
+                }
+                @if (appliedCouponCode(); as code) {
+                  <div class="flex items-center justify-between text-xs p-2 rounded-md bg-primary/10 border border-primary/20 text-primary">
+                    <div class="flex items-center gap-1.5 font-bold">
+                      <lucide-icon name="Check" class="size-3.5" aria-hidden="true"></lucide-icon>
+                      <span>Đã áp dụng mã: {{ code }}</span>
+                    </div>
+                    <span class="font-bold tabular">- {{ couponDiscountAmount() | vnd }}</span>
+                  </div>
+                }
+              </div>
+
               <!-- Price Breakdown Table -->
               <div class="space-y-2 pt-3 border-t border-line text-xs">
                 <div class="flex justify-between text-muted">
@@ -467,17 +583,24 @@ type SubmitResult = {
                   </span>
                 </div>
 
-                @if (appliedCoupon()) {
+                @if (productDiscountAmount() > 0) {
+                  <div class="flex justify-between text-primary font-medium">
+                    <span>Chính sách khuyến mãi (CSKM):</span>
+                    <span class="tabular">- {{ productDiscountAmount() | vnd }}</span>
+                  </div>
+                }
+
+                @if (appliedCouponCode() && couponDiscountAmount() > 0) {
                   <div class="flex justify-between text-primary font-medium">
                     <span>Ưu đãi mã giảm giá:</span>
-                    <span class="tabular">- {{ couponDiscountAmount | vnd }}</span>
+                    <span class="tabular">- {{ couponDiscountAmount() | vnd }}</span>
                   </div>
                 }
 
                 <div class="flex justify-between text-muted">
                   <span>Phí vận chuyển:</span>
                   <span class="font-semibold text-primary tabular">
-                    {{ fulfillment === 'PICKUP' ? 'Miễn phí tại showroom' : (quoteResult()?.shippingFee ? ((quoteResult()?.shippingFee ?? '0') | vnd) : 'Miễn phí toàn quốc') }}
+                    {{ fulfillment === 'PICKUP' ? 'Miễn phí tại showroom' : (shippingFeeAmount() > 0 ? (shippingFeeAmount() | vnd) : 'Miễn phí giao hàng') }}
                   </span>
                 </div>
 
@@ -593,6 +716,20 @@ type SubmitResult = {
               </div>
             }
 
+            @if (hasValidationErrors()) {
+              <div class="p-3.5 rounded-lg border border-danger/40 bg-danger/10 text-danger text-xs space-y-1.5">
+                <div class="font-bold flex items-center gap-1.5">
+                  <lucide-icon name="AlertCircle" class="size-4 shrink-0" aria-hidden="true"></lucide-icon>
+                  <span>Thông tin đơn hàng chưa đầy đủ hoặc sai định dạng:</span>
+                </div>
+                <ul class="list-disc list-inside space-y-0.5 pl-1.5 text-danger font-medium">
+                  @for (err of validationErrorList(); track err) {
+                    <li>{{ err }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
             <!-- Submit Action Button -->
             <button
               type="button"
@@ -600,7 +737,7 @@ type SubmitResult = {
               variant="primary"
               size="lg"
               class="w-full font-bold h-12 text-sm shadow-md cursor-pointer"
-              [disabled]="submitting() || !name.trim() || !phone.trim() || !email.trim() || (fulfillment === 'DELIVERY' && (!province.trim() || !district.trim() || !streetAddress.trim()))"
+              [disabled]="submitting()"
               (click)="submit()"
             >
               <lucide-icon [name]="submitting() ? 'loader-2' : 'ShieldCheck'" class="size-4" [class.animate-spin]="submitting()" aria-hidden="true"></lucide-icon>
@@ -637,8 +774,17 @@ export class CheckoutPageComponent implements OnInit {
   protected streetAddress = '';
   protected technicalNotes = '';
 
-  protected readonly appliedCoupon = signal(true);
-  protected readonly couponDiscountAmount = 500000;
+  protected couponCodeInput = '';
+  protected readonly appliedCouponCode = signal<string | null>(null);
+  protected readonly couponDiscountAmount = signal<number>(0);
+  protected readonly productDiscountAmount = signal<number>(0);
+  protected readonly shippingFeeAmount = signal<number>(0);
+  protected readonly couponError = signal<string | null>(null);
+  protected readonly applyingCoupon = signal<boolean>(false);
+
+  protected readonly validationErrors = signal<Record<string, string>>({});
+  protected readonly hasAttemptedSubmit = signal<boolean>(false);
+
   protected readonly qrTransferMemo = `ELTECH-ORD-${Math.floor(10000 + Math.random() * 90000)}`;
 
   protected readonly expandedBuilds = signal<Record<string, boolean>>({});
@@ -652,12 +798,26 @@ export class CheckoutPageComponent implements OnInit {
     return this.cart.items().filter((item) => !item.pcBuildKey && !item.pcBuildName);
   });
 
+  protected readonly validationErrorList = computed(() => {
+    return Object.values(this.validationErrors());
+  });
+
+  protected readonly hasValidationErrors = computed(() => {
+    return Object.keys(this.validationErrors()).length > 0;
+  });
+
   protected readonly computedGrandTotal = computed(() => {
     const quote = this.quoteResult();
-    const rawTotal = quote ? BigInt(quote.grandTotal) : BigInt(this.cart.subtotal());
-    const discount = this.appliedCoupon() ? BigInt(this.couponDiscountAmount) : 0n;
-    const finalVal = rawTotal > discount ? rawTotal - discount : 0n;
-    return finalVal.toString();
+    if (quote) {
+      return quote.grandTotal;
+    }
+    const rawTotal = BigInt(this.cart.subtotal());
+    const promo = BigInt(this.productDiscountAmount());
+    const coup = BigInt(this.couponDiscountAmount());
+    const totalDisc = promo + coup;
+    const netSubtotal = rawTotal > totalDisc ? rawTotal - totalDisc : 0n;
+    const ship = this.fulfillment === 'DELIVERY' ? BigInt(this.shippingFeeAmount()) : 0n;
+    return (netSubtotal + ship).toString();
   });
 
   protected readonly vietQrUrl = computed<string>(() => {
@@ -691,22 +851,133 @@ export class CheckoutPageComponent implements OnInit {
 
   protected setFulfillment(method: 'PICKUP' | 'DELIVERY'): void {
     this.fulfillment = method;
+    if (this.hasAttemptedSubmit()) {
+      this.runValidation();
+    }
     void this.fetchQuote();
   }
 
-  protected async fetchQuote(): Promise<void> {
+  protected async applyCoupon(): Promise<void> {
+    const code = this.couponCodeInput.trim();
+    if (!code) {
+      this.couponError.set('Vui lòng nhập mã giảm giá trước khi áp dụng.');
+      return;
+    }
+    this.applyingCoupon.set(true);
+    this.couponError.set(null);
+    try {
+      await this.fetchQuote(code);
+      const quote = this.quoteResult();
+      const discount = Number(quote?.couponDiscount ?? quote?.discountAmount ?? 0);
+      if (discount > 0 || quote?.couponCode) {
+        this.appliedCouponCode.set(quote?.couponCode ?? code);
+        this.couponDiscountAmount.set(discount);
+        this.couponError.set(null);
+      } else {
+        this.appliedCouponCode.set(null);
+        this.couponDiscountAmount.set(0);
+        this.couponError.set('Mã giảm giá không áp dụng được cho đơn hàng này.');
+      }
+    } catch (err: unknown) {
+      this.appliedCouponCode.set(null);
+      this.couponDiscountAmount.set(0);
+      const message = err instanceof Error ? err.message : 'Mã giảm giá không hợp lệ hoặc đã hết hạn sử dụng.';
+      this.couponError.set(message);
+    } finally {
+      this.applyingCoupon.set(false);
+    }
+  }
+
+  protected async removeCoupon(): Promise<void> {
+    this.appliedCouponCode.set(null);
+    this.couponDiscountAmount.set(0);
+    this.couponCodeInput = '';
+    this.couponError.set(null);
+    await this.fetchQuote();
+  }
+
+  protected validateField(_fieldName?: string): void {
+    if (!this.hasAttemptedSubmit()) return;
+    this.runValidation();
+  }
+
+  protected clearFieldError(fieldName: string): void {
+    if (this.validationErrors()[fieldName]) {
+      this.validationErrors.update((prev) => {
+        const next = { ...prev };
+        delete next[fieldName];
+        return next;
+      });
+    }
+  }
+
+  protected runValidation(): boolean {
+    const data = {
+      name: this.name,
+      phone: this.phone,
+      email: this.email,
+      fulfillmentMethod: this.fulfillment,
+      province: this.province,
+      district: this.district,
+      streetAddress: this.streetAddress,
+      paymentMethod: this.paymentMethod,
+    };
+
+    const result = checkoutCustomerSchema.safeParse(data);
+    if (result.success) {
+      this.validationErrors.set({});
+      return true;
+    }
+
+    const errors: Record<string, string> = {};
+    for (const issue of result.error.issues) {
+      const pathKey = issue.path[0] as string;
+      if (!errors[pathKey]) {
+        errors[pathKey] = issue.message;
+      }
+    }
+    this.validationErrors.set(errors);
+    return false;
+  }
+
+  protected async fetchQuote(couponCode?: string): Promise<void> {
     const token = this.cart.cartToken();
     if (!token) return;
+    const codeToUse = couponCode !== undefined ? couponCode : (this.appliedCouponCode() ?? undefined);
     try {
       const response = await this.api.post<Quote>('/checkout/quote', {
         cartToken: token,
         fulfillmentMethod: this.fulfillment,
+        couponCode: codeToUse || undefined,
       });
       if (response.success) {
         this.quoteResult.set(response.data);
+        this.productDiscountAmount.set(Number(response.data.productDiscount ?? 0));
+        this.shippingFeeAmount.set(Number(response.data.shippingFee ?? 0));
+        if (response.data.couponCode) {
+          this.appliedCouponCode.set(response.data.couponCode);
+          this.couponDiscountAmount.set(Number(response.data.couponDiscount ?? response.data.discountAmount ?? 0));
+        } else if (!codeToUse) {
+          this.appliedCouponCode.set(null);
+          this.couponDiscountAmount.set(0);
+        }
+      } else {
+        const err = response.error;
+        const msg = err.messageKey === 'error.couponNotFound'
+          ? 'Mã giảm giá không tồn tại hoặc đã bị vô hiệu hóa.'
+          : (err.messageKey === 'error.couponExpired'
+            ? 'Mã giảm giá chưa có hiệu lực hoặc đã hết hạn sử dụng.'
+            : (err.messageKey === 'error.couponMinimumSubtotalNotMet'
+              ? 'Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã giảm giá này.'
+              : (err.messageKey === 'error.couponQuotaExceeded'
+                ? 'Mã giảm giá đã hết lượt sử dụng trên toàn hệ thống.'
+                : (err.messageKey || 'Lỗi khi kiểm tra mã giảm giá.'))));
+        throw new Error(msg);
       }
-    } catch {
-      // Keep existing calculated values on network or background quote failure
+    } catch (e: unknown) {
+      if (couponCode) {
+        throw e;
+      }
     }
   }
 
@@ -747,6 +1018,18 @@ export class CheckoutPageComponent implements OnInit {
   }
 
   protected async submit(): Promise<void> {
+    this.hasAttemptedSubmit.set(true);
+    const isValid = this.runValidation();
+    if (!isValid) {
+      if (typeof window !== 'undefined') {
+        const firstInvalid = document.querySelector('.border-danger');
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+      return;
+    }
+
     const cartToken = this.cart.cartToken();
     if (!cartToken) return;
 
@@ -760,12 +1043,13 @@ export class CheckoutPageComponent implements OnInit {
         '/checkout/submit',
         {
           cartToken,
-          receiverName: this.name,
-          receiverEmail: this.email,
-          receiverPhone: this.phone,
+          receiverName: this.name.trim(),
+          receiverEmail: this.email.trim(),
+          receiverPhone: this.phone.trim(),
           fulfillmentMethod: this.fulfillment,
           paymentMethod: this.paymentMethod,
           deliveryAddress,
+          couponCode: this.appliedCouponCode() || undefined,
         },
         { idempotencyKey: createIdempotencyKey() }
       );

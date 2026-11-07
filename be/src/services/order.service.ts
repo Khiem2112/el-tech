@@ -94,8 +94,92 @@ export const orderService = {
       if ([...quantities].some(([skuId, quantity]) => { const stock = stocks.find((entry) => entry.skuId === skuId); return !stock || stock.onHand - stock.reserved - stock.quarantineDamaged < quantity; })) throw new DomainError('INSUFFICIENT_STOCK', { ruleId: 'INV-004', messageKey: 'error.insufficientStock', status: 409 });
 
       const subtotal = cart.items.reduce((sum, item) => item.sku ? sum.add(item.sku.sellingPrice.mul(item.quantity)) : sum, new Prisma.Decimal(0));
-      const feeConfig = input.fulfillmentMethod === 'DELIVERY' ? await tx.deliveryFeeConfig.findFirst({ where: { isActive: true, effectiveFrom: { lte: new Date() }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: new Date() } }] }, orderBy: { effectiveFrom: 'desc' } }) : null;
-      const shippingFee = feeConfig && subtotal.lessThan(feeConfig.freeShippingThreshold) ? feeConfig.fixedFee : new Prisma.Decimal(0);
+      const now = new Date();
+
+      const activePromotions = await tx.productPromotion.findMany({
+        where: {
+          isActive: true,
+          effectiveFrom: { lte: now },
+          effectiveTo: { gte: now },
+        },
+        include: {
+          skuTargets: true,
+          categoryTargets: true,
+        },
+      });
+
+      let totalProductDiscount = new Prisma.Decimal(0);
+      const lineDiscounts = new Map<string, { productDiscount: Prisma.Decimal; bestPromoId?: string }>();
+
+      for (const item of cart.items) {
+        if (!item.sku || item.lineType !== 'SKU') continue;
+        const skuId = item.skuId;
+        const categoryId = item.sku.productTemplate?.categoryId;
+        const unitPrice = item.sku.sellingPrice;
+
+        const matchingPromos = activePromotions.filter((promo) => {
+          const matchesSku = promo.skuTargets.some((target) => target.skuId === skuId);
+          const matchesCategory = categoryId !== undefined ? promo.categoryTargets.some((target) => target.categoryId === categoryId) : false;
+          return matchesSku || matchesCategory;
+        });
+
+        let bestUnitDiscount = new Prisma.Decimal(0);
+        let bestPromoId: string | undefined;
+
+        for (const promo of matchingPromos) {
+          let promoUnitDiscount = new Prisma.Decimal(0);
+          if (promo.discountType === 'PERCENTAGE') {
+            promoUnitDiscount = unitPrice
+              .mul(promo.discountValue)
+              .div(100)
+              .toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
+          } else {
+            promoUnitDiscount = Prisma.Decimal.min(promo.discountValue, unitPrice);
+          }
+          if (promoUnitDiscount.greaterThan(bestUnitDiscount)) {
+            bestUnitDiscount = promoUnitDiscount;
+            bestPromoId = promo.id;
+          }
+        }
+
+        const lineProductDiscount = bestUnitDiscount.mul(item.quantity);
+        totalProductDiscount = totalProductDiscount.add(lineProductDiscount);
+        lineDiscounts.set(item.id, { productDiscount: lineProductDiscount, bestPromoId });
+      }
+
+      const eligibleSubtotal = Prisma.Decimal.max(new Prisma.Decimal(0), subtotal.sub(totalProductDiscount));
+
+      let feeConfig = input.fulfillmentMethod === 'DELIVERY'
+        ? await tx.deliveryFeeConfig.findFirst({
+            where: {
+              isActive: true,
+              effectiveFrom: { lte: now },
+              OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }],
+            },
+            orderBy: { effectiveFrom: 'desc' },
+          })
+        : null;
+
+      if (input.fulfillmentMethod === 'DELIVERY' && !feeConfig) {
+        feeConfig = await tx.deliveryFeeConfig.findFirst({
+          where: { isActive: true },
+          orderBy: { effectiveFrom: 'desc' },
+        });
+        if (!feeConfig) {
+          feeConfig = await tx.deliveryFeeConfig.create({
+            data: {
+              fixedFee: new Prisma.Decimal(50000),
+              freeShippingThreshold: new Prisma.Decimal(5000000),
+              effectiveFrom: new Date('2026-01-01T00:00:00.000Z'),
+              isActive: true,
+            },
+          });
+        }
+      }
+
+      const shippingFee = (input.fulfillmentMethod === 'DELIVERY' && feeConfig && eligibleSubtotal.lessThan(feeConfig.freeShippingThreshold))
+        ? feeConfig.fixedFee
+        : new Prisma.Decimal(0);
 
       const normalizedEmail = input.receiverEmail.trim().toLowerCase();
       const normalizedPhone = input.receiverPhone.trim();
@@ -137,7 +221,6 @@ export const orderService = {
 
       if (input.couponCode && input.couponCode.trim()) {
         const trimmedCode = input.couponCode.trim();
-        const now = new Date();
         const coupon = await tx.coupon.findFirst({
           where: {
             code: { equals: trimmedCode, mode: 'insensitive' },
@@ -202,18 +285,18 @@ export const orderService = {
         }
 
         if (coupon.discountType === 'PERCENTAGE') {
-          const percentDiscount = subtotal.mul(coupon.discountValue).div(100).toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
+          const percentDiscount = eligibleSubtotal.mul(coupon.discountValue).div(100).toDecimalPlaces(0, Prisma.Decimal.ROUND_HALF_UP);
           couponDiscount = coupon.maximumDiscount !== null
             ? Prisma.Decimal.min(percentDiscount, coupon.maximumDiscount)
             : percentDiscount;
         } else {
-          couponDiscount = Prisma.Decimal.min(coupon.discountValue, subtotal);
+          couponDiscount = Prisma.Decimal.min(coupon.discountValue, eligibleSubtotal);
         }
 
         appliedCoupon = { id: coupon.id, code: coupon.code };
       }
 
-      const grandTotal = Prisma.Decimal.max(new Prisma.Decimal(0), subtotal.sub(couponDiscount).add(shippingFee));
+      const grandTotal = Prisma.Decimal.max(new Prisma.Decimal(0), eligibleSubtotal.sub(couponDiscount).add(shippingFee));
 
       const depositRequired = new Prisma.Decimal(0);
       let codRemaining = new Prisma.Decimal(0);
@@ -238,6 +321,7 @@ export const orderService = {
           paymentMethod: input.paymentMethod,
           status,
           subtotal,
+          productDiscount: totalProductDiscount,
           couponDiscount,
           shippingFee,
           grandTotal,
@@ -250,27 +334,35 @@ export const orderService = {
           branchSnapshot: { id: branch.id, name: branch.name, address: branch.address },
           pricingSnapshot: {
             subtotal: asVnd(subtotal),
+            productDiscount: asVnd(totalProductDiscount),
             couponDiscount: asVnd(couponDiscount),
             shippingFee: asVnd(shippingFee),
             grandTotal: asVnd(grandTotal),
           },
           lines: {
-            create: cart.items.map((item, sortOrder) => ({
-              skuId: item.skuId ?? undefined,
-              sourcePcBundleId: item.sourcePcBundleId ?? undefined,
-              lineType: item.lineType,
-              serviceType: item.serviceType ?? undefined,
-              pcBuildKey: item.pcBuildKey ?? undefined,
-              pcBuildNameSnapshot: item.pcBuildName ?? undefined,
-              pcBuildTypeSnapshot: item.pcBuildType ?? undefined,
-              skuSnapshot: item.sku?.sku ?? (item.lineType === 'SERVICE' ? 'SERVICE-ASSEMBLY' : undefined),
-              nameSnapshot: item.sku?.productTemplate.name ?? (item.lineType === 'SERVICE' ? `Dich vu lap rap PC (${item.pcBuildName ?? 'PC'})` : 'San pham'),
-              specSnapshot: item.sku?.variantSpec === null ? Prisma.JsonNull : ((item.sku?.variantSpec ?? {}) as Prisma.InputJsonValue),
-              quantity: item.quantity,
-              unitPrice: item.sku ? item.sku.sellingPrice : new Prisma.Decimal(0),
-              netAmount: item.sku ? item.sku.sellingPrice.mul(item.quantity) : new Prisma.Decimal(0),
-              sortOrder,
-            })),
+            create: cart.items.map((item, sortOrder) => {
+              const itemDiscount = lineDiscounts.get(item.id)?.productDiscount ?? new Prisma.Decimal(0);
+              const lineBase = item.sku ? item.sku.sellingPrice.mul(item.quantity) : new Prisma.Decimal(0);
+              const lineNet = Prisma.Decimal.max(new Prisma.Decimal(0), lineBase.sub(itemDiscount));
+              return {
+                skuId: item.skuId ?? undefined,
+                sourcePcBundleId: item.sourcePcBundleId ?? undefined,
+                lineType: item.lineType,
+                serviceType: item.serviceType ?? undefined,
+                pcBuildKey: item.pcBuildKey ?? undefined,
+                pcBuildNameSnapshot: item.pcBuildName ?? undefined,
+                pcBuildTypeSnapshot: item.pcBuildType ?? undefined,
+                skuSnapshot: item.sku?.sku ?? (item.lineType === 'SERVICE' ? 'SERVICE-ASSEMBLY' : undefined),
+                nameSnapshot: item.sku?.productTemplate.name ?? (item.lineType === 'SERVICE' ? `Dich vu lap rap PC (${item.pcBuildName ?? 'PC'})` : 'San pham'),
+                specSnapshot: item.sku?.variantSpec === null ? Prisma.JsonNull : ((item.sku?.variantSpec ?? {}) as Prisma.InputJsonValue),
+                quantity: item.quantity,
+                unitPrice: item.sku ? item.sku.sellingPrice : new Prisma.Decimal(0),
+                productDiscount: itemDiscount,
+                couponDiscount: new Prisma.Decimal(0),
+                netAmount: lineNet,
+                sortOrder,
+              };
+            }),
           },
         },
       });

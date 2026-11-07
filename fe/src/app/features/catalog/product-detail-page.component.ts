@@ -138,7 +138,11 @@ const SPEC_LABEL_MAP: Record<string, string> = {
               <h1 class="mt-2 text-xl sm:text-2xl lg:text-3xl font-black text-foreground tracking-tight">{{ item.name }}</h1>
               
               <div class="mt-2.5 flex items-center gap-3 text-xs flex-wrap">
-                <span class="font-bold text-warning">5/5 Sao ({{ reviews().length }} đánh giá từ khách hàng)</span>
+                @if (ratingStats().total === 0) {
+                  <span class="font-medium text-muted">Sản phẩm chưa có đánh giá</span>
+                } @else {
+                  <span class="font-bold text-warning">{{ ratingStats().average }}/5 Sao ({{ ratingStats().total }} đánh giá từ khách hàng)</span>
+                }
                 <span class="text-border">|</span>
                 <span appBadge variant="success">Có thể đặt hàng ngay</span>
               </div>
@@ -387,29 +391,42 @@ const SPEC_LABEL_MAP: Record<string, string> = {
           @if (activeTab() === 'reviews') {
             <div class="py-5 max-w-4xl space-y-6">
               <!-- Star Rating Summary & Histogram -->
-              <div class="grid sm:grid-cols-12 gap-6 p-5 rounded-xl border border-line bg-surface-alt">
-                <div class="sm:col-span-4 flex flex-col items-center justify-center border-b sm:border-b-0 sm:border-r border-line pb-4 sm:pb-0 sm:pr-4 text-center">
-                  <div class="text-4xl font-black text-foreground">{{ ratingStats().average }}</div>
-                  <div class="flex items-center gap-1 text-warning my-1.5">
-                    @for (s of [1, 2, 3, 4, 5]; track s) {
-                      <lucide-icon name="Star" class="size-4 fill-current"></lucide-icon>
+              @if (ratingStats().total === 0) {
+                <div class="p-6 rounded-xl border border-line bg-surface-alt text-center space-y-1.5">
+                  <div class="text-base font-bold text-foreground">Sản phẩm chưa có đánh giá</div>
+                  <p class="text-xs text-muted">Chưa có lượt đánh giá nào từ khách hàng cho sản phẩm này.</p>
+                </div>
+              } @else {
+                <div class="grid sm:grid-cols-12 gap-6 p-5 rounded-xl border border-line bg-surface-alt">
+                  <div class="sm:col-span-4 flex flex-col items-center justify-center border-b sm:border-b-0 sm:border-r border-line pb-4 sm:pb-0 sm:pr-4 text-center">
+                    <div class="text-4xl font-black text-foreground">{{ ratingStats().average }}</div>
+                    <div class="flex items-center gap-1 text-warning my-1.5">
+                      @for (s of [1, 2, 3, 4, 5]; track s) {
+                        <lucide-icon
+                          name="Star"
+                          class="size-4"
+                          [class.fill-current]="s <= roundedAverageRating()"
+                          [class.text-warning]="s <= roundedAverageRating()"
+                          [class.text-muted]="s > roundedAverageRating()"
+                        ></lucide-icon>
+                      }
+                    </div>
+                    <div class="text-xs text-muted">Dựa trên {{ ratingStats().total }} đánh giá từ khách hàng</div>
+                  </div>
+
+                  <div class="sm:col-span-8 space-y-2">
+                    @for (row of ratingStats().histogram; track row.star) {
+                      <div class="flex items-center gap-3 text-xs">
+                        <span class="w-12 font-medium text-muted shrink-0">{{ row.star }} sao</span>
+                        <div class="h-2 rounded-full bg-surface overflow-hidden flex-1 border border-line">
+                          <div class="h-full bg-warning rounded-full transition-all duration-500" [style.width.%]="row.percentage"></div>
+                        </div>
+                        <span class="w-16 text-right tabular text-muted shrink-0">{{ row.count }} ({{ row.percentage }}%)</span>
+                      </div>
                     }
                   </div>
-                  <div class="text-xs text-muted">Dựa trên {{ ratingStats().total }} đánh giá đã mua hàng</div>
                 </div>
-
-                <div class="sm:col-span-8 space-y-2">
-                  @for (row of ratingStats().histogram; track row.star) {
-                    <div class="flex items-center gap-3 text-xs">
-                      <span class="w-12 font-medium text-muted shrink-0">{{ row.star }} sao</span>
-                      <div class="h-2 rounded-full bg-surface overflow-hidden flex-1 border border-line">
-                        <div class="h-full bg-warning rounded-full transition-all duration-500" [style.width.%]="row.percentage"></div>
-                      </div>
-                      <span class="w-16 text-right tabular text-muted shrink-0">{{ row.count }} ({{ row.percentage }}%)</span>
-                    </div>
-                  }
-                </div>
-              </div>
+              }
 
               <div class="flex items-center justify-between flex-wrap gap-3 p-4 rounded-lg border border-line bg-surface-alt">
                 <div>
@@ -430,7 +447,7 @@ const SPEC_LABEL_MAP: Record<string, string> = {
 
               @if (reviews().length === 0) {
                 <div class="rounded-lg border border-dashed border-line p-8 text-center bg-surface">
-                  <p class="text-sm font-bold text-foreground">Chưa có đánh giá nào cho sản phẩm này</p>
+                  <p class="text-sm font-bold text-foreground">Sản phẩm chưa có đánh giá</p>
                   <p class="mt-1 text-xs text-muted">Hãy là người đầu tiên chia sẻ trải nghiệm sử dụng linh kiện bằng cách bấm nút Viết Đánh Giá ở trên.</p>
                 </div>
               } @else {
@@ -662,7 +679,7 @@ export class ProductDetailPageComponent {
     const total = revs.length;
     if (total === 0) {
       return {
-        average: '5.0',
+        average: '0.0',
         total: 0,
         histogram: [
           { star: 5, count: 0, percentage: 0 },
@@ -687,6 +704,11 @@ export class ProductDetailPageComponent {
       percentage: Math.round(((counts[star] || 0) / total) * 100),
     }));
     return { average: avg, total, histogram };
+  });
+
+  protected readonly roundedAverageRating = computed(() => {
+    const avg = Number(this.ratingStats().average);
+    return Number.isNaN(avg) ? 0 : Math.round(avg);
   });
 
   protected readonly formattedSpecs = computed<SpecRow[]>(() => {
