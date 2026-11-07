@@ -201,7 +201,7 @@ export class AdminOrderService {
       this.totalPages.set(data.totalPages);
       this.statusCounts.set(data.statusCounts);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Loi khi tai danh sach don hang';
+      const message = err instanceof Error ? err.message : 'Lỗi khi tải danh sách đơn hàng';
       this.error.set(message);
     } finally {
       this.isLoading.set(false);

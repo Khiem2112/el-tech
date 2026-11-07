@@ -240,7 +240,7 @@ export class ResolveQrDiscrepancyDialogComponent {
       this.note = '';
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xu ly doi soat VietQR';
+      const msg = err instanceof Error ? err.message : 'Không thể xử lý đối soát VietQR';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

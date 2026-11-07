@@ -201,7 +201,7 @@ export class ManualRefundDialogComponent {
       this.note = '';
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xac nhan hoan tien thu cong';
+      const msg = err instanceof Error ? err.message : 'Không thể xác nhận hoàn tiền thủ công';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

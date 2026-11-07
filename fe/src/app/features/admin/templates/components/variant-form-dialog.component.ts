@@ -49,7 +49,7 @@ import {
           </div>
 
           @if (formError()) {
-            <div class="p-3 bg-destructive/10 border border-destructive/20 rounded text-destructive text-xs">
+            <div class="p-3 bg-danger/10 border border-danger/20 rounded text-danger text-xs">
               {{ formError() }}
             </div>
           }
@@ -64,7 +64,7 @@ import {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                      Mã linh kiện <span class="text-destructive">*</span>
+                      Mã linh kiện <span class="text-danger">*</span>
                     </label>
                     <input
                       type="text"
@@ -73,13 +73,13 @@ import {
                       (input)="sku.set($any($event.target).value); clearFieldError('sku')"
                       placeholder="VD: VGA-RTX5090-O24G-BLACK"
                       class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
-                      [class.border-destructive]="fieldErrors()['sku']"
-                      [class.focus:border-destructive]="fieldErrors()['sku']"
+                      [class.border-danger]="fieldErrors()['sku']"
+                      [class.focus:border-danger]="fieldErrors()['sku']"
                       [class.border-line]="!fieldErrors()['sku']"
                       [class.focus:border-primary]="!fieldErrors()['sku']"
                     />
                     @if (fieldErrors()['sku']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['sku'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['sku'] }}</p>
                     }
                   </div>
 
@@ -113,7 +113,7 @@ import {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
                     <label class="block font-semibold text-muted uppercase text-xs mb-1">
-                      Giá Bán Niêm Yết <span class="text-destructive">*</span>
+                      Giá Bán Niêm Yết <span class="text-danger">*</span>
                     </label>
                     <input
                       type="number"
@@ -124,13 +124,13 @@ import {
                       (input)="sellingPrice.set(+$any($event.target).value); clearFieldError('sellingPrice')"
                       placeholder="59990000"
                       class="w-full px-3 py-2 bg-surface border rounded text-foreground font-bold tabular focus:outline-none text-sm transition-colors"
-                      [class.border-destructive]="fieldErrors()['sellingPrice']"
-                      [class.focus:border-destructive]="fieldErrors()['sellingPrice']"
+                      [class.border-danger]="fieldErrors()['sellingPrice']"
+                      [class.focus:border-danger]="fieldErrors()['sellingPrice']"
                       [class.border-line]="!fieldErrors()['sellingPrice']"
                       [class.focus:border-primary]="!fieldErrors()['sellingPrice']"
                     />
                     @if (fieldErrors()['sellingPrice']) {
-                      <p class="text-xs text-destructive mt-1 font-medium">{{ fieldErrors()['sellingPrice'] }}</p>
+                      <p class="text-xs text-danger mt-1 font-medium">{{ fieldErrors()['sellingPrice'] }}</p>
                     }
                   </div>
 

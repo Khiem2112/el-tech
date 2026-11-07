@@ -207,7 +207,7 @@ export class CompleteOrderDialogComponent {
 
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the hoan tat don hang';
+      const msg = err instanceof Error ? err.message : 'Không thể hoàn tất đơn hàng';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

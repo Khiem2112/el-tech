@@ -147,14 +147,20 @@ export const orderLookupService = {
         statusHistories: { orderBy: { occurredAt: 'asc' } },
       },
     });
-    if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    if (!order) {
+      throw new DomainError('ORDER_NOT_FOUND', {
+        messageKey: 'error.orderNotFound',
+        status: 404,
+        details: { message: 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại mã đơn hàng.' },
+      });
+    }
 
     if (order.customer.userId !== null) {
       if (!requesterUserId || requesterUserId !== order.customer.userId) {
         throw new DomainError('ORDER_ACCESS_DENIED', {
           messageKey: 'error.orderBelongsToAccount',
           status: 403,
-          details: { message: 'Đơn hàng này thuộc về tài khoản thành viên. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
+          details: { message: 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
         });
       }
     }
@@ -176,7 +182,30 @@ export const orderLookupService = {
       take: 1,
     });
     if (guestOrders.length === 0) {
-      throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+      const accountOrders = await prisma.order.findMany({
+        where: {
+          isActive: true,
+          customer: { userId: { not: null } },
+          ...(contactType === 'EMAIL'
+            ? { receiverEmail: trimmed.toLowerCase() }
+            : { receiverPhone: trimmed }),
+        },
+        take: 1,
+      });
+
+      if (accountOrders.length > 0) {
+        throw new DomainError('ORDER_ACCESS_DENIED', {
+          messageKey: 'error.orderBelongsToAccount',
+          status: 403,
+          details: { message: 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập tài khoản để tra cứu và quản lý đơn hàng.' },
+        });
+      }
+
+      throw new DomainError('ORDER_NOT_FOUND', {
+        messageKey: 'error.orderNotFound',
+        status: 404,
+        details: { message: 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại thông tin.' },
+      });
     }
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     const verification = await prisma.verification.create({
@@ -240,7 +269,31 @@ export const orderLookupService = {
       where: { code, isActive: true, OR: [{ receiverEmail: identifier.trim().toLowerCase() }, { receiverPhone: identifier.trim() }] },
       include: { customer: true },
     });
-    if (!order) throw new DomainError('ORDER_NOT_FOUND', { messageKey: 'error.orderNotFound', status: 404 });
+    if (!order) {
+      const orderExists = await prisma.order.findFirst({
+        where: { code, isActive: true },
+        include: { customer: true },
+      });
+      if (!orderExists) {
+        throw new DomainError('ORDER_NOT_FOUND', {
+          messageKey: 'error.orderNotFound',
+          status: 404,
+          details: { message: 'Đơn hàng không tồn tại trong hệ thống. Vui lòng kiểm tra lại mã đơn hàng.' },
+        });
+      }
+      if (orderExists.customer.userId !== null) {
+        throw new DomainError('ORDER_ACCESS_DENIED', {
+          messageKey: 'error.orderBelongsToAccount',
+          status: 403,
+          details: { message: 'Đơn hàng này thuộc về tài khoản cá nhân. Vui lòng đăng nhập đúng tài khoản để tra cứu.' },
+        });
+      }
+      throw new DomainError('ORDER_NOT_FOUND', {
+        messageKey: 'error.orderNotFound',
+        status: 404,
+        details: { message: 'Thông tin liên hệ không khớp với mã đơn hàng đã nhập.' },
+      });
+    }
 
     if (order.customer.userId !== null) {
       throw new DomainError('ORDER_ACCESS_DENIED', {

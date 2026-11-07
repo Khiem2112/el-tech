@@ -69,9 +69,9 @@ type ReceiptLineState = {
             <div class="space-y-3">
               @for (line of linesState(); track line.skuId) {
                 <div class="p-3 bg-surface border border-line rounded-lg space-y-2.5">
-                  <div class="flex items-center justify-between flex-wrap gap-2">
-                    <div>
-                      <div class="flex items-center gap-2">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-center gap-2 flex-wrap">
                         <span class="tabular font-bold text-foreground text-xs">{{ line.sku }}</span>
                         @if (line.serialRequired) {
                           <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold">
@@ -79,9 +79,9 @@ type ReceiptLineState = {
                           </span>
                         }
                       </div>
-                      <div class="text-muted text-xs mt-0.5">{{ line.name }}</div>
+                      <div class="text-muted text-xs mt-0.5 break-words">{{ line.name }}</div>
                     </div>
-                    <div class="text-right">
+                    <div class="text-right shrink-0 whitespace-nowrap">
                       <div class="text-xs text-muted">Số lượng cần nhập:</div>
                       <div class="text-foreground font-bold text-xs tabular-nums">{{ line.expectedQuantity }} chiếc</div>
                     </div>

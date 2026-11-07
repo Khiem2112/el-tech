@@ -330,7 +330,7 @@ export class ShipDialogComponent {
       const result = await this.detailService.getShippingRequirements(this.order().id);
       this.requirements.set(result);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi kiem tra dieu kien xuat kho';
+      const msg = err instanceof Error ? err.message : 'Lỗi khi kiểm tra điều kiện xuất kho';
       this.errorMessage.set(msg);
     } finally {
       this.isLoadingRequirements.set(false);
@@ -426,7 +426,7 @@ export class ShipDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xuat kho ban giao giao van';
+      const msg = err instanceof Error ? err.message : 'Không thể xuất kho bàn giao giao vận';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

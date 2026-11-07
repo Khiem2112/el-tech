@@ -455,7 +455,7 @@ export class AdminSerialService {
 
     if (payload.branchId && payload.branchId !== 1) {
       throw new DomainError('SERIAL_BRANCH_TRANSFER_FORBIDDEN', {
-        messageKey: 'Khong the thay doi chi nhanh truc tiep tren so se-ri. Bat buoc phai thuc hien thong qua quy trinh tao phieu dieu chuyen kho.',
+        messageKey: 'Không thể thay đổi chi nhánh trực tiếp trên số sê-ri. Bắt buộc phải thực hiện thông qua quy trình tạo phiếu điều chuyển kho.',
         status: 400,
       });
     }
@@ -469,7 +469,7 @@ export class AdminSerialService {
           skuId: unit.skuId,
           quantity: 1,
           serialIds: [unit.id],
-          reason: 'Admin cap nhat trang thai se-ri sang QUARANTINED',
+          reason: 'Admin cập nhật trạng thái sê-ri sang QUARANTINED',
         },
         adminUserId,
       );

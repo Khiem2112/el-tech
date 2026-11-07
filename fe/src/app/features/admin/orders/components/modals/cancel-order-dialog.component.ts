@@ -174,7 +174,7 @@ export class CancelOrderDialogComponent {
       this.reason = '';
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the huy don hang';
+      const msg = err instanceof Error ? err.message : 'Không thể hủy đơn hàng';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

@@ -177,7 +177,7 @@ export class RedeliveryDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the len lich hen giao lai';
+      const msg = err instanceof Error ? err.message : 'Không thể lên lịch hẹn giao lại';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

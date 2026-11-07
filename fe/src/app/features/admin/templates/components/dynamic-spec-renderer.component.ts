@@ -30,7 +30,7 @@ import { SpecAttribute } from '../../categories/services/admin-category.service'
                     <span class="text-muted font-normal whitespace-nowrap ml-1">({{ attr.unit }})</span>
                   }
                   @if (attr.required) {
-                    <span class="text-destructive ml-0.5" title="Bắt buộc">*</span>
+                    <span class="text-danger ml-0.5" title="Bắt buộc">*</span>
                   }
                   @if (attr.isDeprecated) {
                     <span class="ml-1 px-1.5 py-0.5 rounded bg-surface-alt border border-line text-muted text-xs font-normal whitespace-nowrap">Ngưng dùng</span>

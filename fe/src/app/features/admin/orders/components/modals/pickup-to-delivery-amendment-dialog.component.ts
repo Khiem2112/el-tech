@@ -296,7 +296,7 @@ export class PickupToDeliveryAmendmentDialogComponent {
 
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the tao phu luc giao hang';
+      const msg = err instanceof Error ? err.message : 'Không thể tạo phụ lục giao hàng';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);

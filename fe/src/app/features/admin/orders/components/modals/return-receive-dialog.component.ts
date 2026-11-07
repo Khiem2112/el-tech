@@ -169,7 +169,7 @@ export class ReturnReceiveDialogComponent {
       const res = await this.detailService.getReturnRequirements(this.order().id);
       this.requirements.set(res);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Loi khi tai danh sach hang doi soat';
+      const msg = err instanceof Error ? err.message : 'Lỗi khi tải danh sách hàng đối soát';
       this.errorMessage.set(msg);
     } finally {
       this.isLoading.set(false);
@@ -192,7 +192,7 @@ export class ReturnReceiveDialogComponent {
       });
       this.confirmed.emit();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Khong the xac nhan nhan hang hoan ve kho';
+      const msg = err instanceof Error ? err.message : 'Không thể xác nhận nhận hàng hoàn về kho';
       this.errorMessage.set(msg);
     } finally {
       this.isSubmitting.set(false);
