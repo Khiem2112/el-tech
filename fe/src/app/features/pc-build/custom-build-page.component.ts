@@ -7,13 +7,29 @@ import { CartService } from '../../services/cart.service';
 import { PcBuildService, BundleResponse } from '../../services/pc-build.service';
 import { ComponentSwapModalComponent, SwapItem, SwapSlotItem } from './component-swap-modal.component';
 
-export type BomCategory = 'cpu' | 'mainboard' | 'ram' | 'ssd' | 'vga' | 'psu' | 'cooling' | 'case';
+export type BomCategory =
+  | 'cpu'
+  | 'mainboard'
+  | 'ram'
+  | 'ssd'
+  | 'vga'
+  | 'psu'
+  | 'cooling'
+  | 'case'
+  | 'monitor'
+  | 'keyboard'
+  | 'mouse'
+  | 'headphone';
+
+export type BomSection = 'core' | 'gear';
 
 export type BomSlot = {
   readonly key: BomCategory;
   readonly number: string;
   readonly categoryName: string;
   readonly defaultSpecTag: string;
+  readonly isRequired: boolean;
+  readonly section: BomSection;
   item: SwapItem | null;
 };
 
@@ -27,14 +43,18 @@ type ActiveDraftState = {
 };
 
 const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
-  { key: 'cpu', number: '01', categoryName: 'Vi xử lý / CPU', defaultSpecTag: 'LGA1700 / AM5' },
-  { key: 'mainboard', number: '02', categoryName: 'Bo mạch chủ / Mainboard', defaultSpecTag: 'Socket LGA1700 / AM5' },
-  { key: 'ram', number: '03', categoryName: 'Bộ nhớ trong / RAM', defaultSpecTag: 'DDR5 Dual Channel' },
-  { key: 'ssd', number: '04', categoryName: 'Ổ cứng thể rắn / SSD', defaultSpecTag: 'Gen 4.0 x4' },
-  { key: 'vga', number: '05', categoryName: 'Card đồ họa / VGA', defaultSpecTag: 'PCIe 4.0 / 5.0' },
-  { key: 'psu', number: '06', categoryName: 'Nguồn máy tính / PSU', defaultSpecTag: '80 Plus Gold ATX3.0' },
-  { key: 'cooling', number: '07', categoryName: 'Tản nhiệt CPU / Cooling', defaultSpecTag: 'Radiator 360mm / Air' },
-  { key: 'case', number: '08', categoryName: 'Vỏ máy tính / Case', defaultSpecTag: 'Mid Tower ATX' },
+  { key: 'cpu', number: '01', categoryName: 'Vi xử lý / CPU', defaultSpecTag: 'LGA1700 / AM5', isRequired: true, section: 'core' },
+  { key: 'mainboard', number: '02', categoryName: 'Bo mạch chủ / Mainboard', defaultSpecTag: 'Socket LGA1700 / AM5', isRequired: true, section: 'core' },
+  { key: 'ram', number: '03', categoryName: 'Bộ nhớ trong / RAM', defaultSpecTag: 'DDR4 / DDR5', isRequired: true, section: 'core' },
+  { key: 'ssd', number: '04', categoryName: 'Ổ cứng thể rắn / SSD', defaultSpecTag: 'Gen 4.0 / 5.0 NVMe', isRequired: true, section: 'core' },
+  { key: 'psu', number: '05', categoryName: 'Nguồn máy tính / PSU', defaultSpecTag: '80 Plus Bronze / Gold', isRequired: true, section: 'core' },
+  { key: 'vga', number: '06', categoryName: 'Card đồ họa / VGA', defaultSpecTag: 'PCIe 4.0 / 5.0', isRequired: false, section: 'core' },
+  { key: 'cooling', number: '07', categoryName: 'Tản nhiệt CPU / Cooling', defaultSpecTag: 'Air / AIO 240-360mm', isRequired: false, section: 'core' },
+  { key: 'case', number: '08', categoryName: 'Vỏ máy tính / Case', defaultSpecTag: 'Mid Tower ATX / MATX', isRequired: false, section: 'core' },
+  { key: 'monitor', number: '09', categoryName: 'Màn hình máy tính', defaultSpecTag: 'FHD / 2K / 4K Gaming', isRequired: false, section: 'gear' },
+  { key: 'keyboard', number: '10', categoryName: 'Bàn phím cơ', defaultSpecTag: 'Mechanical / Wireless', isRequired: false, section: 'gear' },
+  { key: 'mouse', number: '11', categoryName: 'Chuột máy tính', defaultSpecTag: 'Gaming / Ergonomic', isRequired: false, section: 'gear' },
+  { key: 'headphone', number: '12', categoryName: 'Tai nghe gaming', defaultSpecTag: 'Over-ear / Surround', isRequired: false, section: 'gear' },
 ];
 
 @Component({
@@ -112,10 +132,13 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                 <div class="flex items-center gap-2.5">
                   <lucide-icon name="shield-check" class="size-5 text-primary shrink-0" aria-hidden="true"></lucide-icon>
                   <div>
-                    <span class="text-xs sm:text-sm font-bold text-foreground block">Độ Tương Thích &amp; Công Suất</span>
+                    <span class="text-xs sm:text-sm font-bold text-foreground block">Độ Tương Thích &amp; Công Suất Nguồn</span>
                     <p class="text-xs text-muted">
                       {{ currentSocket() ? 'Socket ' + currentSocket() : 'Chưa chọn CPU' }} ·
-                      {{ currentRamType() ? 'RAM ' + currentRamType() : 'Chưa chọn RAM' }}
+                      {{ currentRamType() ? 'RAM ' + currentRamType() : 'Chưa chọn RAM' }} ·
+                      <span [class.text-primary]="requiredSlotsFilledCount() === totalRequiredSlotsCount()" [class.text-amber-500]="requiredSlotsFilledCount() < totalRequiredSlotsCount()" class="font-semibold">
+                        Linh kiện bắt buộc: {{ requiredSlotsFilledCount() }}/{{ totalRequiredSlotsCount() }}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -130,9 +153,9 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               <!-- Wattage Bar -->
               <div class="space-y-1.5 text-xs">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="text-muted">Tiêu thụ ước tính: <strong class="text-foreground tabular">{{ fullLoadTdp() }}W</strong></span>
+                  <span class="text-muted">Tiêu thụ ước tính linh kiện PC: <strong class="text-foreground tabular">{{ fullLoadTdp() }}W</strong></span>
                   <span class="text-muted">
-                    PSU đã chọn:
+                    Công suất PSU đã chọn:
                     <strong class="text-primary font-bold tabular">
                       {{ currentPsuWattage() > 0 ? currentPsuWattage() + 'W' : 'Chưa chọn' }}
                     </strong>
@@ -152,15 +175,39 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               </div>
             </div>
 
-            <!-- BOM Hardware Rows List -->
+            <!-- Group 1: Core PC Components (Must-have components for a desktop build) -->
             <div class="space-y-3">
-              @for (slot of bomSlots(); track slot.key) {
+              <div class="flex items-center justify-between pb-2 border-b border-line">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-sm font-bold text-foreground">Linh Kiện Thùng Máy (Cốt Lõi)</h2>
+                    <span class="px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                      5 linh kiện bắt buộc
+                    </span>
+                  </div>
+                  <p class="text-xs text-muted mt-0.5">Các bộ phận thiết yếu để một hệ thống PC hoàn chỉnh có thể vận hành và khởi động.</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span
+                    class="px-2.5 py-1 rounded-lg text-xs font-bold border inline-block"
+                    [class.bg-primary/10]="requiredSlotsFilledCount() === totalRequiredSlotsCount()"
+                    [class.text-primary]="requiredSlotsFilledCount() === totalRequiredSlotsCount()"
+                    [class.border-primary/30]="requiredSlotsFilledCount() === totalRequiredSlotsCount()"
+                    [class.bg-amber-500/10]="requiredSlotsFilledCount() < totalRequiredSlotsCount()"
+                    [class.text-amber-500]="requiredSlotsFilledCount() < totalRequiredSlotsCount()"
+                    [class.border-amber-500/30]="requiredSlotsFilledCount() < totalRequiredSlotsCount()"
+                  >
+                    Đã chọn: {{ requiredSlotsFilledCount() }}/{{ totalRequiredSlotsCount() }}
+                  </span>
+                </div>
+              </div>
+
+              @for (slot of coreSlots(); track slot.key) {
                 @if (slot.item; as item) {
                   <!-- Configured Slot -->
                   <div class="rounded-xl bg-surface shadow-xs border border-line p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-primary/50 transition-colors">
-                    <!-- Slot Identity & Hardware Info -->
-                    <div class="flex items-start md:items-center gap-3 flex-1 min-w-0">
-                      <div class="size-12 rounded-lg bg-surface-alt border border-line shrink-0 p-1 flex items-center justify-center overflow-hidden">
+                    <div class="flex items-start md:items-center gap-3.5 flex-1 min-w-0">
+                      <div class="size-16 sm:size-20 rounded-xl bg-surface-alt border border-line shrink-0 p-1.5 flex items-center justify-center overflow-hidden">
                         <img
                           [src]="item.imageUrl || '/images/products/placeholder.webp'"
                           [alt]="item.name"
@@ -174,6 +221,20 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                           <span class="text-xs font-bold uppercase tracking-wider text-primary">
                             {{ slot.categoryName }}
                           </span>
+                          @if (slot.isRequired) {
+                            <span class="px-1.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                              Bắt buộc
+                            </span>
+                          } @else {
+                            <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
+                              Tùy chọn
+                            </span>
+                          }
+                          @if (slot.key === 'psu' && (item.wattage || item.tdp)) {
+                            <span class="px-1.5 py-0.5 rounded text-xs text-primary font-bold bg-primary/10 border border-primary/20">
+                              {{ item.wattage || item.tdp }}W
+                            </span>
+                          }
                           @if (item.tag) {
                             <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
                               {{ item.tag }}
@@ -181,7 +242,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                           }
                         </div>
 
-                        <h2 class="text-sm font-bold text-foreground truncate mt-0.5">{{ item.name }}</h2>
+                        <h2 class="text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h2>
                         <p class="text-xs text-muted truncate mt-0.5">{{ item.specs }}</p>
                       </div>
                     </div>
@@ -190,7 +251,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                     <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
                       <div class="text-left md:text-right">
                         <div class="text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
-                        <div class="text-xs text-muted">Bảo hành 36T</div>
+                        <div class="text-xs text-muted">Bảo hành chính hãng</div>
                       </div>
 
                       <div class="flex items-center gap-1.5">
@@ -218,6 +279,141 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                   </div>
                 } @else {
                   <!-- Empty Dashed Slot -->
+                  <div
+                    class="rounded-xl border border-dashed p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors"
+                    [class.border-amber-500/40]="slot.isRequired"
+                    [class.bg-amber-500/5]="slot.isRequired"
+                    [class.border-line]="!slot.isRequired"
+                    [class.bg-surface/50]="!slot.isRequired"
+                    [class.hover:border-primary/60]="true"
+                  >
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="text-xs font-bold uppercase tracking-wider text-foreground">
+                            {{ slot.categoryName }}
+                          </span>
+                          @if (slot.isRequired) {
+                            <span class="px-1.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-amber-500/15 text-amber-500 border border-amber-500/30">
+                              Bắt buộc
+                            </span>
+                          } @else {
+                            <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
+                              Tùy chọn
+                            </span>
+                          }
+                          <span class="text-xs text-muted">({{ slot.defaultSpecTag }})</span>
+                        </div>
+                        <p class="text-xs text-muted mt-0.5">
+                          {{ slot.isRequired ? 'Chưa chọn linh kiện bắt buộc này cho bộ PC' : 'Chưa chọn linh kiện cho vị trí này' }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="shrink-0 w-full md:w-auto text-right">
+                      <button
+                        type="button"
+                        (click)="openSwapModal(slot)"
+                        class="w-full md:w-auto h-8 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                        [class.bg-amber-500/10]="slot.isRequired"
+                        [class.hover:bg-amber-500/20]="slot.isRequired"
+                        [class.text-amber-500]="slot.isRequired"
+                        [class.border]="slot.isRequired"
+                        [class.border-amber-500/30]="slot.isRequired"
+                        [class.bg-primary/10]="!slot.isRequired"
+                        [class.hover:bg-primary/20]="!slot.isRequired"
+                        [class.text-primary]="!slot.isRequired"
+                        [class.border-primary/30]="!slot.isRequired"
+                        title="Chọn linh kiện cho ô này"
+                      >
+                        <lucide-icon name="plus" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        <span>Chọn {{ slot.categoryName }}</span>
+                      </button>
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+
+            <!-- Group 2: Gear & Peripherals (Optional additions for PC setup) -->
+            <div class="space-y-3 pt-4">
+              <div class="flex items-center justify-between pb-2 border-b border-line">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-sm font-bold text-foreground">Màn Hình &amp; Phụ Kiện Gaming Gear</h2>
+                    <span class="px-2 py-0.5 rounded text-xs font-medium bg-surface-alt text-muted border border-line">
+                      Tùy chọn ngoại vi
+                    </span>
+                  </div>
+                  <p class="text-xs text-muted mt-0.5">Trang bị thêm màn hình hiển thị, bàn phím, chuột và tai nghe đồng bộ (không bắt buộc có trong thùng máy).</p>
+                </div>
+              </div>
+
+              @for (slot of gearSlots(); track slot.key) {
+                @if (slot.item; as item) {
+                  <!-- Configured Gear Slot -->
+                  <div class="rounded-xl bg-surface shadow-xs border border-line p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-primary/50 transition-colors">
+                    <div class="flex items-start md:items-center gap-3.5 flex-1 min-w-0">
+                      <div class="size-16 sm:size-20 rounded-xl bg-surface-alt border border-line shrink-0 p-1.5 flex items-center justify-center overflow-hidden">
+                        <img
+                          [src]="item.imageUrl || '/images/products/placeholder.webp'"
+                          [alt]="item.name"
+                          class="size-full object-contain"
+                          (error)="onImageError($event)"
+                        >
+                      </div>
+
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="text-xs font-bold uppercase tracking-wider text-primary">
+                            {{ slot.categoryName }}
+                          </span>
+                          <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
+                            Ngoại vi
+                          </span>
+                          @if (item.tag) {
+                            <span class="px-1.5 py-0.5 rounded text-xs text-muted bg-surface-alt border border-line">
+                              {{ item.tag }}
+                            </span>
+                          }
+                        </div>
+
+                        <h2 class="text-sm font-bold text-foreground truncate mt-1">{{ item.name }}</h2>
+                        <p class="text-xs text-muted truncate mt-0.5">{{ item.specs }}</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center justify-between md:justify-end gap-3 w-full md:w-auto shrink-0 border-t md:border-t-0 pt-2 md:pt-0 border-line">
+                      <div class="text-left md:text-right">
+                        <div class="text-sm font-bold text-foreground tabular">{{ item.price | vnd }}</div>
+                        <div class="text-xs text-muted">Bảo hành chính hãng</div>
+                      </div>
+
+                      <div class="flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          (click)="openSwapModal(slot)"
+                          class="h-8 px-2.5 rounded-lg bg-surface-alt hover:bg-border text-foreground text-xs font-bold flex items-center gap-1 transition-colors border border-line cursor-pointer"
+                          title="Thay đổi thiết bị"
+                        >
+                          <lucide-icon name="arrow-up-down" class="size-3.5 text-primary" aria-hidden="true"></lucide-icon>
+                          <span>Đổi</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          (click)="clearSlot(slot.key)"
+                          class="size-8 rounded-lg bg-surface-alt hover:bg-danger/20 text-muted hover:text-danger flex items-center justify-center transition-colors border border-line cursor-pointer"
+                          title="Xóa món này"
+                          aria-label="Xóa món ngoại vi"
+                        >
+                          <lucide-icon name="trash-2" class="size-3.5" aria-hidden="true"></lucide-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                } @else {
+                  <!-- Empty Gear Slot -->
                   <div class="rounded-xl border border-dashed border-line hover:border-primary/60 bg-surface/50 p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
                       <div class="min-w-0">
@@ -227,7 +423,7 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                           </span>
                           <span class="text-xs text-muted">({{ slot.defaultSpecTag }})</span>
                         </div>
-                        <p class="text-xs text-muted mt-0.5">Chưa chọn linh kiện cho vị trí này</p>
+                        <p class="text-xs text-muted mt-0.5">Chưa thêm thiết bị ngoại vi cho ô này (Tùy chọn)</p>
                       </div>
                     </div>
 
@@ -235,11 +431,11 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
                       <button
                         type="button"
                         (click)="openSwapModal(slot)"
-                        class="w-full md:w-auto h-8 px-3 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
-                        title="Chọn linh kiện cho ô này"
+                        class="w-full md:w-auto h-8 px-3 rounded-lg bg-surface-alt hover:bg-border text-foreground border border-line text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                        title="Chọn thiết bị cho ô này"
                       >
                         <lucide-icon name="plus" class="size-3.5" aria-hidden="true"></lucide-icon>
-                        <span>Chọn {{ slot.categoryName }}</span>
+                        <span>Thêm {{ slot.categoryName }}</span>
                       </button>
                     </div>
                   </div>
@@ -303,7 +499,24 @@ const DEFAULT_BOM_SLOTS: readonly Omit<BomSlot, 'item'>[] = [
               <!-- Price Breakdown -->
               <div class="space-y-2 text-xs">
                 <div class="flex items-center justify-between text-muted">
-                  <span>Tổng giá trị linh kiện ({{ activeItemCount() }} món):</span>
+                  <span>Tổng linh kiện đã chọn:</span>
+                  <span class="text-foreground font-bold tabular">{{ activeItemCount() }} món</span>
+                </div>
+                <div class="flex items-center justify-between text-muted">
+                  <span>Linh kiện cốt lõi (Bắt buộc):</span>
+                  @if (requiredSlotsFilledCount() === totalRequiredSlotsCount()) {
+                    <span class="text-primary font-bold">Đủ 5/5 món</span>
+                  } @else {
+                    <span class="text-amber-500 font-bold">{{ requiredSlotsFilledCount() }}/{{ totalRequiredSlotsCount() }} món</span>
+                  }
+                </div>
+                @if (missingRequiredSlotNames().length > 0) {
+                  <div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-500 leading-relaxed">
+                    Còn thiếu: {{ missingRequiredSlotNames().join(', ') }} để bộ PC hoàn chỉnh.
+                  </div>
+                }
+                <div class="flex items-center justify-between text-muted">
+                  <span>Tổng giá trị linh kiện:</span>
                   <span class="text-foreground font-bold tabular">{{ totalHardwarePrice() | vnd }}</span>
                 </div>
                 <div class="flex items-center justify-between text-muted">
@@ -496,6 +709,28 @@ export class CustomBuildPageComponent implements OnInit {
     DEFAULT_BOM_SLOTS.map((s) => ({ ...s, item: null }))
   );
 
+  protected readonly coreSlots = computed<readonly BomSlot[]>(() => {
+    return this.bomSlots().filter((s) => s.section === 'core');
+  });
+
+  protected readonly gearSlots = computed<readonly BomSlot[]>(() => {
+    return this.bomSlots().filter((s) => s.section === 'gear');
+  });
+
+  protected readonly requiredSlotsFilledCount = computed<number>(() => {
+    return this.bomSlots().filter((s) => s.isRequired && s.item !== null).length;
+  });
+
+  protected readonly totalRequiredSlotsCount = computed<number>(() => {
+    return this.bomSlots().filter((s) => s.isRequired).length;
+  });
+
+  protected readonly missingRequiredSlotNames = computed<readonly string[]>(() => {
+    return this.bomSlots()
+      .filter((s) => s.isRequired && s.item === null)
+      .map((s) => s.categoryName.split('/')[0].trim());
+  });
+
   async ngOnInit(): Promise<void> {
     this.loadDraftFromStorage();
     await this.loadCatalogAndBundles();
@@ -625,6 +860,10 @@ export class CustomBuildPageComponent implements OnInit {
     if (normalized === 'psu' || normalized.includes('psu') || normalized.includes('nguon')) return 'psu';
     if (normalized === 'cooling' || normalized.includes('cooling') || normalized.includes('tan-nhiet')) return 'cooling';
     if (normalized === 'case' || normalized.includes('case') || normalized.includes('vo-may-tinh')) return 'case';
+    if (normalized === 'monitor' || normalized.includes('monitor') || normalized.includes('man-hinh')) return 'monitor';
+    if (normalized === 'keyboard' || normalized.includes('keyboard') || normalized.includes('ban-phim')) return 'keyboard';
+    if (normalized === 'mouse' || normalized.includes('mouse') || normalized.includes('chuot')) return 'mouse';
+    if (normalized === 'headphone' || normalized.includes('headphone') || normalized.includes('headset') || normalized.includes('tai-nghe')) return 'headphone';
     return null;
   }
 
@@ -640,6 +879,20 @@ export class CustomBuildPageComponent implements OnInit {
       const mappedCat = this.mapCategorySlugToBomCategory(rawCat);
       if (!mappedCat) return;
 
+      const common = (parsed.commonSpec || {}) as Record<string, unknown>;
+      const rawWattage = common['wattage'] ?? common['power_consumption'] ?? parsed.wattage;
+      let configuredWattage: number | undefined;
+      if (typeof rawWattage === 'number' && !Number.isNaN(rawWattage)) {
+        configuredWattage = rawWattage;
+      } else if (typeof rawWattage === 'string' && !Number.isNaN(Number(rawWattage))) {
+        configuredWattage = Number(rawWattage);
+      }
+
+      const rawParsedTdp = parsed.tdp;
+      const parsedTdp = typeof rawParsedTdp === 'number' && !Number.isNaN(rawParsedTdp) ? rawParsedTdp
+        : (typeof rawParsedTdp === 'string' && !Number.isNaN(Number(rawParsedTdp))) ? Number(rawParsedTdp)
+        : undefined;
+
       const item: SwapItem = {
         id: parsed.id || `sku-${parsed.skuId || parsed.productId}`,
         skuId: Number(parsed.skuId || parsed.productId) || 0,
@@ -647,7 +900,8 @@ export class CustomBuildPageComponent implements OnInit {
         brand: parsed.brand || 'EL-TECH',
         category: mappedCat,
         price: Number(parsed.price) || 0,
-        tdp: Number(parsed.tdp) || 45,
+        tdp: mappedCat === 'psu' ? (configuredWattage ?? parsedTdp ?? 650) : (configuredWattage ?? parsedTdp ?? 45),
+        wattage: configuredWattage,
         specs: parsed.specs || parsed.model || '',
         tag: parsed.tag || undefined,
         imageUrl: parsed.imageUrl || (parsed.media && parsed.media[0]?.url) || '/images/products/placeholder.webp',
@@ -696,7 +950,21 @@ export class CustomBuildPageComponent implements OnInit {
         if (!catalogMap[comp.category]) {
           catalogMap[comp.category] = [];
         }
-        catalogMap[comp.category].push(comp);
+        const common = (comp.commonSpec || {}) as Record<string, unknown>;
+        const rawWattage = common['wattage'] ?? common['power_consumption'] ?? comp.wattage;
+        let configuredWattage: number | undefined;
+        if (typeof rawWattage === 'number' && !Number.isNaN(rawWattage)) {
+          configuredWattage = rawWattage;
+        } else if (typeof rawWattage === 'string' && !Number.isNaN(Number(rawWattage))) {
+          configuredWattage = Number(rawWattage);
+        }
+        catalogMap[comp.category].push({
+          ...comp,
+          wattage: configuredWattage ?? comp.wattage,
+          tdp: comp.category === 'psu'
+            ? (configuredWattage ?? comp.wattage ?? comp.tdp ?? 650)
+            : (configuredWattage ?? comp.tdp),
+        });
       }
       this.liveCatalog.set(catalogMap);
 
@@ -748,8 +1016,20 @@ export class CustomBuildPageComponent implements OnInit {
         }
         const existing = componentBySkuId.get(line.skuId);
         if (existing) {
-          return { ...slot, item: existing };
+          const common = (existing.commonSpec || {}) as Record<string, unknown>;
+          const rawWattage = common['wattage'] ?? common['power_consumption'] ?? existing.wattage ?? line.wattage;
+          const wattage = typeof rawWattage === 'number' ? rawWattage : (!Number.isNaN(Number(rawWattage)) ? Number(rawWattage) : undefined);
+          return {
+            ...slot,
+            item: {
+              ...existing,
+              wattage: wattage ?? existing.wattage,
+              tdp: slot.key === 'psu' ? (wattage ?? existing.tdp ?? 650) : (wattage ?? existing.tdp),
+            },
+          };
         }
+        const rawWattage = line.wattage;
+        const wattage = typeof rawWattage === 'number' ? rawWattage : (!Number.isNaN(Number(rawWattage)) ? Number(rawWattage) : undefined);
         const fallbackItem: SwapItem = {
           id: `sku-${line.skuId}`,
           skuId: line.skuId,
@@ -757,9 +1037,11 @@ export class CustomBuildPageComponent implements OnInit {
           brand: 'EL-TECH',
           category: line.category,
           price: Number(line.unitPrice),
-          tdp: line.tdp ?? line.wattage ?? 45,
+          tdp: slot.key === 'psu' ? (wattage ?? line.tdp ?? 650) : (line.tdp ?? wattage ?? 45),
+          wattage,
           specs: line.specs,
           tag: line.socket ? `Socket ${line.socket}` : line.memoryType ? line.memoryType : undefined,
+          imageUrl: line.imageUrl || '/images/products/placeholder.webp',
           socket: line.socket,
           memoryType: line.memoryType,
           stockStatus: 'Sẵn hàng tại kho',
@@ -790,12 +1072,12 @@ export class CustomBuildPageComponent implements OnInit {
 
   protected readonly currentPsuWattage = computed<number>(() => {
     const psu = this.bomSlots().find((s) => s.key === 'psu')?.item;
-    return psu?.tdp || 0;
+    return psu?.wattage || psu?.tdp || 0;
   });
 
   protected readonly fullLoadTdp = computed<number>(() => {
     const slots = this.bomSlots();
-    const consumingSlots = slots.filter((s) => s.key !== 'psu' && s.item !== null);
+    const consumingSlots = slots.filter((s) => s.section === 'core' && s.key !== 'psu' && s.item !== null);
     if (consumingSlots.length === 0) {
       return 0;
     }
@@ -890,8 +1172,25 @@ export class CustomBuildPageComponent implements OnInit {
     this.isModalLoading.set(true);
     try {
       const items = await this.pcBuildService.getComponents(slot.key);
-      this.currentModalAvailableItems.set(items);
-      this.liveCatalog.update((map) => ({ ...map, [slot.key]: items }));
+      const mappedItems = items.map((it) => {
+        const common = (it.commonSpec || {}) as Record<string, unknown>;
+        const rawWattage = common['wattage'] ?? common['power_consumption'] ?? it.wattage;
+        let configuredWattage: number | undefined;
+        if (typeof rawWattage === 'number' && !Number.isNaN(rawWattage)) {
+          configuredWattage = rawWattage;
+        } else if (typeof rawWattage === 'string' && !Number.isNaN(Number(rawWattage))) {
+          configuredWattage = Number(rawWattage);
+        }
+        return {
+          ...it,
+          wattage: configuredWattage ?? it.wattage,
+          tdp: slot.key === 'psu'
+            ? (configuredWattage ?? it.wattage ?? it.tdp ?? 650)
+            : (configuredWattage ?? it.tdp),
+        };
+      });
+      this.currentModalAvailableItems.set(mappedItems);
+      this.liveCatalog.update((map) => ({ ...map, [slot.key]: mappedItems }));
     } catch (error) {
       console.error('Failed to load components for slot', slot.key, error);
     } finally {
@@ -902,8 +1201,26 @@ export class CustomBuildPageComponent implements OnInit {
   protected onComponentSelected(item: SwapItem): void {
     const categoryKey = this.currentModalCategoryKey() as BomCategory;
     const previousItem = this.bomSlots().find((s) => s.key === categoryKey)?.item;
+
+    const common = (item.commonSpec || {}) as Record<string, unknown>;
+    const rawWattage = common['wattage'] ?? common['power_consumption'] ?? item.wattage;
+    let configuredWattage: number | undefined;
+    if (typeof rawWattage === 'number' && !Number.isNaN(rawWattage)) {
+      configuredWattage = rawWattage;
+    } else if (typeof rawWattage === 'string' && !Number.isNaN(Number(rawWattage))) {
+      configuredWattage = Number(rawWattage);
+    }
+
+    const itemWithWattage: SwapItem = {
+      ...item,
+      wattage: configuredWattage ?? item.wattage,
+      tdp: categoryKey === 'psu'
+        ? (configuredWattage ?? item.wattage ?? item.tdp ?? 650)
+        : (configuredWattage ?? item.tdp),
+    };
+
     this.bomSlots.update((slots) =>
-      slots.map((s) => (s.key === categoryKey ? { ...s, item } : s))
+      slots.map((s) => (s.key === categoryKey ? { ...s, item: itemWithWattage } : s))
     );
     this.saveDraftToStorage();
     if (previousItem && previousItem.skuId !== item.skuId) {

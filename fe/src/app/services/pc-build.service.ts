@@ -11,6 +11,7 @@ export type BundleLineItem = {
   readonly unitPrice: string;
   readonly lineTotal: string;
   readonly specs: string;
+  readonly imageUrl?: string;
   readonly socket?: string;
   readonly memoryType?: string;
   readonly tdp?: number;
