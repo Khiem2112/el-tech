@@ -211,9 +211,9 @@ import {
                         [title]="'Thực: ' + formatDelta(entry.deltaOnHand) + ' | Lỗi: ' + formatDelta(entry.deltaQuarantine) + ' | Giữ: ' + formatDelta(entry.deltaReserved)"
                       >
                         <span
-                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-xs font-bold border"
                           [class]="entry.deltaOnHand !== 0
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                             : 'bg-surface-alt text-muted border-line'"
                         >
                           {{ formatDelta(entry.deltaOnHand) }}
@@ -222,9 +222,9 @@ import {
                         <span class="text-muted/40 font-semibold select-none">/</span>
 
                         <span
-                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-xs font-bold border"
                           [class]="entry.deltaQuarantine !== 0
-                            ? 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800'
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
                             : 'bg-surface-alt text-muted border-line'"
                         >
                           {{ formatDelta(entry.deltaQuarantine) }}
@@ -233,9 +233,9 @@ import {
                         <span class="text-muted/40 font-semibold select-none">/</span>
 
                         <span
-                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-[11px] font-bold border"
+                          class="inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded text-xs font-bold border"
                           [class]="entry.deltaReserved !== 0
-                            ? 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                            ? 'bg-slate-100 text-slate-700 border-slate-200'
                             : 'bg-surface-alt text-muted border-line'"
                         >
                           {{ formatDelta(entry.deltaReserved) }}
@@ -255,7 +255,7 @@ import {
                         @if (entry.originUrl) {
                           <a
                             [routerLink]="entry.originUrl"
-                            class="text-xs font-bold text-primary hover:text-primary-focus hover:underline tabular tabular-nums tracking-wide inline-flex items-center gap-1 max-w-full truncate"
+                            class="text-xs font-bold text-primary-strong hover:underline tabular tabular-nums tracking-wide inline-flex items-center gap-1 max-w-full truncate"
                             [title]="'Xem chi tiết ' + (entry.originCode || entry.documentCode)"
                           >
                             <span class="truncate">{{ entry.originCode || entry.documentCode }}</span>
@@ -435,9 +435,9 @@ export class AdminStockLedgerPageComponent implements OnInit {
     const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (entryType) {
       case 'QUARANTINE':
-        return `${base} bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20`;
+        return `${base} bg-rose-500/10 text-rose-700 border-rose-500/20`;
       case 'RESERVE':
-        return `${base} bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20`;
+        return `${base} bg-amber-500/10 text-amber-700 border-amber-500/20`;
       default:
         return `${base} bg-surface-alt text-foreground border-line`;
     }
@@ -459,14 +459,14 @@ export class AdminStockLedgerPageComponent implements OnInit {
   }
 
   getOriginBadgeClass(originType?: string): string {
-    const base = 'px-2 py-0.5 rounded text-[11px] font-semibold tracking-wider uppercase whitespace-nowrap border';
+    const base = 'px-2 py-0.5 rounded text-xs font-semibold tracking-wider uppercase whitespace-nowrap border';
     switch (originType) {
       case 'ORDER':
-        return `${base} bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800`;
+        return `${base} bg-sky-50 text-sky-700 border-sky-200`;
       case 'PURCHASE_ORDER':
-        return `${base} bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800`;
+        return `${base} bg-emerald-50 text-emerald-700 border-emerald-200`;
       case 'QUARANTINE':
-        return `${base} bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800`;
+        return `${base} bg-rose-50 text-rose-700 border-rose-200`;
       case 'INTERNAL':
       default:
         return `${base} bg-surface-alt text-muted border-line`;
