@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -282,16 +282,16 @@ type Order = {
             <div class="flex-1 space-y-1">
               <span class="font-bold block">Thông báo</span>
               <p class="text-foreground/80 text-xs leading-relaxed">{{ searchError() }}</p>
-              @if (searchError()?.includes('tài khoản cá nhân') || searchError()?.includes('tài khoản thành viên')) {
+              @if (searchError()?.includes('tài khoản cá nhân') || searchError()?.includes('tài khoản thành viên') || searchError()?.includes('đăng nhập')) {
                 <div class="pt-2">
-                  <a
-                    routerLink="/auth/sign-in"
-                    [queryParams]="{ returnUrl: '/orders/lookup' }"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground font-bold rounded text-xs hover:opacity-90 transition-opacity"
+                  <button
+                    type="button"
+                    (click)="auth.openAuthModal()"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground font-bold rounded text-xs hover:opacity-90 transition-opacity cursor-pointer"
                   >
                     <span>Đăng nhập tài khoản</span>
                     <lucide-icon name="ChevronRight" class="size-3.5" aria-hidden="true"></lucide-icon>
-                  </a>
+                  </button>
                 </div>
               }
             </div>
@@ -339,9 +339,23 @@ type Order = {
             </div>
 
             @if (verifyError()) {
-              <div class="p-2.5 rounded bg-danger/10 border border-danger/30 text-xs text-danger flex items-center gap-1.5">
-                <lucide-icon name="AlertTriangle" class="size-3.5 shrink-0" aria-hidden="true"></lucide-icon>
-                <span>{{ verifyError() }}</span>
+              <div class="p-2.5 rounded bg-danger/10 border border-danger/30 text-xs text-danger flex items-start gap-1.5">
+                <lucide-icon name="AlertTriangle" class="size-3.5 shrink-0 mt-0.5" aria-hidden="true"></lucide-icon>
+                <div class="flex-1 space-y-1">
+                  <span>{{ verifyError() }}</span>
+                  @if (verifyError()?.includes('tài khoản cá nhân') || verifyError()?.includes('tài khoản thành viên') || verifyError()?.includes('đăng nhập')) {
+                    <div class="pt-1">
+                      <button
+                        type="button"
+                        (click)="auth.openAuthModal()"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground font-bold rounded text-xs hover:opacity-90 transition-opacity cursor-pointer"
+                      >
+                        <span>Đăng nhập tài khoản</span>
+                        <lucide-icon name="ChevronRight" class="size-3.5" aria-hidden="true"></lucide-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
               </div>
             }
           </div>
@@ -1026,6 +1040,29 @@ export class OrderLookupPageComponent implements OnInit {
 
   protected readonly searchError = signal<string | null>(null);
   protected readonly verifyError = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const user = this.auth.currentUser();
+      if (user) {
+        if (!this.phoneNumber && user.phone) {
+          this.phoneNumber = user.phone;
+        }
+        if (!this.emailAddress && user.email) {
+          this.emailAddress = user.email;
+        }
+        if (this.searchError()?.includes('tài khoản') || this.searchError()?.includes('đăng nhập')) {
+          this.searchError.set(null);
+          if (this.orderCode.trim() && this.activeTab() === 'code') {
+            void this.searchByCode();
+          }
+        }
+        if (this.verifyError()?.includes('tài khoản') || this.verifyError()?.includes('đăng nhập')) {
+          this.verifyError.set(null);
+        }
+      }
+    });
+  }
 
   ngOnInit(): void {
     const user = this.auth.currentUser();
